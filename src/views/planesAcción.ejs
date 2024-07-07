@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('./partials/head') %>
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css" type="text/css" media="all">
+    <link rel="stylesheet" type="text/css" href="/public/css/table.css" media="screen">
+    <title>planesAcción</title>
+</head>
+<body>
+    <%-include('./partials/header') %>
+    <%-include('./partials/menu_desplegable') %>
+    <main> 
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <% for(let i = 0; i < view.FkOpciones.length; i++){ %>
+            <th><%= view.FkOpciones[i].nombre %> </th>
+            <% } %>
+          </tr>
+          </thead>
+          <tbody>
+            <% for(let j = 0 ; j < tareas.length; j++){ %>
+              <tr> 
+              <% for(let i = 0; i < view.FkOpciones.length; i++){ %>
+                <td class="<%= view.FkOpciones[i].nombre %>"> <%= tareas[j][view.FkOpciones[i].nombre] %> </td>
+              <% } %>
+            </tr>
+            <% } %>
+          </tbody>
+
+
+      </table>
+    </main>
+    
+
+</body>
+</html>

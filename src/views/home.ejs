@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('./partials/head') %>
+    <link rel="stylesheet" type="text/css" href="/public/css/home.css" media="screen">
+</head>
+<body>
+    <%-include('./partials/header') %>
+    <%-include('./partials/menu_desplegable') %>
+    <main>
+       <section id="puestos">
+            <% for(let i = 0;i < areas.length;i++){ %>
+            <a class="seccion" href="/bi/<%=areas[i].id%>"> 
+                <h1> <%= areas[i].nombreDeArea%></h1> 
+            </a>
+            <% } %>
+       </section>
+
+       <script src="/js/home.js"></script>
+    </main>
+</body>
+</html>

@@ -1,0 +1,60 @@
+body{
+    display: flex;
+    align-items: flex-start;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+
+
+main #logo{
+    margin: auto;
+}
+
+main #puestos{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 100%;
+    margin: auto;
+    justify-content: space-around;
+    align-items: center;
+    align-content: center;
+}
+
+main .seccion{
+    padding: 3%;
+    background-color: #da82e9;
+    width: 25%;
+    margin: 1%;
+    border-radius: 150px;
+    text-align: center;
+    font-size: 1.5vw;
+    justify-content: space-around;
+}
+
+main img{
+    width: 30%;
+}
+
+/*                  */
+
+.menu_active_main{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 80%;
+    justify-content: flex-start;
+}
+.menu_active_main .seccion{
+    width: 38%;
+    margin: 1%;
+    text-align: center;
+    font-size: 2vw;
+}
+
+
+

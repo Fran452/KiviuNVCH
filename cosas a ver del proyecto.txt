@@ -1,0 +1,22 @@
+Plan de accion
+	Tabla generica y que cada usuario cargue su tarea. Planes de accion que sea por area
+
+Persona: jefe que pueda ver todas las areas 
+
+No asignado
+En proceso 
+Bloqueado
+Finalizado
+ fijarme form del la barra de accion -> Ver 
+
+Ejemplo: 
+<label for="price">Choose a maximum house price: </label>
+<input
+  type="range"
+  name="price"
+  id="price"
+  min="50000"
+  max="500000"
+  step="100"
+  value="250000" />
+<output class="price-output" for="price"></output>

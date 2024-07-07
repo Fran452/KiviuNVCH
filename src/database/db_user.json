@@ -1,0 +1,56 @@
+[
+  {
+    "id": 0,
+    "nombre": " usuario 0",
+    "contraseña": "1234",
+    "area": 0,
+    "socursal": "av mitre390",
+    "view": 1,
+    "mail": "usuario0@gmail.com"
+  },
+  {
+    "id": 1,
+    "nombre": " usuario 1",
+    "contraseña": "1234",
+    "area": 0,
+    "socursal": "av mitre390",
+    "view": 1,
+    "mail": "usuario1@gmail.com"
+  },
+  {
+    "id": 2,
+    "nombre": " usuario 2",
+    "contraseña": "1234",
+    "area": 0,
+    "socursal": "av mitre390",
+    "view": 1,
+    "mail": "usuario2@gmail.com"
+  },
+  {
+    "id": 3,
+    "nombre": " usuario 3",
+    "contraseña": "1234",
+    "area": 0,
+    "socursal": "av mitre390",
+    "view": 1,
+    "mail": "usuario3@gmail.com"
+  },
+  {
+    "id": 4,
+    "nombre": " usuario 4",
+    "contraseña": "1234",
+    "area": 0,
+    "socursal": "av mitre390",
+    "view": 1,
+    "mail": "usuario4@gmail.com"
+  },
+  {
+    "id": 5,
+    "nombre": "Francisco Lema",
+    "contraseña": "$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq",
+    "area": 0,
+    "socursal": "av mitre390",
+    "view": 1,
+    "mail": "franciscolemacr@gmail.com"
+  }
+]
