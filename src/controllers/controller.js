@@ -11,7 +11,6 @@ const baseDeDatos = {
 
 const bcrypt = require("bcrypt");
 
-
 const funcionesGenericas = require("../funcionesGenerales");
 
 const controlador = {
@@ -66,15 +65,25 @@ const controlador = {
         return 0
     },
 
+    agregarTarea:  async (req,res) => { 
+
+    },  
+    
+    modificarTarea: async (req,res) => { 
+
+    },  
+
+    eliminarTarea: async (req,res) => { 
+
+    },  
+
     registerView:  async (req,res) => {
 
     },
     
     registerFuction:  async (req,res) => {},
 
-
-    /* modificar -> responsable y Responsable suplente / agregar -> nombre del area, impresa */
-    okrView:  async (req,res) => {
+    datInView:  async (req,res) => {
         let input = {
             error : {}
         };
@@ -85,10 +94,11 @@ const controlador = {
         }else{
             input.datosPreSeleccionados = okrPerson;
         }
-        res.render("okr.ejs",{input});
+        return input;
+        res.render("dataIn.ejs",{input});
     },
     
-    okrFuction:  async (req,res) => {
+    datINFuction:  async (req,res) => {
         let error = false;
         let mailEmpresariales = funcionesGenericas.archivoJSON(baseDeDatos.empleados).map(empleado => empleado.mail);
         let input = {
@@ -126,9 +136,11 @@ const controlador = {
             }
         }
         if (error){
+            return input
             res.render("okr.ejs",{input});
             return 1;
         }else{
+            return input
             res.render("okrEnviado.ejs");
             return 0;
         }
@@ -139,9 +151,9 @@ const controlador = {
         res.render("asistenteIa.ejs");
     },
 
-    datIN:  async (req,res) => {
-        console.log("entre a datIN");
-        res.render("datIN.ejs");
+    okr:  async (req,res) => {
+        console.log("okr");
+        res.render("okr.ejs");
     },
 
     login: async (req,res) => {

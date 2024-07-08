@@ -14,12 +14,12 @@ router.post('/plan-accion-config',homeController.planesAcciónFuction);
 
 router.get('/plan-accion',homeController.planesAcciónView);
 
-router.get('/okr',homeController.okrView);
-router.post('/okr',homeController.okrFuction);
+router.get('/datIN',homeController.datInView);
+router.post('/datIN',homeController.datINFuction);
 
 router.get('/asistente-Ia',homeController.asistenteIa);
 
-router.get('/datIN',homeController.datIN);
+router.get('/okr',homeController.okr);
 
 router.get('/login',homeController.login);
 router.post('/login',homeController.loginFuction);
