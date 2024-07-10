@@ -9,6 +9,7 @@
     "express-session": "^1.18.0",
     "express-validator": "^7.1.0",
     "mysql2": "^3.10.2",
+    "nodemailer": "^6.9.14",
     "sequelize": "^6.37.3",
     "sqlite3": "^5.1.7"
   },

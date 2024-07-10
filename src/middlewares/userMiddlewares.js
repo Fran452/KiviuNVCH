@@ -15,8 +15,6 @@ const userMiddlewares = {
             return res.redirect("/login");
         }
     },
- 
-
 }
 
 module.exports = userMiddlewares

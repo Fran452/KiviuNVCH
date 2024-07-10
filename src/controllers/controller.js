@@ -16,8 +16,12 @@ const funcionesGenericas = require("../funcionesGenerales");
 const controlador = {
 
     index: async (req,res) => {
-            //let areas = funcionesGenericas.archivoJSON(baseDeDatos.area); 
+            //let areas = funcionesGenericas.archivoJSON(baseDeDatos.area);
+            let enviarMail = require("../services/mail.service");
+            await enviarMail.enviarMail();
             let area = await dataBaseSQL.areas.findAll();
+
+            
             res.render("home.ejs",{areas:area,usuario:req.session.user});
     },
 
@@ -193,7 +197,7 @@ const controlador = {
     }*/
 
     loginFuction :  async (req,res) => { 
-
+        let fechaActual = new Date();
         let empleados = await dataBaseSQL.empleados.findOne(
             {
                 where: {
@@ -201,6 +205,19 @@ const controlador = {
                 },
             }
         );
+
+        /*let indicadores = await dataBaseSQL.empleados.findOne(
+            {
+                where: {
+                    recordartorio  : `${fechaActual.getFullYear()}-${fechaActual.getMonth()}-${fechaActual.getDate()}`
+                },
+            }
+        );*/
+
+        if(indicadores[0] != undefined){
+            console.log("hay mails");
+            console.log(indicador[0]);
+        };
 
         if(empleados == null){
             res.render("login.ejs",{error:"no existe el mail"});

@@ -31,6 +31,7 @@ const userMiddlewares = require("./middlewares/userMiddlewares");
 app.use(userMiddlewares.userRegister);    
 
 
+
 /***************** Rutas **********************/
 app.use('/',rutasMain);
 
