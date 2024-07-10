@@ -1,3 +1,16 @@
+/*
+CREATE TABLE Empleados (           
+    id_empleado                            INT PRIMARY KEY IDENTITY(1,1),
+    fk_area                                INT NOT NULL,
+    fk_puesto                              INT NOT NULL,
+    nombre                                 NVARCHAR(255),
+    contraseña                             NVARCHAR(255) NOT NULL,
+    mail                                   NVARCHAR(255) NOT NULL,
+    sucursal                               NVARCHAR(255),
+    FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
+    FOREIGN KEY (fk_Puesto)                REFERENCES Puestos(id_puesto)
+);
+*/
 module.exports = (sequelize,DataTypes) => {
 
     let nombre = "empleados";
@@ -23,7 +36,7 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.STRING(255),
         },
         
-        "contraseña":{
+        "password":{
             type: DataTypes.STRING(255),
             allowNull: false
         },
@@ -48,12 +61,12 @@ module.exports = (sequelize,DataTypes) => {
 
     empleados.associate = (models) => {
 
-        empleados.belongsTo(models.carrito,{
+        empleados.belongsTo(models.areas,{
             foreignKey : 'fk_area',
             as : 'Areas'
         });
 
-        empleados.belongsTo(models.carrito,{
+        empleados.belongsTo(models.puestos,{
             foreignKey : 'fk_puesto',
             as : 'Puestos'
         });

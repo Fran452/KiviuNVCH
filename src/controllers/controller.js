@@ -1,4 +1,4 @@
-//const baseDeDatos = require("../ejemplo.js");
+const dataBaseSQL = require("../databaseSQL/models");
 const path = require("path");
 
 const baseDeDatos = {
@@ -16,20 +16,15 @@ const funcionesGenericas = require("../funcionesGenerales");
 const controlador = {
 
     index: async (req,res) => {
-        
-        if(req.session.user != undefined){
-            let areas = funcionesGenericas.archivoJSON(baseDeDatos.area)
-            res.render("home.ejs",{areas:areas,usuario:req.session.user});
-        }else{
-            res.redirect("/login");
-        }
-        
+            //let areas = funcionesGenericas.archivoJSON(baseDeDatos.area); 
+            let area = await dataBaseSQL.areas.findAll();
+            res.render("home.ejs",{areas:area,usuario:req.session.user});
     },
 
     bi: async (req,res) => {
-        let area = funcionesGenericas.archivoJSON(baseDeDatos.area).filter(area => area.id == req.params.area)[0]
-
-        if(area.id == req.session.user.area){
+        //let area = funcionesGenericas.archivoJSON(baseDeDatos.area).filter(area => area.id == req.params.area)[0]
+        let area = await dataBaseSQL.areas.findByPk(req.params.area);
+        if(area.id_area == req.session.user.area){
             res.render("powerBi.ejs",{area:area});
         }else{
             res.render("not-permiss.ejs",{});
@@ -66,7 +61,7 @@ const controlador = {
     },
 
     agregarTarea:  async (req,res) => { 
-
+    
     },  
     
     modificarTarea: async (req,res) => { 
@@ -76,12 +71,16 @@ const controlador = {
     eliminarTarea: async (req,res) => { 
 
     },  
-
+    
+    /*
     registerView:  async (req,res) => {
 
     },
     
-    registerFuction:  async (req,res) => {},
+    registerFuction:  async (req,res) => { 
+
+    },
+    */
 
     datInView:  async (req,res) => {
         let input = {
@@ -94,8 +93,8 @@ const controlador = {
         }else{
             input.datosPreSeleccionados = okrPerson;
         }
-        return input;
         res.render("dataIn.ejs",{input});
+        return input;
     },
     
     datINFuction:  async (req,res) => {
@@ -105,6 +104,7 @@ const controlador = {
             error : {},
             datosPreSeleccionados : {}
         };
+
         for(let key in  req.body){
             if(req.body[key] == ''){
                 error = true;
@@ -136,11 +136,9 @@ const controlador = {
             }
         }
         if (error){
-            return input
             res.render("okr.ejs",{input});
             return 1;
         }else{
-            return input
             res.render("okrEnviado.ejs");
             return 0;
         }
@@ -166,17 +164,19 @@ const controlador = {
 
     },
 
+    /*
     loginFuction :  async (req,res) => {
         console.log("entre al functio del log");
         let empleados = funcionesGenericas.archivoJSON(baseDeDatos.empleados);
         let empleado = empleados.filter(empleado => empleado.mail == req.body.user);
-        
+
         if(empleado[0] == undefined){
             res.render("login.ejs",{error:"no existe el mail"});
         }else{
             if(bcrypt.compareSync(req.body.pass,empleado[0].contraseña)){
                 console.log("Contraseña correcta");
                 req.session.user = {
+                    id : empleado[0].id,
                     nombre : empleado[0].nombre,
                     area : empleado[0].area,
                     socursal : empleado[0].socursal,
@@ -186,10 +186,41 @@ const controlador = {
                 res.redirect("/home");
             }else{
                 res.render("login.ejs",{error:"contraseña incorrecta"});
+                return {error:"contraseña incorrecta"}
             }
 
         }
+    }*/
 
+    loginFuction :  async (req,res) => { 
+
+        let empleados = await dataBaseSQL.empleados.findOne(
+            {
+                where: {
+                    mail : req.body.user
+                },
+            }
+        );
+
+        if(empleados == null){
+            res.render("login.ejs",{error:"no existe el mail"});
+        }else{
+            if(bcrypt.compareSync(req.body.pass,empleados.password)){
+                req.session.user = {
+                    id : empleados.id_empleado,
+                    nombre : empleados.nombre,
+                    area : empleados.fk_area,
+                    puesto: empleados.fk_Puesto,
+                    socursal : empleados.socursal,
+                    mail : empleados.mail
+                }
+                console.log(req.session.user);
+                res.redirect("/home");
+            }else{
+                res.render("login.ejs",{error:"contraseña incorrecta"});
+                return {error:"contraseña incorrecta"}
+            }
+        }
     }
 }
 

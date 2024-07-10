@@ -1,4 +1,9 @@
-const database = require("mime-db");
+/*
+CREATE TABLE Puestos (         
+    id_puesto                              INT PRIMARY KEY IDENTITY(1,1),
+    nombre_puesto                          NVARCHAR(255) NOT NULL,
+);      
+*/
 
 module.exports = (sequelize,DataTypes) => {
 
