@@ -217,13 +217,16 @@ const controlador = {
             };
     
             if(empleados == null){
-                res.render("login.ejs",{error:"no existe el mail"});
+                res.json({
+                    status: 10,
+                    codeError : "no existe el mail",
+                    objeto: {}
+                })
                 return apirest = {
                     status: 10,
                     codeError : "no existe el mail",
                     objeto: {}
-                }
-                return  {error:"no existe el mail"};
+                };
             }else{
                 if(bcrypt.compareSync(req.body.pass,empleados.password)){
                     req.session.user = {
@@ -240,16 +243,15 @@ const controlador = {
                         codeError : "",
                         objeto: req.session.user
                     }
-                    return apirest
-                    res.redirect("/home");
+                    res.json(apirest);
+                    return apirest;
                 }else{
-                    return apirest = {
+                     pirest = {
                         status: 10,
                         codeError : "Contraseña incorrecta",
                         objeto: {}
-                    }
-                    res.render("login.ejs",{error:"contraseña incorrecta"});
-                    return {error:"contraseña incorrecta"};
+                    };
+                    res.json(apirest);
                 }
             }
         }
