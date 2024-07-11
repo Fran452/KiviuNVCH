@@ -24,8 +24,8 @@ router.get('/okr',homeController.okr);
 router.get('/login',homeController.login);
 router.post('/login',homeController.loginFuction);
 
-router.get('/register',homeController.registerView)
-router.post('/register',homeController.registerFuction)
+//router.get('/register',homeController.registerView)
+//router.post('/register',homeController.registerFuction)
 
 router.get('/',homeController.index);
 

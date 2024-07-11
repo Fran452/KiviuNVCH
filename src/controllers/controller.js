@@ -201,20 +201,6 @@ const controlador = {
                     },
                 }
             );
-            
-            /*
-            let indicadores = await dataBaseSQL.indicadores.findOne(
-                {
-                    where: {
-                        recordartorio  : `${fechaActual.getFullYear()}-${fechaActual.getMonth()}-${fechaActual.getDate()}`
-                    },
-                }
-            );*/
-    
-            if(indicadores[0] != undefined){
-                console.log("hay mails");
-                console.log(indicador[0]);
-            };
     
             if(empleados == null){
                 res.json({
