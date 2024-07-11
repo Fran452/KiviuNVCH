@@ -9,6 +9,12 @@ const baseDeDatos = {
     okr       : path.join(__dirname, "../database/db_okrs.json")
 }
 
+var apirest = {
+    status: 0,
+    codeError : "",
+    objeto: {}
+}
+
 const bcrypt = require("bcrypt");
 
 const funcionesGenericas = require("../funcionesGenerales");
@@ -17,11 +23,8 @@ const controlador = {
 
     index: async (req,res) => {
             //let areas = funcionesGenericas.archivoJSON(baseDeDatos.area);
-            let enviarMail = require("../services/mail.service");
-            await enviarMail.enviarMail();
             let area = await dataBaseSQL.areas.findAll();
 
-            
             res.render("home.ejs",{areas:area,usuario:req.session.user});
     },
 
@@ -205,8 +208,9 @@ const controlador = {
                 },
             }
         );
-
-        /*let indicadores = await dataBaseSQL.empleados.findOne(
+        
+        /*
+        let indicadores = await dataBaseSQL.indicadores.findOne(
             {
                 where: {
                     recordartorio  : `${fechaActual.getFullYear()}-${fechaActual.getMonth()}-${fechaActual.getDate()}`
@@ -221,6 +225,12 @@ const controlador = {
 
         if(empleados == null){
             res.render("login.ejs",{error:"no existe el mail"});
+            return apirest = {
+                status: 10,
+                codeError : "no existe el mail",
+                objeto: {}
+            }
+            return  {error:"no existe el mail"};
         }else{
             if(bcrypt.compareSync(req.body.pass,empleados.password)){
                 req.session.user = {
@@ -232,10 +242,21 @@ const controlador = {
                     mail : empleados.mail
                 }
                 console.log(req.session.user);
+                apirest = {
+                    status: 0,
+                    codeError : "",
+                    objeto: req.session.user
+                }
+                return apirest
                 res.redirect("/home");
             }else{
+                return apirest = {
+                    status: 10,
+                    codeError : "Contraseña incorrecta",
+                    objeto: {}
+                }
                 res.render("login.ejs",{error:"contraseña incorrecta"});
-                return {error:"contraseña incorrecta"}
+                return {error:"contraseña incorrecta"};
             }
         }
     }

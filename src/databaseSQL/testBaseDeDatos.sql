@@ -13,7 +13,7 @@ INSERT INTO Puestos (nombre_puesto) VALUES
 ('Gerente de Ventas');
 
 -- Insertar empleados
-INSERT INTO Empleados (fk_area, fk_puesto, nombre, contraseña, mail, sucursal) VALUES
+INSERT INTO Empleados (fk_area, fk_puesto, nombre, password, mail, sucursal) VALUES
 (1, 1, 'Juan Pérez', 'password123', 'juan.perez@example.com', 'Ciudad de México'),
 (2, 2, 'Ana Gómez', 'abc456', 'ana.gomez@example.com', 'Madrid'),
 (3, 3, 'Carlos López', 'qwerty789', 'carlos.lopez@example.com', 'Buenos Aires'),
@@ -57,8 +57,8 @@ INSERT INTO Area_empresa (fk_empresa, fk_area) VALUES
 
 INSERT INTO Areas (power_Bi, nombre_del_Area) VALUES ('Versión 1.0', 'Finanzas'), ('Versión 2.0', 'Recursos Humanos'), ('Versión 3.0', 'Ventas');
 INSERT INTO Puestos (nombre_puesto) VALUES ('Gerente'), ('Analista'), ('Asistente');
-INSERT INTO Empleados (fk_area, fk_puesto, nombre, contraseña, mail, sucursal) VALUES (1, 1, 'Juan Pérez', 'password123', 'juan@example.com', 'Oficina Principal'), (2, 2, 'María García', 'securepwd', 'maria@example.com', 'Sucursal A'), (3, 3, 'Pedro Martínez', 'passw0rd', 'pedro@example.com', 'Sucursal B'),(1, 1, 'Francisco Lema', '$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq', 'franciscolemacr@gmail.com', 'Buenos Aires');
-INSERT INTO Indicador (fk_area, fk_responsable, fk_responsable_sumplente, nombre_indicador, detalles_metrica, recordartorio) VALUES (1, 1, 2, 'Ventas Mensuales', 'Número de ventas realizadas cada mes', '2023-01-01'), (2, 3, 1, 'Índice de Rotación', 'Porcentaje de rotación de empleados', '2023-01-01');
+INSERT INTO Empleados (fk_area, fk_puesto, nombre, password, mail, sucursal) VALUES (1, 1, 'Juan Pérez', 'password123', 'juan@example.com', 'Oficina Principal'), (2, 2, 'María García', 'securepwd', 'maria@example.com', 'Sucursal A'), (3, 3, 'Pedro Martínez', 'passw0rd', 'pedro@example.com', 'Sucursal B'),(1, 1, 'Francisco Lema', '$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq', 'franciscolemacr@gmail.com', 'Buenos Aires');
+INSERT INTO Indicador (fk_area, fk_responsable, fk_responsable_suplente, nombre_indicador, detalles_metrica, recordatorio) VALUES (1, 1, 2, 'Ventas Mensuales', 'Número de ventas realizadas cada mes', '2023-01-01'), (2, 3, 1, 'Índice de Rotación', 'Porcentaje de rotación de empleados', '2023-01-01');
 INSERT INTO Metrica (fk_indicador, dato_metrica, fecha_Metrica, hora_Metrica, log_de_usuario) VALUES (1, 150, '2023-01-01', '09:00:00', 1), (2, 15, '2023-01-01', '09:00:00', 2);
 INSERT INTO Tareas (fk_empleado_asignado, fK_area, nombre, rango, prioridad, fecha_inicio, fecha_final, notas) VALUES (1, 1, 'Preparar informe financiero', 1, 1, '2023-01-01', '2023-01-10', 'Revisar con detalle'), (2, 2, 'Entrevistas de selección', 1, 2, '2023-01-05', '2023-01-15', 'Confirmar citas');
 INSERT INTO Subtareas (fk_tarea, fk_empleado_asignado, nombre, rango, prioridad, fecha_inicio, fecha_final, notas) VALUES (1, 1, 'Revisar balances', 1, 1, '2023-01-05', '2023-01-07', 'Comprobar cifras'), (2, 2, 'Entrevista candidato A', 1, 2, '2023-01-10', '2023-01-12', 'Evaluar habilidades');
