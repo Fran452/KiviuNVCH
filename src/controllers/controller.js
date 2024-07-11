@@ -192,36 +192,67 @@ const controlador = {
         }
     }*/
 
-    loginFuction :  async (req,res) => { 
-
-        let empleados = await dataBaseSQL.empleados.findOne(
-            {
-                where: {
-                    mail : req.body.user
-                },
-            }
-        );
-
-        if(empleados == null){
-            res.render("login.ejs",{error:"no existe el mail"});
-        }else{
-            if(bcrypt.compareSync(req.body.pass,empleados.password)){
-                req.session.user = {
-                    id : empleados.id_empleado,
-                    nombre : empleados.nombre,
-                    area : empleados.fk_area,
-                    puesto: empleados.fk_Puesto,
-                    socursal : empleados.socursal,
-                    mail : empleados.mail
+        loginFuction :  async (req,res) => { 
+            let fechaActual = new Date();
+            let empleados = await dataBaseSQL.empleados.findOne(
+                {
+                    where: {
+                        mail : req.body.user
+                    },
                 }
-                console.log(req.session.user);
-                res.redirect("/home");
+            );
+            
+            /*
+            let indicadores = await dataBaseSQL.indicadores.findOne(
+                {
+                    where: {
+                        recordartorio  : `${fechaActual.getFullYear()}-${fechaActual.getMonth()}-${fechaActual.getDate()}`
+                    },
+                }
+            );*/
+    
+            if(indicadores[0] != undefined){
+                console.log("hay mails");
+                console.log(indicador[0]);
+            };
+    
+            if(empleados == null){
+                res.render("login.ejs",{error:"no existe el mail"});
+                return apirest = {
+                    status: 10,
+                    codeError : "no existe el mail",
+                    objeto: {}
+                }
+                return  {error:"no existe el mail"};
             }else{
-                res.render("login.ejs",{error:"contraseña incorrecta"});
-                return {error:"contraseña incorrecta"}
+                if(bcrypt.compareSync(req.body.pass,empleados.password)){
+                    req.session.user = {
+                        id : empleados.id_empleado,
+                        nombre : empleados.nombre,
+                        area : empleados.fk_area,
+                        puesto: empleados.fk_Puesto,
+                        socursal : empleados.socursal,
+                        mail : empleados.mail
+                    }
+                    console.log(req.session.user);
+                    apirest = {
+                        status: 0,
+                        codeError : "",
+                        objeto: req.session.user
+                    }
+                    return apirest
+                    res.redirect("/home");
+                }else{
+                    return apirest = {
+                        status: 10,
+                        codeError : "Contraseña incorrecta",
+                        objeto: {}
+                    }
+                    res.render("login.ejs",{error:"contraseña incorrecta"});
+                    return {error:"contraseña incorrecta"};
+                }
             }
         }
-    }
 }
 
 
