@@ -55,15 +55,15 @@ module.exports = (sequelize,DataTypes) => {
             foreignKey : 'fk_area',
             as : 'Indicadores'
         });
-        /*
+        
         // Union con Empresas  
-        areas.belongsToMany(models.area_empresa,{
+        areas.belongsToMany(models.empresas,{
             as: 'Empresas',
             through : 'Area_empresa',
             foreignKey : 'fk_empresa',
             otherKey: 'fk_area',
             timestamps : false
-        })*/
+        })
         
 
     }

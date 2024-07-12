@@ -27,7 +27,7 @@ CREATE TABLE Empleados (
     FOREIGN KEY (fk_Puesto)                REFERENCES Puestos(id_puesto)
 );
 
-CREATE TABLE Indicador (
+CREATE TABLE Indicadores (
     id_indicador                           INT PRIMARY KEY AUTO_INCREMENT,
     fk_area                                INT NOT NULL,
     fk_responsable                         INT NOT NULL,
@@ -37,17 +37,17 @@ CREATE TABLE Indicador (
     recordatorio                           DATETIME,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
-    FOREIGN KEY (fk_responsable_suplente) REFERENCES Empleados(id_empleado)
+    FOREIGN KEY (fk_responsable_suplente)  REFERENCES Empleados(id_empleado)
 );
 
-CREATE TABLE Metrica (
+CREATE TABLE Metricas (
     id_metrica                              INT PRIMARY KEY AUTO_INCREMENT,
     fk_indicador                            INT NOT NULL,
     dato_metrica                            INT NOT NULL,
     fecha_Metrica                           DATE NOT NULL,
     hora_Metrica                            TIME NOT NULL,
     log_de_usuario                          INT NOT NULL,
-    FOREIGN KEY (fk_indicador)              REFERENCES Indicador(id_indicador),
+    FOREIGN KEY (fk_indicador)              REFERENCES Indicadores(id_indicador),
     FOREIGN KEY (log_de_usuario)            REFERENCES Empleados(id_empleado)
 );
 
@@ -90,4 +90,4 @@ CREATE TABLE Area_empresa (
     fk_area                                 INT NOT NULL,
     FOREIGN KEY (fk_empresa)                REFERENCES Empresas(Id_empresa),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
-);  
+);

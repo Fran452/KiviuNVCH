@@ -24,8 +24,9 @@ const controlador = {
     index: async (req,res) => {
             //let areas = funcionesGenericas.archivoJSON(baseDeDatos.area);
             let area = await dataBaseSQL.areas.findAll();
-
-            res.render("home.ejs",{areas:area,usuario:req.session.user});
+            console.log("home");
+            res.JSON({areas:area,usuario:req.session.user})
+            //res.render("home.ejs",{areas:area,usuario:req.session.user});
     },
 
     bi: async (req,res) => {
@@ -216,13 +217,14 @@ const controlador = {
                     recordartorio  : `${fechaActual.getFullYear()}-${fechaActual.getMonth()}-${fechaActual.getDate()}`
                 },
             }
-        );*/
+        );
 
         if(indicadores[0] != undefined){
             console.log("hay mails");
             console.log(indicador[0]);
         };
-
+        */
+       
         if(empleados == null){
             res.render("login.ejs",{error:"no existe el mail"});
             return apirest = {
@@ -238,7 +240,6 @@ const controlador = {
                     nombre : empleados.nombre,
                     area : empleados.fk_area,
                     puesto: empleados.fk_Puesto,
-                    socursal : empleados.socursal,
                     mail : empleados.mail
                 }
                 console.log(req.session.user);
