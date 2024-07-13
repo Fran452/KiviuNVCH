@@ -1,5 +1,6 @@
 const dataBaseSQL = require("../databaseSQL/models");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const baseDeDatos = {
     empleados : path.join(__dirname, "../database/db_user.json"),
@@ -211,22 +212,27 @@ const controlador = {
                 }
             );*/
     
-            if(indicadores[0] != undefined){
-                console.log("hay mails");
-                console.log(indicador[0]);
-            };
+            // if(indicadores[0] != undefined){
+            //     console.log("hay mails");
+            //     console.log(indicador[0]);
+            // };
     
             if(empleados == null){
-                res.json({
+                apirest = {
                     status: 10,
                     codeError : "no existe el mail",
                     objeto: {}
+                }
+                const token = jwt.sign({apirest}, "Stack",{
+                    expiresIn: '3m'
                 })
-                return apirest = {
-                    status: 10,
-                    codeError : "no existe el mail",
-                    objeto: {}
-                };
+                res.json(token);
+
+                // return apirest = {
+                //     status: 10,
+                //     codeError : "no existe el mail",
+                //     objeto: {}
+                // };
             }else{
                 if(bcrypt.compareSync(req.body.pass,empleados.password)){
                     req.session.user = {
@@ -235,23 +241,31 @@ const controlador = {
                         area : empleados.fk_area,
                         puesto: empleados.fk_Puesto,
                         socursal : empleados.socursal,
-                        mail : empleados.mail
+                        mail : empleados.mail,
                     }
                     console.log(req.session.user);
+                    //
                     apirest = {
                         status: 0,
                         codeError : "",
                         objeto: req.session.user
                     }
-                    res.json(apirest);
+                    const token = jwt.sign({apirest}, "Stack",{
+                        expiresIn: '3m'
+                    })
+                    res.json(token);
+                    //
                     return apirest;
                 }else{
-                     pirest = {
+                    apirest = {
                         status: 10,
                         codeError : "Contraseña incorrecta",
                         objeto: {}
                     };
-                    res.json(apirest);
+                    const token = jwt.sign({apirest}, "Stack",{
+                        expiresIn: '3m'
+                    })
+                    res.json(token);
                 }
             }
         }
