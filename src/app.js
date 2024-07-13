@@ -15,7 +15,6 @@ const rutasMain = require("./routes/main");
 const PORT = process.env.PORT || 3030;
 const app = express();
 const publicPath = path.join(__dirname,"../client/build");
-const cors = require("cors")
 
 /*************** Middlewares *************************/
 app.use(express.static(publicPath));
