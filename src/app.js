@@ -3,6 +3,7 @@ require("dotenv").config()
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
+const cors = require("cors")
 
 
 //const userMiddlewares = require("./middlewares/userMiddlewares");
@@ -26,7 +27,9 @@ app.set("view engine","ejs");
 app.set("views","./src/views");
 app.use(session({secret : "texto"}))
 
+
 const userMiddlewares = require("./middlewares/userMiddlewares");
+
 
 
 /***** Middlewares Propios *************************************/
