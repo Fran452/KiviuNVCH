@@ -1,5 +1,5 @@
 const dataBaseSQL = require("../databaseSQL/models");
-const {Sequelize} = require('sequelize');
+const {Sequelize, DATE} = require('sequelize');
 
 const path = require("path");
 
@@ -95,43 +95,44 @@ const controlador = {
 
     agregarTarea:  async (req,res) => { 
         try{
-            let empleado = await dataBaseSQL.empleados.findOne(
+            let fechaActua = new DATE
+            let usuario = "fran@mail.com"
+            let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
-                        fk_puesto : "franciscolemacr@gmail.com"
+                        mail : usuario
                     },
                 }
-            )
+            );
 
-            res.json({resultado})
+            if (isNull(empleado)){
+                res.json({error : 10, errorDetalle: "empleado in dataBase not exist"});
+                return 1;
+            }else if(fecha_inicio > fechaActua){
+                res.json({error : 99, errorDetalle: "fecha_inicio is greater than the current"});
+                return 1;
+            }
+            let tarea = await dataBaseSQL.tareas.create({
+                fk_empleado_asignado : usuario.id_empleado,
+                fk_area : req.session.user.area,
+                nombre : req.body.nombre,
+                rango : req.bod.rango,
+                prioridad : req.body.prioridad,
+                fecha_inicio : req.body.fecha_inicio,
+                fecha_final : req.body.fecha_final,
+                notas : req.body.notas,
+            });
+
+            res.json({error :0, errorDetalle: "", objeto:tarea});
+            return 0
         }
 
         catch(error){
 
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});
-        }
-        /*
-        let resultado = await dataBaseSQL.tareas.create({
-            fk_empleado_asignado:empleado.id_empleado,
-            nombre:req.body.nombre,
-            rango:req.body.rango,
-            prioridad:req.body.prioridad,
-            fecha_inicio:req.body.fecha_inicio,
-            fecha_final:req.body.fecha_final,
-            notas:req.body.notas
-        }).catch(function(){
-            console.log(Error);
-            res.json({Error});
+            res.json({error : codeError, errorDetalle: error.message});   
             return 1;
-        });
-*/
-        let apirest = {
-            status: 0,
-            codeError : "",
-            objeto: {}
-        }
-       
+        }       
     },  
     
     modificarTarea: async (req,res) => { 
