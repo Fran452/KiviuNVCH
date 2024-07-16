@@ -24,6 +24,7 @@ const funcionesGenericas = require("../funcionesGenerales");
 const controlador = {
 
     index: async (req,res) => {
+        try{
             //let areas = funcionesGenericas.archivoJSON(baseDeDatos.area);
             let area = await dataBaseSQL.areas.findAll();
             area = area.map(area => {return {id_area: area.id_area,nombre_del_Area: area.nombre_del_Area}});
@@ -31,24 +32,35 @@ const controlador = {
             let api = {status: 0, codeError:"", objeto:{areas:area,usuario:req.session.user} };
             res.json(api);
             //res.render("home.ejs",{areas:area,usuario:req.session.user});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});
+        }
     },
 
     bi: async (req,res) => {
-        if(req.session.user.area == req.params.area){
-            let area = await dataBaseSQL.areas.findByPk(req.params.area);
-            let BIArea = area.power_Bi;
-            res.json( {status: 0, codeError:"", objeto: BIArea })
-            return {status: 0, codeError:"", objeto: BIArea };
-        }else{
-            if(req.session.user.area == 0 || req.session.user.area == 1){
+        try{
+            if(req.session.user.area == req.params.area){
                 let area = await dataBaseSQL.areas.findByPk(req.params.area);
                 let BIArea = area.power_Bi;
-                res.json({status: 0, codeError:"", objeto: BIArea })
+                res.json( {status: 0, codeError:"", objeto: BIArea })
                 return {status: 0, codeError:"", objeto: BIArea };
             }else{
-                res.json({status: 99, codeError:"No tiene permisos", objeto: "" })
-                return {status: 99, codeError:"No tiene permisos", objeto: "" };
+                if(req.session.user.puesto == 0 || req.session.user.puesto == 1){
+                    let area = await dataBaseSQL.areas.findByPk(req.params.area);
+                    let BIArea = area.power_Bi;
+                    res.json({status: 0, codeError:"", objeto: BIArea })
+                    return {status: 0, codeError:"", objeto: BIArea };
+                }else{
+                    res.json({status: 99, codeError:"No tiene permisos", objeto: "" })
+                    return {status: 99, codeError:"No tiene permisos", objeto: "" };
+                }
             }
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});
         }
        
     },
