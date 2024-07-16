@@ -14,7 +14,7 @@ const rutasMain = require("./routes/main");
 /******** Diferentes funcionamientos ****************/
 const PORT = process.env.PORT || 3030;
 const app = express();
-const publicPath = path.join(__dirname,"../client/build");
+const publicPath = path.join(__dirname,"../");
 
 /*************** Middlewares *************************/
 app.use(express.static(publicPath));
