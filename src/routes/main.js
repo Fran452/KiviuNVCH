@@ -3,8 +3,6 @@ const homeController = require("../controllers/controller");
 
 const router = express.Router();
 
-
-
 router.get('/home',homeController.index);
 
 router.get('/bi/:area',homeController.bi);
@@ -13,6 +11,7 @@ router.get('/plan-accion-config',homeController.planesAcción);
 router.post('/plan-accion-config',homeController.planesAcciónFuction);
 
 router.get('/plan-accion',homeController.planesAcciónView);
+router.get('/plan-accion/agregarTarea',homeController.agregarTarea);
 
 router.get('/datIN',homeController.datInView);
 router.post('/datIN',homeController.datINFuction);

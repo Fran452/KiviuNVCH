@@ -16,4 +16,48 @@ function crearID(array){
 	return array[array.length - 1].id + 1
 }
 
-module.exports = {archivoJSON, subirArchivo, crearID}
+function armadoCodigoDeError(error){
+
+
+	switch (error){
+		case "ReferenceError":
+			return 10;
+		 break
+		
+		case "Error":
+			return 15;
+		 break
+
+		case "SequelizeConnectionRefusedError":
+			return 20;
+		 break
+		
+		 default:
+			return 99;
+	}
+}
+
+
+module.exports = {archivoJSON, subirArchivo, crearID,armadoCodigoDeError}
+
+/**
+Codigos de error en SQL
+00: sin error 
+10: no se encontro el archivo
+15: error en sintaxis
+ 
+
+{
+  "error": "ReferenceError",
+  "errorDetalle": "resultado is not defined"
+} ->  cuando no encuentra nada
+{
+error": "Error",
+  "errorDetalle": "WHERE parameter \"mail\" has invalid \"undefined\" value"
+} -> cuando el error es de sintaxis
+
+{
+  "error": "SequelizeConnectionRefusedError",
+  "errorDetalle": "connect ECONNREFUSED 127.0.0.1:3306"
+}-> error de coneccion
+*/

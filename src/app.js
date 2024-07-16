@@ -33,7 +33,9 @@ const userMiddlewares = require("./middlewares/userMiddlewares");
 
 /***** Middlewares Propios *************************************/
 
-app.use(userMiddlewares.userRegister);    
+//app.use(userMiddlewares.userFrancisco); //eliminar 
+app.use(userMiddlewares.userRegister);       
+
 
 
 /***************** Rutas **********************/

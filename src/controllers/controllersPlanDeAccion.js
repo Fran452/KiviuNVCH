@@ -13,7 +13,9 @@ const funcionesGenericas = require("../funcionesGenerales");
 
 const controlador = {
 
-    agregarTarea:  async (req,res)  => { },  
+    agregarTarea:  async (req,res)  => { 
+        
+    },  
 
     modificarTarea: async (req,res) => { },  
 

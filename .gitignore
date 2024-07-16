@@ -1,6 +1,6 @@
 node_modules
 ejemplo.js
+.env
 BaseDeDatosDER
 notasDeReuniones.txt
 FuturaAreasBaseDeDatos
-services
