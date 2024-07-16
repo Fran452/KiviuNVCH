@@ -11,6 +11,7 @@ router.get('/plan-accion-config',homeController.planesAcción);
 router.post('/plan-accion-config',homeController.planesAcciónFuction);
 
 router.get('/plan-accion',homeController.planesAcciónView);
+router.get('/plan-accion/agregarTarea',homeController.agregarTarea);
 
 router.get('/datIN',homeController.datInView);
 router.post('/datIN',homeController.datINFuction);

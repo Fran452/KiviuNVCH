@@ -1,4 +1,6 @@
 const dataBaseSQL = require("../databaseSQL/models");
+const {Sequelize} = require('sequelize');
+
 const path = require("path");
 
 const baseDeDatos = {
@@ -24,18 +26,29 @@ const controlador = {
     index: async (req,res) => {
             //let areas = funcionesGenericas.archivoJSON(baseDeDatos.area);
             let area = await dataBaseSQL.areas.findAll();
+            area = area.map(area => {return {id_area: area.id_area,nombre_del_Area: area.nombre_del_Area}});
             console.log("home");
-            res.json({areas:area,usuario:req.session.user})
+            let api = {status: 0, codeError:"", objeto:{areas:area,usuario:req.session.user} };
+            res.json(api);
             //res.render("home.ejs",{areas:area,usuario:req.session.user});
     },
 
     bi: async (req,res) => {
-        //let area = funcionesGenericas.archivoJSON(baseDeDatos.area).filter(area => area.id == req.params.area)[0]
-        let area = await dataBaseSQL.areas.findByPk(req.params.area);
-        if(area.id_area == req.session.user.area){
-            res.render("powerBi.ejs",{area:area});
+        if(req.session.user.area == req.params.area){
+            let area = await dataBaseSQL.areas.findByPk(req.params.area);
+            let BIArea = area.power_Bi;
+            res.json( {status: 0, codeError:"", objeto: BIArea })
+            return {status: 0, codeError:"", objeto: BIArea };
         }else{
-            res.render("not-permiss.ejs",{});
+            if(req.session.user.area == 0 || req.session.user.area == 1){
+                let area = await dataBaseSQL.areas.findByPk(req.params.area);
+                let BIArea = area.power_Bi;
+                res.json({status: 0, codeError:"", objeto: BIArea })
+                return {status: 0, codeError:"", objeto: BIArea };
+            }else{
+                res.json({status: 99, codeError:"No tiene permisos", objeto: "" })
+                return {status: 99, codeError:"No tiene permisos", objeto: "" };
+            }
         }
        
     },
@@ -69,7 +82,44 @@ const controlador = {
     },
 
     agregarTarea:  async (req,res) => { 
-    
+        try{
+            let empleado = await dataBaseSQL.empleados.findOne(
+                {
+                    where: {
+                        fk_puesto : "franciscolemacr@gmail.com"
+                    },
+                }
+            )
+
+            res.json({resultado})
+        }
+
+        catch(error){
+
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});
+        }
+        /*
+        let resultado = await dataBaseSQL.tareas.create({
+            fk_empleado_asignado:empleado.id_empleado,
+            nombre:req.body.nombre,
+            rango:req.body.rango,
+            prioridad:req.body.prioridad,
+            fecha_inicio:req.body.fecha_inicio,
+            fecha_final:req.body.fecha_final,
+            notas:req.body.notas
+        }).catch(function(){
+            console.log(Error);
+            res.json({Error});
+            return 1;
+        });
+*/
+        let apirest = {
+            status: 0,
+            codeError : "",
+            objeto: {}
+        }
+       
     },  
     
     modificarTarea: async (req,res) => { 
@@ -228,7 +278,6 @@ const controlador = {
                         nombre : empleados.nombre,
                         area : empleados.fk_area,
                         puesto: empleados.fk_Puesto,
-                        socursal : empleados.socursal,
                         mail : empleados.mail
                     }
                     console.log(req.session.user);
