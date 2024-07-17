@@ -41,18 +41,19 @@ const controlador = {
 
     bi: async (req,res) => {
         try{
-            if(req.session.user.area == req.params.area){
+            if(req.body.area == req.params.area){
                 let area = await dataBaseSQL.areas.findByPk(req.params.area);
                 let BIArea = area.power_Bi;
                 res.json( {status: 0, codeError:"", objeto: BIArea })
                 return {status: 0, codeError:"", objeto: BIArea };
             }else{
-                if(req.session.user.puesto == 0 || req.session.user.puesto == 1){
+                if(req.body.puesto == 0){
                     let area = await dataBaseSQL.areas.findByPk(req.params.area);
                     let BIArea = area.power_Bi;
                     res.json({status: 0, codeError:"", objeto: BIArea })
                     return {status: 0, codeError:"", objeto: BIArea };
                 }else{
+                    console.log(req.body)
                     res.json({status: 99, codeError:"No tiene permisos", objeto: "" })
                     return {status: 99, codeError:"No tiene permisos", objeto: "" };
                 }
@@ -274,16 +275,21 @@ const controlador = {
             );
     
             if(empleados == null){
-                res.json({
+                apirest = {
                     status: 10,
                     codeError : "no existe el mail",
                     objeto: {}
+                }
+                const token = jwt.sign({apirest}, "Stack",{
+                    expiresIn: '3m'
                 })
-                return apirest = {
-                    status: 10,
-                    codeError : "no existe el mail",
-                    objeto: {}
-                };
+                res.json(token);
+
+                // return apirest = {
+                //     status: 10,
+                //     codeError : "no existe el mail",
+                //     objeto: {}
+                // };
             }else{
                 if(bcrypt.compareSync(req.body.pass,empleados.password)){
                     req.session.user = {
@@ -294,20 +300,28 @@ const controlador = {
                         mail : empleados.mail
                     }
                     console.log(req.session.user);
+                    //
                     apirest = {
                         status: 0,
                         codeError : "",
                         objeto: req.session.user
                     }
-                    res.json(apirest);
+                    const token = jwt.sign({apirest}, "Stack",{
+                        expiresIn: '3m'
+                    })
+                    res.json(token);
+                    //
                     return apirest;
                 }else{
-                     pirest = {
+                    apirest = {
                         status: 10,
                         codeError : "Contraseña incorrecta",
                         objeto: {}
                     };
-                    res.json(apirest);
+                    const token = jwt.sign({apirest}, "Stack",{
+                        expiresIn: '3m'
+                    })
+                    res.json(token);
                 }
             }
         }
