@@ -42,18 +42,19 @@ const controlador = {
 
     bi: async (req,res) => {
         try{
-            if(req.session.user.area == req.params.area){
+            if(req.body.area == req.params.area){
                 let area = await dataBaseSQL.areas.findByPk(req.params.area);
                 let BIArea = area.power_Bi;
                 res.json( {status: 0, codeError:"", objeto: BIArea })
                 return {status: 0, codeError:"", objeto: BIArea };
             }else{
-                if(req.session.user.puesto == 0 || req.session.user.puesto == 1){
+                if(req.body.puesto == 0){
                     let area = await dataBaseSQL.areas.findByPk(req.params.area);
                     let BIArea = area.power_Bi;
                     res.json({status: 0, codeError:"", objeto: BIArea })
                     return {status: 0, codeError:"", objeto: BIArea };
                 }else{
+                    console.log(req.body)
                     res.json({status: 99, codeError:"No tiene permisos", objeto: "" })
                     return {status: 99, codeError:"No tiene permisos", objeto: "" };
                 }
@@ -296,12 +297,7 @@ const controlador = {
                         nombre : empleados.nombre,
                         area : empleados.fk_area,
                         puesto: empleados.fk_Puesto,
-<<<<<<< HEAD
-                        socursal : empleados.socursal,
-                        mail : empleados.mail,
-=======
                         mail : empleados.mail
->>>>>>> 2ad496144c3da82de4c4f6d12ff2d0475aaa9e78
                     }
                     console.log(req.session.user);
                     //
