@@ -1,0 +1,146 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.navbar--mob {
+    width: 100%;
+    height: 80px;
+    padding: 20px;
+    z-index: 3;
+
+    a {
+        display: block;
+
+        img {
+            height: 40px;
+        }
+    }
+
+    &__btn {
+        width: 40px;
+        height: 40px;
+
+        i {
+            font-size: 28px;
+            color: #fff;
+        }
+    }
+
+    &__list {
+
+    }
+}
+
+.navbar--mob__content {
+    z-index: 4;
+    background-color: #fff;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    padding: 20px;
+    display: grid;
+    grid-template-rows: 40px auto;
+
+    &__btn {
+        width: 40px;
+        height: 40px;
+
+        i {
+            font-size: 28px;
+            color: $blue-500
+        }
+        
+    }
+
+    &__list {
+        padding: 20px;
+
+        p, span, i {
+            font-size: 20px;
+        }
+
+        &__avatar {
+            p {
+                color: $blue-500
+            }
+
+        }
+        &__menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            li {
+                display: flex;
+                align-items: center;
+
+                a {
+                    text-decoration: none;
+                }
+            }
+        }
+
+        &__logout {
+
+            i, span {
+                color: $blue-500;
+            }
+            
+        }
+    }
+
+}
+
+.sidebar {
+    position: sticky;
+    height: 100vh;
+
+    &__btn {
+        width: 40px;
+        height: 80px;
+        right: -40px;
+        z-index: 100;
+
+        i {
+            font-size: 28px;
+            color: #fff;
+        }
+    }
+
+    &__content {
+        padding: 40px 20px;
+        &__logo {
+            img {
+                height: 60px;
+                max-width: 100%;
+            } 
+        }
+
+        &__list {
+            list-style: none;
+
+            &__item {
+                width: 200px;
+                height: 40px;
+                border-radius: 30px;
+                display: flex;
+                align-items: center;
+                padding: 0 20px;
+
+                a {
+                    text-decoration: none;
+                }
+            }
+
+            .item--small {
+                width: 40px !important;
+                height: 40px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+        }
+         
+    }
+}
+

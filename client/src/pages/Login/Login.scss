@@ -1,0 +1,65 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.loading {
+    background: rgba($color: #0D6EFD, $alpha: 0.5);
+
+    div {
+        margin-bottom: 10px;
+        svg g g circle[stroke] {
+            stroke: #fff;
+        }
+    }
+    
+}
+.login {
+    &__container {
+        margin: 0 auto;
+        height: 75%;
+        width: 400px;
+        max-width: 90%;
+        transition: width 0.5s;
+
+        &__form {
+            padding: 40px;
+
+            &__img {
+                width: 100px;
+            }
+        }
+
+        &__info {
+            background-color: $gray-100;
+            padding: 40px;
+
+            &__title {
+                color: $blue-500;
+                font-weight: $font-weight-semibold;
+            }
+
+            &__subtitle {
+                color: $gray-700;
+                font-weight: $font-weight-semibold;
+            }
+
+            img {
+                width: 240px;
+                max-width: 80%;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    
+    .login {
+        &__container {
+            margin: 0 auto;
+            height: 75%;
+            width: 800px;
+            max-width: 90%;
+            transition: width 0.5s;
+        }
+        
+    }
+}
