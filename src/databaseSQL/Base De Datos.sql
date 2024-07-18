@@ -14,7 +14,7 @@ CREATE TABLE Puestos (
     id_puesto                              INT PRIMARY KEY AUTO_INCREMENT,
     nombre_puesto                          VARCHAR(255) NOT NULL
 );         
-        
+
 CREATE TABLE Empleados (           
     id_empleado                            INT PRIMARY KEY AUTO_INCREMENT,
     fk_area                                INT NOT NULL,
@@ -61,6 +61,7 @@ CREATE TABLE Tareas (
     fecha_inicio                            DATE NOT NULL,
     fecha_final                             DATE NOT NULL,
     notas                                   VARCHAR(255),
+    show                                    INT NOT NULL,
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fK_Area)                   REFERENCES Areas(id_area)
 );  

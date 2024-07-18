@@ -74,29 +74,34 @@ const controlador = {
         res.render("not-permiss.ejs");
     },
 
+    
     planesAcciónFuction:  async (req,res) => {
         res.redirect("/home");
     },
 
 
     planesAcciónView: async (req,res) => {
-        if(req.session.user.view == 0){
-            res.redirect("/plan-accion-config");
-            return 0
+        try{
+            let tareas = await dataBaseSQL.tareas.findAll({
+                    where: {
+                        fk_area: req.body.user.fk_area
+                    }
+                }
+            );
+            
+            res.json({error :0, errorDetalle: "", objeto:tareas});            
+            return 0;
         }
-        
-        let view = funcionesGenericas.archivoJSON(baseDeDatos.view).filter(vista => vista.id == req.session.user.view)[0]
-        let tareas = funcionesGenericas.archivoJSON(baseDeDatos.tareas);
-        res.render("planesAcción",{view,tareas});
-        
-        
-        return 0
+        catch{
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
     },
 
     agregarTarea:  async (req,res) => { 
         try{
             let fechaActua = new DATE
-            let usuario = "fran@mail.com"
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
@@ -111,24 +116,27 @@ const controlador = {
             }else if(fecha_inicio > fechaActua){
                 res.json({error : 99, errorDetalle: "fecha_inicio is greater than the current"});
                 return 1;
+            }else{
+                let tarea = await dataBaseSQL.tareas.create({
+                    fk_empleado_asignado : empleadoAsignado.id_empleado,
+                    fk_area : req.session.user.area,
+                    nombre : req.body.nombre,
+                    rango : req.bod.rango,
+                    prioridad : req.body.prioridad,
+                    fecha_inicio : req.body.fecha_inicio,
+                    fecha_final : req.body.fecha_final,
+                    notas : req.body.notas,
+                });
+             
+                res.json({error :0, errorDetalle: "", objeto:tarea});
+                return 0
             }
-            let tarea = await dataBaseSQL.tareas.create({
-                fk_empleado_asignado : usuario.id_empleado,
-                fk_area : req.session.user.area,
-                nombre : req.body.nombre,
-                rango : req.bod.rango,
-                prioridad : req.body.prioridad,
-                fecha_inicio : req.body.fecha_inicio,
-                fecha_final : req.body.fecha_final,
-                notas : req.body.notas,
-            });
 
-            res.json({error :0, errorDetalle: "", objeto:tarea});
-            return 0
+            
+           
         }
 
         catch(error){
-
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({error : codeError, errorDetalle: error.message});   
             return 1;
