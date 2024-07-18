@@ -1,0 +1,32 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.planes__accion {
+    height: 100%;
+    
+    &__tareas--empty {
+        width: 100%;
+        height: calc(100% - 48px);
+        border: 2px dashed $blue-500;
+        padding: 20px;
+
+        h2 {
+            color: $blue-500
+        }
+
+        &__btn {
+            width: 180px;
+            height: 40px;
+            background-color: $blue-500 !important;
+            color: #fff !important;
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .planes__accion {
+        &__tareas--empty {
+            padding: 0;
+        }
+    }
+}

@@ -86,7 +86,7 @@ function Sidebar({sidebarOpen, setSidebarOpen}) {
           </Link>
           <ul className='sidebar__content__list list-group'>
             {list.map((e, i)=>{
-              return <li key={i} className={`${pathname === e.to ? "bg-white" : ""} ${sidebarOpen ? "active rounded-circle item--small" : "sidebar__content__list__item"}`}>
+              return <li key={i} className={`${pathname === e.to ? "bg-white" : ""} ${sidebarOpen ? "active item--small" : "sidebar__content__list__item"}`}>
                 <Link to={e.to} className={`${pathname === e.to ? "bg-blue-500" : "text-white"} fw-medium`}>
                   <i className={`bi ${e.icon} ${sidebarOpen ? "" : "pe-2"}`}></i>
                   {!sidebarOpen && <span className="fw-medium">{e.label}</span>}
