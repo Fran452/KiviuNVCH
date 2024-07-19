@@ -63,10 +63,12 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.STRING(255),
         },
         
+        "show": {
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
 
     };
-    
-
 
     let config =  {
         timestamps: false,
