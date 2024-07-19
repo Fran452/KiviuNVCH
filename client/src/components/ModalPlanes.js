@@ -5,11 +5,9 @@ import "./ModalPlanes.scss"
 function ModalPlanes(props) {
   const [formData, setFormData] = useState({
     nombre: "",
-    tarea: "",
     fechaInicio: "",
     fechaFinal: "",
     encargado: "",
-    apoyo: "",
     notas: "",
     estado: "",
     prioridad: ""
@@ -32,16 +30,14 @@ function ModalPlanes(props) {
     if (Object.keys(newErrors).length === 0){
       setFormData({
         nombre: "",
-        tarea: "",
         fechaInicio: "",
         fechaFinal: "",
         encargado: "",
-        apoyo: "",
         notas:"",
         estado: "",
         prioridad: ""
       })
-      console.log("Form enviado")
+      console.log(formData)
       props.onHide()
     } else {
       console.log("Form no enviado")
@@ -54,9 +50,6 @@ function ModalPlanes(props) {
     if(!data.nombre.trim()) {
       errors.nombre = "Escoja un nombre."
     }
-    if(!data.tarea.trim()) {
-      errors.tarea = "Escoja una tarea."
-    }
     if(!data.fechaInicio.trim()) {
       errors.fechaInicio = "Escoja una fecha de inicio."
     }
@@ -64,19 +57,18 @@ function ModalPlanes(props) {
       errors.fechaFinal = "Escoja una fecha de término."
     }
     if(!data.encargado.trim()) {
-      errors.encargado = "Escoja un encargado"
-    }
-    if(!data.apoyo.trim()) {
-      errors.apoyo = "Escoja un apoyo"
+      errors.encargado = "Escriba el mail."
+    } else if (!/\S+@\S+\.\S+/.test(data.encargado)){
+      errors.encargado = "El email no es válido."
     }
     if(!data.notas.trim()) {
       errors.notas = "Escribe una nota."
     }
     if(!data.estado.trim()) {
-      errors.estado = "Marca una opción"
+      errors.estado = "Marca una opción."
     }
     if(!data.prioridad.trim()) {
-      errors.prioridad = "Marca una opción"
+      errors.prioridad = "Marca una opción."
     }
     return errors;
   }
@@ -85,11 +77,9 @@ function ModalPlanes(props) {
     setErrors({})
     setFormData({
       nombre: "",
-      tarea: "",
       fechaInicio: "",
       fechaFinal: "",
       encargado: "",
-      apoyo: "",
       notas: "",
       estado: "",
       prioridad: ""
@@ -108,7 +98,7 @@ function ModalPlanes(props) {
       <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter d-flex flex-row">
           <h3 className='m-0'>Crear Tarea</h3>
-          <button className='btn' onClick={handleClose}><i class="bi bi-x-lg fw-bold"></i></button>
+          <button className='btn' onClick={handleClose}><i className="bi bi-x-lg fw-bold"></i></button>
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -119,13 +109,13 @@ function ModalPlanes(props) {
                 type="text" 
                 id="nombre" 
                 name="nombre" 
-                placeholder="Nombre del Proyecto" 
+                placeholder="Nombre de la Tarea" 
                 className="form-control form-control-sm col-12"
                 value={formData.nombre}
               />
-              {errors.nombre && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
+              {errors.nombre && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
             </div>
-            <div className='mb-2'>
+            {/* <div className='mb-2'>
               <input
                 onChange={handleChange}
                 type="text" 
@@ -135,8 +125,8 @@ function ModalPlanes(props) {
                 className="form-control form-control-sm col-12"
                 value={formData.tarea}
               />
-              {errors.tarea && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.tarea}</span>}
-            </div>
+              {errors.tarea && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.tarea}</span>}
+            </div> */}
             <div className='row mb-2'>
               <div className='col-6'>
                 <label className='me-3 mb-1'>Fecha de inicio</label>
@@ -148,7 +138,7 @@ function ModalPlanes(props) {
                   className="form-control form-control-sm"
                   value={formData.fechaInicio}
                 />
-                {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
+                {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
               </div>
               <div className='col-6'>
                 <label className='me-3 mb-1'>Fecha de término</label>
@@ -160,23 +150,23 @@ function ModalPlanes(props) {
                   className="form-control form-control-sm"
                   value={formData.fechaFinal}
                 />
-                {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
+                {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
               </div>
             </div>
             <div className="row mb-2">
-              <div className="col-6">
+              <div className="col-12">
                 <input
                   onChange={handleChange}
-                  type="text" 
+                  type="email" 
                   id="encargado" 
                   name="encargado" 
-                  placeholder="Nombre del encargado" 
+                  placeholder="Mail del encargado" 
                   className="form-control form-control-sm col-12"
                   value={formData.encargado}
                 />
-                {errors.encargado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.encargado}</span>}
+                {errors.encargado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.encargado}</span>}
               </div>
-              <div className="col-6">
+              {/* <div className="col-6">
                 <input
                   onChange={handleChange}
                   type="text" 
@@ -186,8 +176,8 @@ function ModalPlanes(props) {
                   className="form-control form-control-sm col-12"
                   value={formData.apoyo}
                 />
-                {errors.apoyo && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.apoyo}</span>}
-              </div>
+                {errors.apoyo && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.apoyo}</span>}
+              </div> */}
             </div>
             <div className='mb-3'>
               <textarea 
@@ -200,7 +190,7 @@ function ModalPlanes(props) {
                 value={formData.notas}
               >
               </textarea>
-              {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
+              {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
             </div>
             <div className='mb-3' onChange={handleChange} value={formData.prioridad}>
               <div className='d-flex flex-row'>
@@ -233,12 +223,12 @@ function ModalPlanes(props) {
                     <label className="form-check-label" htmlFor="flexRadioDefault3">Alta</label>
                 </div>
               </div>
-              {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
+              {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
             </div>
             <div className='w-50 d-flex flex-column mb-4'>
               <div className='d-flex flex-row'>
                 <label className='me-3 lh-lg'>Estado</label>
-                <select class="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
+                <select className="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
                   <option selected>Elija el estado</option>
                   <option value="Pendiente">Pendiente</option>
                   <option value="En progreso">En progreso</option>
@@ -248,7 +238,7 @@ function ModalPlanes(props) {
                   <option value="Bloqueada">Bloqueada</option>
                 </select>
               </div>
-              {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i class="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
+              {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
             </div>
             <button type="submit" className='formPA__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
                 Agregar tarea

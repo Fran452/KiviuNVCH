@@ -6,36 +6,36 @@ function PlanesAccion() {
   // const [ loading, setLoading ] = useState(false)
   const [modal, modalShow] = useState(false)
   const [ tareas, setTareas ] = useState([
-    // {
-    //   "id": 0,
-    //   "nombre": "Hacer front de la pagina",
-    //   "prioridad": "1",
-    //   "estado": "En Proceso",
-    //   "fecha": "26/06/2024",
-    //   "fechaFin": "28/06/2024",
-    //   "notas": "",
-    //   "encargado": "Francisco Lema"
-    // },
-    // {
-    //   "id": 1,
-    //   "nombre": "Hacer back de la pagina",
-    //   "prioridad": "1",
-    //   "estado": "En Proceso",
-    //   "fecha": "26/06/2024",
-    //   "fechaFin": "28/06/2024",
-    //   "notas": "",
-    //   "encargado": "Francisco Lema"
-    // },
-    // {
-    //   "id": 2,
-    //   "nombre": "Hacer apis de la pagina",
-    //   "prioridad": "1",
-    //   "estado": "En Proceso",
-    //   "fecha": "26/06/2024",
-    //   "fechaFin": "28/06/2024",
-    //   "notas": "",
-    //   "encargado": "Francisco Lema"
-    // }
+    {
+      "id": 0,
+      "nombre": "Hacer front de la página",
+      "prioridad": "1",
+      "estado": "En Proceso",
+      "fecha": "2024-07-20",
+      "fechaFinal": "2024-07-27",
+      "notas": "Notas...",
+      "encargado": "franciscolemacr@gmail.com"
+    },
+    {
+      "id": 1,
+      "nombre": "Hacer back de la página",
+      "prioridad": "1",
+      "estado": "En Proceso",
+      "fecha": "2024-07-20",
+      "fechaFinal": "2024-07-27",
+      "notas": "Notas...",
+      "encargado": "usuario1@gmail.com"
+    },
+    {
+      "id": 3,
+      "nombre": "Hacer API's de la página",
+      "prioridad": "1",
+      "estado": "En Proceso",
+      "fecha": "2024-07-20",
+      "fechaFinal": "2024-07-27",
+      "notas": "Notas...",
+      "encargado": "usuario2@gmail.com"
+    }
   ])
  
   const handleForm = (e) => {

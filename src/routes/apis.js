@@ -2,6 +2,7 @@ const express = require("express");
 const apisHome = require('../apis/controllerHomeApis');
 const apisUser = require('../apis/controllerUserApis');
 const apisPlanDeAccion = require('../apis/controllerPlanDeAccionApis');
+const homeController = require("../controllers/controller");
 
 const router = express.Router();
 
