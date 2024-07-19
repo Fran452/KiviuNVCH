@@ -26,6 +26,13 @@ const userMiddlewares = {
             return res.redirect("/login");
         }
     },
+
+    passwordFront: () => {
+        if(true){
+
+        }
+    }
+
 }
 
 module.exports = userMiddlewares
