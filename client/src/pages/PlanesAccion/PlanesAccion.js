@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import { useOutletContext } from "react-router-dom";
 import "./PlanesAccion.scss"
+import ModalPlanes from "../../components/ModalPlanes"
 
 function PlanesAccion() {
-  const [form, setForm] = useOutletContext();
   // const [ loading, setLoading ] = useState(false)
-  // const [modal, modalShow] = useState(false)
+  const [modal, modalShow] = useState(false)
   const [ tareas, setTareas ] = useState([
     // {
     //   "id": 0,
@@ -41,13 +40,13 @@ function PlanesAccion() {
  
   const handleForm = (e) => {
     e.preventDefault()
+    modalShow(true)
     console.log("abrío form")
-    setForm(true)
   }
 
   return (
     <>
-      {/* <ModalPlanes show={modal} onHide={()=>modalShow(false)}/> */}
+      <ModalPlanes show={modal} onHide={()=>modalShow(false)}/>
       <div className='planes__accion section'>
         <div className='section__header d-flex flex-row align-items-end mb-4'>
           <i className='bi bi-bar-chart-steps me-2'></i>

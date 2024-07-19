@@ -13,7 +13,6 @@ function FormPlanesAccion({form, setForm}) {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        setForm(false)
         console.log("clic")
     }
 
