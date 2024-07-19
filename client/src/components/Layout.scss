@@ -46,7 +46,7 @@
             }
     
             &__outlet__container::-webkit-scrollbar-track {
-                background-color: rgba($color: $gray-300, $alpha: 1);
+                background-color: rgba($color: $gray-300, $alpha: 0);
             }
     
             &__outlet__container::-webkit-scrollbar-thumb {
