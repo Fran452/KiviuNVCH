@@ -10,6 +10,7 @@ const cors = require("cors")
  
 /*********** Rutas inportada ***************************/
 const rutasMain = require("./routes/main");
+const rutasApis = require("./routes/apis");
 
 /******** Diferentes funcionamientos ****************/
 const PORT = process.env.PORT || 3030;
@@ -25,20 +26,13 @@ app.set("view engine","ejs");
 app.set("views","./src/views");
 app.use(session({secret : "texto"}))
 
-
-const userMiddlewares = require("./middlewares/userMiddlewares");
-
-
-
 /***** Middlewares Propios *************************************/
-
-//app.use(userMiddlewares.userFrancisco); //eliminar 
-// app.use(userMiddlewares.userRegister);       
-
 
 
 /***************** Rutas **********************/
 app.use('/',rutasMain);
+
+app.use('/apis',rutasApis);
 
 /**************** Inicio de apliacion ***************************/
 
