@@ -57,7 +57,7 @@ CREATE TABLE Tareas (
     fk_area                                 INT NOT NULL,
     fk_area_apoyo                           INT NOT NULL,
     nombre                                  VARCHAR(255),
-    rango	                                INT NOT NULL,
+    estado	                                INT NOT NULL,
     prioridad					            INT NOT NULL,
     fecha_inicio                            DATE NOT NULL,
     fecha_final                             DATE NOT NULL,

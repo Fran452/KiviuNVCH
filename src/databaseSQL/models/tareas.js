@@ -44,7 +44,7 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.STRING(255),
         },
         
-        "rango": {
+        "estado": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
