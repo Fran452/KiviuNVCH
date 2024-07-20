@@ -34,6 +34,11 @@ module.exports = (sequelize,DataTypes) => {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
+
+        "fk_area_apoyo": {
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
         
         "nombre":{
             type: DataTypes.STRING(255),

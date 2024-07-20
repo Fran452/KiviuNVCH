@@ -71,6 +71,7 @@ const controlador = {
                     fecha_inicio : fechaDeLaTarea,
                     fecha_final : req.body.fecha_final,
                     notas : req.body.notas,
+                    fk_area_apoyo: req.body.areaApoyo,
                     show : 0
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
@@ -131,6 +132,7 @@ const controlador = {
                     id_tarea : req.body.idTarea
                 }
             });
+            res.json({error : 0, errorDetalle: "",objeto:tareaModificada});   
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);

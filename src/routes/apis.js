@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/index',apisHome.index);
 
-router.post('/bi/:area',apisHome.bi);
+router.post('/bi',apisHome.bi);
 
 
 router.post('/plan-accion',apisPlanDeAccion.planesAcciónView);

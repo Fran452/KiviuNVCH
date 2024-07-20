@@ -71,10 +71,6 @@ const controlador = {
             }
         }
     /*
-    registerView:  async (req,res) => {
-
-    },
-    
     registerFuction:  async (req,res) => { 
 
     },
