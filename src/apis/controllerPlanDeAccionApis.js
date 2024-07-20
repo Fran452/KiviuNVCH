@@ -67,11 +67,7 @@ const controlador = {
                 }
             );
 
-<<<<<<< HEAD
             if (empleadoAsignado === null){
-=======
-            if (isNull(empleadoAsignado)){
->>>>>>> 234ceff430cc29e87dcffaa3b07b508ecceab2a7
                 res.json({error : 10, errorDetalle: "empleado in dataBase not exist"});
                 return 1;
             }else if(fechaDeLaTarea > fechaActua){
@@ -82,11 +78,7 @@ const controlador = {
                     fk_empleado_asignado : empleadoAsignado.id_empleado,
                     fk_area : req.body.user.area,
                     nombre : req.body.nombre,
-<<<<<<< HEAD
-                    rango: req.body.estado,
-=======
                     estado : req.body.estado,
->>>>>>> 234ceff430cc29e87dcffaa3b07b508ecceab2a7
                     prioridad : req.body.prioridad,
                     fecha_inicio : fechaDeLaTarea,
                     fecha_final : req.body.fecha_final,

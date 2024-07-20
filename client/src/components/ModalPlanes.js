@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Modal } from 'react-bootstrap';
 import "./ModalPlanes.scss"
 import { jwtDecode } from "jwt-decode"
@@ -6,6 +6,8 @@ import { jwtDecode } from "jwt-decode"
 function ModalPlanes(props) {
   const auth = localStorage.getItem("token")
   const jwtParse = jwtDecode(auth)
+
+  const [areas, setAreas] = useState([]);
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -18,6 +20,22 @@ function ModalPlanes(props) {
     notas: ""
   })
   const [errors, setErrors] = useState({})
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch("http://localhost:3030/",{
+        method: "GET"
+      })
+      const data = await res.json()
+      setAreas(data.objeto.areas)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,15 +55,15 @@ function ModalPlanes(props) {
         empleado_asignado: formData.responsable,
         user: jwtParse.apirest.objeto,
         nombre: formData.nombre,
-        estado: formData.estado,
-        prioridad: formData.prioridad,
+        estado: parseInt(formData.estado),
+        prioridad: parseInt(formData.prioridad),
         fecha_inicio: formData.fechaInicio,
         fecha_final: formData.fechaFinal,
         notas: formData.notas,
-        areaApoyo: formData.equipo
+        areaApoyo: parseInt(formData.equipo)
       }
 
-      await fetch("/apis/plan-accion/addTask", {
+      await fetch("http://localhost:3030/apis/plan-accion/addTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -54,6 +72,9 @@ function ModalPlanes(props) {
       })
       .then(res => res.json())
       .then(data => console.log(data))
+      .catch (err => {
+        console.log(err)
+      })
       
       setFormData({
         nombre: "",
@@ -192,9 +213,9 @@ function ModalPlanes(props) {
                 <label className='mb-1'>Equipo</label>
                 <select className="form-select form-select-sm" id="equipo" name="equipo" onChange={handleChange} value={formData.equipo}>
                   <option selected value="">Elija el equipo de apoyo</option>
-                  <option value="0">Finanzas</option>
-                  <option value="1">Recursos humanos</option>
-                  <option value="2">Ventas</option>
+                  <option value="1">Finanzas</option>
+                  <option value="2">Recursos humanos</option>
+                  <option value="3">Ventas</option>
                 </select>
                 {errors.equipo && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.equipo}</span>}
               </div>
@@ -239,12 +260,12 @@ function ModalPlanes(props) {
                   <label className='mb-1'>Estado</label>
                   <select className="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
                     <option selected value="">Elija el estado</option>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="En progreso">En progreso</option>
-                    <option value="Completada">Completada</option>
-                    <option value="En espera">En espera</option>
-                    <option value="Cancelada">Cancelada</option>
-                    <option value="Bloqueada">Bloqueada</option>
+                    <option value="0">Pendiente</option>
+                    <option value="1">En progreso</option>
+                    <option value="2">Completada</option>
+                    <option value="3">En espera</option>
+                    <option value="4">Cancelada</option>
+                    <option value="5">Bloqueada</option>
                   </select>
                 {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
               </div>
