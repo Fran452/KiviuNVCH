@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap';
 import "./ModalPlanes.scss"
+import { jwtDecode } from "jwt-decode"
 
 function ModalPlanes(props) {
+  const auth = localStorage.getItem("token")
+  const jwtParse = jwtDecode(auth)
+
   const [formData, setFormData] = useState({
     nombre: "",
     fechaInicio: "",
@@ -31,9 +35,9 @@ function ModalPlanes(props) {
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
-        area: 1,
+        user: jwtParse.apirest.objeto,
         nombre: formData.nombre,
-        rango: 1,
+        estado: formData.estado,
         prioridad: formData.prioridad,
         fecha_inicio: formData.fechaInicio,
         fecha_final: formData.fechaFinal,
