@@ -7,10 +7,11 @@ function ModalPlanes(props) {
     nombre: "",
     fechaInicio: "",
     fechaFinal: "",
-    encargado: "",
-    notas: "",
+    responsable: "",
+    equipo: "",
     estado: "",
-    prioridad: ""
+    prioridad: "",
+    notas: ""
   })
   const [errors, setErrors] = useState({})
 
@@ -32,10 +33,11 @@ function ModalPlanes(props) {
         nombre: "",
         fechaInicio: "",
         fechaFinal: "",
-        encargado: "",
-        notas:"",
+        responsable: "",
+        equipo: "",
         estado: "",
-        prioridad: ""
+        prioridad: "",
+        notas:""
       })
       console.log(formData)
       props.onHide()
@@ -56,19 +58,22 @@ function ModalPlanes(props) {
     if(!data.fechaFinal.trim()) {
       errors.fechaFinal = "Escoja una fecha de término."
     }
-    if(!data.encargado.trim()) {
-      errors.encargado = "Escriba el mail."
-    } else if (!/\S+@\S+\.\S+/.test(data.encargado)){
-      errors.encargado = "El email no es válido."
+    if(!data.responsable.trim()) {
+      errors.responsable = "Escriba el mail."
+    } else if (!/\S+@\S+\.\S+/.test(data.responsable)){
+      errors.responsable = "El email no es válido."
     }
-    if(!data.notas.trim()) {
-      errors.notas = "Escribe una nota."
+    if(!data.equipo.trim()) {
+      errors.equipo = "Escoje un equipo de apoyo"
     }
     if(!data.estado.trim()) {
       errors.estado = "Marca una opción."
     }
     if(!data.prioridad.trim()) {
       errors.prioridad = "Marca una opción."
+    }
+    if(!data.notas.trim()) {
+      errors.notas = "Escribe una nota."
     }
     return errors;
   }
@@ -79,10 +84,11 @@ function ModalPlanes(props) {
       nombre: "",
       fechaInicio: "",
       fechaFinal: "",
-      encargado: "",
-      notas: "",
+      responsable: "",
+      equipo: "",
       estado: "",
-      prioridad: ""
+      prioridad: "",
+      notas: ""
     })
     props.onHide()
   }
@@ -104,32 +110,21 @@ function ModalPlanes(props) {
       <Modal.Body>
           <form className='formPA d-flex flex-column' onSubmit={handleSubmit}>
             <div className='mb-2'>
+              <label className='mb-1'>Nombre</label>
               <input
                 onChange={handleChange}
                 type="text" 
                 id="nombre" 
                 name="nombre" 
-                placeholder="Nombre de la Tarea" 
+                autoFocus
                 className="form-control form-control-sm col-12"
                 value={formData.nombre}
               />
               {errors.nombre && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
             </div>
-            {/* <div className='mb-2'>
-              <input
-                onChange={handleChange}
-                type="text" 
-                id="tarea" 
-                name="tarea" 
-                placeholder="Nombre de la tarea" 
-                className="form-control form-control-sm col-12"
-                value={formData.tarea}
-              />
-              {errors.tarea && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.tarea}</span>}
-            </div> */}
             <div className='row mb-2'>
               <div className='col-6'>
-                <label className='me-3 mb-1'>Fecha de inicio</label>
+                <label className='mb-1'>Fecha de inicio</label>
                 <input
                   onChange={handleChange}
                   type="date" 
@@ -141,7 +136,7 @@ function ModalPlanes(props) {
                 {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
               </div>
               <div className='col-6'>
-                <label className='me-3 mb-1'>Fecha de término</label>
+                <label className='mb-1'>Fecha de término</label>
                 <input
                   onChange={handleChange}
                   type="date" 
@@ -154,32 +149,82 @@ function ModalPlanes(props) {
               </div>
             </div>
             <div className="row mb-2">
-              <div className="col-12">
+              <div className="col-6">
+                <label className='mb-1'>Correo del responsable</label>
                 <input
                   onChange={handleChange}
                   type="email" 
-                  id="encargado" 
-                  name="encargado" 
-                  placeholder="Mail del encargado" 
+                  id="responsable" 
+                  name="responsable" 
+                  placeholder="usuario@correo.com.ar" 
                   className="form-control form-control-sm col-12"
-                  value={formData.encargado}
+                  value={formData.responsable}
                 />
-                {errors.encargado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.encargado}</span>}
+                {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
               </div>
-              {/* <div className="col-6">
-                <input
-                  onChange={handleChange}
-                  type="text" 
-                  id="apoyo" 
-                  name="apoyo" 
-                  placeholder="Equipo de apoyo" 
-                  className="form-control form-control-sm col-12"
-                  value={formData.apoyo}
-                />
-                {errors.apoyo && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.apoyo}</span>}
-              </div> */}
+              <div className="col-6">
+                <label className='mb-1'>Equipo</label>
+                <select className="form-select form-select-sm" id="equipo" name="equipo" onChange={handleChange} value={formData.equipo}>
+                  <option selected value="">Elija el equipo de apoyo</option>
+                  <option value="0">Finanzas</option>
+                  <option value="1">Recursos humanos</option>
+                  <option value="2">Ventas</option>
+                </select>
+                {errors.equipo && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.equipo}</span>}
+              </div>
             </div>
-            <div className='mb-3'>
+            <div className='row mb-2'>
+              <div className='col-6'>
+                <div className='' onChange={handleChange} value={formData.prioridad}>
+                    <label className='mb-1'>Prioridad</label>
+                    <div className='d-flex flex-row'>
+                      <div className="form-check me-3">
+                          <input 
+                              className="form-check-input" 
+                              type="radio" 
+                              name="prioridad" 
+                              value="1"
+                          />
+                          <label className="form-check-label" htmlFor="flexRadioDefault1">Baja</label>
+                      </div>
+                      <div className="form-check me-3">
+                          <input 
+                              className="form-check-input" 
+                              type="radio" 
+                              name="prioridad" 
+                              value="2" 
+                          />
+                          <label className="form-check-label" htmlFor="flexRadioDefault2">Media</label>
+                      </div>
+                      <div className="form-check">
+                          <input 
+                              className="form-check-input" 
+                              type="radio" 
+                              name="prioridad" 
+                              value="3" 
+                          />
+                          <label className="form-check-label" htmlFor="flexRadioDefault3">Alta</label>
+                      </div>
+                    </div>
+                  {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
+                </div>
+              </div>
+              <div className="col-6">
+                  <label className='mb-1'>Estado</label>
+                  <select className="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
+                    <option selected value="">Elija el estado</option>
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En progreso">En progreso</option>
+                    <option value="Completada">Completada</option>
+                    <option value="En espera">En espera</option>
+                    <option value="Cancelada">Cancelada</option>
+                    <option value="Bloqueada">Bloqueada</option>
+                  </select>
+                {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
+              </div>
+            </div>
+            <div className='mb-2'>
+              <label className='mb-1'>Notas</label>
               <textarea 
                 onChange={handleChange}
                 id="notas" 
@@ -191,54 +236,6 @@ function ModalPlanes(props) {
               >
               </textarea>
               {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
-            </div>
-            <div className='mb-3' onChange={handleChange} value={formData.prioridad}>
-              <div className='d-flex flex-row'>
-                <label className='me-3'>Prioridad</label>
-                <div className="form-check me-3">
-                    <input 
-                        className="form-check-input" 
-                        type="radio" 
-                        name="prioridad" 
-                        value="1"
-                    />
-                    <label className="form-check-label" htmlFor="flexRadioDefault1">Baja</label>
-                </div>
-                <div className="form-check me-3">
-                    <input 
-                        className="form-check-input" 
-                        type="radio" 
-                        name="prioridad" 
-                        value="2" 
-                    />
-                    <label className="form-check-label" htmlFor="flexRadioDefault2">Media</label>
-                </div>
-                <div className="form-check">
-                    <input 
-                        className="form-check-input" 
-                        type="radio" 
-                        name="prioridad" 
-                        value="3" 
-                    />
-                    <label className="form-check-label" htmlFor="flexRadioDefault3">Alta</label>
-                </div>
-              </div>
-              {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
-            </div>
-            <div className='w-50 d-flex flex-column mb-4'>
-              <div className='d-flex flex-row'>
-                <label className='me-3 lh-lg'>Estado</label>
-                <select className="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
-                  <option selected>Elija el estado</option>
-                  <option value="Pendiente">Pendiente</option>
-                  <option value="En progreso">En progreso</option>
-                  <option value="Completada">Completada</option>
-                  <option value="En espera">En espera</option>
-                  <option value="Cancelada">Cancelada</option>
-                  <option value="Bloqueada">Bloqueada</option>
-                </select>
-              </div>
-              {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
             </div>
             <button type="submit" className='formPA__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
                 Agregar tarea

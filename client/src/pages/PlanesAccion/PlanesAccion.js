@@ -6,39 +6,39 @@ function PlanesAccion() {
   // const [ loading, setLoading ] = useState(false)
   const [modal, modalShow] = useState(false)
   const [ tareas, setTareas ] = useState([
-    {
-      "id": 0,
-      "nombre": "Hacer front de la página",
-      "prioridad": "1",
-      "estado": "En proceso",
-      "fechaInicio": "2024-07-20",
-      "fechaFinal": "2024-07-27",
-      "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      "responsable": "franciscolemacr@gmail.com",
-      "equipo": "equipo 1"
-    },
-    {
-      "id": 1,
-      "nombre": "Hacer back de la página",
-      "prioridad": "2",
-      "estado": "Completada",
-      "fechaInicio": "2024-07-20",
-      "fechaFinal": "2024-07-27",
-      "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      "responsable": "usuario1@gmail.com",
-      "equipo": "equipo 1"
-    },
-    {
-      "id": 3,
-      "nombre": "Hacer API's de la página",
-      "prioridad": "3",
-      "estado": "En espera",
-      "fechaInicio": "2024-07-20",
-      "fechaFinal": "2024-07-27",
-      "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      "responsable": "usuario2@gmail.com",
-      "equipo": "equipo 1"
-    }
+    // {
+    //   "id": 0,
+    //   "nombre": "Hacer front de la página",
+    //   "prioridad": "1",
+    //   "estado": "En proceso",
+    //   "fechaInicio": "2024-07-20",
+    //   "fechaFinal": "2024-07-27",
+    //   "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    //   "responsable": "franciscolemacr@gmail.com",
+    //   "equipo": "equipo 1"
+    // },
+    // {
+    //   "id": 1,
+    //   "nombre": "Hacer back de la página",
+    //   "prioridad": "2",
+    //   "estado": "Completada",
+    //   "fechaInicio": "2024-07-20",
+    //   "fechaFinal": "2024-07-27",
+    //   "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    //   "responsable": "usuario1@gmail.com",
+    //   "equipo": "equipo 1"
+    // },
+    // {
+    //   "id": 3,
+    //   "nombre": "Hacer API's de la página",
+    //   "prioridad": "3",
+    //   "estado": "En espera",
+    //   "fechaInicio": "2024-07-20",
+    //   "fechaFinal": "2024-07-27",
+    //   "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    //   "responsable": "usuario2@gmail.com",
+    //   "equipo": "equipo 1"
+    // }
   ])
  
   const handleForm = (e) => {

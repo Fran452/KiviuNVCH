@@ -49,19 +49,6 @@ function Home() {
             </Link>
         })}
       </div>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
-      <p>texto</p>
     </div>
   )
 }
