@@ -1,6 +1,15 @@
 .navbar {
     width: 100%;
     padding: 20px !important;
+
+    &__content {
+        button {
+            img {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    }
 }
 
 @media screen and (min-width: 768px) {

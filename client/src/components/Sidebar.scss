@@ -28,7 +28,7 @@
 
 .navbar--mob__content {
     z-index: 4;
-    background-color: #fff;
+    background-color: $blue-500;
     position: fixed;
     width: 100vw;
     height: 100vh;
@@ -42,7 +42,7 @@
 
         i {
             font-size: 28px;
-            color: $blue-500
+            color: #fff
         }
         
     }
@@ -55,8 +55,13 @@
         }
 
         &__avatar {
+            img {
+                width: 40px;
+                height: 40px;
+            }
+
             p {
-                color: $blue-500
+                color: #fff
             }
 
         }
@@ -71,6 +76,7 @@
                 align-items: center;
 
                 a {
+                    color: #fff;
                     text-decoration: none;
                 }
             }
@@ -79,7 +85,7 @@
         &__logout {
 
             i, span {
-                color: $blue-500;
+                color: #fff
             }
             
         }

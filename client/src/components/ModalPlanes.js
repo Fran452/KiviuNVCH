@@ -24,11 +24,33 @@ function ModalPlanes(props) {
 
   }
     
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const newErrors = validateForm(formData);
     setErrors(newErrors)
     if (Object.keys(newErrors).length === 0){
+      const obj = {
+        empleado_asignado: formData.responsable,
+        area: 1,
+        nombre: formData.nombre,
+        rango: 1,
+        prioridad: formData.prioridad,
+        fecha_inicio: formData.fechaInicio,
+        fecha_final: formData.fechaFinal,
+        notas: formData.notas,
+        areaApoyo: formData.equipo
+      }
+
+      await fetch("/apis/plan-accion/addTask", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(obj)
+      })
+      .then(res => res.json())
+      .then(data => console.log(data))
+      
       setFormData({
         nombre: "",
         fechaInicio: "",
@@ -39,7 +61,7 @@ function ModalPlanes(props) {
         prioridad: "",
         notas:""
       })
-      console.log(formData)
+      console.log(obj)
       props.onHide()
     } else {
       console.log("Form no enviado")

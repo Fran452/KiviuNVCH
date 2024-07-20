@@ -36,11 +36,17 @@
                         th {
                             white-space: nowrap;
                             overflow:hidden;
+                            color: $blue-500;
+                            padding: 5px 20px;
                         }
                     }
                 }
 
                 &__tbody {
+                    td {
+                        padding: 5px 20px;
+                    }
+
                     &__nombre, &__fechaInicial, &__fechaFinal, &__equipo {
                         white-space: nowrap;
                         overflow:hidden;
@@ -57,7 +63,7 @@
                     }
                     &__prioridad {
                         span {
-                            padding: 5px 20px;
+                            padding: 6px 12px;
                         }
 
                         &--baja {
@@ -75,7 +81,7 @@
 
                     &__estado {
                         span {
-                            padding: 5px 20px;
+                            padding: 6px 12px;
                         }
 
                         &--pendiente {
@@ -102,6 +108,14 @@
                             background-color: $black !important;
                         }
                     }
+
+                    &__buttons {
+                        button {
+                            width: 36px;
+                            height: 36px;
+                            padding: 0;
+                        }
+                    } 
                 }
             }
         }

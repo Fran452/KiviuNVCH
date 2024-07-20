@@ -1,45 +1,62 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import "./PlanesAccion.scss"
 import ModalPlanes from "../../components/ModalPlanes"
 
 function PlanesAccion() {
   // const [ loading, setLoading ] = useState(false)
+  const [areas, setAreas] = useState([]);
   const [modal, modalShow] = useState(false)
   const [ tareas, setTareas ] = useState([
-    // {
-    //   "id": 0,
-    //   "nombre": "Hacer front de la página",
-    //   "prioridad": "1",
-    //   "estado": "En proceso",
-    //   "fechaInicio": "2024-07-20",
-    //   "fechaFinal": "2024-07-27",
-    //   "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    //   "responsable": "franciscolemacr@gmail.com",
-    //   "equipo": "equipo 1"
-    // },
-    // {
-    //   "id": 1,
-    //   "nombre": "Hacer back de la página",
-    //   "prioridad": "2",
-    //   "estado": "Completada",
-    //   "fechaInicio": "2024-07-20",
-    //   "fechaFinal": "2024-07-27",
-    //   "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    //   "responsable": "usuario1@gmail.com",
-    //   "equipo": "equipo 1"
-    // },
-    // {
-    //   "id": 3,
-    //   "nombre": "Hacer API's de la página",
-    //   "prioridad": "3",
-    //   "estado": "En espera",
-    //   "fechaInicio": "2024-07-20",
-    //   "fechaFinal": "2024-07-27",
-    //   "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    //   "responsable": "usuario2@gmail.com",
-    //   "equipo": "equipo 1"
-    // }
+    {
+      "id": 0,
+      "nombre": "Hacer front de la página",
+      "prioridad": "1",
+      "estado": "En proceso",
+      "fechaInicio": "2024-07-20",
+      "fechaFinal": "2024-07-27",
+      "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "responsable": "franciscolemacr@gmail.com",
+      "equipo": "1"
+    },
+    {
+      "id": 1,
+      "nombre": "Hacer back de la página",
+      "prioridad": "2",
+      "estado": "Completada",
+      "fechaInicio": "2024-07-20",
+      "fechaFinal": "2024-07-27",
+      "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "responsable": "usuario1@gmail.com",
+      "equipo": "2"
+    },
+    {
+      "id": 3,
+      "nombre": "Hacer API's de la página",
+      "prioridad": "3",
+      "estado": "En espera",
+      "fechaInicio": "2024-07-20",
+      "fechaFinal": "2024-07-27",
+      "notas": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "responsable": "usuario2@gmail.com",
+      "equipo": "3"
+    }
   ])
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch("http://localhost:3030/",{
+        method: "GET"
+      })
+      const data = await res.json()
+      setAreas(data.objeto.areas)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
  
   const handleForm = (e) => {
     e.preventDefault()
@@ -57,13 +74,16 @@ function PlanesAccion() {
         </div>
         {tareas.length > 0 ? (
           <div className='planes__accion__tareas'>
-            <h3>Proyectos<i className="bi bi-chevron-right"></i>Proyecto 1</h3>
+            {areas.map((e,i) => {
+              return <button className="btn btn-primary rounded-pill me-2" key={i}>{e.nombre_del_Area}</button>
+            })}
+            <h3>
+              {}
+            </h3>
             <div className='planes__accion__tareas__tabla mb-4'>
-              <table className="table table-striped align-middle">
+              <table className="table table-striped align-middle table-bordered">
                 <thead>
                   <tr>
-                    <th></th>
-                    <th></th>
                     <th scope="col">Tareas</th>
                     <th scope="col">Inicio</th>
                     <th scope="col">Final</th>
@@ -72,31 +92,38 @@ function PlanesAccion() {
                     <th scope="col">Equipo de apoyo</th>
                     <th scope="col">Prioridad</th>
                     <th scope="col">Estado</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody className='table__tbody'>
                   {tareas.map((e,i) => {
                     return <tr key={i}>
-                      <td><button className='btn bg-info rounded-pill text-white'>Editar</button></td>
-                      <td><button className='btn bg-danger rounded-pill text-white'>Eliminar</button></td>
                       <td className='table__tbody__nombre'>{e.nombre}</td>
-                      <td className='table__tbody__fechaInicial'>{e.fechaInicio}</td>
-                      <td className='table__tbody__fechaFinal'>{e.fechaFinal}</td>
+                      <td className='table__tbody__fechaInicial'>{
+                        (new Date(e.fechaInicio).toLocaleDateString("es-ES", { weekday: 'long' })).substring(0,3) + " " + new Date(e.fechaInicio).toLocaleDateString("es-ES", { day: 'numeric' })
+                      }</td>
+                      <td className='table__tbody__fechaFinal'>{new Date(e.fechaFinal).toLocaleDateString()}</td>
                       <td className='table__tbody__notas'>{e.notas}</td>
                       <td>{e.responsable}</td>
-                      <td className='table__tbody__equipo'>{e.equipo}</td>
+                      {e.equipo === "1" && <td className='table__tbody__equipo'>Finanzas</td>}
+                      {e.equipo === "2" && <td className='table__tbody__equipo'>Recursos Humanos</td>}
+                      {e.equipo === "3" && <td className='table__tbody__equipo'>Ventas</td>}
                       <td className='table__tbody__prioridad'>
-                        {e.prioridad === "1" && <span className='table__tbody__prioridad--baja rounded-pill text-white'>baja</span>}
-                        {e.prioridad === "2" && <span className='table__tbody__prioridad--media rounded-pill text-white'>media</span>}
-                        {e.prioridad === "3" && <span className='table__tbody__prioridad--alta rounded-pill text-white'>alta</span>}
+                        {e.prioridad === "1" && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                        {e.prioridad === "2" && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                        {e.prioridad === "3" && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
                         </td>
                       <td className='table__tbody__estado'>
-                        {e.estado === "Pendiente" && <span className='table__tbody__estado--pendiente rounded-pill text-white'>Pendiente</span>}
-                        {e.estado === "En proceso" && <span className='table__tbody__estado--proceso rounded-pill text-white'>En proceso</span>}
-                        {e.estado === "Completada" && <span className='table__tbody__estado--completada rounded-pill text-white'>Completada</span>}
-                        {e.estado === "En espera" && <span className='table__tbody__estado--espera rounded-pill text-white'>En espera</span>}
-                        {e.estado === "Cancelada" && <span className='table__tbody__estado--cancelada rounded-pill text-white'>Cancelada</span>}
-                        {e.estado === "Bloqueada" && <span className='table__tbody__estado--bloqueada rounded-pill text-white'>Bloqueada</span>}
+                        {e.estado === "Pendiente" && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                        {e.estado === "En proceso" && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                        {e.estado === "Completada" && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                        {e.estado === "En espera" && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                        {e.estado === "Cancelada" && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                        {e.estado === "Bloqueada" && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                      </td>
+                      <td className='table__tbody__buttons d-flex flex-row'>
+                        <button className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
+                        <button className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
                       </td>
                     </tr>
                   })}
