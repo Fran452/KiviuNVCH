@@ -1,5 +1,5 @@
 const express = require("express");
-const homeController = require("../controllers/controller");
+const homeController = require("../controllers/controller.js");
 
 const router = express.Router();
 
@@ -26,7 +26,9 @@ router.post('/login',homeController.loginFuction);
 //router.get('/register',homeController.registerView)
 //router.post('/register',homeController.registerFuction)
 
-router.get('/',homeController.index);
+router.get('/test',homeController.test);
+
+router.get('/',homeController.test);
 
 module.exports = router
 

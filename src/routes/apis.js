@@ -35,8 +35,6 @@ router.get('/register',homeController.registerView)
 router.post('/register',homeController.registerFuction)
 
 */
-router.get('/',homeController.index);
-
 module.exports = router
 
 

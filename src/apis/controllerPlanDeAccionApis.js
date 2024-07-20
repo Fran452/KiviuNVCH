@@ -25,18 +25,30 @@ const controlador = {
 
     planesAcciónView: async (req,res) => {
         try{
-            let tareas = await dataBaseSQL.tareas.findAll({
+            let tareas;
+            console.log(req.body);
+            if(req.body.user.puesto < 1){
+                tareas = await dataBaseSQL.tareas.findAll({
                     where: {
-                        fk_area: req.body.user.fk_area,
-                        show : 0
+                        mostrar : 0
+                    },
+                    include: [{association : "Areas"}]
+                });
+
+            }else{
+                tareas = await dataBaseSQL.tareas.findAll({
+                    where: {
+                        fk_area: req.body.user.area,
+                        mostrar : 0
                     }
-                }
-            );
+                });
+            }
+            
             
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
-        catch{
+        catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({error : codeError, errorDetalle: error.message});   
             return 1;
@@ -55,7 +67,11 @@ const controlador = {
                 }
             );
 
+<<<<<<< HEAD
             if (empleadoAsignado === null){
+=======
+            if (isNull(empleadoAsignado)){
+>>>>>>> 234ceff430cc29e87dcffaa3b07b508ecceab2a7
                 res.json({error : 10, errorDetalle: "empleado in dataBase not exist"});
                 return 1;
             }else if(fechaDeLaTarea > fechaActua){
@@ -66,7 +82,11 @@ const controlador = {
                     fk_empleado_asignado : empleadoAsignado.id_empleado,
                     fk_area : req.body.user.area,
                     nombre : req.body.nombre,
+<<<<<<< HEAD
                     rango: req.body.estado,
+=======
+                    estado : req.body.estado,
+>>>>>>> 234ceff430cc29e87dcffaa3b07b508ecceab2a7
                     prioridad : req.body.prioridad,
                     fecha_inicio : fechaDeLaTarea,
                     fecha_final : req.body.fecha_final,
