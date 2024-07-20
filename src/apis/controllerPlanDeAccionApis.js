@@ -25,18 +25,30 @@ const controlador = {
 
     planesAcciónView: async (req,res) => {
         try{
-            let tareas = await dataBaseSQL.tareas.findAll({
+            let tareas;
+            console.log(req.body);
+            if(req.body.user.puesto < 1){
+                tareas = await dataBaseSQL.tareas.findAll({
                     where: {
-                        fk_area: req.body.user.fk_area,
-                        show : 0
+                        mostrar : 0
+                    },
+                    include: [{association : "Areas"}]
+                });
+
+            }else{
+                tareas = await dataBaseSQL.tareas.findAll({
+                    where: {
+                        fk_area: req.body.user.area,
+                        mostrar : 0
                     }
-                }
-            );
+                });
+            }
+            
             
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
-        catch{
+        catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({error : codeError, errorDetalle: error.message});   
             return 1;

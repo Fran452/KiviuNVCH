@@ -62,7 +62,7 @@ CREATE TABLE Tareas (
     fecha_inicio                            DATE NOT NULL,
     fecha_final                             DATE NOT NULL,
     notas                                   VARCHAR(255),
-    show                                    INT NOT NULL,
+    mostrar                                 INT NOT NULL,
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)

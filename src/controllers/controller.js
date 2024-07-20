@@ -22,7 +22,23 @@ const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
 
 const controlador = {
-
+    
+    test: async (req,res) => {
+        console.log("test");
+        fetch('http://localhost:3030/apis/plan-accion',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 0,mail: 'franciscolemacr@gmail.com'}})
+        })
+        .then(api => {
+            return api.json();
+        })
+        .then(api => {
+            res.json(api)
+        })
+    },
     index: async (req,res) => {
         try{
             //let areas = funcionesGenericas.archivoJSON(baseDeDatos.area);
