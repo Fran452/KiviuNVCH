@@ -31,11 +31,11 @@ app.use(session({secret : "texto"}))
 
 
 /***************** Rutas **********************/
-app.use('/',rutasMain);
-
 app.use('/apis',rutasApis);
 
-/**************** Inicio de apliacion ***************************/
+app.use('/',rutasMain);
+
+/**************** Inicio de apliacion *******//********************/
 
 app.listen(PORT, () => {
     console.log(`Servidor en funcionamiento en el puerto ${process.env.link||`http://localhost:${PORT}`}`);

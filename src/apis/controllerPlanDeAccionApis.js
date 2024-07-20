@@ -25,18 +25,30 @@ const controlador = {
 
     planesAcciónView: async (req,res) => {
         try{
-            let tareas = await dataBaseSQL.tareas.findAll({
+            let tareas;
+            console.log(req.body);
+            if(req.body.user.puesto < 1){
+                tareas = await dataBaseSQL.tareas.findAll({
                     where: {
-                        fk_area: req.body.user.fk_area,
-                        show : 0
+                        mostrar : 0
+                    },
+                    include: [{association : "Areas"}]
+                });
+
+            }else{
+                tareas = await dataBaseSQL.tareas.findAll({
+                    where: {
+                        fk_area: req.body.user.area,
+                        mostrar : 0
                     }
-                }
-            );
+                });
+            }
+            
             
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
-        catch{
+        catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({error : codeError, errorDetalle: error.message});   
             return 1;
@@ -55,10 +67,10 @@ const controlador = {
                 }
             );
 
-            if (isNull(empleado)){
+            if (isNull(empleadoAsignado)){
                 res.json({error : 10, errorDetalle: "empleado in dataBase not exist"});
                 return 1;
-            }else if(fecha_inicio > fechaActua){
+            }else if(fechaDeLaTarea > fechaActua){
                 res.json({error : 99, errorDetalle: "fecha_inicio is greater than the current"});
                 return 1;
             }else{
@@ -66,13 +78,13 @@ const controlador = {
                     fk_empleado_asignado : empleadoAsignado.id_empleado,
                     fk_area : req.body.user.area,
                     nombre : req.body.nombre,
-                    rango : req.bod.rango,
+                    estado : req.body.estado,
                     prioridad : req.body.prioridad,
                     fecha_inicio : fechaDeLaTarea,
                     fecha_final : req.body.fecha_final,
                     notas : req.body.notas,
                     fk_area_apoyo: req.body.areaApoyo,
-                    show : 0
+                    mostrar : 0
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0
