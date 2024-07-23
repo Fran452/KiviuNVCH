@@ -49,6 +49,11 @@ module.exports = (sequelize,DataTypes) => {
             as : 'Tareas'
         });
 
+        areas.hasMany(models.tareas,{
+            foreignKey : 'fk_area_apoyo',
+            as : 'TareasApoyo'
+        });
+
         
         // Union con Indicadores
         areas.hasMany(models.indicadores,{

@@ -30,17 +30,18 @@ const controlador = {
             if(req.body.user.puesto < 1){
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
-                        mostrar : 0
+                        mostrar : 1
                     },
-                    include: [{association : "Areas"}]
+                    include: [{association : "Areas"},{association : "Empleados"},{association : "AreasApollo"}]
                 });
 
             }else{
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
                         fk_area: req.body.user.area,
-                        mostrar : 0
-                    }
+                        mostrar : 1
+                    },
+                    include: [{association : "Areas"},{association : "Empleados"},{association : "AreasApollo"}]
                 });
             }
             
@@ -84,7 +85,7 @@ const controlador = {
                     fecha_final : req.body.fecha_final,
                     notas : req.body.notas,
                     fk_area_apoyo: req.body.areaApoyo,
-                    mostrar : 0
+                    mostrar : 1 
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0
