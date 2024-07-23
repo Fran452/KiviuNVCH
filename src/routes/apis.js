@@ -6,7 +6,7 @@ const homeController = require("../controllers/controller");
 
 const router = express.Router();
 
-router.post('/index',apisHome.index);
+router.get('/index',apisHome.index);
 
 router.post('/bi',apisHome.bi);
 

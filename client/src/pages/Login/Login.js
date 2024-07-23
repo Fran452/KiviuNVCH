@@ -28,7 +28,7 @@ function Login() {
             pass: password
         }
         setLoading(true)
-        await fetch("/login", {
+        await fetch("/apis/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -12,17 +12,22 @@ function PowerBI() {
         const auth = localStorage.getItem("token")
         const jwtParse = jwtDecode(auth)
 
+        const req = {
+            user: jwtParse.apirest.objeto,
+            area: parseInt(area)
+        }
+
         const fetchData = async () => {
             try {
-                const res = await fetch(`http://localhost:3030/bi/${area}`,{
+                const res = await fetch("/apis/bi",{
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(jwtParse.apirest.objeto)
+                    body: JSON.stringify(req)
                 })
                 const data = await res.json()
-                setData(data)
+                setData(data.objeto)
             } catch (error) {
                 console.log(error)
             }
@@ -32,7 +37,7 @@ function PowerBI() {
 
     return (
         <>
-            {data.objeto === "" ? (
+            {data.BiArea === "" ? (
                 <div className='no__access d-flex flex-column align-items-center justify-content-center'>
                     <img className='mb-4' src={IllustrationAccess} alt="" />
                     <h2 className='fw-semibold mb-2'>Oops!</h2>
@@ -44,7 +49,7 @@ function PowerBI() {
                 <iframe 
                     className="w-100 h-100 border-0" 
                     title="TABLERO-GLOBAL_HITSS (2)" 
-                    src={data.objeto} 
+                    src={data.BiArea} 
                     allowFullScreen={true}> 
                 </iframe>
             )}

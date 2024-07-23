@@ -26,7 +26,6 @@ const controlador = {
     planesAcciónView: async (req,res) => {
         try{
             let tareas;
-            console.log(req.body);
             if(req.body.user.puesto < 1){
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
@@ -58,7 +57,7 @@ const controlador = {
     addTarea:  async (req,res) => { 
         try{
             let fechaActua = new DATE ;
-            let fechaDeLaTarea = new DATE(req.body.fecha_inicio);
+            let fechaDeLaTarea = new DATE(req.body.fechaInicio);
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
@@ -80,8 +79,8 @@ const controlador = {
                     nombre : req.body.nombre,
                     estado : req.body.estado,
                     prioridad : req.body.prioridad,
-                    fecha_inicio : fechaDeLaTarea,
-                    fecha_final : req.body.fecha_final,
+                    fecha_inicio : req.body.fechaInicio,
+                    fecha_final : req.body.fechaFinal,
                     notas : req.body.notas,
                     fk_area_apoyo: req.body.areaApoyo,
                     mostrar : 0

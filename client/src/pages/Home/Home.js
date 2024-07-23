@@ -6,14 +6,14 @@ import { jwtDecode } from "jwt-decode"
 
 function Home() {
   const [areas, setAreas] = useState([]);
-  const [tareas, setTareas] = useState(4)
+  // const [tareas, setTareas] = useState(4)
 
   const auth = localStorage.getItem("token")
   const jwtParse = jwtDecode(auth)
 
-  const fetchData = async () => {
+  const fetchAreas = async () => {
     try {
-      const res = await fetch("http://localhost:3030/",{
+      const res = await fetch("/apis/index",{
         method: "GET"
       })
       const data = await res.json()
@@ -24,7 +24,7 @@ function Home() {
   }
 
   useEffect(() => {
-    fetchData()
+    fetchAreas()
   }, [])
 
   return (
@@ -36,7 +36,7 @@ function Home() {
       <div className='home__bienvenida d-flex flex-column flex-md-row rounded-3 align-items-md-center mb-4'>
         <div className='home__bienvenida__texto'>
           <h2 className='text-white'><span>Bienvenido</span><br />{jwtParse.apirest.objeto.nombre}</h2>
-          <p className='text-white m-0'>Tienes <b>{tareas}</b> tareas por realizar</p>
+          {/* <p className='text-white m-0'>Tienes <b>{tareas}</b> tareas por realizar</p> */}
         </div>
         <div className='home__bienvenida__img d-flex align-self-center'>
           <img className="position-relative" src={IllustrationBienvenida} alt="" />
