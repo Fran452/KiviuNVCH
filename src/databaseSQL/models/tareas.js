@@ -95,7 +95,10 @@ module.exports = (sequelize,DataTypes) => {
             foreignKey : 'fk_area',
             as : 'Areas'
         });
-
+        tareas.belongsTo(models.areas,{
+            foreignKey : 'fk_area_apoyo',
+            as : 'AreasApollo'
+        });
     }
 
     return tareas;
