@@ -66,6 +66,7 @@ const controlador = {
                     },
                 }
             );
+            console.log(empleadoAsignado)
 
             if (empleadoAsignado === null){
                 res.json({error : 10, errorDetalle: "empleado in dataBase not exist"});
@@ -86,7 +87,7 @@ const controlador = {
                     fk_area_apoyo: req.body.areaApoyo,
                     mostrar : 1 
                 });
-                res.json({error :0, errorDetalle: "", objeto:tarea});
+                res.json({error :0, errorDetalle: "", objeto:{tarea:tarea,empleado_asignado:req.body.empleado_asignado}});
                 return 0
             }
         }
