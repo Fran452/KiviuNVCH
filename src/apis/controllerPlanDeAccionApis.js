@@ -68,7 +68,7 @@ const controlador = {
                 }
             );
 
-            if (isNull(empleadoAsignado)){
+            if (empleadoAsignado == null){
                 res.json({error : 10, errorDetalle: "empleado in dataBase not exist"});
                 return 1;
             }else if(fechaDeLaTarea > fechaActua){
@@ -87,6 +87,7 @@ const controlador = {
                     fk_area_apoyo: req.body.areaApoyo,
                     mostrar : 1 
                 });
+                tareas[mailEmpleado] = req.body.empleado_asignado;
                 res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0
             }
