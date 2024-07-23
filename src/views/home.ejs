@@ -8,13 +8,6 @@
     <%-include('./partials/header') %>
     <%-include('./partials/menu_desplegable') %>
     <main>
-       <section id="puestos">
-            <% for(let i = 0;i < areas.length;i++){ %>
-            <a class="seccion" href="/bi/<%=areas[i].id_area%>"> 
-                <h1> <%= areas[i].nombre_del_Area%></h1> 
-            </a>
-            <% } %>
-       </section>
 
        <script src="/js/home.js"></script>
     </main>
