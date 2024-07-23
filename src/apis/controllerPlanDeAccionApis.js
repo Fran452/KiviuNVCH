@@ -26,7 +26,6 @@ const controlador = {
     planesAcciónView: async (req,res) => {
         try{
             let tareas;
-            console.log(req.body);
             if(req.body.user.puesto < 1){
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
@@ -59,7 +58,7 @@ const controlador = {
     addTarea:  async (req,res) => { 
         try{
             let fechaActua = new DATE ;
-            let fechaDeLaTarea = new DATE(req.body.fecha_inicio);
+            let fechaDeLaTarea = new DATE(req.body.fechaInicio);
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
@@ -67,8 +66,9 @@ const controlador = {
                     },
                 }
             );
+            console.log(empleadoAsignado)
 
-            if (empleadoAsignado == null){
+            if (empleadoAsignado === null){
                 res.json({error : 10, errorDetalle: "empleado in dataBase not exist"});
                 return 1;
             }else if(fechaDeLaTarea > fechaActua){
@@ -81,14 +81,13 @@ const controlador = {
                     nombre : req.body.nombre,
                     estado : req.body.estado,
                     prioridad : req.body.prioridad,
-                    fecha_inicio : fechaDeLaTarea,
-                    fecha_final : req.body.fecha_final,
+                    fecha_inicio : req.body.fechaInicio,
+                    fecha_final : req.body.fechaFinal,
                     notas : req.body.notas,
                     fk_area_apoyo: req.body.areaApoyo,
                     mostrar : 1 
                 });
-                tareas[mailEmpleado] = req.body.empleado_asignado;
-                res.json({error :0, errorDetalle: "", objeto:tarea});
+                res.json({error :0, errorDetalle: "", objeto:{tarea:tarea,empleado_asignado:req.body.empleado_asignado}});
                 return 0
             }
         }

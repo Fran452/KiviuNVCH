@@ -41,16 +41,18 @@ const controlador = {
         try{
             let area
             let BiArea
+            let nombreArea
             if(req.body.user.area == req.body.area){
-                area = await dataBaseSQL.areas.findByPk(req.params.area);
+                area = await dataBaseSQL.areas.findByPk(req.body.area);
                 BiArea = area.power_Bi;
-                nombreArea=area.nombre_del_Area
+                nombreArea = area.nombre_del_Area;
                 res.json( {status: 0, codeError:"", objeto: {BiArea,nombreArea} })
                 return {status: 0, codeError:"", objeto: {BiArea,nombreArea} };
             }else{
                 if(req.body.user.puesto == 0 || req.body.user.puesto == 1){
-                    area = await dataBaseSQL.areas.findByPk(req.params.area);
+                    area = await dataBaseSQL.areas.findByPk(req.body.area);
                     BiArea = area.power_Bi;
+                    nombreArea = area.nombre_del_Area;
                     res.json({status: 0, codeError:"", objeto: {BiArea,nombreArea} })
                     return {status: 0, codeError:"", objeto: {BiArea,nombreArea} };
                 }else{
