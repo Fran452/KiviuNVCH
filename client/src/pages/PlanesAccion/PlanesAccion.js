@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Oval } from 'react-loader-spinner'
+import { ProgressBar } from 'react-bootstrap';
 import "./PlanesAccion.scss"
 import ModalPlanes from "../../components/ModalPlanes"
 import { jwtDecode } from "jwt-decode"
+
 
 export const loadingContext = React.createContext()
 
@@ -12,7 +14,6 @@ function PlanesAccion() {
   const [tareas, setTareas] = useState([])
   const [modal, modalShow] = useState(false)
   const [tareaObj, setTareaObj] = useState(null)
-  const [value, setValue] = useState(0)
 
   const fetchAreas = async () => {
     try {
@@ -120,11 +121,6 @@ function PlanesAccion() {
           <>
             {tareas.length > 0 ? (
               <div className='planes__accion__tareas d-flex flex-column'>
-                {/* <div className='d-flex flex-row align-items-center'>
-                  <button className='btn' onClick={() => setValue(value === 0 ? 0 : value-10)}>-</button>
-                  <progress value={value} max={100} />
-                  <button className='btn' onClick={() => setValue(value === 100 ? 100 : value+10)}>+</button>
-                </div> */}
                 <div className='planes__accion__tareas__header d-flex flex-row justify-content-between align-items-center mb-4'>
                   <h3 className='m-0 invisible'>Área</h3>
                   <button className=' btn btn-primary' onClick={handleForm}>Agregar tarea</button>
@@ -147,6 +143,7 @@ function PlanesAccion() {
                           <th scope="col">Equipo de apoyo</th>
                           <th scope="col">Prioridad</th>
                           <th scope="col">Estado</th>
+                          <th scope="col">Progreso</th>
                           <th scope="col"></th>
                         </tr>
                       </thead>
@@ -175,6 +172,9 @@ function PlanesAccion() {
                               {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
                               {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
                               {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                            </td>
+                            <td>
+                              <ProgressBar className='' now={e.progreso} label={`${e.progreso}%`} max={100}/>
                             </td>
                             <td className='table__tbody__buttons d-flex flex-row'>
                               <button onClick={(() => handleEditTask(e.id_tarea))} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>

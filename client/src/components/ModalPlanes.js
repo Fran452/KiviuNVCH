@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Modal } from 'react-bootstrap';
+import { Modal, ProgressBar } from 'react-bootstrap';
 import "./ModalPlanes.scss"
 import { jwtDecode } from "jwt-decode"
 import { loadingContext } from '../pages/PlanesAccion/PlanesAccion';
@@ -19,7 +19,8 @@ function ModalPlanes(props) {
     equipo: "",
     estado: "",
     prioridad: "",
-    notas: ""
+    notas: "",
+    progreso: 0
   })
   const [errors, setErrors] = useState({})
   const [modalErr, setModalErr] = useState(null)
@@ -48,7 +49,8 @@ function ModalPlanes(props) {
         equipo: obj.fk_area_apoyo.toString(),
         estado: obj.estado.toString(),
         prioridad: obj.prioridad.toString(),
-        notas: obj.notas
+        notas: obj.notas,
+        progreso: obj.progreso,
       })
     }
     fetchAreas()
@@ -77,7 +79,8 @@ function ModalPlanes(props) {
         fechaInicio: formData.fechaInicio,
         fechaFinal: formData.fechaFinal,
         notas: formData.notas,
-        areaApoyo: parseInt(formData.equipo)
+        areaApoyo: parseInt(formData.equipo),
+        progreso: parseInt(formData.progreso)
       }
 
       try {
@@ -101,7 +104,8 @@ function ModalPlanes(props) {
             equipo: "",
             estado: "",
             prioridad: "",
-            notas:""
+            notas:"",
+            progreso: 0
           })
           setModalErr(null)
           handleUpdate(true)
@@ -133,13 +137,16 @@ function ModalPlanes(props) {
       errors.responsable = "El email no es válido."
     }
     if(!data.equipo.trim()) {
-      errors.equipo = "Escoje un equipo de apoyo"
+      errors.equipo = "Escoje un equipo de apoyo."
     }
     if(!data.estado.trim()) {
       errors.estado = "Marca una opción."
     }
     if(!data.prioridad.trim()) {
       errors.prioridad = "Marca una opción."
+    }
+    if(!data.progreso.trim()) {
+      errors.progreso = "Escoge un valor."
     }
     if(!data.notas.trim()) {
       errors.notas = "Escribe una nota."
@@ -157,7 +164,8 @@ function ModalPlanes(props) {
       equipo: "",
       estado: "",
       prioridad: "",
-      notas: ""
+      notas: "",
+      progreso: 0
     })
     props.onHide()
     setTareaObj(null)
@@ -180,7 +188,8 @@ function ModalPlanes(props) {
         fechaFinal: formData.fechaFinal,
         notas: formData.notas,
         areaApoyo: parseInt(formData.equipo),
-        idTarea: task.id_tarea
+        idTarea: task.id_tarea,
+        progreso: parseInt(formData.progreso)
       }
 
       try {
@@ -204,7 +213,8 @@ function ModalPlanes(props) {
             equipo: "",
             estado: "",
             prioridad: "",
-            notas:""
+            notas:"",
+            progreso: 0
           })
           setModalErr(null)
           handleUpdate(true)
@@ -214,37 +224,37 @@ function ModalPlanes(props) {
       } catch (error) {
         console.log(error)
       }
-      
-      // await fetch("http://localhost:3030/apis/plan-accion/modTask", {
-      //   method: "PUT",
-      //   headers: {
-      //       "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify(obj)
-      // })
-      // .then(res => res.json())
-      // .then(data => {
-      //   console.log(data)
-      // })
-      // .catch (err => {
-      //   console.log(err)
-      // })
-      
-      // setFormData({
-      //   nombre: "",
-      //   fechaInicio: "",
-      //   fechaFinal: "",
-      //   responsable: "",
-      //   equipo: "",
-      //   estado: "",
-      //   prioridad: "",
-      //   notas:""
-      // })
-      // handleUpdate(true)
-      // props.onHide()
-      // setTareaObj(null)
     } else {
       console.log("Form no actualizado")
+    }
+  }
+
+  const handleDecrease = (e) => {
+    e.preventDefault()
+    if(formData.progreso === 0){
+      setFormData({
+        ...formData,
+        progreso: 0
+      })
+    } else {
+      setFormData({
+        ...formData,
+        progreso: formData.progreso - 10
+      })
+    }
+  }
+  const handleIncrese = (e) => {
+    e.preventDefault()
+    if(formData.progreso === 100){
+      setFormData({
+        ...formData,
+        progreso: 100
+      })
+    } else {
+      setFormData({
+        ...formData,
+        progreso: formData.progreso + 10
+      })
     }
   }
 
@@ -383,6 +393,15 @@ function ModalPlanes(props) {
               {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
             </div>
           </div>
+          <div className='col-12 col-md-6 mb-2'>
+            <label className='mb-1'>Progreso de la tarea</label>
+            <div className="formPA__progressBar d-flex flex-row align-items-center justify-content-between">
+              <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleDecrease}><i className="bi bi-dash"></i></button>
+              <ProgressBar className='formPA__progressBar__bar' now={formData.progreso} label={`${formData.progreso}%`} max={100}/>
+              <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleIncrese}><i className="bi bi-plus"></i></button>
+            </div>
+            {errors.progreso && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.progreso}</span>}
+          </div>
           <div className='mb-2'>
             <label className='mb-1'>Notas</label>
             <textarea 
@@ -520,6 +539,14 @@ function ModalPlanes(props) {
                     <option value="6">Bloqueada</option>
                   </select>
                 {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
+              </div>
+            </div>
+            <div className='col-12 col-md-6 mb-2'>
+              <label className='mb-1'>Progreso de la tarea</label>
+              <div className="formPA__progressBar d-flex flex-row align-items-center justify-content-between">
+                <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleDecrease}><i className="bi bi-dash"></i></button>
+                <ProgressBar className='formPA__progressBar__bar' now={formData.progreso} label={`${formData.progreso}%`} max={100}/>
+                <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleIncrese}><i className="bi bi-plus"></i></button>
               </div>
             </div>
             <div className='mb-2'>
