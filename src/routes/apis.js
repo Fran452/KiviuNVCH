@@ -13,8 +13,8 @@ router.post('/bi',apisHome.bi);
 
 router.post('/plan-accion',apisPlanDeAccion.planesAcciónView);
 router.post('/plan-accion/addTask',apisPlanDeAccion.addTarea);
-router.post('/plan-accion/modTask',apisPlanDeAccion.modTarea);
-router.post('/plan-accion/deleteTask',apisPlanDeAccion.deleteTarea);
+router.put('/plan-accion/modTask',apisPlanDeAccion.modTarea);
+router.put('/plan-accion/deleteTask',apisPlanDeAccion.deleteTarea);
 
 
 router.post('/login',apisUser.loginFuction);

@@ -69,6 +69,45 @@ function PlanesAccion() {
     modalShow(true)
   }
 
+  const handleDeleteTask = async (i) => {
+    const obj = {
+      idTarea: parseInt(i)
+    }
+    try {
+      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteTask", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(obj)
+      })
+      const data = await res.json()
+      if(data.error !== 0){
+        console.log(data.errorDetalle)
+      } else {
+        setLoading(true)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
+    // await fetch("http://localhost:3030/apis/plan-accion/deleteTask", {
+    //   method: "PUT",
+    //   headers: {
+    //       "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify(obj)
+    // })
+    // .then(res => res.json())
+    // .then(data => {
+    //   console.log(data)
+    // })
+    // .catch (err => {
+    //   console.log(err)
+    // })
+    
+  }
+
   return (
     <>
       <loadingContext.Provider value={{handleUpdate, tareaObj, setTareaObj}}>
@@ -125,14 +164,10 @@ function PlanesAccion() {
                         {tareas.map((e,i) => {
                           return <tr key={i}>
                             <td className='table__tbody__nombre'>{e.nombre}</td>
-                            <td className='table__tbody__fechaInicial'>{
-                              (new Date(e.fecha_inicio).toLocaleDateString("es-ES", { weekday: 'long' })).substring(0,3) + " " + new Date(e.fecha_inicio).toLocaleDateString("es-ES", { day: 'numeric' })
-                            }</td>
-                            <td className='table__tbody__fechaInicial'>{
-                              (new Date(e.fecha_final).toLocaleDateString("es-ES", { weekday: 'long' })).substring(0,3) + " " + new Date(e.fecha_final).toLocaleDateString("es-ES", { day: 'numeric' })
-                            }</td>
+                            <td className='table__tbody__fechaInicial'>{new Date(e.fecha_inicio.replace(/-/g, '/')).toLocaleDateString()}</td>
+                            <td className='table__tbody__fechaFinal'>{new Date(e.fecha_final.replace(/-/g, '/')).toLocaleDateString()}</td>
                             <td className='table__tbody__notas'>{e.notas}</td>
-                            <td className='table__tbody__notas'>{e.fk_empleado_asignado}</td>
+                            <td className='table__tbody__notas'>{e.Empleados.mail}</td>
                             <td className='table__tbody__equipo'>
                               {e.fk_area_apoyo === 1 && <span className='table__tbody__equipo'>Finanzas</span>}
                               {e.fk_area_apoyo === 2 && <span className='table__tbody__equipo'>Recursos Humanos</span>}
@@ -153,7 +188,7 @@ function PlanesAccion() {
                             </td>
                             <td className='table__tbody__buttons d-flex flex-row'>
                               <button onClick={(() => handleEditTask(e.id_tarea))} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
-                              <button className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
+                              <button onClick={(() => handleDeleteTask(e.id_tarea))} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
                             </td>
                           </tr>
                         })}

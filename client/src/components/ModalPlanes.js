@@ -22,6 +22,7 @@ function ModalPlanes(props) {
     notas: ""
   })
   const [errors, setErrors] = useState({})
+  const [modalErr, setModalErr] = useState(null)
 
   // Obtener áreas
   const fetchAreas = async () => {
@@ -43,7 +44,7 @@ function ModalPlanes(props) {
         nombre: obj.nombre,
         fechaInicio: obj.fecha_inicio,
         fechaFinal: obj.fecha_final,
-        responsable: obj.fk_empleado_asignado,
+        responsable: obj.Empleados.mail,
         equipo: obj.fk_area_apoyo.toString(),
         estado: obj.estado.toString(),
         prioridad: obj.prioridad.toString(),
@@ -79,33 +80,36 @@ function ModalPlanes(props) {
         areaApoyo: parseInt(formData.equipo)
       }
 
-      await fetch("http://localhost:3030/apis/plan-accion/addTask", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(obj)
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-      })
-      .catch (err => {
-        console.log(err)
-      })
-      
-      setFormData({
-        nombre: "",
-        fechaInicio: "",
-        fechaFinal: "",
-        responsable: "",
-        equipo: "",
-        estado: "",
-        prioridad: "",
-        notas:""
-      })
-      handleUpdate(true)
-      props.onHide()
+      try {
+        const res = await fetch("http://localhost:3030/apis/plan-accion/addTask", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(obj)
+        })
+        const data = await res.json()
+        if(data.error !== 0) {
+          handleUpdate(false)
+          setModalErr(data.errorDetalle)
+        } else {
+          setFormData({
+            nombre: "",
+            fechaInicio: "",
+            fechaFinal: "",
+            responsable: "",
+            equipo: "",
+            estado: "",
+            prioridad: "",
+            notas:""
+          })
+          setModalErr(null)
+          handleUpdate(true)
+          props.onHide()
+        }
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       console.log("Form no enviado")
     }
@@ -157,10 +161,91 @@ function ModalPlanes(props) {
     })
     props.onHide()
     setTareaObj(null)
+    setModalErr(null)
   }
 
-  const handleChangeTask = () => {
-    console.log("hola")
+  const handleChangeTask = async (e) => {
+    e.preventDefault()
+    const newErrors = validateForm(formData);
+    setErrors(newErrors)
+    const task = JSON.parse(tareaObj)
+    if (Object.keys(newErrors).length === 0){
+      const obj = {
+        empleado_asignado: formData.responsable,
+        user: jwtParse.apirest.objeto,
+        nombre: formData.nombre,
+        estado: parseInt(formData.estado),
+        prioridad: parseInt(formData.prioridad),
+        fechaInicio: formData.fechaInicio,
+        fechaFinal: formData.fechaFinal,
+        notas: formData.notas,
+        areaApoyo: parseInt(formData.equipo),
+        idTarea: task.id_tarea
+      }
+
+      try {
+        const res = await fetch("http://localhost:3030/apis/plan-accion/modTask", {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(obj)
+        })
+        const data = await res.json()
+        if(data.error !== 0) {
+          handleUpdate(false)
+          setModalErr(data.errorDetalle)
+        } else {
+          setFormData({
+            nombre: "",
+            fechaInicio: "",
+            fechaFinal: "",
+            responsable: "",
+            equipo: "",
+            estado: "",
+            prioridad: "",
+            notas:""
+          })
+          setModalErr(null)
+          handleUpdate(true)
+          props.onHide()
+          setTareaObj(null)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      
+      // await fetch("http://localhost:3030/apis/plan-accion/modTask", {
+      //   method: "PUT",
+      //   headers: {
+      //       "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(obj)
+      // })
+      // .then(res => res.json())
+      // .then(data => {
+      //   console.log(data)
+      // })
+      // .catch (err => {
+      //   console.log(err)
+      // })
+      
+      // setFormData({
+      //   nombre: "",
+      //   fechaInicio: "",
+      //   fechaFinal: "",
+      //   responsable: "",
+      //   equipo: "",
+      //   estado: "",
+      //   prioridad: "",
+      //   notas:""
+      // })
+      // handleUpdate(true)
+      // props.onHide()
+      // setTareaObj(null)
+    } else {
+      console.log("Form no actualizado")
+    }
   }
 
   return (
@@ -245,42 +330,46 @@ function ModalPlanes(props) {
             </div>
           </div>
           <div className='row mb-2'>
-            <div className='col-6'>
-              <div className='' onChange={handleChange} value={formData.prioridad}>
-                  <label className='mb-1'>Prioridad</label>
-                  <div className='d-flex flex-row'>
-                    <div className="form-check me-3">
-                        <input 
-                            className="form-check-input" 
-                            type="radio" 
-                            name="prioridad" 
-                            value="1"
-                        />
-                        <label className="form-check-label" htmlFor="flexRadioDefault1">Baja</label>
-                    </div>
-                    <div className="form-check me-3">
-                        <input 
-                            className="form-check-input" 
-                            type="radio" 
-                            name="prioridad" 
-                            value="2" 
-                        />
-                        <label className="form-check-label" htmlFor="flexRadioDefault2">Media</label>
-                    </div>
-                    <div className="form-check">
-                        <input 
-                            className="form-check-input" 
-                            type="radio" 
-                            name="prioridad" 
-                            value="3" 
-                        />
-                        <label className="form-check-label" htmlFor="flexRadioDefault3">Alta</label>
-                    </div>
+            <div className='col-12 col-md-6'>
+                <label className='mb-1'>Prioridad</label>
+                <div className='d-flex flex-row'>
+                  <div className="form-check me-3">
+                      <input 
+                          className="form-check-input" 
+                          type="radio" 
+                          name="prioridad" 
+                          value="1"
+                          checked={formData.prioridad === "1"}
+                          onChange={handleChange}
+                      />
+                      <label className="form-check-label" htmlFor="flexRadioDefault1">Baja</label>
                   </div>
-                {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
-              </div>
+                  <div className="form-check me-3">
+                      <input 
+                          className="form-check-input" 
+                          type="radio" 
+                          name="prioridad" 
+                          value="2" 
+                          checked={formData.prioridad === "2"}
+                          onChange={handleChange}
+                      />
+                      <label className="form-check-label" htmlFor="flexRadioDefault2">Media</label>
+                  </div>
+                  <div className="form-check">
+                      <input 
+                          className="form-check-input" 
+                          type="radio" 
+                          name="prioridad" 
+                          value="3" 
+                          checked={formData.prioridad === "3"}
+                          onChange={handleChange}
+                      />
+                      <label className="form-check-label" htmlFor="flexRadioDefault3">Alta</label>
+                  </div>
+                </div>
+              {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
             </div>
-            <div className="col-6">
+            <div className="col-12 col-md-6">
                 <label className='mb-1'>Estado</label>
                 <select className="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
                   <option value="">Elija el estado</option>
@@ -308,8 +397,9 @@ function ModalPlanes(props) {
             </textarea>
             {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
           </div>
+          {modalErr !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErr}</span>}
           <button type="submit" className='formPA__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
-              Agregar tarea
+              Modificar tarea
           </button>
         </form>
         ) : (
@@ -379,8 +469,7 @@ function ModalPlanes(props) {
               </div>
             </div>
             <div className='row mb-2'>
-              <div className='col-6'>
-                <div className='' onChange={handleChange} value={formData.prioridad}>
+              <div className='col-12 col-md-6'>
                     <label className='mb-1'>Prioridad</label>
                     <div className='d-flex flex-row'>
                       <div className="form-check me-3">
@@ -389,6 +478,8 @@ function ModalPlanes(props) {
                               type="radio" 
                               name="prioridad" 
                               value="1"
+                              checked={formData.prioridad === "1"}
+                              onChange={handleChange}
                           />
                           <label className="form-check-label" htmlFor="flexRadioDefault1">Baja</label>
                       </div>
@@ -398,6 +489,8 @@ function ModalPlanes(props) {
                               type="radio" 
                               name="prioridad" 
                               value="2" 
+                              checked={formData.prioridad === "2"}
+                              onChange={handleChange}
                           />
                           <label className="form-check-label" htmlFor="flexRadioDefault2">Media</label>
                       </div>
@@ -407,14 +500,15 @@ function ModalPlanes(props) {
                               type="radio" 
                               name="prioridad" 
                               value="3" 
+                              checked={formData.prioridad === "3"}
+                              onChange={handleChange}
                           />
                           <label className="form-check-label" htmlFor="flexRadioDefault3">Alta</label>
                       </div>
                     </div>
                   {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
-                </div>
               </div>
-              <div className="col-6">
+              <div className="col-12 col-md-6">
                   <label className='mb-1'>Estado</label>
                   <select className="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
                     <option value="">Elija el estado</option>
@@ -442,6 +536,7 @@ function ModalPlanes(props) {
               </textarea>
               {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
             </div>
+            {modalErr !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErr}</span>}
             <button type="submit" className='formPA__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
                 Agregar tarea
             </button>
