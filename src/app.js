@@ -21,6 +21,7 @@ const publicPath = path.join(__dirname,"../");
 app.use(express.static(publicPath));
 app.use(cors())
 app.use(express.json())
+
 app.use(express.urlencoded({extended : false}));
 app.set("view engine","ejs");
 app.set("views","./src/views");
@@ -37,7 +38,7 @@ app.use('/',rutasMain);
 /**************** Inicio de apliacion *******//********************/
 
 app.listen(PORT, () => {
-    console.log(`Servidor en funcionamiento en el puerto ${process.env.link||`http://localhost:${PORT}`}`);
+    console.log(`Servidor en funcionamiento en el puerto ${process.env.HOST||`http://localhost:${PORT}`}`);
 });
 
 /**************** Error 404 ***************************/

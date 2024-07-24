@@ -63,6 +63,7 @@ CREATE TABLE Tareas (
     fecha_final                             DATE NOT NULL,
     notas                                   VARCHAR(255),
     mostrar                                 INT NOT NULL,
+    progreso					            INT,
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
@@ -78,6 +79,7 @@ CREATE TABLE Subtareas (
     fecha_inicio                            DATE NOT NULL,
     fecha_final                             DATE NOT NULL,
     notas                                   VARCHAR(255),
+    progreso					            INT,
     FOREIGN KEY (fk_tarea)                  REFERENCES Tareas(id_tarea),
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado)
 );  

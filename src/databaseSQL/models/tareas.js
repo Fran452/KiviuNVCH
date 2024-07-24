@@ -54,6 +54,11 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
         
+        "prioridad": {
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
+        
         "fecha_inicio":{
             type: DataTypes.DATE(255),
             allowNull: false
