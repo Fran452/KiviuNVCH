@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/home',homeController.index);
 
-router.get('/bi/:area',homeController.bi);
+router.post('/bi/:area',homeController.bi);
 
 router.get('/plan-accion-config',homeController.planesAcción);
 router.post('/plan-accion-config',homeController.planesAcciónFuction);

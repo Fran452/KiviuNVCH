@@ -1,0 +1,168 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.loading__tareas {
+    height: calc(100% - 48px);
+
+    div {
+        margin-bottom: 10px;
+        svg g g circle[stroke] {
+            stroke: $blue-500;
+        }
+    }
+
+    p {
+        color: $blue-500
+    }
+}
+
+.planes__accion {
+    height: 100%;
+    
+    &__tareas--empty {
+        width: 100%;
+        height: calc(100% - 48px);
+        border: 2px dashed $blue-500;
+        padding: 20px;
+
+        h2 {
+            color: $blue-500
+        }
+
+        &__btn {
+            width: 180px;
+            height: 40px;
+            background-color: $blue-500 !important;
+            color: #fff !important;
+        }
+    }
+
+    &__tareas {
+        height: calc(100% - 24px);
+        &__main {
+            height: 100%;
+            
+            .btn__area {
+                font-size: 12px;
+            }
+
+            &__tabla {
+                overflow-x: scroll;
+                width: calc(100vw - 80px);
+    
+                .table {
+                    table-layout: auto;
+                    width: 100%;
+    
+                    thead {
+                        tr {
+                            th {
+                                white-space: nowrap;
+                                overflow:hidden;
+                                color: $blue-500;
+                                padding: 5px 20px;
+                            }
+                        }
+                    }
+    
+                    &__tbody {
+                        td {
+                            padding: 5px 20px;
+                        }
+    
+                        &__nombre, &__fechaInicial, &__fechaFinal, &__equipo, &__notas {
+                            white-space: nowrap;
+                            overflow: hidden;
+                        }
+                        &__notas {
+                            max-width: 300px;
+                            text-overflow: ellipsis;
+                        }
+                        &__prioridad {
+                            span {
+                                padding: 6px 12px;
+                            }
+    
+                            &--baja {
+                                background-color: $blue-500 !important;
+                            }
+    
+                            &--media {
+                                background-color: $blue-600 !important;
+                            }
+    
+                            &--alta {
+                                background-color: $blue-700 !important;
+                            }
+                        }
+    
+                        &__estado {
+                            span {
+                                padding: 6px 12px;
+                            }
+    
+                            &--pendiente {
+                                background-color: $gray-500 !important;
+                            }
+    
+                            &--proceso {
+                                background-color: $warning !important;
+                            }
+    
+                            &--completada {
+                                background-color: $success !important;
+                            }
+    
+                            &--espera {
+                                background-color: $purple-400 !important;
+                            }
+    
+                            &--cancelada {
+                                background-color: $danger !important;
+                            }
+    
+                            &--bloqueada {
+                                background-color: $black !important;
+                            }
+                        }
+    
+                        &__buttons {
+                            button {
+                                width: 36px;
+                                height: 36px;
+                                padding: 0;
+                            }
+                        } 
+                    }
+                }
+            }
+
+            &__tabla::-webkit-scrollbar {
+                height: 10px;
+            }
+    
+            &__tabla::-webkit-scrollbar-track {
+                background-color: rgba($color: $gray-300, $alpha: 0);
+            }
+    
+            &__tabla::-webkit-scrollbar-thumb {
+                background-color: $gray-500;
+                border-radius: 5px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .planes__accion {
+        &__tareas--empty {
+            padding: 0;
+        }
+
+        &__tareas {
+            &__tabla {
+                width: inherit;
+            }
+        }
+    }
+}

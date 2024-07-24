@@ -2,6 +2,7 @@ const dataBaseSQL = require("../databaseSQL/models");
 const {Sequelize, DATE} = require('sequelize');
 
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const baseDeDatos = {
     empleados : path.join(__dirname, "../database/db_user.json"),
@@ -33,11 +34,16 @@ const controlador = {
             );
     
             if(empleados == null){
-                res.json({
+                apirest = {
                     status: 10,
                     codeError : "no existe el mail",
                     objeto: {}
+                }
+                const token = jwt.sign({apirest}, "Stack", {
+                    expiresIn: '3m'
                 })
+                res.json(token)
+                //
                 return apirest = {
                     status: 10,
                     codeError : "no existe el mail",
@@ -58,15 +64,22 @@ const controlador = {
                         codeError : "",
                         objeto: req.session.user
                     }
-                    res.json(apirest);
+                    const token = jwt.sign({apirest}, "Stack",{
+                        expiresIn: '3m'
+                    })
+                    res.json(token);
+                    //
                     return apirest;
                 }else{
-                     pirest = {
+                    apirest = {
                         status: 10,
                         codeError : "Contraseña incorrecta",
                         objeto: {}
                     };
-                    res.json(apirest);
+                    const token = jwt.sign({apirest}, "Stack",{
+                        expiresIn: '3m'
+                    })
+                    res.json(token);
                 }
             }
         }
