@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {Link, useLocation, useNavigate} from "react-router-dom"
-import Logo from "../assets/img/logo.png"
+import Logo from "../assets/img/logo-v2.png"
 import "./Sidebar.scss"
 import Avatar from "../assets/img/avatar.jpg"
 import { jwtDecode } from "jwt-decode"

@@ -103,8 +103,8 @@ function Login() {
                         </form>
                     </div>
                     <div className='login__container__info d-none d-md-flex flex-column justify-content-center col-md-6 bg-gray-100 rounded-end'>
-                        <h1 className="login__container__info__title mb-2">Muchos pueden mirar, pero pocos pueden ver</h1>
-                        <h4 className="login__container__info__subtitle mb-4">El sistema logístico más completo.</h4>
+                        <h1 className="login__container__info__title mb-2">Muchos pueden mirar, pero pocos pueden ver.</h1>
+                        <h4 className="login__container__info__subtitle mb-4">Plataforma de Gestión profesional y seguimiento con datos.</h4>
                         <img src={Ilustration} alt="" />
                     </div>
                 </div>
