@@ -66,10 +66,9 @@ const controlador = {
                     },
                 }
             );
-            console.log(empleadoAsignado)
 
             if (empleadoAsignado === null){
-                res.json({error : 10, errorDetalle: "empleado in dataBase not exist"});
+                res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                 return 1;
             }else if(fechaDeLaTarea > fechaActua){
                 res.json({error : 99, errorDetalle: "fecha_inicio is greater than the current"});
@@ -87,7 +86,7 @@ const controlador = {
                     fk_area_apoyo: req.body.areaApoyo,
                     mostrar : 1 
                 });
-                res.json({error :0, errorDetalle: "", objeto:{tarea:tarea,empleado_asignado:req.body.empleado_asignado}});
+                res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0
             }
         }
@@ -117,11 +116,12 @@ const controlador = {
                 fk_empleado_asignado : empleadoAsignado.id_empleado,
                 fk_area : req.body.user.area,
                 nombre : req.body.nombre,
-                rango : req.bod.rango,
+                estado : req.body.estado,
                 prioridad : req.body.prioridad,
-                fecha_inicio : fechaDeLaTarea,
-                fecha_final : req.body.fecha_final,
+                fecha_inicio : req.body.fechaInicio,
+                fecha_final : req.body.fechaFinal,
                 notas : req.body.notas,
+                fk_area_apoyo: req.body.areaApoyo,
             },{
                 where:{
                     id_tarea : req.body.idTarea
@@ -139,13 +139,13 @@ const controlador = {
     deleteTarea: async (req,res) => { 
         try{
              let tareaModificada = await dataBaseSQL.tareas.update({
-                show : 1,
+                mostrar : 0,
             },{
                 where:{
                     id_tarea : req.body.idTarea
                 }
             });
-            res.json({error : 0, errorDetalle: "",objeto:tareaModificada});   
+            res.json({error : 0, errorDetalle: "", objeto:tareaModificada});   
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
