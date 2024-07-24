@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Oval } from 'react-loader-spinner'
-import { ProgressBar } from 'react-bootstrap';
+import { ProgressBar, Modal } from 'react-bootstrap';
 import "./PlanesAccion.scss"
 import ModalPlanes from "../../components/ModalPlanes"
 import { jwtDecode } from "jwt-decode"
@@ -14,6 +14,8 @@ function PlanesAccion() {
   const [tareas, setTareas] = useState([])
   const [modal, modalShow] = useState(false)
   const [tareaObj, setTareaObj] = useState(null)
+  const [modalDelete, setModalDelete] = useState(false)
+  const [id, setId] = useState(null)
 
   const fetchAreas = async () => {
     try {
@@ -45,7 +47,6 @@ function PlanesAccion() {
           body: JSON.stringify(reqBody)
         })
         const data = await res.json()
-        console.log(data)
         setTareas(data.objeto)
         setLoading(false)
       } catch (error) {
@@ -72,9 +73,14 @@ function PlanesAccion() {
     modalShow(true)
   }
 
-  const handleDeleteTask = async (i) => {
+  const handleModalDelete = (i) => {
+    setId(i)
+    setModalDelete(true)
+  }
+
+  const handleDeleteTask = async () => {
     const obj = {
-      idTarea: parseInt(i)
+      idTarea: parseInt(id)
     }
     try {
       const res = await fetch("http://localhost:3030/apis/plan-accion/deleteTask", {
@@ -88,6 +94,7 @@ function PlanesAccion() {
       if(data.error !== 0){
         console.log(data.errorDetalle)
       } else {
+        setModalDelete(false)
         setLoading(true)
       }
     } catch (error) {
@@ -97,6 +104,16 @@ function PlanesAccion() {
 
   return (
     <>
+      <Modal show={modalDelete} onHide={() => setModalDelete(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Eliminar tarea</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>¿Está seguro de eliminar esta tarea?</Modal.Body>
+        <Modal.Footer>
+          <button className='btn' onClick={() => setModalDelete(false)}>Cancelar</button>
+          <button className='btn btn-danger' onClick={handleDeleteTask}>Borrar</button>
+        </Modal.Footer>
+      </Modal>
       <loadingContext.Provider value={{handleUpdate, tareaObj, setTareaObj}}>
         <ModalPlanes show={modal} onHide={()=>modalShow(false)} />
       </loadingContext.Provider>
@@ -179,7 +196,7 @@ function PlanesAccion() {
                             </td>
                             <td className='table__tbody__buttons d-flex flex-row'>
                               <button onClick={(() => handleEditTask(e.id_tarea))} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
-                              <button onClick={(() => handleDeleteTask(e.id_tarea))} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
+                              <button onClick={(() => handleModalDelete(e.id_tarea))} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
                             </td>
                           </tr>
                         })}
