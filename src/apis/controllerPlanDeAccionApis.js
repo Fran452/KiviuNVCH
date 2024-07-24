@@ -84,6 +84,7 @@ const controlador = {
                     fecha_final : req.body.fechaFinal,
                     notas : req.body.notas,
                     fk_area_apoyo: req.body.areaApoyo,
+                    progreso:req.body.progreso,
                     mostrar : 1 
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
@@ -122,6 +123,7 @@ const controlador = {
                 fecha_final : req.body.fechaFinal,
                 notas : req.body.notas,
                 fk_area_apoyo: req.body.areaApoyo,
+                progreso:req.body.progreso,
             },{
                 where:{
                     id_tarea : req.body.idTarea
