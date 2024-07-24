@@ -145,7 +145,7 @@ function ModalPlanes(props) {
     if(!data.prioridad.trim()) {
       errors.prioridad = "Marca una opción."
     }
-    if(!data.progreso.trim()) {
+    if(isNaN(data.progreso) === true || data.progreso === 0) {
       errors.progreso = "Escoge un valor."
     }
     if(!data.notas.trim()) {
@@ -548,6 +548,7 @@ function ModalPlanes(props) {
                 <ProgressBar className='formPA__progressBar__bar' now={formData.progreso} label={`${formData.progreso}%`} max={100}/>
                 <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleIncrese}><i className="bi bi-plus"></i></button>
               </div>
+              {errors.progreso && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.progreso}</span>}
             </div>
             <div className='mb-2'>
               <label className='mb-1'>Notas</label>

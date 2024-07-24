@@ -45,6 +45,7 @@ function PlanesAccion() {
           body: JSON.stringify(reqBody)
         })
         const data = await res.json()
+        console.log(data)
         setTareas(data.objeto)
         setLoading(false)
       } catch (error) {
@@ -173,8 +174,8 @@ function PlanesAccion() {
                               {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
                               {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
                             </td>
-                            <td>
-                              <ProgressBar className='' now={e.progreso} label={`${e.progreso}%`} max={100}/>
+                            <td className='table__tbody__progreso'>
+                              <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
                             </td>
                             <td className='table__tbody__buttons d-flex flex-row'>
                               <button onClick={(() => handleEditTask(e.id_tarea))} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>

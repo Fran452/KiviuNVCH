@@ -54,7 +54,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
         
-        "prioridad": {
+        "progreso": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
