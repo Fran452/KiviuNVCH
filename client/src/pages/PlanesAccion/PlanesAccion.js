@@ -12,6 +12,7 @@ function PlanesAccion() {
   const [tareas, setTareas] = useState([])
   const [modal, modalShow] = useState(false)
   const [tareaObj, setTareaObj] = useState(null)
+  const [value, setValue] = useState(0)
 
   const fetchAreas = async () => {
     try {
@@ -89,23 +90,7 @@ function PlanesAccion() {
       }
     } catch (error) {
       console.log(error)
-    }
-
-    // await fetch("http://localhost:3030/apis/plan-accion/deleteTask", {
-    //   method: "PUT",
-    //   headers: {
-    //       "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify(obj)
-    // })
-    // .then(res => res.json())
-    // .then(data => {
-    //   console.log(data)
-    // })
-    // .catch (err => {
-    //   console.log(err)
-    // })
-    
+    }    
   }
 
   return (
@@ -135,6 +120,11 @@ function PlanesAccion() {
           <>
             {tareas.length > 0 ? (
               <div className='planes__accion__tareas d-flex flex-column'>
+                {/* <div className='d-flex flex-row align-items-center'>
+                  <button className='btn' onClick={() => setValue(value === 0 ? 0 : value-10)}>-</button>
+                  <progress value={value} max={100} />
+                  <button className='btn' onClick={() => setValue(value === 100 ? 100 : value+10)}>+</button>
+                </div> */}
                 <div className='planes__accion__tareas__header d-flex flex-row justify-content-between align-items-center mb-4'>
                   <h3 className='m-0 invisible'>Área</h3>
                   <button className=' btn btn-primary' onClick={handleForm}>Agregar tarea</button>
