@@ -29,7 +29,7 @@ module.exports = (sequelize,DataTypes) => {
 
     let config =  {
         timestamps: false,
-        tableName : "areas"
+        tableName : "Areas"
     };
 
     const areas = sequelize.define(nombre,columnas,config);
