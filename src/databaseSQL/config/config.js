@@ -5,7 +5,7 @@ module.exports = {
     "database": "kiviuTest",
     "host": "164.92.77.143",
     "dialect": "mysql",
-    "port": process.env.PortDb || "3307"//3306 Windows 3307 Ubuntu
+    "port": process.env.PortDb || "3306"//3306 Windows 3307 Ubuntu
   },
   "test": {
     "username": "fran452",
@@ -13,7 +13,7 @@ module.exports = {
     "database": "kiviuTest",
     "host": "164.92.77.143",
     "dialect": "mysql",
-    "local": "3307"
+    "local": "3306"
   },
   "production": {
     "username": "fran452",
@@ -21,6 +21,6 @@ module.exports = {
     "database": "kiviuTest",
     "host": "164.92.77.143",
     "dialect": "mysql",
-    "local": "3307"
+    "local": "3306"
   }
 }
