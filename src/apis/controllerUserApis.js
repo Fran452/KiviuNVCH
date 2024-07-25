@@ -38,16 +38,7 @@ const controlador = {
                     codeError : "no existe el mail",
                     objeto: {}
                 }
-                const token = jwt.sign({apirest}, "Stack", {
-                    expiresIn: '3m'
-                })
                 res.json(token)
-                //
-                return apirest = {
-                    status: 10,
-                    codeError : "no existe el mail",
-                    objeto: {}
-                };
             }else{
                 if(bcrypt.compareSync(req.body.pass,empleados.password)){
                     req.session.user = {
