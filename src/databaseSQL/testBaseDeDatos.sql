@@ -19,3 +19,10 @@ VALUES
     (5, 105, 205, 'Implementación de nuevas políticas', 1, 2, '2024-07-30', '2024-08-15', 'Actualizar manuales y procedimientos', 1),
     (6, 106, 206, 'Desarrollo de campaña publicitaria', 1, 1, '2024-08-05', '2024-08-25', 'Crear contenido y planificar difusión', 1);
 
+---------------------------------- Base subida al server de ejemplo -----------------------
+
+INSERT INTO Areas (power_Bi, nombre_del_Area) VALUES ('https://app.powerbi.com/view?r=eyJrIjoiOWY3YWE4NTctNzhiYi00MDU2LWFjNDYtOTZjNjAyYmFlOWRkIiwidCI6IjczNDA0NzgxLTBjNTUtNDVmNC04MDJkLTZlZDdkZTgxN2NkNSIsImMiOjR9', 'Recursos Humanos'), ('Versión 2.0', 'Finanzas'), ('Versión 3.0', 'Ventas');
+INSERT INTO Puestos (nombre_puesto) VALUES ('Gerente'), ('Analista'), ('Asistente');
+INSERT INTO Empleados (fk_area, fk_puesto, nombre, password, mail, sucursal) VALUES (1, 1, 'Francisco Lema', '$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq', 'franciscolemacr@gmail.com', 'Buenos Aires');
+INSERT INTO Tareas (fk_empleado_asignado, fk_area, fk_area_apoyo, nombre, estado, prioridad, fecha_inicio, fecha_final, notas, mostrar, progreso) VALUES (1, 1, 2, 'Tarea 1', 1, 3, '2024-07-01', '2024-08-01', 'Notas de la tarea 1', 1, 50), (1, 1, 2, 'Tarea 2', 2, 2, '2024-07-15', '2024-09-15', 'Notas de la tarea 2', 1, 30), (1, 1, 2, 'Tarea 3', 3, 1, '2024-07-20', '2024-08-30', 'Notas de la tarea 3', 0, 100);
+

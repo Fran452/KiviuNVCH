@@ -1,26 +1,26 @@
 module.exports = {
   "development": {
-    "username": "root",
-    "password": '',
+    "username": "fran452",
+    "password": 'desaFran2024!',
     "database": "kiviuTest",
-    "host": "127.0.0.1",
+    "host": "164.92.77.143",
     "dialect": "mysql",
-    "port": process.env.PortDb || "3306"//3306 Windows 3307 Ubuntu
+    "port": process.env.PortDb || "3307"//3306 Windows 3307 Ubuntu
   },
   "test": {
-    "username": "root",
-    "password": null,
+    "username": "fran452",
+    "password": 'desaFran2024!',
     "database": "kiviuTest",
-    "host": "127.0.0.1",
+    "host": "164.92.77.143",
     "dialect": "mysql",
-    "local": "3306"
+    "local": "3307"
   },
   "production": {
-    "username": "root",
-    "password": null,
+    "username": "fran452",
+    "password": 'desaFran2024!',
     "database": "kiviuTest",
-    "host": "127.0.0.1",
+    "host": "164.92.77.143",
     "dialect": "mysql",
-    "local": "3306"
+    "local": "3307"
   }
 }

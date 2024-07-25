@@ -27,6 +27,24 @@ CREATE TABLE Empleados (
     FOREIGN KEY (fk_Puesto)                REFERENCES Puestos(id_puesto)
 );
 
+CREATE TABLE Tareas (
+    id_tarea                                INT PRIMARY KEY AUTO_INCREMENT,
+    fk_empleado_asignado                    INT NOT NULL,
+    fk_area                                 INT NOT NULL,
+    fk_area_apoyo                           INT NOT NULL,
+    nombre                                  VARCHAR(255),
+    estado	                                INT NOT NULL,
+    prioridad					            INT NOT NULL,
+    fecha_inicio                            DATE NOT NULL,
+    fecha_final                             DATE NOT NULL,
+    notas                                   VARCHAR(255),
+    mostrar                                 INT NOT NULL,
+    progreso					            INT,
+    FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
+    FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
+    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
+);  
+
 CREATE TABLE Indicadores (
     id_indicador                           INT PRIMARY KEY AUTO_INCREMENT,
     fk_area                                INT NOT NULL,
@@ -51,23 +69,6 @@ CREATE TABLE Metricas (
     FOREIGN KEY (log_de_usuario)            REFERENCES Empleados(id_empleado)
 );
 
-CREATE TABLE Tareas (
-    id_tarea                                INT PRIMARY KEY AUTO_INCREMENT,
-    fk_empleado_asignado                    INT NOT NULL,
-    fk_area                                 INT NOT NULL,
-    fk_area_apoyo                           INT NOT NULL,
-    nombre                                  VARCHAR(255),
-    estado	                                INT NOT NULL,
-    prioridad					            INT NOT NULL,
-    fecha_inicio                            DATE NOT NULL,
-    fecha_final                             DATE NOT NULL,
-    notas                                   VARCHAR(255),
-    mostrar                                 INT NOT NULL,
-    progreso					            INT,
-    FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
-    FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
-    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
-);  
 
 CREATE TABLE Subtareas (    
     id_subtarea                             INT PRIMARY KEY AUTO_INCREMENT,
