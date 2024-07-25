@@ -54,11 +54,7 @@ const controlador = {
                         codeError : "",
                         objeto: req.session.user
                     }
-                    const token = jwt.sign({apirest}, "Stack",{
-                        expiresIn: '3m'
-                    })
                     res.json(token);
-                    //
                     return apirest;
                 }else{
                     apirest = {
@@ -66,9 +62,6 @@ const controlador = {
                         codeError : "Contraseña incorrecta",
                         objeto: {}
                     };
-                    const token = jwt.sign({apirest}, "Stack",{
-                        expiresIn: '3m'
-                    })
                     res.json(token);
                 }
             }
