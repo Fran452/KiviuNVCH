@@ -19,7 +19,7 @@ function PowerBI() {
 
         const fetchData = async () => {
             try {
-                const res = await fetch("/apis/bi",{
+                const res = await fetch("http://localhost:3030/apis/bi",{
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

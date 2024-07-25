@@ -19,7 +19,7 @@ function PlanesAccion() {
 
   const fetchAreas = async () => {
     try {
-      const res = await fetch("/apis/index",{
+      const res = await fetch("http://localhost:3030/apis/index",{
         method: "GET"
       })
       const data = await res.json()
@@ -39,7 +39,7 @@ function PlanesAccion() {
   
     const fetchTareas = async () => {
       try {
-        const res = await fetch("/apis/plan-accion", {
+        const res = await fetch("http://localhost:3030/apis/plan-accion", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
@@ -104,14 +104,14 @@ function PlanesAccion() {
 
   return (
     <>
-      <Modal show={modalDelete} onHide={() => setModalDelete(false)}>
+      <Modal className='modal__delete' show={modalDelete} onHide={() => setModalDelete(false)} backdrop="static">
         <Modal.Header closeButton>
-          <Modal.Title>Eliminar tarea</Modal.Title>
+          <Modal.Title><h3>Eliminar tarea</h3></Modal.Title>
         </Modal.Header>
         <Modal.Body>¿Está seguro de eliminar esta tarea?</Modal.Body>
         <Modal.Footer>
-          <button className='btn' onClick={() => setModalDelete(false)}>Cancelar</button>
-          <button className='btn btn-danger' onClick={handleDeleteTask}>Borrar</button>
+          <button className='btn btn-secondary rounded-pill' onClick={() => setModalDelete(false)}>Cancelar</button>
+          <button className='btn btn-danger rounded-pill' onClick={handleDeleteTask}>Borrar</button>
         </Modal.Footer>
       </Modal>
       <loadingContext.Provider value={{handleUpdate, tareaObj, setTareaObj}}>
@@ -140,8 +140,8 @@ function PlanesAccion() {
             {tareas.length > 0 ? (
               <div className='planes__accion__tareas d-flex flex-column'>
                 <div className='planes__accion__tareas__header d-flex flex-row justify-content-between align-items-center mb-4'>
-                  <h3 className='m-0 invisible'>Área</h3>
-                  <button className=' btn btn-primary' onClick={handleForm}>Agregar tarea</button>
+                  <h3 className='m-0'>Proyectos<i className="bi bi-chevron-right mx-2"></i>Proyecto 1</h3>
+                  <button className=' btn btn-primary rounded-pill' onClick={handleForm}>Agregar tarea</button>
                 </div>
                 <div className='planes__accion__tareas__main d-flex flex-column flex-md-row w-100'>
                   {/* <div className='d-flex flex-row flex-md-column me-0 mb-4 me-md-4 mb-md-0'>
@@ -150,7 +150,7 @@ function PlanesAccion() {
                     })}
                   </div> */}
                   <div className='planes__accion__tareas__main__tabla'>
-                    <table className="table table-striped align-middle table-bordered">
+                    <table className="table table-striped align-middle">
                       <thead>
                         <tr>
                           <th scope="col">Tareas</th>

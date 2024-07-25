@@ -28,7 +28,7 @@ function ModalPlanes(props) {
   // Obtener áreas
   const fetchAreas = async () => {
     try {
-      const res = await fetch("/apis/index",{
+      const res = await fetch("http://localhost:3030/apis/index",{
         method: "GET"
       })
       const data = await res.json()
