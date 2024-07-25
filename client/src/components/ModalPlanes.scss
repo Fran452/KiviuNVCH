@@ -46,4 +46,15 @@
         color: $danger;
         margin: 0;
     }
+
+    &__progressBar {
+        button {
+            width: 20px;
+            height: 20px;
+        }
+
+        &__bar {
+            width: calc(100% - 60px);
+        }
+    }
 }
