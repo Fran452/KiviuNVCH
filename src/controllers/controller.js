@@ -25,7 +25,7 @@ const funcionesGenericas = require("../funcionesGenerales");
 const controlador = {
     
     test: async (req,res) => {
-        res.render('home')
+        res.render('home');
     },
     index: async (req,res) => {
         try{
