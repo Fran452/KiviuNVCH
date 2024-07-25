@@ -21,7 +21,7 @@ function Navbar({sidebarOpen, setSidebarOpen}) {
               <img className='rounded-circle' src={Avatar} alt="" />
             </div>
             <p className='text-white m-0 me-2'>{jwtParse.apirest.objeto.nombre}</p>
-            <i className="bi bi-chevron-down text-white"></i>
+            {/* <i className="bi bi-chevron-down text-white"></i> */}
           </button>
         </div>
     </div>
