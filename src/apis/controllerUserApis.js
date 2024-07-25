@@ -2,6 +2,7 @@ const dataBaseSQL = require("../databaseSQL/models");
 const {Sequelize, DATE} = require('sequelize');
 
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const baseDeDatos = {
     empleados : path.join(__dirname, "../database/db_user.json"),
@@ -38,7 +39,16 @@ const controlador = {
                     codeError : "no existe el mail",
                     objeto: {}
                 }
+                const token = jwt.sign({apirest}, "Stack", {
+                    expiresIn: '3m'
+                })
                 res.json(token)
+                //
+                return apirest = {
+                    status: 10,
+                    codeError : "no existe el mail",
+                    objeto: {}
+                };
             }else{
                 if(bcrypt.compareSync(req.body.pass,empleados.password)){
                     req.session.user = {
@@ -54,7 +64,11 @@ const controlador = {
                         codeError : "",
                         objeto: req.session.user
                     }
+                    const token = jwt.sign({apirest}, "Stack",{
+                        expiresIn: '3m'
+                    })
                     res.json(token);
+                    //
                     return apirest;
                 }else{
                     apirest = {
@@ -62,6 +76,9 @@ const controlador = {
                         codeError : "Contraseña incorrecta",
                         objeto: {}
                     };
+                    const token = jwt.sign({apirest}, "Stack",{
+                        expiresIn: '3m'
+                    })
                     res.json(token);
                 }
             }
