@@ -19,7 +19,7 @@ function PlanesAccion() {
 
   const fetchAreas = async () => {
     try {
-      const res = await fetch("/apis/index",{
+      const res = await fetch("http://localhost:3030/apis/index",{
         method: "GET"
       })
       const data = await res.json()
@@ -39,7 +39,7 @@ function PlanesAccion() {
   
     const fetchTareas = async () => {
       try {
-        const res = await fetch("/apis/plan-accion", {
+        const res = await fetch("http://localhost:3030/apis/plan-accion", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
