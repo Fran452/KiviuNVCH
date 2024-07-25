@@ -2,7 +2,6 @@ const dataBaseSQL = require("../databaseSQL/models");
 const {Sequelize, DATE} = require('sequelize');
 
 const path = require("path");
-const jwt = require("jsonwebtoken");
 
 const baseDeDatos = {
     empleados : path.join(__dirname, "../database/db_user.json"),

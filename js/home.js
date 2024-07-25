@@ -1,4 +1,4 @@
-fetch('http://localhost:3030/apis/plan-accion',{
+fetch('http://164.92.77.143:3030/apis/plan-accion',{
     method:'POST',
     headers: {
         "Content-Type": "application/json"
