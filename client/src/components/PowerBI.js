@@ -28,6 +28,7 @@ function PowerBI() {
                     body: JSON.stringify(req)
                 })
                 const data = await res.json()
+                console.log(data)
                 setData(data)
             } catch (error) {
                 console.log(error)
@@ -50,7 +51,7 @@ function PowerBI() {
                 <iframe 
                     className="w-100 h-100 border-0" 
                     title="TABLERO-GLOBAL_HITSS (2)" 
-                    src={data.BiArea} 
+                    src={data.objeto.BiArea} 
                     allowFullScreen={true}> 
                 </iframe>
             )}
