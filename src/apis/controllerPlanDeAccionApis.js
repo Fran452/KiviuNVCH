@@ -31,7 +31,12 @@ const controlador = {
                     where: {
                         mostrar : 1
                     },
-                    include: [{association : "Areas"},{association : "Empleados"},{association : "AreasApollo"}]
+                    attributes: ['nombre_del_Area']
+                    /*include: [
+                        {association : "Areas",attributes: ['nombre_del_Area']},
+                        {association : "Empleados",attributes: ['nombre','mail']},
+                        {association : "AreasApollo",attributes: ['nombre_del_Area']}
+                    ]*/
                 });
 
             }else{
@@ -40,7 +45,11 @@ const controlador = {
                         fk_area: req.body.user.area,
                         mostrar : 1
                     },
-                    include: [{association : "Areas"},{association : "Empleados"},{association : "AreasApollo"}]
+                    /*include: [
+                            {association : "Areas",attributes: ['nombre_del_Area']},
+                            {association : "Empleados",attributes: ['nombre','mail']},
+                            {association : "AreasApollo",attributes: ['nombre_del_Area']}
+                        ]*/
                 });
             }
             
