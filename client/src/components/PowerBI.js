@@ -11,6 +11,7 @@ function PowerBI() {
     useEffect(() => {
         const auth = localStorage.getItem("token")
         const jwtParse = jwtDecode(auth)
+        console.log(jwtParse.apirest.objeto)
 
         const req = {
             user: jwtParse.apirest.objeto,
@@ -19,7 +20,7 @@ function PowerBI() {
 
         const fetchData = async () => {
             try {
-                const res = await fetch("http://localhost:3030/apis/bi",{
+                const res = await fetch("http://164.92.77.143:3030/apis/bi",{
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -27,7 +28,7 @@ function PowerBI() {
                     body: JSON.stringify(req)
                 })
                 const data = await res.json()
-                setData(data.objeto)
+                setData(data)
             } catch (error) {
                 console.log(error)
             }
@@ -37,7 +38,7 @@ function PowerBI() {
 
     return (
         <>
-            {data.BiArea === "" ? (
+            {data.status !== 0 ? (
                 <div className='no__access d-flex flex-column align-items-center justify-content-center'>
                     <img className='mb-4' src={IllustrationAccess} alt="" />
                     <h2 className='fw-semibold mb-2'>Oops!</h2>
