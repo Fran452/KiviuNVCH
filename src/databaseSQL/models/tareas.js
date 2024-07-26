@@ -39,6 +39,11 @@ module.exports = (sequelize,DataTypes) => {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
+
+        "fk_proyecto": {
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
         
         "nombre":{
             type: DataTypes.STRING(255),
@@ -100,10 +105,18 @@ module.exports = (sequelize,DataTypes) => {
             foreignKey : 'fk_area',
             as : 'Areas'
         });
+
         tareas.belongsTo(models.areas,{
             foreignKey : 'fk_area_apoyo',
             as : 'AreasApollo'
         });
+
+        /* Union con Proyectos */
+        tareas.belongsTo(models.proyectos,{
+            foreignKey : 'fk_proyecto',
+            as : 'Proyectos'
+        });
+
     }
 
     return tareas;

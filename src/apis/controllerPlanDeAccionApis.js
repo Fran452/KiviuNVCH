@@ -22,8 +22,62 @@ const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
 
 const controlador = {
+    /* CRUD De Proyecto */
 
-    planesAcciónView: async (req,res) => {
+    viewProyecto: async (req,res) => {
+        try{
+            
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    addProyecto: async (req,res) => {
+        try{
+
+            let proyecto = await dataBaseSQL.proyectos.create({
+                fk_area : req.body.user.area,
+                nombre : req.body.nombre,
+                detalles : req.body.detalles,
+            });
+            res.json({error :0, errorDetalle: "", objeto:proyecto});
+            return 0
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    modProyecto: async (req,res) => {
+        try{
+
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    deleteProyecto: async (req,res) => {
+        try{
+
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+    /* CRUD De Tareas */
+
+    // Ver tareas
+    viewTareas: async (req,res) => {
         try{
             let tareas;
             if(req.body.user.puesto < 1){
@@ -55,6 +109,7 @@ const controlador = {
         }
     },
 
+    // Agregar tareas 
     addTarea:  async (req,res) => { 
         try{
             let fechaActua = new DATE ;
@@ -98,6 +153,7 @@ const controlador = {
         }       
     },  
     
+    // Modificar tareas 
     modTarea: async (req,res) => { 
         try{
             let empleadoAsignado;
@@ -138,6 +194,7 @@ const controlador = {
         }
     },  
 
+    // Eliminar tareas 
     deleteTarea: async (req,res) => { 
         try{
              let tareaModificada = await dataBaseSQL.tareas.update({
