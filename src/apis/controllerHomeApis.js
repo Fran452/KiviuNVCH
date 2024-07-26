@@ -56,8 +56,8 @@ const controlador = {
                     res.json({status: 0, codeError:"", objeto: {BiArea,nombreArea} })
                     return {status: 0, codeError:"", objeto: {BiArea,nombreArea} };
                 }else{
-                    res.json({status: 99, codeError:"No tiene permisos", objeto: "" })
-                    return {status: 99, codeError:"No tiene permisos", objeto: "" };
+                    res.json({status: 99, codeError:"No tiene permiso para entrar a esta area.", objeto: "" })
+                    return {status: 99, codeError:"No tiene permiso para entrar a esta area.", objeto: "" };
                 }
             }
         }
