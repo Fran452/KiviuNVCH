@@ -28,8 +28,8 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "nodemon": "^3.1.4",
     "jets": "^0.15.0",
+    "nodemon": "^3.1.4",
     "supertest": "^7.0.0"
   }
 }
