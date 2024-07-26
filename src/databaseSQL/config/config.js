@@ -3,7 +3,7 @@ require('dotenv').config();
 module.exports = {
   "development": { 
     "username": process.env.DB_USER || 'fran452',
-    "password": process.env.DB_PASS || 'desaFran2024!',
+    "password": process.env.DB_PASS || '',
     "database": "kiviuTest",
     "host": "127.0.0.1",
     "dialect": "mysql",
@@ -11,7 +11,7 @@ module.exports = {
   },
   "test": {
     "username": process.env.DB_USER || 'fran452',
-    "password": process.env.DB_PASS || 'desaFran2024!',
+    "password": process.env.DB_PASS || '',
     "database": "kiviuTest",
     "host": "127.0.0.1",
     "dialect": "mysql",
@@ -19,7 +19,7 @@ module.exports = {
   },
   "production": {
     "username": process.env.DB_USER || 'fran452',
-    "password": process.env.DB_PASS || 'desaFran2024!',
+    "password": process.env.DB_PASS || '',
     "database": "kiviuTest",
     "host": "127.0.0.1",
     "dialect": "mysql",
