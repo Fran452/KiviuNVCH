@@ -32,6 +32,7 @@ CREATE TABLE Proyecto (
     fk_area                                 INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
     detalles                                VARCHAR(255) NOT NULL,
+    ver                                     INT NOT NULL,
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area),
 );
 
