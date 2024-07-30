@@ -26,5 +26,5 @@ INSERT INTO Puestos (nombre_puesto) VALUES ('Gerente'), ('Analista'), ('Asistent
 INSERT INTO Empleados (fk_area, fk_puesto, nombre, password, mail, sucursal) VALUES (1, 2, 'Francisco Lema', '$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq', 'franciscolemacr@gmail.com', 'Buenos Aires');
 INSERT INTO Tareas (fk_empleado_asignado, fk_area, fk_area_apoyo, nombre, estado, prioridad, fecha_inicio, fecha_final, notas, mostrar, progreso) VALUES (1, 1, 2, 'Tarea 1', 1, 3, '2024-07-01', '2024-08-01', 'Notas de la tarea 1', 1, 50), (1, 1, 2, 'Tarea 2', 2, 2, '2024-07-15', '2024-09-15', 'Notas de la tarea 2', 1, 30), (1, 1, 2, 'Tarea 3', 3, 1, '2024-07-20', '2024-08-30', 'Notas de la tarea 3', 0, 100);
 
-UPDATE Empleados
-SET fk_puesto = 2
+
+INSERT INTO Empleados (fk_area, fk_puesto, nombre, password, mail, sucursal) VALUES (1, 2, 'Nombre Apellico', '$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq', 'testUser@kiviu.com', 'Buenos Aires');
