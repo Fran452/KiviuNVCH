@@ -19,7 +19,7 @@ function PlanesAccion() {
 
   const fetchAreas = async () => {
     try {
-      const res = await fetch("http://164.92.77.143:3030/apis/index",{
+      const res = await fetch("http://localhost:3030/apis/index",{
         method: "GET"
       })
       const data = await res.json()
@@ -39,7 +39,7 @@ function PlanesAccion() {
   
     const fetchTareas = async () => {
       try {
-        const res = await fetch("http://164.92.77.143:3030/apis/plan-accion", {
+        const res = await fetch("http://localhost:3030/apis/plan-accion", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
@@ -83,7 +83,7 @@ function PlanesAccion() {
       idTarea: parseInt(id)
     }
     try {
-      const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/deleteTask", {
+      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteTask", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -173,11 +173,7 @@ function PlanesAccion() {
                             <td className='table__tbody__fechaFinal'>{new Date(e.fecha_final.replace(/-/g, '/')).toLocaleDateString()}</td>
                             <td className='table__tbody__notas'>{e.notas}</td>
                             <td className='table__tbody__notas'>{e.Empleados.mail}</td>
-                            <td className='table__tbody__equipo'>
-                              {e.fk_area_apoyo === 1 && <span className='table__tbody__equipo'>Finanzas</span>}
-                              {e.fk_area_apoyo === 2 && <span className='table__tbody__equipo'>Recursos Humanos</span>}
-                              {e.fk_area_apoyo === 3 && <span className='table__tbody__equipo'>Ventas</span>}
-                            </td>
+                            <td className='table__tbody__equipo'>{e.AreasApollo.nombre_del_Area}</td>
                             <td className='table__tbody__prioridad'>
                               {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
                               {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}

@@ -85,7 +85,12 @@ const controlador = {
                     where: {
                         mostrar : 1
                     },
-                    include: [{association : "Areas"},{association : "Empleados"},{association : "AreasApollo"}]
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
+                    include: [
+                        {association : "Areas",attributes: ['id_area','nombre_del_Area']},
+                        {association : "Empleados",attributes: ['nombre','mail']},
+                        {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']}
+                    ]
                 });
 
             }else{
@@ -94,7 +99,12 @@ const controlador = {
                         fk_area: req.body.user.area,
                         mostrar : 1
                     },
-                    include: [{association : "Areas"},{association : "Empleados"},{association : "AreasApollo"}]
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
+                    include: [
+                        {association : "Areas",attributes: ['id_area','nombre_del_Area']},
+                        {association : "Empleados",attributes: ['nombre','mail']},
+                        {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']}
+                        ]
                 });
             }
             
