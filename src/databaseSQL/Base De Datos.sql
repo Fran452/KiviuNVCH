@@ -27,12 +27,22 @@ CREATE TABLE Empleados (
     FOREIGN KEY (fk_Puesto)                REFERENCES Puestos(id_puesto)
 );
 
+CREATE TABLE Proyecto ( 
+    id_preyecto                             INT PRIMARY KEY AUTO_INCREMENT,
+    fk_area                                 INT NOT NULL,
+    nombre                                  VARCHAR(255) NOT NULL,
+    detalles                                VARCHAR(255) NOT NULL,
+    ver                                     INT NOT NULL,
+    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area),
+);
+
 CREATE TABLE Tareas (
     id_tarea                                INT PRIMARY KEY AUTO_INCREMENT,
     fk_empleado_asignado                    INT NOT NULL,
     fk_area                                 INT NOT NULL,
     fk_area_apoyo                           INT NOT NULL,
-    nombre                                  VARCHAR(255),
+    nombre                                  VARCHAR(255) NOT NULL,
+    fk_proyecto                             INT NOT NULL,                             
     estado	                                INT NOT NULL,
     prioridad					            INT NOT NULL,
     fecha_inicio                            DATE NOT NULL,
@@ -42,9 +52,12 @@ CREATE TABLE Tareas (
     progreso					            INT,
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
+    FOREIGN KEY (fk_proyecto)               REFERENCES Proyectos(id_proyecto),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
-);  
+);
 
+
+/* Proximos proyectos */
 CREATE TABLE Indicadores (
     id_indicador                           INT PRIMARY KEY AUTO_INCREMENT,
     fk_area                                INT NOT NULL,

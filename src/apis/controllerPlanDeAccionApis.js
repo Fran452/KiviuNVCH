@@ -22,14 +22,92 @@ const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
 
 const controlador = {
+    /* CRUD De Proyecto */
 
-    planesAcciónView: async (req,res) => {
+    viewProyecto: async (req,res) => {
+        try{
+            proyectos = await dataBaseSQL.proyectos.findAll({
+                where: {
+                    fk_area : req.body.user.area,
+                    ver:1
+                },
+            });
+            res.json({erro:0,ErrorDetalle:"",objeto:proyectos});
+
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    addProyecto: async (req,res) => {
+        try{
+
+            let proyecto = await dataBaseSQL.proyectos.create({
+                fk_area : req.body.user.area,
+                nombre : req.body.nombre,
+                detalles : req.body.detalles,
+                ver:0
+            });
+            res.json({error :0, errorDetalle: "", objeto:proyecto});
+            return 0
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    modProyecto: async (req,res) => {
+        try{
+            let proyecto = await dataBaseSQL.proyecto.update({
+                nombre : req.body.nombre,
+                detalles : req.body.detalles,
+            },{
+                where:{
+                    id_preyecto: idProyecto
+                }
+            });
+            res.json({error :0, errorDetalle: "", objeto:proyecto});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    deleteProyecto: async (req,res) => {
+        try{
+            let proyecto = await dataBaseSQL.proyecto.update({
+                ver:0
+            },{
+                where:{
+                    id_preyecto: idProyecto
+                }
+            });
+            res.json({error :0, errorDetalle: "", objeto:proyecto});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+    /* CRUD De Tareas */
+
+    // Ver tareas
+    viewTareas: async (req,res) => {
         try{
             let tareas;
             if(req.body.user.puesto < 1){
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
-                        mostrar : 1
+                        mostrar : 1,
+                        fk_proyecto : req.body.idProyecto
                     },
                     attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
                     include: [
@@ -43,7 +121,8 @@ const controlador = {
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
                         fk_area: req.body.user.area,
-                        mostrar : 1
+                        mostrar : 1,
+                        fk_proyecto : req.body.idProyecto
                     },
                     attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
                     include: [
@@ -65,6 +144,7 @@ const controlador = {
         }
     },
 
+    // Agregar tareas 
     addTarea:  async (req,res) => { 
         try{
             let fechaActua = new DATE ;
@@ -95,7 +175,8 @@ const controlador = {
                     notas : req.body.notas,
                     fk_area_apoyo: req.body.areaApoyo,
                     progreso:req.body.progreso,
-                    mostrar : 1 
+                    mostrar : 1,
+                    fk_proyecto: req.body.idProyecto
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0
@@ -108,6 +189,7 @@ const controlador = {
         }       
     },  
     
+    // Modificar tareas 
     modTarea: async (req,res) => { 
         try{
             let empleadoAsignado;
@@ -134,6 +216,7 @@ const controlador = {
                 notas : req.body.notas,
                 fk_area_apoyo: req.body.areaApoyo,
                 progreso:req.body.progreso,
+                fk_proyecto: req.body.idProyecto
             },{
                 where:{
                     id_tarea : req.body.idTarea
@@ -148,6 +231,7 @@ const controlador = {
         }
     },  
 
+    // Eliminar tareas 
     deleteTarea: async (req,res) => { 
         try{
              let tareaModificada = await dataBaseSQL.tareas.update({
