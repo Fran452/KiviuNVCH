@@ -194,11 +194,60 @@
 
 @media screen and (min-width: 768px) {
     .planes__accion {
+        &__menu {
+            width: 200px;
+            margin-right: 20px;
+
+            .acordion {
+                border-radius: 0;
+            }
+
+            .accordion-item {
+                border: none;
+
+                button {
+                    padding: 10px 0;
+                    border-radius: 20px !important;
+                    height: 40px;
+                    color: $blue-500;
+                    box-shadow: none;
+                }
+
+                button[aria-expanded="true"] {
+                    background-color: rgba($color: #fff, $alpha: 0);
+                }
+
+                .accordion-header {
+                    .accordion-button {
+                        font-size: 12px;
+                    }
+                }
+            }
+            
+            .accordion-body {
+                padding: 0;
+
+                button {
+                    width: 100%;
+                    padding: 0 16px;
+                    font-size: 12px;
+                    text-align: left;
+                    color: #000;
+                }
+
+                button:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+
         &__tareas--empty {
             padding: 0;
         }
 
         &__tareas {
+            width: calc(100% - 220px);
+
             &__tabla {
                 width: inherit;
             }

@@ -79,12 +79,12 @@ function ModalPlanes(props) {
         fechaInicio: formData.fechaInicio,
         fechaFinal: formData.fechaFinal,
         notas: formData.notas,
-        areaApoyo: formData.equipo,
+        areaApoyo: parseInt(formData.equipo),
         progreso: parseInt(formData.progreso)
       }
 
       try {
-        const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/addTask", {
+        const res = await fetch("http://localhost:3030/apis/plan-accion/addTask", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
