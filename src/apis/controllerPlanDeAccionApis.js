@@ -31,7 +31,7 @@ const controlador = {
                     where: {
                         mostrar : 1
                     },
-                    attributes: ["nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
                     include: [
                         {association : "Areas",attributes: ['nombre_del_Area']},
                         {association : "Empleados",attributes: ['nombre','mail']},
@@ -45,7 +45,7 @@ const controlador = {
                         fk_area: req.body.user.area,
                         mostrar : 1
                     },
-                    attributes: ["nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
                     include: [
                             {association : "Areas",attributes: ['nombre_del_Area']},
                             {association : "Empleados",attributes: ['nombre','mail']},
