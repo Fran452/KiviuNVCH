@@ -29,7 +29,7 @@ const controlador = {
             proyectos = await dataBaseSQL.proyectos.findAll({
                 where: {
                     fk_area : req.body.user.area,
-                    ver:0
+                    ver:1
                 },
             });
             res.json({erro:0,ErrorDetalle:"",objeto:proyectos});
@@ -83,7 +83,7 @@ const controlador = {
     deleteProyecto: async (req,res) => {
         try{
             let proyecto = await dataBaseSQL.proyecto.update({
-                ver:1
+                ver:0
             },{
                 where:{
                     id_preyecto: idProyecto
