@@ -46,7 +46,7 @@ function ModalPlanes(props) {
         fechaInicio: obj.fecha_inicio,
         fechaFinal: obj.fecha_final,
         responsable: obj.Empleados.mail,
-        equipo: obj.AreasApollo.nombre_del_Area,
+        equipo: obj.AreasApollo.id_area.toString(),
         estado: obj.estado.toString(),
         prioridad: obj.prioridad.toString(),
         notas: obj.notas,
@@ -187,7 +187,7 @@ function ModalPlanes(props) {
         fechaInicio: formData.fechaInicio,
         fechaFinal: formData.fechaFinal,
         notas: formData.notas,
-        areaApoyo: formData.equipo,
+        areaApoyo: parseInt(formData.equipo),
         idTarea: task.id_tarea,
         progreso: parseInt(formData.progreso)
       }
@@ -332,7 +332,7 @@ function ModalPlanes(props) {
               <select className="form-select form-select-sm" id="equipo" name="equipo" onChange={handleChange} value={formData.equipo}>
                 <option value="">Elija el equipo de apoyo</option>
                 {areas.map((e,i) => {
-                  return <option key={i} value={e.nombre_del_Area}>{e.nombre_del_Area}</option>
+                  return <option key={i} value={e.id_area.toString()}>{e.nombre_del_Area}</option>
                 })}
               </select>
               {errors.equipo && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.equipo}</span>}
@@ -480,7 +480,7 @@ function ModalPlanes(props) {
                 <select className="form-select form-select-sm" id="equipo" name="equipo" onChange={handleChange} value={formData.equipo}>
                   <option value="">Elija el equipo de apoyo</option>
                   {areas.map((e,i) => {
-                    return <option key={i} value={e.nombre_del_Area}>{e.nombre_del_Area}</option>
+                    return <option key={i} value={e.id_area.toString()}>{e.nombre_del_Area}</option>
                   })}
                 </select>
                 {errors.equipo && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.equipo}</span>}

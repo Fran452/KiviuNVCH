@@ -47,7 +47,6 @@ function PlanesAccion() {
           body: JSON.stringify(reqBody)
         })
         const data = await res.json()
-        console.log(data.objeto)
         setTareas(data.objeto)
         setLoading(false)
       } catch (error) {

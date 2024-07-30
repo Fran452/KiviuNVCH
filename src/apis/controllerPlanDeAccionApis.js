@@ -47,9 +47,9 @@ const controlador = {
                     },
                     attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso",],
                     include: [
-                            {association : "Areas",attributes: ['nombre_del_Area']},
+                            {association : "Areas",attributes: ['id_area','nombre_del_Area']},
                             {association : "Empleados",attributes: ['nombre','mail']},
-                            {association : "AreasApollo",attributes: ['nombre_del_Area']}
+                            {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']}
                         ]
                 });
             }
