@@ -58,6 +58,6 @@ module.exports = (sequelize,DataTypes) => {
 
     }
 
-    return areas;
+    return proyectos;
 
 };

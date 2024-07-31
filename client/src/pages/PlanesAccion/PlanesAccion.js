@@ -107,9 +107,26 @@ function PlanesAccion() {
         console.log(error)
       }
     }
+
+    const fetchProyectos = async () => {
+      try {
+        const res = await fetch("http://localhost:3030/apis/plan-accion/viewProyect", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(reqBody)
+        })
+        const data = await res.json()
+        console.log(data)
+      } catch (error) {
+        
+      }
+    }
     
     fetchAreas()
     fetchTareas()
+    fetchProyectos()
     setProyectos(newArr)
   }, [loading])
  
@@ -181,7 +198,7 @@ function PlanesAccion() {
           <div className='planes__accion__menu'>
             <Accordion defaultActiveKey="0">
               {proyectos.map((e,i) => {
-                return <Accordion.Item eventKey={i}>
+                return <Accordion.Item key={i} eventKey={i}>
                   <Accordion.Header >{e[0].area}</Accordion.Header>
                   <Accordion.Body className='d-flex flex-column align-items-start'>
                   {
