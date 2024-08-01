@@ -36,7 +36,7 @@ function ModalProyecto(props) {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = await fetch("http://localhost:3030/apis/plan-accion/addProyect", {
+            const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/addProyect", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -67,7 +67,7 @@ function ModalProyecto(props) {
         e.preventDefault()
         const proyecto = JSON.parse(proyectoObj)
         try {
-            const res = await fetch("http://localhost:3030/apis/plan-accion/modProyect", {
+            const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/modProyect", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
