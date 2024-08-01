@@ -143,7 +143,7 @@ const controlador = {
     },
 
     // Ver tareas por persona
-    addTarea:  async (req,res) => { 
+    vieTareaPersonal:  async (req,res) => { 
         try {
             
         }
