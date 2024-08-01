@@ -131,9 +131,7 @@ const controlador = {
                         {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']}
                         ]
                 });
-            }
-            
-            
+            }            
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
@@ -143,6 +141,16 @@ const controlador = {
             return 1;
         }
     },
+
+    // Ver tareas por persona
+    addTarea:  async (req,res) => { 
+        try {
+            
+        }
+        catch(error){
+
+        }
+    },    
 
     // Agregar tareas 
     addTarea:  async (req,res) => { 
