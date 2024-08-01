@@ -17,7 +17,7 @@ INSERT INTO Empleados (fk_area, fk_puesto, nombre, password, mail, sucursal) VAL
 
 
 -- Insertar proyectos
-INSERT INTO Proyecto (fk_area, nombre, detalles, ver) VALUES
+INSERT INTO Proyectos (fk_area, nombre, detalles, ver) VALUES
 (1, 'Desarrollo de Sistema de Gestión', 'Desarrollo de un sistema para la gestión de recursos humanos', 1),
 (1, 'Implementación de CRM', 'Implementación de un sistema de gestión de relaciones con clientes', 2),
 (1, 'Automatización de Reportes', 'Automatización de la generación de reportes financieros', 1);

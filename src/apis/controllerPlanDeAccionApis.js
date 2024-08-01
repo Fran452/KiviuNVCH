@@ -49,7 +49,7 @@ const controlador = {
                 fk_area : req.body.user.area,
                 nombre : req.body.nombre,
                 detalles : req.body.detalles,
-                ver:0
+                ver:1
             });
             res.json({error :0, errorDetalle: "", objeto:proyecto});
             return 0
@@ -63,12 +63,12 @@ const controlador = {
 
     modProyecto: async (req,res) => {
         try{
-            let proyecto = await dataBaseSQL.proyecto.update({
+            let proyecto = await dataBaseSQL.proyectos.update({
                 nombre : req.body.nombre,
                 detalles : req.body.detalles,
             },{
                 where:{
-                    id_preyecto: idProyecto
+                    id_proyecto: req.body.idProyecto
                 }
             });
             res.json({error :0, errorDetalle: "", objeto:proyecto});
@@ -82,11 +82,11 @@ const controlador = {
 
     deleteProyecto: async (req,res) => {
         try{
-            let proyecto = await dataBaseSQL.proyecto.update({
+            let proyecto = await dataBaseSQL.proyectos.update({
                 ver:0
             },{
                 where:{
-                    id_preyecto: idProyecto
+                    id_proyecto: req.body.idProyecto
                 }
             });
             res.json({error :0, errorDetalle: "", objeto:proyecto});

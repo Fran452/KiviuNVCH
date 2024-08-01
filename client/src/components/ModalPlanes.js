@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode"
 import { loadingContext } from '../pages/PlanesAccion/PlanesAccion';
 
 function ModalPlanes(props) {
-  const { handleUpdate, tareaObj, setTareaObj } = useContext(loadingContext)
+  const { handleUpdate, tareaObj, setTareaObj, proyectoObj, setProyectoObj } = useContext(loadingContext)
   const auth = localStorage.getItem("token")
   const jwtParse = jwtDecode(auth)
 
@@ -69,6 +69,7 @@ function ModalPlanes(props) {
     e.preventDefault()
     const newErrors = validateForm(formData);
     setErrors(newErrors)
+    const proyecto = JSON.parse(proyectoObj)
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
@@ -80,7 +81,8 @@ function ModalPlanes(props) {
         fechaFinal: formData.fechaFinal,
         notas: formData.notas,
         areaApoyo: parseInt(formData.equipo),
-        progreso: parseInt(formData.progreso)
+        progreso: parseInt(formData.progreso),
+        idProyecto: proyecto.id_proyecto
       }
 
       try {
@@ -108,7 +110,8 @@ function ModalPlanes(props) {
             progreso: 0
           })
           setModalErr(null)
-          handleUpdate(true)
+          handleUpdate()
+          setProyectoObj(null)
           props.onHide()
         }
       } catch (error) {
@@ -168,6 +171,7 @@ function ModalPlanes(props) {
       progreso: 0
     })
     props.onHide()
+    setProyectoObj(null)
     setTareaObj(null)
     setModalErr(null)
   }
@@ -177,6 +181,7 @@ function ModalPlanes(props) {
     const newErrors = validateForm(formData);
     setErrors(newErrors)
     const task = JSON.parse(tareaObj)
+    const proyecto = JSON.parse(proyectoObj)
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
@@ -189,7 +194,8 @@ function ModalPlanes(props) {
         notas: formData.notas,
         areaApoyo: parseInt(formData.equipo),
         idTarea: task.id_tarea,
-        progreso: parseInt(formData.progreso)
+        progreso: parseInt(formData.progreso),
+        idProyecto: proyecto.id_proyecto
       }
       try {
         const res = await fetch("http://localhost:3030/apis/plan-accion/modTask", {
@@ -216,9 +222,10 @@ function ModalPlanes(props) {
             progreso: 0
           })
           setModalErr(null)
-          handleUpdate(true)
+          handleUpdate()
           props.onHide()
           setTareaObj(null)
+          setProyectoObj(null)
         }
       } catch (error) {
         console.log(error)
@@ -266,8 +273,8 @@ function ModalPlanes(props) {
       backdrop="static"
     >
       <Modal.Header>
-        <Modal.Title id="contained-modal-title-vcenter d-flex flex-row">
-          {tareaObj ? <h3 className='m-0'>Modificar Tarea</h3>: <h3 className='m-0'>Crear Tarea</h3>}
+        <Modal.Title id="contained-modal-title-vcenter" className='d-flex flex-row'>
+          {tareaObj ? <h3 className='m-0'>Modificar Tarea</h3>: <h3 className='m-0'>Agregar Tarea</h3>}
           <button className='btn' onClick={handleClose}><i className="bi bi-x-lg fw-bold"></i></button>
         </Modal.Title>
       </Modal.Header>

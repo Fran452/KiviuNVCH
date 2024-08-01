@@ -27,7 +27,7 @@ USE kiviuTest;
         FOREIGN KEY (fk_Puesto)                REFERENCES Puestos(id_puesto)
     );
 
-    CREATE TABLE Proyecto ( 
+    CREATE TABLE Proyectos ( 
         id_proyecto                             INT PRIMARY KEY AUTO_INCREMENT,
         fk_area                                 INT NOT NULL,
         nombre                                  VARCHAR(255) NOT NULL,
@@ -52,7 +52,7 @@ USE kiviuTest;
         progreso					            INT,
         FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
         FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
-        FOREIGN KEY (fk_proyecto)               REFERENCES Proyecto(id_proyecto),
+        FOREIGN KEY (fk_proyecto)               REFERENCES Proyectos(id_proyecto),
         FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
     );
 
