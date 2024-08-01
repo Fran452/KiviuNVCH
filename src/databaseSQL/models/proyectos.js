@@ -14,7 +14,7 @@ module.exports = (sequelize,DataTypes) => {
     
     let columnas = {
 
-        "id_preyecto": {
+        "id_proyecto": {
             type:DataTypes.INTEGER(),
             primaryKey: true,
             autoIncrement: true,
@@ -31,7 +31,12 @@ module.exports = (sequelize,DataTypes) => {
 
         "detalles":{
             type: DataTypes.STRING(255),
-        }
+        },
+
+        "ver": {
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
     };
 
     let config =  {
@@ -58,6 +63,6 @@ module.exports = (sequelize,DataTypes) => {
 
     }
 
-    return areas;
+    return proyectos;
 
 };
