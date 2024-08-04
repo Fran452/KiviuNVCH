@@ -19,7 +19,8 @@
 }
 
 .loading__tareas {
-    height: calc(100% - 48px);
+    width: 100%;
+    height: 100%;
 
     div {
         margin-bottom: 10px;
@@ -39,18 +40,22 @@
     &__tareas--empty {
         width: 100%;
         height: calc(100% - 48px);
-        border: 2px dashed $blue-500;
         padding: 20px;
 
-        h2 {
-            color: $blue-500
-        }
+        &__main {
+            border: 2px dashed $blue-500;
+            height: calc(100% - 56px);
 
-        &__btn {
-            width: 180px;
-            height: 40px;
-            background-color: $blue-500 !important;
-            color: #fff !important;
+            h2 {
+                color: $blue-500
+            }
+    
+            &__btn {
+                width: 180px;
+                height: 40px;
+                background-color: $blue-500 !important;
+                color: #fff !important;
+            }
         }
     }
 
@@ -64,7 +69,13 @@
                 }
             }
 
-            button {
+            .btn__edit, .btn__delete {
+                width: 32px;
+                height: 32px;
+                padding: 0;
+            }
+
+            .btn__addTarea {
                 width: 160px;
                 height: 40px;
             }
@@ -194,11 +205,96 @@
 
 @media screen and (min-width: 768px) {
     .planes__accion {
+        &__inicio {
+            width: 100%;
+            height: 100%;
+
+            img {
+                width: 200px;
+                max-width: 100%;
+            }
+        
+            h2 {
+                color: $blue-500
+            }
+
+        }
+
+        &__main {
+            height: calc(100% - 48px);
+        }
+
+        &__menu {
+            width: 200px;
+            margin-right: 20px;
+
+            .acordion {
+                border-radius: 0;
+            }
+
+            .accordion-item {
+                border: none;
+
+                button {
+                    padding: 10px 0;
+                    border-radius: 20px !important;
+                    height: 40px;
+                    color: $blue-500;
+                    box-shadow: none;
+                }
+
+                button[aria-expanded="true"] {
+                    background-color: rgba($color: #fff, $alpha: 0);
+                }
+
+                .accordion-header {
+                    .accordion-button {
+                        font-size: 14px;
+                    }
+                }
+            }
+            
+            .accordion-body {
+                padding: 10px 0;
+
+                button {
+                    width: 100%;
+                    padding: 0;
+                    font-size: 14px;
+                    text-align: left;
+                    color: #000;
+                    margin-bottom: 10px;
+
+                    .active {
+                        display: none
+                    }
+                }
+
+                button:last-child {
+                    margin-bottom: 0;
+                }
+
+                button:hover .active {
+                    display: block;
+                }
+            }
+
+            &__btn {
+                width: 180px;
+                height: 40px;
+            }
+        }
+
         &__tareas--empty {
             padding: 0;
+            width: calc(100% - 220px);
+            height: 100%;
         }
 
         &__tareas {
+            width: calc(100% - 220px);
+            height: 100%;
+
             &__tabla {
                 width: inherit;
             }
