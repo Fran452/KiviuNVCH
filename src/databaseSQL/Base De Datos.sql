@@ -56,8 +56,6 @@ USE kiviuTest;
         FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
     );
 
-
-/* Proximos proyectos */
 CREATE TABLE Indicadores (
     id_indicador                           INT PRIMARY KEY AUTO_INCREMENT,
     fk_area                                INT NOT NULL,
@@ -81,6 +79,9 @@ CREATE TABLE Metricas (
     FOREIGN KEY (fk_indicador)              REFERENCES Indicadores(id_indicador),
     FOREIGN KEY (log_de_usuario)            REFERENCES Empleados(id_empleado)
 );
+
+
+/* Proximos proyectos */
 
 
 CREATE TABLE Subtareas (    
