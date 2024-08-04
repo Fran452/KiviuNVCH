@@ -2,7 +2,7 @@ require('dotenv').config();
 
 module.exports = {
   "development": { 
-    "username": process.env.DB_USER || 'fran452',
+    "username": process.env.DB_USER || 'root',
     "password": process.env.DB_PASS || '',
     "database": "kiviuTest",
     "host": "127.0.0.1",
@@ -10,7 +10,7 @@ module.exports = {
     "port": process.env.PortDb || "3306"//3306 Windows 3307 Ubuntu
   },
   "test": {
-    "username": process.env.DB_USER || 'fran452',
+    "username": process.env.DB_USER || 'root',
     "password": process.env.DB_PASS || '',
     "database": "kiviuTest",
     "host": "127.0.0.1",
@@ -18,7 +18,7 @@ module.exports = {
     "local": "3306"
   },
   "production": {
-    "username": process.env.DB_USER || 'fran452',
+    "username": process.env.DB_USER || 'root',
     "password": process.env.DB_PASS || '',
     "database": "kiviuTest",
     "host": "127.0.0.1",
