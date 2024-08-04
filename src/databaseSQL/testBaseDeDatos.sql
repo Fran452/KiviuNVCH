@@ -13,6 +13,7 @@ INSERT INTO Puestos (nombre_puesto) VALUES
 -- Insertar empleados
 INSERT INTO Empleados (fk_area, fk_puesto, nombre, password, mail, sucursal) VALUES 
 (1, 2, 'Francisco Lema', '$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq', 'franciscolemacr@gmail.com', 'Buenos Aires'),
+(1, 2, 'Maria Sol Iturriza', '$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq', 'iturrizams@globalhitss.com', 'Buenos Aires'),
 (1, 2, 'Nombre Apellico', '$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq', 'testUser@kiviu.com', 'Buenos Aires');
 
 
