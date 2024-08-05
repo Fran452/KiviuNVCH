@@ -40,7 +40,7 @@ const controlador = {
                     objeto: {}
                 }
                 const token = jwt.sign({apirest}, "Stack", {
-                    expiresIn: '3m'
+                    expiresIn: '24h'
                 })
                 res.json(token)
                 //
@@ -65,7 +65,7 @@ const controlador = {
                         objeto: req.session.user
                     }
                     const token = jwt.sign({apirest}, "Stack",{
-                        expiresIn: '3m'
+                        expiresIn: '24h'
                     })
                     res.json(token);
                     //
@@ -77,7 +77,7 @@ const controlador = {
                         objeto: {}
                     };
                     const token = jwt.sign({apirest}, "Stack",{
-                        expiresIn: '3m'
+                        expiresIn: '24h'
                     })
                     res.json(token);
                 }
