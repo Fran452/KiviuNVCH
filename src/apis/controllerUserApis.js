@@ -84,7 +84,10 @@ const controlador = {
             }
         }
     /*
-    
+    registerFuction:  async (req,res) => { 
+
+    },
+    */
 }
 
 
