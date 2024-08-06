@@ -2,6 +2,7 @@ const express = require("express");
 const apisHome = require('../apis/controllerHomeApis');
 const apisUser = require('../apis/controllerUserApis');
 const apisPlanDeAccion = require('../apis/controllerPlanDeAccionApis');
+const apisDateIn = require('../apis/controllerDateInApis');
 const homeController = require("../controllers/controller");
 
 const router = express.Router();
@@ -23,6 +24,15 @@ router.put('/plan-accion/deleteProyect',apisPlanDeAccion.deleteProyecto);
 
 router.post('/login',apisUser.loginFuction);
 
+
+router.post('/dateIn',apisDateIn.index);
+
+router.post('/dateIn/newIndicador',apisDateIn.newindicador);
+router.post('/dateIn/editIndicador',apisDateIn.editIndicadores);
+router.post('/dateIn/deleteIndicador',apisDateIn.deleteIndicadores);
+
+router.post('/dateIn/newMetrica',apisDateIn.newMetrica);
+router.post('/dateIn/editMegrica',apisDateIn.editMetrica);
 /*
 
 router.get('/plan-accion-config',homeController.planesAcción);
