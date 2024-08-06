@@ -110,7 +110,7 @@ function Tareas() {
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
       </tareasContext.Provider>
       {/* Modal Eliminar Proyecto */}
-      <Modal className='modal__delete__proyecto' show={modalDeleteProyecto} onHide={() => setModalDeleteProyecto(false)} backdrop="static">
+      <Modal className='modal__delete__proyecto' show={modalDeleteProyecto} onHide={() => setModalDeleteProyecto(false)} backdrop="static" centered>
         <Modal.Header closeButton>
           <Modal.Title><h3>Eliminar proyecto</h3></Modal.Title>
         </Modal.Header>
@@ -121,7 +121,7 @@ function Tareas() {
         </Modal.Footer>
       </Modal>
       {/* Modal Eliminar Tarea */}
-      <Modal className='modal__delete' show={modalDeleteTarea} onHide={() => setModalDeleteTarea(false)} backdrop="static">
+      <Modal className='modal__delete' show={modalDeleteTarea} onHide={() => setModalDeleteTarea(false)} backdrop="static" centered>
         <Modal.Header closeButton>
           <Modal.Title><h3>Eliminar tarea</h3></Modal.Title>
         </Modal.Header>
@@ -156,21 +156,23 @@ function Tareas() {
           </div>
           ): (
             <div className='tareas d-flex flex-column'>
-              <div className='tareas__header d-flex flex-row justify-content-between align-items-center mb-4'>
-                <div className='d-flex flex-row flex-wrap align-items-center'>
+              <div className='tareas__header d-flex flex-column flex-md-row justify-content-between align-items-center mb-4'>
+                <div className='d-flex flex-row flex-md-wrap align-items-center mb-2 mb-md-0'>
                     <h3 className='m-0 me-2'>{titleArea}<i className="bi bi-chevron-right mx-2"></i>{titleProyecto}</h3>
-                    <button className='btn__edit btn bg-success rounded-circle me-2 text-white' onClick={()=> handleEditProyecto(idProyecto)}><i className="bi bi-pencil"></i></button>
-                    <button className='btn__delete btn bg-danger rounded-circle text-white' onClick={handleModalDeleteProyecto}><i className="bi bi-trash3"></i></button>
+                    <div className='d-flex flex-column flex-md-row'>
+                        <button className='btn__edit btn bg-success rounded-circle mb-2 mb-md-0 me-md-2 text-white' onClick={()=> handleEditProyecto(idProyecto)}><i className="bi bi-pencil"></i></button>
+                        <button className='btn__delete btn bg-danger rounded-circle text-white' onClick={handleModalDeleteProyecto}><i className="bi bi-trash3"></i></button>
+                    </div>
                 </div>
                 <button className='btn__addTarea btn btn-primary rounded-pill fw-medium' onClick={handleNewTarea}>Agregar tarea</button>
               </div>
               {tareasByProyecto.length === 0 ? (
-                <div className='tareas--empty__main d-flex flex-column align-items-center justify-content-center rounded-3'>
+                <div className='tareas--empty__main py-4 py-md-0 d-flex flex-column align-items-center justify-content-center rounded-3'>
                   <h2 className='fw-semibold mb-1 text-center'>No tienes Planes de Acción aún.</h2>
-                  <p className='mb-4 text-center'>Para comenzar, crea tu primera tarea:</p>
+                  <p className='mb-3 text-center'>Para comenzar, crea tu primera tarea:</p>
                   <button 
                   onClick={handleNewTarea} 
-                  className='planes__accion__tareas--empty__main__btn btn rounded-pill shadow-sm fw-medium'>Agregar Tarea
+                  className='tareas--empty__main__btn btn rounded-pill shadow-sm fw-medium'>Agregar Tarea
                   </button>
                 </div>
               ) : (
@@ -188,7 +190,7 @@ function Tareas() {
                           <th scope="col">Equipo de apoyo</th>
                           <th scope="col">Inicio</th>
                           <th scope="col">Final</th>
-                          <th scope="col" className='position-absolute end-0'>Acciones</th>
+                          {/* <th scope="col" className='position-absolute end-0'>Acciones</th> */}
                         </tr>
                       </thead>
                       <tbody className='table__tbody'>
