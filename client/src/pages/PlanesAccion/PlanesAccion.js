@@ -26,7 +26,7 @@ function PlanesAccion() {
     useEffect(() => {
         const fetchAreas = async () => {
             try {
-            const res = await fetch("http://localhost:3030/apis/index",{
+            const res = await fetch("http://164.92.77.143:3030/apis/index",{
                 method: "GET"
             })
             const data = await res.json()
@@ -40,7 +40,7 @@ function PlanesAccion() {
         if(loading) {
             async function fetchProyectos() {
                 try {
-                    const res = await fetch("http://localhost:3030/apis/plan-accion/viewProyect", {
+                    const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/viewProyect", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -69,7 +69,7 @@ function PlanesAccion() {
 
     const fetchTareasById = async(id) => {
         try {
-            const res = await fetch("http://localhost:3030/apis/plan-accion", {
+            const res = await fetch("http://164.92.77.143:3030/apis/plan-accion", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json"
