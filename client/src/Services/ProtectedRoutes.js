@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { isExpired } from "react-jwt";
 import { Outlet, Navigate } from 'react-router-dom';
 

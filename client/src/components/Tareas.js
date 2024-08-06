@@ -36,7 +36,7 @@ function Tareas() {
 
   const handleDeleteProyecto = async () => {
     try {
-      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteProyect", {
+      const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/deleteProyect", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -84,7 +84,7 @@ function Tareas() {
       idTarea: parseInt(idTask)
     }
     try {
-      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteTask", {
+      const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/deleteTask", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
