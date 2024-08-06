@@ -35,6 +35,10 @@
     }
 
     &__header {
+        &__title {
+            cursor: pointer;
+        }
+        
         h3 {
             i {
                 color: $blue-500;

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ProgressBar, Modal } from 'react-bootstrap';
+import { ProgressBar, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Oval } from 'react-loader-spinner'
 import illustrationPlanes from "../assets/img/planes.png"
 import "./Tareas.scss"
@@ -11,7 +11,7 @@ export const tareasContext = React.createContext()
 
 function Tareas() {
   
-  const { proyectos, loading, handleUpdate, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto } = useContext(newContext)
+  const { proyectos, loading, handleUpdate, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
   
   const [modalDeleteProyecto, setModalDeleteProyecto] = useState(false)
   const [modalEditProyecto, setModalEditProyecto] = useState(false)
@@ -23,6 +23,12 @@ function Tareas() {
 
   useEffect(() => {
   },[loading])
+
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {descripcionProyecto}
+    </Tooltip>
+  );
 
   const handleEditProyecto = () => {
     const pro = proyectos.find(e => e.id_proyecto === idProyecto)
@@ -158,7 +164,15 @@ function Tareas() {
             <div className='tareas d-flex flex-column'>
               <div className='tareas__header d-flex flex-column flex-md-row justify-content-between align-items-center mb-4'>
                 <div className='d-flex flex-row flex-md-wrap align-items-center mb-2 mb-md-0'>
-                    <h3 className='m-0 me-2'>{titleArea}<i className="bi bi-chevron-right mx-2"></i>{titleProyecto}</h3>
+                    <h3 className='m-0 me-2'>{titleArea}<i className="bi bi-chevron-right mx-2"></i>
+                    <OverlayTrigger
+                      placement="top"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={renderTooltip}
+                    >
+                        <span className='tareas__header__title'>{titleProyecto}</span>
+                    </OverlayTrigger>
+                    </h3>
                     <div className='d-flex flex-column flex-md-row'>
                         <button className='btn__edit btn bg-success rounded-circle mb-2 mb-md-0 me-md-2 text-white' onClick={()=> handleEditProyecto(idProyecto)}><i className="bi bi-pencil"></i></button>
                         <button className='btn__delete btn bg-danger rounded-circle text-white' onClick={handleModalDeleteProyecto}><i className="bi bi-trash3"></i></button>
