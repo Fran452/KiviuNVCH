@@ -110,20 +110,22 @@ function PlanesAccion() {
                     </div>
                     <div className='planes__accion__main d-flex flex-column flex-md-row'>
                         <div className='planes__accion__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
-                            <Accordion className='w-100 mb-2 mb-md-0' defaultActiveKey="0">
-                                {areas.map((a, i) => {
-                                    return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
-                                        <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
-                                        <Accordion.Body className='d-flex flex-column align-items-start'>
-                                            {proyectos.map((p, index) => {
-                                                return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre)}>
-                                                    <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
-                                                </button>
-                                            })}
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                })}
-                            </Accordion>
+                            <div className='container__accordion'>
+                                <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
+                                    {areas.map((a, i) => {
+                                        return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
+                                            <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
+                                            <Accordion.Body className='d-flex flex-column align-items-start'>
+                                                {proyectos.map((p, index) => {
+                                                    return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre)}>
+                                                        <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
+                                                    </button>
+                                                })}
+                                            </Accordion.Body>
+                                        </Accordion.Item>
+                                    })}
+                                </Accordion>
+                            </div>
                             <button 
                                 className='planes__accion__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
                                 onClick={handleFormProyecto}
