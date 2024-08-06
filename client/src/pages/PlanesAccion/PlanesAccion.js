@@ -26,7 +26,7 @@ function PlanesAccion() {
     useEffect(() => {
         const fetchAreas = async () => {
             try {
-            const res = await fetch("http://164.92.77.143:3030/apis/index",{
+            const res = await fetch("http://localhost:3030/apis/index",{
                 method: "GET"
             })
             const data = await res.json()
@@ -40,7 +40,7 @@ function PlanesAccion() {
         if(loading) {
             async function fetchProyectos() {
                 try {
-                    const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/viewProyect", {
+                    const res = await fetch("http://localhost:3030/apis/plan-accion/viewProyect", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -69,7 +69,7 @@ function PlanesAccion() {
 
     const fetchTareasById = async(id) => {
         try {
-            const res = await fetch("http://164.92.77.143:3030/apis/plan-accion", {
+            const res = await fetch("http://localhost:3030/apis/plan-accion", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json"
@@ -110,32 +110,44 @@ function PlanesAccion() {
                         <i className='bi bi-bar-chart-steps me-2'></i>
                         <h4 className='m-0'>Planes de Acción</h4>
                     </div>
-                    <div className='planes__accion__main d-flex flex-column flex-md-row'>
-                        <div className='planes__accion__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
-                            <div className='container__accordion'>
-                                <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
-                                    {areas.map((a, i) => {
-                                        return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
-                                            <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
-                                            <Accordion.Body className='d-flex flex-column align-items-start'>
-                                                {proyectos.map((p, index) => {
-                                                    return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre, p.detalles)}>
-                                                        <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
-                                                    </button>
-                                                })}
-                                            </Accordion.Body>
-                                        </Accordion.Item>
-                                    })}
-                                </Accordion>
-                            </div>
+                    {proyectos.length === 0 ? (
+                        <div className='planes__accion--empty d-flex flex-column align-items-center justify-content-center rounded-3'>
+                            <h2 className='fw-semibold mb-1 text-center'>No tienes Proyectos aún.</h2>
+                            <p className='mb-3 text-center'>Para comenzar, crea tu primer proyecto:</p>
                             <button 
-                                className='planes__accion__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
+                                className='planes__accion--empty__btn btn btn-primary rounded-pill shadow-sm fw-medium'
                                 onClick={handleFormProyecto}
                                 >Agregar proyecto
                             </button>
                         </div>
-                        <Tareas />
-                    </div>
+                    ) : (
+                        <div className='planes__accion__main d-flex flex-column flex-md-row'>
+                            <div className='planes__accion__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
+                                <div className='container__accordion'>
+                                    <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
+                                        {areas.map((a, i) => {
+                                            return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
+                                                <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
+                                                <Accordion.Body className='d-flex flex-column align-items-start'>
+                                                    {proyectos.map((p, index) => {
+                                                        return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre, p.detalles)}>
+                                                            <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
+                                                        </button>
+                                                    })}
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                        })}
+                                    </Accordion>
+                                </div>
+                                <button 
+                                    className='planes__accion__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
+                                    onClick={handleFormProyecto}
+                                    >Agregar proyecto
+                                </button>
+                            </div>
+                            <Tareas />
+                        </div>
+                    )}
                 </div>
             </newContext.Provider>
         </>
