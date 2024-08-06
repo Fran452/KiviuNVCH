@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom"
+import { Oval } from 'react-loader-spinner'
 import "./Home.scss"
 import IllustrationBienvenida from "../../assets/img/ilustration-bienvenida.png"
 import { jwtDecode } from "jwt-decode"
 
 function Home() {
+  const [loading, setLoading] = useState(true)
   const [areas, setAreas] = useState([]);
-  // const [tareas, setTareas] = useState(4)
 
   const auth = localStorage.getItem("token")
   const jwtParse = jwtDecode(auth)
@@ -18,6 +19,7 @@ function Home() {
       })
       const data = await res.json()
       setAreas(data.objeto.areas)
+      setLoading(false)
     } catch (error) {
       console.log(error)
     }
@@ -42,13 +44,29 @@ function Home() {
           <img className="position-relative" src={IllustrationBienvenida} alt="" />
         </div>
       </div>
-      <div className='home__areas mb-4'>
-        {areas.map((e,i) => {
-          return <Link to={`/bi/${e.id_area}`} className="btn home__areas__area shadow-sm rounded-3 d-flex flex-row align-items-center" key={i}>
-            <h4 className='p-0 m-0 text-start'>{e.nombre_del_Area}</h4>
-            </Link>
-        })}
-      </div>
+      {loading ? (
+        <div className='loading__home d-flex flex-column align-items-center justify-content-center'>
+          <Oval
+              visible={true}
+              height="80"
+              width="80"
+              color="#0d6efd"
+              ariaLabel="oval-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+          />
+          <p className='fw-medium'>Loading...</p>
+        </div>
+      ) : (
+        <div className='home__areas mb-4'>
+          {areas.map((e,i) => {
+            return <Link to={`/bi/${e.id_area}`} className="btn home__areas__area shadow-sm rounded-3 d-flex flex-row align-items-center" key={i}>
+              <h4 className='p-0 m-0 text-start'>{e.nombre_del_Area}</h4>
+              </Link>
+          })}
+        </div>
+      )}
+      
     </div>
   )
 }
