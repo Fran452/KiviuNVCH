@@ -5,7 +5,7 @@ import { tareasContext } from './Tareas';
 import { newContext } from '../pages/PlanesAccion/PlanesAccion';
 
 function ModalEditProyecto(props) {
-    const { proyectos, handleUpdate, setTitleProyecto } = useContext(newContext)
+    const { proyectos, handleUpdate, setTitleProyecto, setDescripcionProyecto } = useContext(newContext)
     const { proyecto, setProyecto } = useContext(tareasContext)
 
     const [formProyecto, setFormProyecto] = useState({
@@ -86,6 +86,7 @@ function ModalEditProyecto(props) {
                     setProyecto(null)
                     handleUpdate(true)
                     setTitleProyecto(formProyecto.nombre)
+                    setDescripcionProyecto(formProyecto.detalles)
                     props.onHide()
                 }
             } catch (error) {

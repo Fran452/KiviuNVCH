@@ -16,6 +16,7 @@ function PlanesAccion() {
     const [idProyecto, setIdProyecto] = useState(null)
     const [titleArea, setTitleArea] = useState(null)
     const [titleProyecto, setTitleProyecto] = useState(null)
+    const [descripcionProyecto, setDescripcionProyecto] = useState(null)
     const [modalProyecto, setModalProyecto] = useState(false)
 
     const auth = localStorage.getItem("token")
@@ -86,11 +87,12 @@ function PlanesAccion() {
         }
     }
 
-    const handleTareaById = async (id, titleArea, titleProyecto) => {
+    const handleTareaById = async (id, titleArea, titleProyecto, detalles) => {
         fetchTareasById(id)
         setIdProyecto(id)
         setTitleArea(titleArea)
         setTitleProyecto(titleProyecto)
+        setDescripcionProyecto(detalles)
     }
 
     const handleFormProyecto = (e) => {
@@ -101,7 +103,7 @@ function PlanesAccion() {
     return (
         <>
             <newContext.Provider 
-                value={{proyectos, loading, handleUpdate, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, areas, titleArea, titleProyecto, setTitleProyecto, USER}}>
+                value={{proyectos, loading, handleUpdate, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, areas, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
                 <ModalNewProyecto show={modalProyecto} onHide={()=>setModalProyecto(false)}/>
                 <div className='planes__accion section'>
                     <div className='section__header d-flex flex-row align-items-end mb-4'>
@@ -110,20 +112,22 @@ function PlanesAccion() {
                     </div>
                     <div className='planes__accion__main d-flex flex-column flex-md-row'>
                         <div className='planes__accion__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
-                            <Accordion className='w-100 mb-2 mb-md-0' defaultActiveKey="0">
-                                {areas.map((a, i) => {
-                                    return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
-                                        <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
-                                        <Accordion.Body className='d-flex flex-column align-items-start'>
-                                            {proyectos.map((p, index) => {
-                                                return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre)}>
-                                                    <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
-                                                </button>
-                                            })}
-                                        </Accordion.Body>
-                                    </Accordion.Item>
-                                })}
-                            </Accordion>
+                            <div className='container__accordion'>
+                                <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
+                                    {areas.map((a, i) => {
+                                        return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
+                                            <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
+                                            <Accordion.Body className='d-flex flex-column align-items-start'>
+                                                {proyectos.map((p, index) => {
+                                                    return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre, p.detalles)}>
+                                                        <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
+                                                    </button>
+                                                })}
+                                            </Accordion.Body>
+                                        </Accordion.Item>
+                                    })}
+                                </Accordion>
+                            </div>
                             <button 
                                 className='planes__accion__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
                                 onClick={handleFormProyecto}
