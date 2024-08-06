@@ -7,7 +7,7 @@ import ModalNewProyecto from '../../components/ModalNewProyecto';
 
 export const newContext = React.createContext()
 
-function PlanesAccion2() {
+function PlanesAccion() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [areas, setAreas] = useState([]);
@@ -108,9 +108,9 @@ function PlanesAccion2() {
                         <i className='bi bi-bar-chart-steps me-2'></i>
                         <h4 className='m-0'>Planes de Acción</h4>
                     </div>
-                    <div className='planes__accion__main d-flex flex-row'>
-                        <div className='planes__accion__menu d-flex flex-column align-items-start justify-content-between'>
-                            <Accordion className='w-100' defaultActiveKey="0">
+                    <div className='planes__accion__main d-flex flex-column flex-md-row'>
+                        <div className='planes__accion__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
+                            <Accordion className='w-100 mb-2 mb-md-0' defaultActiveKey="0">
                                 {areas.map((a, i) => {
                                     return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
                                         <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
@@ -125,7 +125,7 @@ function PlanesAccion2() {
                                 })}
                             </Accordion>
                             <button 
-                                className='planes__accion__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
+                                className='planes__accion__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
                                 onClick={handleFormProyecto}
                                 >Agregar proyecto
                             </button>
@@ -138,4 +138,4 @@ function PlanesAccion2() {
     )
 }
 
-export default PlanesAccion2
+export default PlanesAccion

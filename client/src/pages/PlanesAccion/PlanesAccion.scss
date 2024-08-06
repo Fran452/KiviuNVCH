@@ -36,6 +36,70 @@
 
 .planes__accion {
     height: 100%;
+
+    &__main {
+        &__menu {
+            width: 100%;
+    
+            .acordion {
+                border-radius: 0;
+            }
+    
+            .accordion-item {
+                border: none;
+    
+                button {
+                    padding: 10px 0;
+                    border-radius: 20px !important;
+                    height: 40px;
+                    color: $blue-500;
+                    box-shadow: none;
+                }
+    
+                button[aria-expanded="true"] {
+                    background-color: rgba($color: #fff, $alpha: 0);
+                }
+    
+                .accordion-header {
+                    .accordion-button {
+                        font-size: 14px;
+                    }
+                }
+            }
+            
+            .accordion-body {
+                padding: 10px 0;
+    
+                button {
+                    width: 100%;
+                    padding: 0;
+                    font-size: 14px;
+                    text-align: left;
+                    color: #000;
+                    margin-bottom: 10px;
+    
+                    .active {
+                        display: none
+                    }
+                }
+    
+                button:last-child {
+                    margin-bottom: 0;
+                }
+    
+                button:hover .active {
+                    display: block;
+                }
+            }
+    
+            &__btn {
+                width: 100%;
+                height: 40px;
+            }
+        }
+    }
+
+    
     
     &__tareas--empty {
         width: 100%;
@@ -205,6 +269,21 @@
 
 @media screen and (min-width: 768px) {
     .planes__accion {
+
+        &__main {
+            height: calc(100% - 48px);
+
+            &__menu {
+                width: 200px;
+                margin-right: 20px;
+
+                &__btn {
+                    width: 180px;
+                    height: 40px;
+                }
+            }
+        }
+
         &__inicio {
             width: 100%;
             height: 100%;
@@ -218,71 +297,6 @@
                 color: $blue-500
             }
 
-        }
-
-        &__main {
-            height: calc(100% - 48px);
-        }
-
-        &__menu {
-            width: 200px;
-            margin-right: 20px;
-
-            .acordion {
-                border-radius: 0;
-            }
-
-            .accordion-item {
-                border: none;
-
-                button {
-                    padding: 10px 0;
-                    border-radius: 20px !important;
-                    height: 40px;
-                    color: $blue-500;
-                    box-shadow: none;
-                }
-
-                button[aria-expanded="true"] {
-                    background-color: rgba($color: #fff, $alpha: 0);
-                }
-
-                .accordion-header {
-                    .accordion-button {
-                        font-size: 14px;
-                    }
-                }
-            }
-            
-            .accordion-body {
-                padding: 10px 0;
-
-                button {
-                    width: 100%;
-                    padding: 0;
-                    font-size: 14px;
-                    text-align: left;
-                    color: #000;
-                    margin-bottom: 10px;
-
-                    .active {
-                        display: none
-                    }
-                }
-
-                button:last-child {
-                    margin-bottom: 0;
-                }
-
-                button:hover .active {
-                    display: block;
-                }
-            }
-
-            &__btn {
-                width: 180px;
-                height: 40px;
-            }
         }
 
         &__tareas--empty {

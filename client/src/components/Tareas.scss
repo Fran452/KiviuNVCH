@@ -20,6 +20,20 @@
 .tareas {
     height: calc(100% - 24px);
 
+    &__inicio {
+        width: 100%;
+        height: 100%;
+
+        img {
+            width: 200px;
+            max-width: 100%;
+        }
+    
+        h2 {
+            color: $blue-500
+        }
+    }
+
     &__header {
         h3 {
             i {
@@ -194,20 +208,6 @@
 }
 
 @media screen and (min-width: 768px) {
-    .tareas__inicio {
-        width: 100%;
-        height: 100%;
-    
-        img {
-            width: 200px;
-            max-width: 100%;
-        }
-    
-        h2 {
-            color: $blue-500
-        }
-    }
-
     .tareas {
         width: calc(100% - 220px);
         height: 100%;
