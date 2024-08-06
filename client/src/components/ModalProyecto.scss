@@ -2,7 +2,6 @@
 @import '~bootstrap/scss/_variables.scss';
 
 .modal__proyectos {
-
     .modal-header {
         border: none !important;
 
@@ -42,6 +41,12 @@
             &__btn {
                 width: 160px;
                 height: 40px;
+            }
+
+            &__error {
+                font-size: 12px;
+                color: $danger;
+                margin: 0;
             }
         }
     }

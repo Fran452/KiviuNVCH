@@ -36,205 +36,18 @@
 
 .planes__accion {
     height: 100%;
-    
-    &__tareas--empty {
-        width: 100%;
-        height: calc(100% - 48px);
-        padding: 20px;
 
-        &__main {
-            border: 2px dashed $blue-500;
-            height: calc(100% - 56px);
-
-            h2 {
-                color: $blue-500
-            }
-    
-            &__btn {
-                width: 180px;
-                height: 40px;
-                background-color: $blue-500 !important;
-                color: #fff !important;
-            }
-        }
-    }
-
-    &__tareas {
-        height: calc(100% - 24px);
-
-        &__header {
-            h3 {
-                i {
-                    color: $blue-500;
-                }
-            }
-
-            .btn__edit, .btn__delete {
-                width: 32px;
-                height: 32px;
-                padding: 0;
-            }
-
-            .btn__addTarea {
-                width: 160px;
-                height: 40px;
-            }
-        }
-
-        &__main {
-            height: 100%;
-            
-            .btn__area {
-                font-size: 12px;
-            }
-
-            &__tabla {
-                overflow-x: scroll;
-                width: calc(100vw - 80px);
-    
-                .table {
-                    table-layout: auto;
-                    width: 100%;
-    
-                    thead {
-                        tr {
-                            th {
-                                white-space: nowrap;
-                                overflow:hidden;
-                                color: $blue-500;
-                                padding: 5px 20px;
-                            }
-                        }
-                    }
-    
-                    &__tbody {
-                        td {
-                            padding: 5px 20px;
-                        }
-    
-                        &__nombre, &__fechaInicial, &__fechaFinal, &__equipo, &__notas {
-                            white-space: nowrap;
-                            overflow: hidden;
-                        }
-                        &__notas {
-                            max-width: 300px;
-                            text-overflow: ellipsis;
-                        }
-                        &__prioridad {
-                            span {
-                                padding: 6px 12px;
-                            }
-    
-                            &--baja {
-                                background-color: $blue-500 !important;
-                            }
-    
-                            &--media {
-                                background-color: $blue-600 !important;
-                            }
-    
-                            &--alta {
-                                background-color: $blue-700 !important;
-                            }
-                        }
-    
-                        &__estado {
-                            span {
-                                padding: 6px 12px;
-                            }
-    
-                            &--pendiente {
-                                background-color: $gray-500 !important;
-                            }
-    
-                            &--proceso {
-                                background-color: $warning !important;
-                            }
-    
-                            &--completada {
-                                background-color: $success !important;
-                            }
-    
-                            &--espera {
-                                background-color: $purple-400 !important;
-                            }
-    
-                            &--cancelada {
-                                background-color: $danger !important;
-                            }
-    
-                            &--bloqueada {
-                                background-color: $black !important;
-                            }
-                        }
-
-                        &__progreso {
-
-                            &__bar {
-                                width: 120px;
-                            }
-                            
-                        }
-    
-                        &__buttons {
-                            button {
-                                width: 36px;
-                                height: 36px;
-                                padding: 0;
-                            }
-                        } 
-                    }
-                }
-            }
-
-            &__tabla::-webkit-scrollbar {
-                height: 10px;
-            }
-    
-            &__tabla::-webkit-scrollbar-track {
-                background-color: rgba($color: $gray-300, $alpha: 0);
-            }
-    
-            &__tabla::-webkit-scrollbar-thumb {
-                background-color: $gray-500;
-                border-radius: 5px;
-            }
-        }
-    }
-}
-
-@media screen and (min-width: 768px) {
-    .planes__accion {
-        &__inicio {
-            width: 100%;
-            height: 100%;
-
-            img {
-                width: 200px;
-                max-width: 100%;
-            }
-        
-            h2 {
-                color: $blue-500
-            }
-
-        }
-
-        &__main {
-            height: calc(100% - 48px);
-        }
-
+    &__main {
         &__menu {
-            width: 200px;
-            margin-right: 20px;
-
+            width: 100%;
+    
             .acordion {
                 border-radius: 0;
             }
-
+    
             .accordion-item {
                 border: none;
-
+    
                 button {
                     padding: 10px 0;
                     border-radius: 20px !important;
@@ -242,11 +55,11 @@
                     color: $blue-500;
                     box-shadow: none;
                 }
-
+    
                 button[aria-expanded="true"] {
                     background-color: rgba($color: #fff, $alpha: 0);
                 }
-
+    
                 .accordion-header {
                     .accordion-button {
                         font-size: 14px;
@@ -256,7 +69,7 @@
             
             .accordion-body {
                 padding: 10px 0;
-
+    
                 button {
                     width: 100%;
                     padding: 0;
@@ -264,39 +77,43 @@
                     text-align: left;
                     color: #000;
                     margin-bottom: 10px;
-
+    
                     .active {
                         display: none
                     }
                 }
-
+    
                 button:last-child {
                     margin-bottom: 0;
                 }
-
+    
                 button:hover .active {
                     display: block;
                 }
             }
-
+    
             &__btn {
-                width: 180px;
+                width: 100%;
                 height: 40px;
             }
         }
+    }
+}
 
-        &__tareas--empty {
-            padding: 0;
-            width: calc(100% - 220px);
-            height: 100%;
-        }
+@media screen and (min-width: 768px) {
+    .planes__accion {
 
-        &__tareas {
-            width: calc(100% - 220px);
-            height: 100%;
+        &__main {
+            height: calc(100% - 48px);
 
-            &__tabla {
-                width: inherit;
+            &__menu {
+                width: 200px;
+                margin-right: 20px;
+
+                &__btn {
+                    width: 180px;
+                    height: 40px;
+                }
             }
         }
     }

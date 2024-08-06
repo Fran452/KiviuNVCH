@@ -28,7 +28,7 @@ function Login() {
             pass: password
         }
         setLoading(true)
-        await fetch("http://164.92.77.143:3030/apis/login", {
+        await fetch("http://localhost:3030/apis/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -38,7 +38,6 @@ function Login() {
         .then(res => res.json())
         .then(data => {
             const obj = jwtDecode(data)
-            console.log(obj)
             setLoading(false)
             if(obj.apirest.status === 0){
                 localStorage.setItem('token', JSON.stringify(data))

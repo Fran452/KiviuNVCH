@@ -5,6 +5,7 @@
     display: grid;
     grid-template-columns: 240px auto;
     transition: grid-template-columns 0.1s;
+    height: 100vh;
 
     &.active {
         grid-template-columns: 80px auto;
@@ -14,10 +15,10 @@
         display: grid;
         grid-template-rows: 80px auto;
         width: 100vw;
-        height: 100vh;
+        height: 100%;
+        overflow: scroll;
 
         &__outlet__container {
-            width: calc(100% - 40px);
             margin: 20px;
             padding: 20px;
         }
@@ -33,6 +34,7 @@
             margin: 0 40px 40px 0;
             width: calc(100% - 40px);
             height: calc(100vh - 40px);
+            overflow: auto;
 
             &__outlet__container {
                 overflow-y: scroll;
