@@ -6,7 +6,8 @@ CREATE TABLE Indicador (
     fk_responsable_sumplente               INT NOT NULL,
     nombre_indicador                       NVARCHAR(255),
     detalles_metrica                       NVARCHAR(255),
-    recordartorio                          DATETIME,
+    tipo_recordartorio                     INT NOT NULL,
+    fecha_del_recodatorio                  DATE, 
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_responsable_sumplente) REFERENCES Empleados(id_empleado)
@@ -48,7 +49,12 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
-        "recordartorio":{
+        "tipo_recordartorio":{
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
+
+        "fecha_del_recodatorio":{
             type: DataTypes.DATE(255),
             allowNull: false
         },

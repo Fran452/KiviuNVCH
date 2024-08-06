@@ -17,8 +17,6 @@ function crearID(array){
 }
 
 function armadoCodigoDeError(error){
-
-
 	switch (error){
 		case "ReferenceError":
 			return 10;
@@ -37,6 +35,29 @@ function armadoCodigoDeError(error){
 	}
 }
 
+function generarRecordatorio(fecha,tipo){
+	switch (tipo) {
+		case 1:
+			return fecha.getDate() + 7
+			break;
+		
+		case 2:
+			return fecha.getDate() + 15
+			break;
+		
+		case 3:
+			return fecha.getMonth() + 1
+			break;
+		
+		case 4:
+			return fecha.getMonth() + 3
+			break;
+		
+		default:
+			return 1
+			break;
+	}
+}
 
 module.exports = {archivoJSON, subirArchivo, crearID,armadoCodigoDeError}
 

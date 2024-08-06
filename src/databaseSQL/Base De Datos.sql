@@ -63,7 +63,8 @@ CREATE TABLE Indicadores (
     fk_responsable_suplente                INT NOT NULL,
     nombre_indicador                       VARCHAR(255),
     detalles_metrica                       VARCHAR(255),
-    recordatorio                           DATETIME,
+    tipo_recordartorio                     INT NOT NULL,
+    fecha_del_recodatorio                  DATE, 
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_responsable_suplente)  REFERENCES Empleados(id_empleado)
