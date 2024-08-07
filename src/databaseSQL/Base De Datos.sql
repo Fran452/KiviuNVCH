@@ -65,6 +65,7 @@ CREATE TABLE Indicadores (
     detalles_metrica                       VARCHAR(255),
     tipo_recordartorio                     INT NOT NULL,
     fecha_del_recodatorio                  DATE, 
+    mostrar                                INT NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_responsable_suplente)  REFERENCES Empleados(id_empleado)

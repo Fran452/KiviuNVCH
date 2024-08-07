@@ -8,6 +8,7 @@ CREATE TABLE Indicador (
     detalles_metrica                       NVARCHAR(255),
     tipo_recordartorio                     INT NOT NULL,
     fecha_del_recodatorio                  DATE, 
+    mostrar                                INT NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_responsable_sumplente) REFERENCES Empleados(id_empleado)
@@ -59,6 +60,11 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
+        "mostrar":{
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        }
+        
     };
     
     let config =  {
@@ -85,6 +91,11 @@ module.exports = (sequelize,DataTypes) => {
             as : 'Areas'
         });
 
+        indicadores.hasMany(models.metricas,{
+            foreignKey : 'fk_indicador',
+            as : 'Indicadores'
+        });
+        
     }
 
     return indicadores;

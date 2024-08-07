@@ -63,6 +63,7 @@ const controlador = {
                     detalles_metrica:req.body.detalles_metrica,
                     tipo_recordartorio:req.body.tipo_recordartorio,
                     fecha_del_recodatorio:fechaRecordatorio,
+                    mostrar: 1
                 });
                 res.json({error :0, errorDetalle: "", objeto:indicador});
                 return 0
@@ -81,6 +82,7 @@ const controlador = {
             if(req.body.user.puesto < 1){
                 indicadores = await dataBaseSQL.tareas.findAll({
                     where: {
+                        mostrar : 1
                     },
                     attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio'],
                     include: [
@@ -93,6 +95,7 @@ const controlador = {
             }else{
                 indicadores = await dataBaseSQL.tareas.findAll({
                     where: {
+                       mostrar : 1,
                        fk_area: req.body.user.area,
                     },
                     attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio'],
@@ -112,20 +115,12 @@ const controlador = {
             return 1;
         }
     },
-    
-    viewDetallesIndicadores: async (req,res) => {
-        try{
-            
-        }
-        catch(error){
-
-        }
-    },
 
     editIndicadores: async (req,res) => {
         try{
             let empleadoResponsable;
             let empleadoSuplente;
+
             if(req.body.responsable){
                 empleadoResponsable = await dataBaseSQL.empleados.findOne(
                     {
@@ -138,7 +133,8 @@ const controlador = {
                 
             }else{
                 empleadoResponsable = req.body.tarea.fk_responsable;
-            }
+            };
+
             if(req.body.empleadoSuplente){
                 empleadoSuplente = await dataBaseSQL.empleados.findOne(
                     {
@@ -149,7 +145,7 @@ const controlador = {
                 );
             }else{
                 empleadoSuplente = req.body.tarea.fk_responsable_sumplente;
-            }
+            };
 
             let indicadorModificado = await dataBaseSQL.tareas.update({
                 fk_area:req.body.user.fk_area,
@@ -174,37 +170,84 @@ const controlador = {
 
     deleteIndicadores: async (req,res) => {
         try{
+            let indicadorEliminado = await dataBaseSQL.tareas.update({
+                mostrar : 0,
+            },{
+                where:{
+                    id_indicador : req.body.idIndicador
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:indicadorEliminado});
             
         }
         catch(error){
-
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 
     newMetrica: async (req,res) => {
         try{
-            
+            const ahora = new Date();
+            const fechaFormateada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
+            const horaFormateada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}:${String(ahora.getSeconds()).padStart(2, '0')}`;
+
+            let metrica = await dataBaseSQL.metrica.create({
+                fk_indicador:req.body.fk_indicador,
+                dato_metrica:req.body.dato_metrica,
+                fecha_Metrica:fechaFormateada,
+                hora_Metrica:horaFormateada,
+                log_de_usuario:req.body.log_de_usuario
+            });
+            res.json({error :0, errorDetalle: "", objeto:metrica});
+            return 0;
         }
         catch(error){
-
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 
     editMetrica: async (req,res) => {
         try{
-            
+            let metricarModificado = await dataBaseSQL.tareas.update({
+                dato_metrica:req.body.dato_metrica,
+                fecha_Metrica:req.body.fecha_Metrica,
+                hora_Metrica:req.body.hora_Metrica,
+                log_de_usuario:req.body.log_de_usuario
+            },{
+                where:{
+                    id_metricas : req.body.idMetricas
+                }
+            });
+            res.json({error :0, errorDetalle: "", objeto:metricarModificado});
+            return 0;
         }
         catch(error){
-
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 
     ultimasTresMetricas: async (req,res) => {
         try{
-            
+            let metricas = await dataBaseSQL.tareas.findAll({
+                where: {
+                   fk_indicador:req.body.fkIndicador
+                },
+                limit: 3,
+                order: [['fecha_Metrica', 'DESC']],
+            });
+            res.json({error :0, errorDetalle: "", objeto:metricas});
+            return 0;
         }
         catch(error){
-
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 }
