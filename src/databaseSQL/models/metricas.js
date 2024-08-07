@@ -63,6 +63,11 @@ module.exports = (sequelize,DataTypes) => {
             as : 'Indicadores'
         });
 
+        metrica.belongsTo(models.empleados,{
+            foreignKey : 'log_de_usuario',
+            as : 'Empleados'
+        });
+
     }
 
     return metrica;

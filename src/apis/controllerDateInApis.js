@@ -198,7 +198,7 @@ const controlador = {
                 dato_metrica:req.body.dato_metrica,
                 fecha_Metrica:fechaFormateada,
                 hora_Metrica:horaFormateada,
-                log_de_usuario:req.body.log_de_usuario
+                log_de_usuario:req.body.user.id
             });
             res.json({error :0, errorDetalle: "", objeto:metrica});
             return 0;
@@ -240,6 +240,7 @@ const controlador = {
                 },
                 limit: 3,
                 order: [['fecha_Metrica', 'DESC']],
+                include: [{association : "log_de_usuario",attributes: ['nombre','mail']}]
             });
             res.json({error :0, errorDetalle: "", objeto:metricas});
             return 0;

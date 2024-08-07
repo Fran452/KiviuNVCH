@@ -90,11 +90,6 @@ module.exports = (sequelize,DataTypes) => {
             foreignKey : 'fk_area',
             as : 'Areas'
         });
-
-        indicadores.hasMany(models.metricas,{
-            foreignKey : 'fk_indicador',
-            as : 'Indicadores'
-        });
         
     }
 
