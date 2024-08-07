@@ -80,7 +80,7 @@ const controlador = {
         try{
             let indicadores;
             if(req.body.user.puesto < 1){
-                indicadores = await dataBaseSQL.tareas.findAll({
+                indicadores = await dataBaseSQL.indicadores.findAll({
                     where: {
                         mostrar : 1
                     },
@@ -93,7 +93,7 @@ const controlador = {
                 });
 
             }else{
-                indicadores = await dataBaseSQL.tareas.findAll({
+                indicadores = await dataBaseSQL.indicadores.findAll({
                     where: {
                        mostrar : 1,
                        fk_area: req.body.user.area,
@@ -106,7 +106,7 @@ const controlador = {
                     ]
                 });
             };            
-            res.json({error :0, errorDetalle: "", objeto:tareas});            
+            res.json({error :0, errorDetalle: "", objeto:indicadores});            
             return 0;
         }
         catch(error){
@@ -147,7 +147,7 @@ const controlador = {
                 empleadoSuplente = req.body.tarea.fk_responsable_sumplente;
             };
 
-            let indicadorModificado = await dataBaseSQL.tareas.update({
+            let indicadorModificado = await dataBaseSQL.indicadores.update({
                 fk_area:req.body.user.fk_area,
                 fk_responsable:empleadoResponsable,
                 fk_responsable_sumplente:empleadoSuplente,

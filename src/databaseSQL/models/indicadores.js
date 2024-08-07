@@ -35,7 +35,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
-        "fk_responsable_sumplente":{
+        "fk_responsable_suplente":{
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -82,7 +82,7 @@ module.exports = (sequelize,DataTypes) => {
         });
 
         indicadores.belongsTo(models.empleados,{
-            foreignKey : 'fk_responsable_sumplente',
+            foreignKey : 'fk_responsable_suplente',
             as : 'ResponsableSuplente'
         });
 

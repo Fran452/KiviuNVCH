@@ -25,7 +25,7 @@ router.put('/plan-accion/deleteProyect',apisPlanDeAccion.deleteProyecto);
 router.post('/login',apisUser.loginFuction);
 
 
-router.post('/dateIn',apisDateIn.index);
+router.post('/dateIn',apisDateIn.viewIndicadores);
 
 router.post('/dateIn/newIndicador',apisDateIn.newindicador);
 router.post('/dateIn/editIndicador',apisDateIn.editIndicadores);
