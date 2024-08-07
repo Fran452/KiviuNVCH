@@ -60,6 +60,11 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
+        "color_Front":{
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
+        
         "mostrar":{
             type:DataTypes.INTEGER(),
             allowNull: false

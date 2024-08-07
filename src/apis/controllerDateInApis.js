@@ -56,13 +56,14 @@ const controlador = {
                     return 1;
                 }
                 let indicador = await dataBaseSQL.indicadores.create({
-                    fk_area:req.body.fk_area,
-                    fk_responsable:empleadoResponsable,
-                    fk_responsable_sumplente:empleadoSuplente,
-                    nombre_indicador:req.body.nombre_indicador,
-                    detalles_metrica:req.body.detalles_metrica,
-                    tipo_recordartorio:req.body.tipo_recordartorio,
-                    fecha_del_recodatorio:fechaRecordatorio,
+                    fk_area:                    req.body.fk_area,
+                    fk_responsable:             empleadoResponsable,
+                    fk_responsable_sumplente:   empleadoSuplente,
+                    nombre_indicador:           req.body.nombre_indicador,
+                    detalles_metrica:           req.body.detalles_metrica,
+                    tipo_recordartorio:         req.body.tipo_recordartorio,
+                    fecha_del_recodatorio:      fechaRecordatorio,
+                    color_Front:                req.body.colorHexa,      
                     mostrar: 1
                 });
                 res.json({error :0, errorDetalle: "", objeto:indicador});
@@ -148,12 +149,12 @@ const controlador = {
             };
 
             let indicadorModificado = await dataBaseSQL.indicadores.update({
-                fk_area:req.body.user.fk_area,
-                fk_responsable:empleadoResponsable,
-                fk_responsable_sumplente:empleadoSuplente,
-                nombre_indicador:req.body.nombre_indicador,
-                detalles_metrica:req.body.detalles_metrica,
-                tipo_recordartorio:req.body.tipo_recordartorio,
+                fk_area:                    req.body.user.fk_area,
+                fk_responsable:             empleadoResponsable,
+                fk_responsable_sumplente:   empleadoSuplente,
+                nombre_indicador:           req.body.nombre_indicador,
+                detalles_metrica:           req.body.detalles_metrica,
+                tipo_recordartorio:         req.body.tipo_recordartorio,
             },{
                 where:{
                     id_indicador : req.body.idIndicador
@@ -194,11 +195,11 @@ const controlador = {
             const horaFormateada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}:${String(ahora.getSeconds()).padStart(2, '0')}`;
 
             let metrica = await dataBaseSQL.metrica.create({
-                fk_indicador:req.body.fk_indicador,
-                dato_metrica:req.body.dato_metrica,
-                fecha_Metrica:fechaFormateada,
-                hora_Metrica:horaFormateada,
-                log_de_usuario:req.body.user.id
+                fk_indicador:   req.body.fk_indicador,
+                dato_metrica:   req.body.dato_metrica,
+                fecha_Metrica:  fechaFormateada,
+                hora_Metrica:   horaFormateada,
+                log_de_usuario: req.body.user.id
             });
             res.json({error :0, errorDetalle: "", objeto:metrica});
             return 0;
@@ -213,13 +214,13 @@ const controlador = {
     editMetrica: async (req,res) => {
         try{
             let metricarModificado = await dataBaseSQL.tareas.update({
-                dato_metrica:req.body.dato_metrica,
-                fecha_Metrica:req.body.fecha_Metrica,
-                hora_Metrica:req.body.hora_Metrica,
-                log_de_usuario:req.body.log_de_usuario
+                dato_metrica:   req.body.dato_metrica,
+                fecha_Metrica:  req.body.fecha_Metrica,
+                hora_Metrica:   req.body.hora_Metrica,
+                log_de_usuario: req.body.log_de_usuario
             },{
                 where:{
-                    id_metricas : req.body.idMetricas
+                    id_metricas: req.body.idMetricas
                 }
             });
             res.json({error :0, errorDetalle: "", objeto:metricarModificado});
