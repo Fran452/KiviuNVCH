@@ -42,6 +42,7 @@ const controlador = {
         .catch(error => {
             console.log(error);
         });
+
         
     },
 

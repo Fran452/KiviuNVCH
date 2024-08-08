@@ -49,21 +49,21 @@ const controlador = {
                 res.json({error : 10, errorDetalle: "El correo del responsable suplente no existe."});
                 return 1;
             }else{
-                let fechaActual = new date();
+                let fechaActual = new Date();
                 let fechaRecordatorio = funcionesGenericas.generarRecordatorio(fechaActual,req.body.tipo_recordartorio); 
+                
                 if(fechaRecordatorio == 1){
                     res.json({error : 99, errorDetalle: "El tipo de fecha seleccionado no existe"});
                     return 1;
                 }
                 let indicador = await dataBaseSQL.indicadores.create({
-                    fk_area:                    req.body.fk_area,
-                    fk_responsable:             empleadoResponsable,
-                    fk_responsable_sumplente:   empleadoSuplente,
+                    fk_area:                    req.body.user.area,
+                    fk_responsable:             empleadoResponsable.id_empleado,
+                    fk_responsable_suplente:   empleadoSuplente.id_empleado,
                     nombre_indicador:           req.body.nombre_indicador,
                     detalles_metrica:           req.body.detalles_metrica,
                     tipo_recordartorio:         req.body.tipo_recordartorio,
                     fecha_del_recodatorio:      fechaRecordatorio,
-                    color_Front:                req.body.colorHexa,      
                     mostrar: 1
                 });
                 res.json({error :0, errorDetalle: "", objeto:indicador});
@@ -99,7 +99,7 @@ const controlador = {
                        mostrar : 1,
                        fk_area: req.body.user.area,
                     },
-                    attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio'],
+                    attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio','fecha_del_recodatorio'],
                     include: [
                         {association : "Areas",attributes: ['id_area','nombre_del_Area']},
                         {association : "Empleados",attributes: ['nombre','mail']},
@@ -107,6 +107,11 @@ const controlador = {
                     ]
                 });
             };            
+            indicadores.map(indicador => {
+                indicador.dataValues.color = funcionesGenericas.asignarColor(indicador.fecha_del_recodatorio)
+                return indicador
+            });
+
             res.json({error :0, errorDetalle: "", objeto:indicadores});            
             return 0;
         }
@@ -122,44 +127,48 @@ const controlador = {
             let empleadoResponsable;
             let empleadoSuplente;
 
-            if(req.body.responsable){
+            if(req.body.responsable != req.body.indicador.Empleados.mail){
                 empleadoResponsable = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
                             mail : req.body.responsable
                         },
+                        attributes: ['id_empleado']
                     }
                 );
     
                 
             }else{
-                empleadoResponsable = req.body.tarea.fk_responsable;
+                empleadoResponsable = req.body.indicador.fk_responsable;
             };
 
-            if(req.body.empleadoSuplente){
+            if(req.body.empleadoSuplente != req.body.indicador.ResponsableSuplente.mail){
                 empleadoSuplente = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
-                            mail : req.body.empleadoSuplente
+                            mail : req.body.empleadoSuplente,
                         },
+                        attributes: ['id_empleado']
                     }
                 );
             }else{
-                empleadoSuplente = req.body.tarea.fk_responsable_sumplente;
+                empleadoSuplente = req.body.indicador.fk_responsable_sumplente;
             };
-
+            console.log(empleadoResponsable.dataValues.id_empleado );
+            console.log(empleadoSuplente.dataValues.id_empleado);
             let indicadorModificado = await dataBaseSQL.indicadores.update({
                 fk_area:                    req.body.user.fk_area,
-                fk_responsable:             empleadoResponsable,
-                fk_responsable_sumplente:   empleadoSuplente,
+                fk_responsable:             empleadoResponsable.dataValues.id_empleado,
+                fk_responsable_suplente:   empleadoSuplente.dataValues.id_empleado,
                 nombre_indicador:           req.body.nombre_indicador,
                 detalles_metrica:           req.body.detalles_metrica,
                 tipo_recordartorio:         req.body.tipo_recordartorio,
             },{
                 where:{
-                    id_indicador : req.body.idIndicador
+                    id_indicador : req.body.indicador.id_indicador
                 }
             });
+            
             res.json({error: 0, errorDetalle:"",objeto:indicadorModificado});
         }
         catch(error){
@@ -171,7 +180,7 @@ const controlador = {
 
     deleteIndicadores: async (req,res) => {
         try{
-            let indicadorEliminado = await dataBaseSQL.tareas.update({
+            let indicadorEliminado = await dataBaseSQL.indicadores.update({
                 mostrar : 0,
             },{
                 where:{
@@ -192,9 +201,9 @@ const controlador = {
         try{
             const ahora = new Date();
             const fechaFormateada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
-            const horaFormateada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}:${String(ahora.getSeconds()).padStart(2, '0')}`;
+            const horaFormateada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
 
-            let metrica = await dataBaseSQL.metrica.create({
+            let metrica = await dataBaseSQL.metricas.create({
                 fk_indicador:   req.body.fk_indicador,
                 dato_metrica:   req.body.dato_metrica,
                 fecha_Metrica:  fechaFormateada,
@@ -206,7 +215,7 @@ const controlador = {
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
+            res.json({error : codeError, errorDetalle: error.message, objeto : {}});   
             return 1;
         }
     },
@@ -248,7 +257,7 @@ const controlador = {
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
+            res.json({error : codeError, errorDetalle: error.message,objeto : {}});   
             return 1;
         }
     },

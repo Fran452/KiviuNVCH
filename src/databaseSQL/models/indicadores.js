@@ -59,12 +59,7 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.DATE(255),
             allowNull: false
         },
-
-        "color_Front":{
-            type:DataTypes.INTEGER(),
-            allowNull: false
-        },
-        
+                
         "mostrar":{
             type:DataTypes.INTEGER(),
             allowNull: false

@@ -38,19 +38,23 @@ function armadoCodigoDeError(error){
 function generarRecordatorio(fecha,tipo){
 	switch (tipo) {
 		case 1:
-			return fecha.getDate() + 7
+			fecha.setDate(fecha.getDate() + 7)
+			return fecha
 			break;
 		
 		case 2:
-			return fecha.getDate() + 15
+			fecha.setDate(fecha.getDate() + 15)
+			return fecha
 			break;
 		
 		case 3:
-			return fecha.getMonth() + 1
+			fecha.setDate(fecha.getMonth() + 1)
+			return fecha
 			break;
 		
 		case 4:
-			return fecha.getMonth() + 3
+			fecha.setDate(fecha.getMonth() + 3)
+			return fecha
 			break;
 		
 		default:
@@ -59,7 +63,22 @@ function generarRecordatorio(fecha,tipo){
 	}
 }
 
-module.exports = {archivoJSON, subirArchivo, crearID,armadoCodigoDeError}
+function asignarColor(fecha){
+	const fechaActual = new Date();
+	const fechaEnviada = new Date(fecha);
+	let resultadoAño = fechaEnviada.getFullYear() - fechaActual.getFullYear() ; 
+	let resultadoMes = fechaEnviada.getMonth() - fechaActual.getMonth();
+	let resultadoDia = fechaEnviada.getDate() - fechaActual.getDate();
+	
+	if(resultadoAño < 0 || resultadoMes < 0 || resultadoDia < 0 ){
+		return "rojo"
+	}else if(resultadoAño == 2 || resultadoMes == 2 || resultadoDia < 2){
+		return "Azul"
+	}else{	
+		return "Verde"
+	}
+}
+module.exports = {archivoJSON, subirArchivo, crearID,armadoCodigoDeError,generarRecordatorio,asignarColor}
 
 /**
 Codigos de error en SQL

@@ -66,7 +66,6 @@ CREATE TABLE Indicadores (
     tipo_recordartorio                     INT NOT NULL,
     fecha_del_recodatorio                  DATE, 
     mostrar                                INT NOT NULL,
-    color_Front                             INT NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_responsable_suplente)  REFERENCES Empleados(id_empleado)
