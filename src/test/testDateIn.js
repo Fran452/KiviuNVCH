@@ -488,7 +488,7 @@ const controlador = {
                 estado : "Error"
             }
             res.json({resultadoTest,resultadoApi:apis});
-            return 0
+            return 0;
         }
 
         // Subida base de datos 
@@ -580,6 +580,102 @@ const controlador = {
     },
 
     editMetrica: async (req,res) => {
+        let resultadoTest = {}; 
+        let NewMetricaJSON = await fetch('http://localhost:3030/apis/dateIn/newMetrica',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+           body: JSON.stringify({
+            fk_indicador : 1,
+            dato_metrica: 500,
+            user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            })
+        })
+        
+        let apisNewMetrica = await NewMetricaJSON.json();
+        let metricaCreada = await buscarMetricaEjemplo(apisNewMetrica.objeto.id_metrica);
+
+       console.log(apisNewMetrica.objeto.id_metrica);
+
+        let apisEditMetricaJSON = await fetch('http://localhost:3030/apis/dateIn/editMegrica',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+           body: JSON.stringify({
+            dato_metrica: 100,
+            idMetrica: apisNewMetrica.objeto.id_metrica,
+            user:{id: 2,nombre: 'Nombre Apellico',area: 1,puesto: 2,mail: 'testUser@kiviu.com'}
+            })
+        });
+
+        let apisEditMetrica = await apisEditMetricaJSON.json();
+        let metricaEditada = await buscarMetricaEjemplo(apisNewMetrica.objeto.id_metrica);
+
+        
+        // retorno de error 
+        if(apisEditMetrica.error == 0){
+            resultadoTest.test0 = {
+                descripcion : "retorno de error",
+                estado : "Correcto"
+            }
+        }else{
+            resultadoTest.test0 = {
+                descripcion : "retorno de error",
+                estado : "Error"
+            }
+            res.json({resultadoTest,resultadoApi:metricaEditada});
+            return 0
+        }
+        
+        // diferencia entre metrica antigua
+        if(metricaEditada.dato_metrica != metricaCreada.dato_metrica){
+            resultadoTest.test1 = {
+                descripcion : "Diferencia entre metrica subida y metrica editada",
+                estado : "Correcto"
+            };
+        }else{
+            resultadoTest.test1 = {
+                descripcion : "Diferencia entre metrica subida y metrica editada",
+                estado : "Error"
+            };
+        }
+
+        // edicion de dato metrica
+        if(metricaEditada.dato_metrica == 100){
+            resultadoTest.test2 = {
+                descripcion : "edicion de dato metrica",
+                estado : "Correcto"
+            };
+        }else{
+            resultadoTest.test2 = {
+                descripcion : "edicion de dato metrica",
+                estado : "Error",
+                esperado:100,
+                recibido:metricaEditada.dato_metrica
+            };
+        }
+
+        // Edicion de usuario
+        if(metricaEditada.Empleados.nombre == 'Nombre Apellico'){
+            resultadoTest.test3 = {
+                descripcion : 'Edicion de usuario',
+                estado : "Correcto"
+            };
+        }else{
+            resultadoTest.test3 = {
+                descripcion : "Edicion de usuario",
+                estado : "Error",
+                esperado:'Nombre Apellico',
+                recibido:metricaEditada.Empleados.nombre
+            };
+        }
+
+
+        await eliminarMetricaEjemplo(apisNewMetrica.objeto.id_metrica);
+        res.json({resultadoTest,resultadoApi:apisEditMetrica});
+
     },
 
     ultimasTresMetricas: async (req,res) => {

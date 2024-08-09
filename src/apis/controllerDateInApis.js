@@ -222,14 +222,18 @@ const controlador = {
 
     editMetrica: async (req,res) => {
         try{
-            let metricarModificado = await dataBaseSQL.tareas.update({
+            const ahora = new Date();
+            const fechaFormateada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
+            const horaFormateada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
+
+            let metricarModificado = await dataBaseSQL.metricas.update({
                 dato_metrica:   req.body.dato_metrica,
-                fecha_Metrica:  req.body.fecha_Metrica,
-                hora_Metrica:   req.body.hora_Metrica,
-                log_de_usuario: req.body.log_de_usuario
+                fecha_Metrica:  fechaFormateada,
+                hora_Metrica:   horaFormateada,
+                log_de_usuario: req.body.user.id
             },{
                 where:{
-                    id_metricas: req.body.idMetricas
+                    id_metrica: req.body.idMetrica
                 }
             });
             res.json({error :0, errorDetalle: "", objeto:metricarModificado});
