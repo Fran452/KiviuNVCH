@@ -32,12 +32,7 @@ module.exports = (sequelize,DataTypes) => {
         },
 
         "fecha_Metrica":{
-            type:DataTypes.INTEGER(),
-            allowNull: false
-        },
-
-        "hora_Metrica":{
-            type:DataTypes.INTEGER(),
+            type:DataTypes.DATE(),
             allowNull: false
         },
 

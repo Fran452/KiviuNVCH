@@ -75,8 +75,7 @@ CREATE TABLE Metricas (
     id_metrica                              INT PRIMARY KEY AUTO_INCREMENT,
     fk_indicador                            INT NOT NULL,
     dato_metrica                            INT NOT NULL,
-    fecha_Metrica                           DATE NOT NULL,
-    hora_Metrica                            TIME NOT NULL,
+    fecha_Metrica                           DATETIME NOT NULL,
     log_de_usuario                          INT NOT NULL,
     FOREIGN KEY (fk_indicador)              REFERENCES Indicadores(id_indicador),
     FOREIGN KEY (log_de_usuario)            REFERENCES Empleados(id_empleado)

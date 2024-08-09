@@ -40,29 +40,57 @@ const controlador = {
         
 
         let testEditIndicadoresJSON      = await fetch("http://localhost:3030/test/dateIn/editIndicador",{
-                    method:'GET',
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+            method:'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
         });
         let testEditIndicadores = await testEditIndicadoresJSON.json();
-        
-        let testDeleteIndicadoresJSON    = await fetch("http://localhost:3030/test/dateIn/deleteIndicador",{
-                    method:'GET',
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+
+        let testDeleteIndicadoresJSON = await fetch("http://localhost:3030/test/dateIn/deleteIndicador",{
+            method:'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
         });    
-        let testDeleteIndicadores = await testDeleteIndicadoresJSON.json(); 
+        let testDeleteIndicadores = await testDeleteIndicadoresJSON.json();
         
+        let testNewMetricaJSON = await fetch("http://localhost:3030/test/dateIn/newMetrica",{
+            method:'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });    
+        let testNewMetrica = await testNewMetricaJSON.json(); 
+        
+        let testEditMetricaJSON = await fetch("http://localhost:3030/test/dateIn/editMegrica",{
+            method:'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });    
+        let testEditMetrica = await testEditMetricaJSON.json();
+
+        let testView3MetricaJSON = await fetch("http://localhost:3030/test/dateIn/ultimasTresMetricas",{
+            method:'GET',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });    
+        let testView3Metrica = await testView3MetricaJSON.json();
+
         let retorno = {
             indicadores:{
                 view    : testViewIndicadores,
                 new     : testNewIndicadores,
                 edit    : testEditIndicadores,
                 delete  : testDeleteIndicadores
+            },
+            metrica:{
+                new:testNewMetrica,
+                edit:testEditMetrica,
+                view3metricas:testView3Metrica,
             }
-            
         }
 
         res.json(retorno);
@@ -70,10 +98,9 @@ const controlador = {
 
     
     // Test de view dateIn
-  viewIndicadores: async (req,res) => {
+    viewIndicadores: async (req,res) => {
     let resultadoTest = {}
     /* agregar test para colores */ 
-    console.log("test de ver indicadores");
     
     fetch('http://localhost:3030/apis/dateIn',{
         method:'POST',
@@ -136,10 +163,7 @@ const controlador = {
     },
 
     newindicador: async (req,res) => {
-
         let resultadoTest = {};
-
-        console.log("test de ver nuevo indicador");
         fetch('http://localhost:3030/apis/dateIn/newIndicador',{
             method:'POST',
             headers: {
@@ -205,8 +229,6 @@ const controlador = {
             let busquedaBd = await busquedaBdJSON.json();
 
             let indicadorsubido = busquedaBd.objeto.find(indicador => indicador.id_indicador == apis.objeto.id_indicador);
-
-                console.log(indicadorsubido);
                 if(indicadorsubido != undefined ){
                     resultadoTest.test2 = {
                         descripcion : "Objeto subido",
@@ -493,8 +515,6 @@ const controlador = {
 
         // Subida base de datos 
         let metricaEjemplo = await buscarMetricaEjemplo(apis.objeto.id_metrica)
-        console.log(metricaEjemplo);
-        console.log(apis.objeto.id_metrica);
         if(metricaEjemplo != undefined){
             resultadoTest.test1 = {
                 descripcion : "Subida a base de datos",
@@ -596,8 +616,6 @@ const controlador = {
         let apisNewMetrica = await NewMetricaJSON.json();
         let metricaCreada = await buscarMetricaEjemplo(apisNewMetrica.objeto.id_metrica);
 
-       console.log(apisNewMetrica.objeto.id_metrica);
-
         let apisEditMetricaJSON = await fetch('http://localhost:3030/apis/dateIn/editMegrica',{
             method:'POST',
             headers: {
@@ -672,13 +690,94 @@ const controlador = {
             };
         }
 
-
         await eliminarMetricaEjemplo(apisNewMetrica.objeto.id_metrica);
         res.json({resultadoTest,resultadoApi:apisEditMetrica});
-
     },
 
     ultimasTresMetricas: async (req,res) => {
+        let resultadoTest = {}; 
+
+        // fk_indicador,dato_metrica,fecha_Metrica,hora_Metrica,log_de_usuario
+        let apisNewMetrica1 = await crearMetrica(1,100,'2024-08-07',1);
+        let apisNewMetrica2 = await crearMetrica(1,200,'2024-08-06',1);
+        let apisNewMetrica3 = await crearMetrica(1,300,'2024-08-05',1);
+        let ejemplos = {
+            ejemplo1 : apisNewMetrica1.dataValues,
+            ejemplo2 : apisNewMetrica2.dataValues,
+            ejemplo3 : apisNewMetrica3.dataValues
+        };
+
+        let apisEnvio3MetricasJSON = await fetch('http://localhost:3030/apis/dateIn/ultimas3Metricas',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+           body: JSON.stringify({
+            fkIndicador : 1,
+            user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            })
+        });
+        let apisEnvio3Metricas = await apisEnvio3MetricasJSON.json();
+
+        // retorno de error 
+        if(apisEnvio3Metricas.error == 0){
+            resultadoTest.test0 = {
+                descripcion : "retorno de error",
+                estado : "Correcto"
+            }
+        }else{
+            resultadoTest.test0 = {
+                descripcion : "retorno de error",
+                estado : "Error"
+            }
+            res.json({resultadoTest,resultadoApi:apisEnvio3Metricas});
+            return 0;
+        }
+
+        // Mostrar primer ejemplo
+        if(apisEnvio3Metricas.objeto[0].id_metrica == ejemplos.ejemplo1.id_metrica){
+            resultadoTest.test1 = {
+                descripcion : "retorno de error",
+                estado : "Correcto"
+            }
+        }else{
+            resultadoTest.test1 = {
+                descripcion : "retorno de error",
+                estado : "Error"
+            }
+        }
+
+        // Mostrar segundo ejemplo
+        if(apisEnvio3Metricas.objeto[1].id_metrica == ejemplos.ejemplo2.id_metrica){
+            resultadoTest.test2 = {
+                descripcion : "retorno de error",
+                estado : "Correcto"
+            }
+        }else{
+            resultadoTest.test2 = {
+                descripcion : "retorno de error",
+                estado : "Error"
+            }
+        }
+
+        // Mostrar tercer ejemplo
+        if(apisEnvio3Metricas.objeto[2].id_metrica == ejemplos.ejemplo3.id_metrica){
+            resultadoTest.test3 = {
+                descripcion : "retorno de error",
+                estado : "Correcto"
+            }
+        }else{
+            resultadoTest.test3 = {
+                descripcion : "retorno de error",
+                estado : "Error"
+            }
+        }
+
+        await eliminarMetricaEjemplo(ejemplos.ejemplo1.id_metrica);
+        await eliminarMetricaEjemplo(ejemplos.ejemplo2.id_metrica);
+        await eliminarMetricaEjemplo(ejemplos.ejemplo3.id_metrica);
+
+        res.json({resultadoTest,resultadoApi:apisEnvio3Metricas});
     },
 }
 
@@ -725,6 +824,15 @@ async function buscarMetricaEjemplo(id) {
     return busqueda;
 }
 
+async function crearMetrica(fk_indicador,dato_metrica,fecha_Metrica,log_de_usuario) {
+    let metrica = await dataBaseSQL.metricas.create({
+        fk_indicador:   fk_indicador,
+        dato_metrica:   dato_metrica,
+        fecha_Metrica:  fecha_Metrica,
+        log_de_usuario: log_de_usuario
+    });
+    return metrica;
+}
 /*
 
 let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newIndicador',{

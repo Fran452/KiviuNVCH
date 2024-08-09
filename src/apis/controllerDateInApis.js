@@ -223,13 +223,10 @@ const controlador = {
     editMetrica: async (req,res) => {
         try{
             const ahora = new Date();
-            const fechaFormateada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
-            const horaFormateada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
 
             let metricarModificado = await dataBaseSQL.metricas.update({
                 dato_metrica:   req.body.dato_metrica,
-                fecha_Metrica:  fechaFormateada,
-                hora_Metrica:   horaFormateada,
+                fecha_Metrica:  ahora,
                 log_de_usuario: req.body.user.id
             },{
                 where:{
@@ -248,13 +245,13 @@ const controlador = {
 
     ultimasTresMetricas: async (req,res) => {
         try{
-            let metricas = await dataBaseSQL.tareas.findAll({
+            let metricas = await dataBaseSQL.metricas.findAll({
                 where: {
                    fk_indicador:req.body.fkIndicador
                 },
                 limit: 3,
                 order: [['fecha_Metrica', 'DESC']],
-                include: [{association : "log_de_usuario",attributes: ['nombre','mail']}]
+                include: [{association : "Empleados",attributes: ['nombre','mail']}]
             });
             res.json({error :0, errorDetalle: "", objeto:metricas});
             return 0;

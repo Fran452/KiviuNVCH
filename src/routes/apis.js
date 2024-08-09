@@ -33,6 +33,7 @@ router.post('/dateIn/deleteIndicador',apisDateIn.deleteIndicadores);
 
 router.post('/dateIn/newMetrica',apisDateIn.newMetrica);
 router.post('/dateIn/editMegrica',apisDateIn.editMetrica);
+router.post('/dateIn/ultimas3Metricas',apisDateIn.ultimasTresMetricas);
 /*
 
 router.get('/plan-accion-config',homeController.planesAcción);
