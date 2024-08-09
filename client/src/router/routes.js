@@ -8,7 +8,7 @@ import AsistenteIA from '../pages/AsistenteIA/AsistenteIA'
 import DatIN from '../pages/DatIN/DatIN'
 
 import ProtectedRoutes from '../Services/ProtectedRoutes'
-import Layout from '../components/Layout'
+import Layout from '../components/Layout/Layout'
 import PowerBI from '../components/PowerBI'
 import NotFound from '../pages/NotFound/NotFound'
 

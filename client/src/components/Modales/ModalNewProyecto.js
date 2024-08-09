@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Modal } from 'react-bootstrap';
+import { jwtDecode } from "jwt-decode"
 import "./ModalProyecto.scss"
-import { tareasContext } from './Tareas';
-import { newContext } from '../pages/PlanesAccion/PlanesAccion';
+import { newContext } from '../../pages/PlanesAccion/PlanesAccion';
 
-function ModalEditProyecto(props) {
-    const { proyectos, handleUpdate, setTitleProyecto, setDescripcionProyecto } = useContext(newContext)
-    const { proyecto, setProyecto } = useContext(tareasContext)
+function ModalNewProyecto(props) {
+    const { proyectos, handleUpdate } = useContext(newContext)
+    const auth = localStorage.getItem("token")
+    const jwtParse = jwtDecode(auth)
 
     const [formProyecto, setFormProyecto] = useState({
         nombre: "",
@@ -16,15 +17,8 @@ function ModalEditProyecto(props) {
     const [errorFetch, setErrorFetch] = useState(null)
 
     useEffect(() => {
-        if(proyecto){
-            const pro = JSON.parse(proyecto)
-            const obj = proyectos.find((e) => e.id_proyecto === pro.id_proyecto)
-            setFormProyecto({
-                nombre: obj.nombre,
-                detalles: obj.detalles
-            })
-        }
-    },[proyecto, proyectos])
+
+    },[proyectos])
 
     const handleClose = () => {
         setErrors({})
@@ -32,7 +26,6 @@ function ModalEditProyecto(props) {
             nombre: "",
             detalles: ""
         })
-        setProyecto(null)
         setErrorFetch(null)
         props.onHide()
     }
@@ -56,20 +49,19 @@ function ModalEditProyecto(props) {
         return errors;
     }
 
-    const handleChangeProyecto = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const newErrors = validateForm(formProyecto)
         setErrors(newErrors)
-        const pro = JSON.parse(proyecto)
         if (Object.keys(newErrors).length === 0){
             try {
-                const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/modProyect", {
-                    method: "PUT",
+                const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/addProyect", {
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        idProyecto: pro.id_proyecto,
+                        user: jwtParse.apirest.objeto,
                         nombre: formProyecto.nombre,
                         detalles: formProyecto.detalles
                     })
@@ -78,15 +70,12 @@ function ModalEditProyecto(props) {
                 if(data.error !== 0){
                     setErrorFetch(data.errorDetalle)
                 } else {
+                    handleUpdate(true)
                     setFormProyecto({
                         nombre: "",
                         detalles: ""
                     })
                     setErrorFetch(null)
-                    setProyecto(null)
-                    handleUpdate(true)
-                    setTitleProyecto(formProyecto.nombre)
-                    setDescripcionProyecto(formProyecto.detalles)
                     props.onHide()
                 }
             } catch (error) {
@@ -105,12 +94,12 @@ function ModalEditProyecto(props) {
         >
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter" className='d-flex flex-row'>
-                    <h3 className='m-0'>Modificar Proyecto</h3>
+                    <h3 className='m-0'>Crear Proyecto</h3>
                     <button className='btn' onClick={handleClose}><i className="bi bi-x-lg fw-bold"></i></button>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form className='form__proyectos d-flex flex-column align-items-center' onSubmit={handleChangeProyecto}>
+                <form className='form__proyectos d-flex flex-column align-items-center' onSubmit={handleSubmit}>
                     <div className='mb-2 col-12'>
                         <label className='mb-1'>Nombre del Proyecto</label>
                         <input 
@@ -138,7 +127,7 @@ function ModalEditProyecto(props) {
                     </div>
                     {errorFetch !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{errorFetch}</span>}
                     <button type='submit' className='btn btn-primary rounded-pill form__proyectos__btn'>
-                        Modificar proyecto
+                        Agregar proyecto
                     </button>
                 </form>
             </Modal.Body>
@@ -146,4 +135,4 @@ function ModalEditProyecto(props) {
     )
     }
 
-export default ModalEditProyecto
+export default ModalNewProyecto

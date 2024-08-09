@@ -3,8 +3,8 @@ import { ProgressBar, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Oval } from 'react-loader-spinner'
 import illustrationPlanes from "../assets/img/planes.png"
 import "./Tareas.scss"
-import ModalEditProyecto from './ModalEditProyecto';
-import ModalPlanes from './ModalPlanes';
+import ModalEditProyecto from './Modales/ModalEditProyecto';
+import ModalPlanes from './Modales/ModalPlanes';
 import { newContext } from '../pages/PlanesAccion/PlanesAccion'
 
 export const tareasContext = React.createContext()

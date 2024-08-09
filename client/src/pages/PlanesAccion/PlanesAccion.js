@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode"
 import Tareas from '../../components/Tareas';
 import { Oval } from 'react-loader-spinner'
 import "./PlanesAccion.scss"
-import ModalNewProyecto from '../../components/ModalNewProyecto';
+import ModalNewProyecto from '../../components/Modales/ModalNewProyecto';
 
 export const newContext = React.createContext()
 

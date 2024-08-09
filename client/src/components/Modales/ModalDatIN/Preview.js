@@ -1,0 +1,72 @@
+import React, { useContext } from 'react'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { PasosContext } from '../../../context/PasosContext'
+import Avatar from '../../../assets/img/avatar-2.png'
+
+const FRECUENCIAS = [
+  { id: 1, tipo: "Semanal" },
+  { id: 2, tipo: "Quincenal" },
+  { id: 3, tipo: "Mensual" },
+  { id: 4, tipo: "Trimestral" }
+]
+
+function Preview() {
+  const { userData, setUserData, logData, setLogData } = useContext(PasosContext)
+
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {userData.descripcion}
+    </Tooltip>
+  );
+
+  return (
+    <div className='preview'>
+      <div className='preview__title d-flex flex-column mb-4'>
+        <h4 className='mb-0 text-muted'>{userData.area}</h4>
+        {/* Nombre indicador */}
+        <div className='d-flex flex-row align-items-center'>
+          <h2 className='mb-0 me-2 '>{userData.indicador}</h2>
+          <OverlayTrigger
+            placement="right"
+            delay={{ show: 100, hide: 100 }}
+            overlay={renderTooltip}
+          >
+              <i className="bi bi-info-circle"></i>
+          </OverlayTrigger>
+        </div>
+        {/* Nombre indicador fin */}
+        <p className='mb-0'>Frecuencia:
+          {FRECUENCIAS.map(e => {
+            return e.id === parseInt(userData.frecuencia) && <span> {e.tipo}</span>
+          })}
+        </p>
+      </div>
+      <div className='preview__logs d-flex flex-row justify-content-between'>
+          <div className='preview__logs__lista'>
+            <div className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
+              <div className='d-flex flex-row align-items-center'>
+                <img className='me-1' src={Avatar} alt="" />
+                <p className='mb-0'>{userData.responsable}</p>
+              </div>
+              <div className='d-flex flex-row align-items-center justify-content-between'>
+                <p className='d-flex flex-row mb-0'><i className='bi bi-bar-chart-fill me-2'></i>{logData.log}</p>
+                <div className='d-flex flex-row'>
+                  <p className='me-2 d-flex flex-row mb-0'><i className="bi bi-calendar-event me-1"></i>
+                    {(new Date().toLocaleDateString("es-ES", { day: 'numeric' })).substring(0,3) + " " + new Date().toLocaleDateString("es-ES", { month: 'long' }).slice(0,3)}
+                  </p>
+                  <p className='d-flex flex-row mb-0'><i className="bi bi-clock me-1"></i>
+                    {new Date().toLocaleString("es-ES", {minute: '2-digit', hour: '2-digit'})}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='preview__logs__grafica'>
+            <p>TABLA</p>
+          </div>
+      </div>
+    </div>
+  )
+}
+
+export default Preview

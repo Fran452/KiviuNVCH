@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Modal, ProgressBar } from 'react-bootstrap';
 import "./ModalPlanes.scss"
-import { tareasContext } from './Tareas';
-import { newContext } from '../pages/PlanesAccion/PlanesAccion'
+import { tareasContext } from '../Tareas';
+import { newContext } from '../../pages/PlanesAccion/PlanesAccion'
 
 function ModalPlanes(props) {
   const { USER, areas, handleUpdate, fetchTareasById, idProyecto } = useContext(newContext)

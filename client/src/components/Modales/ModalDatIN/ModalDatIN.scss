@@ -1,0 +1,28 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.modal__datin {
+
+    .modal-header {
+        border: none !important;
+        
+        .modal-title {
+            button {
+                padding: 0;
+                width: 24px;
+                height: 24px;
+                border: none;
+    
+                i {
+                    font-size: 24px;
+                    color: $gray-600;
+                    line-height: normal;
+                }
+            }
+        }
+    }
+
+    .modal-body {
+        padding: 0 40px 40px 40px !important;
+    }
+}
