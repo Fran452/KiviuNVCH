@@ -6,7 +6,9 @@ CREATE TABLE Indicador (
     fk_responsable_sumplente               INT NOT NULL,
     nombre_indicador                       NVARCHAR(255),
     detalles_metrica                       NVARCHAR(255),
-    recordartorio                          DATETIME,
+    tipo_recordartorio                     INT NOT NULL,
+    fecha_del_recodatorio                  DATE, 
+    mostrar                                INT NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_responsable_sumplente) REFERENCES Empleados(id_empleado)
@@ -33,7 +35,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
-        "fk_responsable_sumplente":{
+        "fk_responsable_suplente":{
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -48,11 +50,21 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
-        "recordartorio":{
-            type: DataTypes.DATE(255),
+        "tipo_recordartorio":{
+            type:DataTypes.INTEGER(),
             allowNull: false
         },
 
+        "fecha_del_recodatorio":{
+            type: DataTypes.DATE(255),
+            allowNull: false
+        },
+                
+        "mostrar":{
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        }
+        
     };
     
     let config =  {
@@ -70,7 +82,7 @@ module.exports = (sequelize,DataTypes) => {
         });
 
         indicadores.belongsTo(models.empleados,{
-            foreignKey : 'fk_responsable_sumplente',
+            foreignKey : 'fk_responsable_suplente',
             as : 'ResponsableSuplente'
         });
 
@@ -78,7 +90,7 @@ module.exports = (sequelize,DataTypes) => {
             foreignKey : 'fk_area',
             as : 'Areas'
         });
-
+        
     }
 
     return indicadores;

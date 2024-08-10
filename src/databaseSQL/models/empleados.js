@@ -82,6 +82,11 @@ module.exports = (sequelize,DataTypes) => {
             as : 'IndicadoresSuplente'
         });
 
+        empleados.hasMany(models.metricas,{
+            foreignKey : 'log_de_usuario',
+            as : 'Empleados'
+        });
+
     }
 
     return empleados;

@@ -31,3 +31,23 @@ INSERT INTO Tareas (fk_empleado_asignado, fk_area, fk_area_apoyo, nombre, fk_pro
 (1, 1, 2, 'Desarrollo del módulo de informes', 3, 2, 1, '2024-08-15', '2024-09-15', 'Desarrollar el módulo para generación de reportes', 1, 25),
 (1, 1, 1, 'Pruebas de integración del sistema de gestión', 1, 2, 1, '2024-09-01', '2024-09-10', 'Realizar pruebas de integración con sistemas existentes', 1, 40),
 (1, 1, 2, 'Configuración del CRM', 2, 2, 1, '2024-09-05', '2024-09-20', 'Configurar el sistema CRM según las especificaciones del cliente', 1, 20);
+
+
+-- Indicadores
+INSERT INTO Indicadores (fk_area, fk_responsable, fk_responsable_suplente, nombre_indicador, detalles_metrica, tipo_recordartorio, fecha_del_recodatorio, mostrar) VALUES
+(1, 1, 2, 'Ventas Mensuales', 'Total de ventas realizadas en el mes', 1, '2024-08-15', 1),
+(1, 1, 2, 'Campañas Publicitarias', 'Número de campañas lanzadas en el trimestre', 2, '2024-09-01', 1),
+(1, 1, 2, 'Contrataciones Nuevas', 'Número de nuevas contrataciones en el mes', 1, '2024-08-31', 0);
+
+
+-- Métricas
+INSERT INTO Metricas (fk_indicador, dato_metrica, fecha_Metrica, hora_Metrica, log_de_usuario) VALUES
+(1, 50000, '2024-08-01', '09:00:00', 1),
+(1, 52000, '2024-08-02', '09:00:00', 1),
+(1, 48000, '2024-08-03', '09:00:00', 1),
+(2, 3, '2024-08-01', '10:00:00', 1),
+(2, 2, '2024-08-02', '10:00:00', 1),
+(2, 4, '2024-08-03', '10:00:00', 1),
+(3, 5, '2024-08-01', '11:00:00', 1),
+(3, 6, '2024-08-02', '11:00:00', 1),
+(3, 4, '2024-08-03', '11:00:00', 1);

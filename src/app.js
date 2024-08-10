@@ -11,6 +11,7 @@ const cors = require("cors")
 /*********** Rutas inportada ***************************/
 const rutasMain = require("./routes/main");
 const rutasApis = require("./routes/apis");
+const rutasTest = require("./routes/test");
 
 /******** Diferentes funcionamientos ****************/
 const PORT = process.env.PORT || 3030;
@@ -32,6 +33,8 @@ app.use(session({secret : "texto"}))
 
 /***************** Rutas **********************/
 app.use('/apis',rutasApis);
+
+app.use('/test',rutasTest);
 
 app.use('/',rutasMain);
 
