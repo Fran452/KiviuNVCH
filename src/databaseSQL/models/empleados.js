@@ -78,7 +78,7 @@ module.exports = (sequelize,DataTypes) => {
         });
 
         empleados.hasMany(models.indicadores,{
-            foreignKey : 'fk_responsable_sumplente',
+            foreignKey : 'fk_responsable_suplente',
             as : 'IndicadoresSuplente'
         });
 

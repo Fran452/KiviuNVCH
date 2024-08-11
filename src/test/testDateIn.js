@@ -202,8 +202,6 @@ const controlador = {
             let fechaBuscadaISO = fechaBuscada.toISOString().split('T')[0];
             let fechaBD = apis.objeto.fecha_del_recodatorio.split('T')[0]
 
-
-
             if(fechaBD == fechaBuscadaISO){
                 resultadoTest.test1 = {
                     descripcion : "Fecha del recordatorrio",
@@ -483,14 +481,16 @@ const controlador = {
 
     newMetrica: async (req,res) => {
         let resultadoTest = {};
-
+        const ahora = new Date();
+        let indicador = await crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
+        console.log(indicador);
         let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newMetrica',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                fk_indicador : 1,
+                fk_indicador : indicador.id_indicador,
                 dato_metrica : 100,
                 user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
             })
@@ -537,7 +537,7 @@ const controlador = {
             }
 
             // fecha de subida
-            const ahora = new Date();
+            
             const fechaBuscada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
             
             if(metricaEjemplo.fecha_Metrica = fechaBuscada){
@@ -555,19 +555,24 @@ const controlador = {
             }
 
 
-            // detalles de la hora
-            const horaBuscada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
-            if(metricaEjemplo.hora_Metrica == horaBuscada){
-                resultadoTest.test4 = {
-                    descripcion : "hora de la metrica",
-                    estado : "Correcto"
+            // Modificacion recodatorio del indicador
+            console.log(indicador.id_indicador);
+            let indicadorEditado = await buscarIndicadorEjemplo(indicador.id_indicador);
+            ahora.setDate(ahora.getDate() + 7);
+            let fechaBuscadaISO = ahora.toISOString().split('T')[0];
+            let fechaBD = indicadorEditado.dataValues.fecha_del_recodatorio.split('T')[0]
+
+            if(fechaBD == fechaBuscadaISO){
+                resultadoTest.test5 = {
+                    descripcion : "Fecha del recordatorrio",
+                    estado      : "Correcto"
                 }
             }else{
-                resultadoTest.test4 = {
-                    descripcion : "hora de la metrica",
-                    estado : "Error",
-                    Esperado : horaBuscada,
-                    Recibido : metricaEjemplo.hora_Metrica
+                resultadoTest.test5 = {
+                    descripcion : "Fecha del recordatorrio",
+                    estado      : "Error",
+                    esperado    : fechaBuscadaISO,
+                    recibido    : fechaBD
                 }
             }
 
@@ -593,8 +598,9 @@ const controlador = {
             }
         }
 
-
+        
         await eliminarMetricaEjemplo(apis.objeto.id_metrica);
+        await eliminarIndicadorEjemplo(indicador.id_indicador)
         res.json({resultadoTest,resultadoApi:apis});
 
     },
@@ -670,7 +676,7 @@ const controlador = {
             resultadoTest.test2 = {
                 descripcion : "edicion de dato metrica",
                 estado : "Error",
-                esperado:100,
+                esperado: 100,
                 recibido:metricaEditada.dato_metrica
             };
         }
@@ -783,6 +789,19 @@ const controlador = {
 
 module.exports = controlador;
 
+async function crearIndicador(fk_area,fk_responsable,fk_responsable_suplente,nombre_indicador,detalles_metrica,tipo_recordartorio,fecha_del_recodatorio){
+    let indicador = await dataBaseSQL.indicadores.create({
+        fk_area : fk_area,
+        fk_responsable : fk_responsable,
+        fk_responsable_suplente : fk_responsable_suplente,
+        nombre_indicador : nombre_indicador,
+        detalles_metrica : detalles_metrica,
+        tipo_recordartorio : tipo_recordartorio,
+        fecha_del_recodatorio : fecha_del_recodatorio,
+        mostrar:1
+    });
+    return indicador.dataValues;
+}
 
 async function eliminarIndicadorEjemplo(id) {
     await dataBaseSQL.indicadores.destroy({
@@ -795,7 +814,7 @@ async function buscarIndicadorEjemplo(id) {
         where: {
             id_indicador : id
         },
-        attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio',"mostrar"],
+        attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio',"mostrar",'fecha_del_recodatorio'],
         include: [
             {association : "Areas",attributes: ['id_area','nombre_del_Area']},
             {association : "Empleados",attributes: ['nombre','mail']},

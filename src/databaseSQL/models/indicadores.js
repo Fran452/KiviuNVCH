@@ -3,7 +3,7 @@ CREATE TABLE Indicador (
     id_indicador                           INT PRIMARY KEY IDENTITY(1,1),
     fk_area                                INT NOT NULL,
     fk_responsable                         INT NOT NULL,
-    fk_responsable_sumplente               INT NOT NULL,
+    fk_responsable_suplente               INT NOT NULL,
     nombre_indicador                       NVARCHAR(255),
     detalles_metrica                       NVARCHAR(255),
     tipo_recordartorio                     INT NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE Indicador (
     mostrar                                INT NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
-    FOREIGN KEY (fk_responsable_sumplente) REFERENCES Empleados(id_empleado)
+    FOREIGN KEY (fk_responsable_suplente) REFERENCES Empleados(id_empleado)
 );
 */
 module.exports = (sequelize,DataTypes) => {

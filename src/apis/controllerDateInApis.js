@@ -152,14 +152,14 @@ const controlador = {
                     }
                 );
             }else{
-                empleadoSuplente = req.body.indicador.fk_responsable_sumplente;
+                empleadoSuplente = req.body.indicador.fk_responsable_suplente;
             };
             console.log(empleadoResponsable.dataValues.id_empleado );
             console.log(empleadoSuplente.dataValues.id_empleado);
             let indicadorModificado = await dataBaseSQL.indicadores.update({
                 fk_area:                    req.body.user.fk_area,
                 fk_responsable:             empleadoResponsable.dataValues.id_empleado,
-                fk_responsable_suplente:   empleadoSuplente.dataValues.id_empleado,
+                fk_responsable_suplente:    empleadoSuplente.dataValues.id_empleado,
                 nombre_indicador:           req.body.nombre_indicador,
                 detalles_metrica:           req.body.detalles_metrica,
                 tipo_recordartorio:         req.body.tipo_recordartorio,
@@ -201,15 +201,31 @@ const controlador = {
         try{
             const ahora = new Date();
             const fechaFormateada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
-            const horaFormateada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
-
+            
             let metrica = await dataBaseSQL.metricas.create({
                 fk_indicador:   req.body.fk_indicador,
                 dato_metrica:   req.body.dato_metrica,
                 fecha_Metrica:  fechaFormateada,
-                hora_Metrica:   horaFormateada,
                 log_de_usuario: req.body.user.id
             });
+
+            let indicadorDeLaMetrica = await dataBaseSQL.indicadores.findOne({
+                where:{
+                    id_indicador: req.body.fk_indicador
+                }
+            });
+
+            let fechaActual = new Date();
+            let fechaRecordatorio = funcionesGenericas.generarRecordatorio(fechaActual,indicadorDeLaMetrica.dataValues.tipo_recordartorio); 
+            
+            let indicadorModificado = await dataBaseSQL.indicadores.update({
+                fecha_del_recodatorio:  fechaRecordatorio,
+            },{
+                where:{
+                    id_indicador : req.body.fk_indicador
+                }
+            });
+            
             res.json({error :0, errorDetalle: "", objeto:metrica});
             return 0;
         }
