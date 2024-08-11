@@ -99,20 +99,32 @@ const controlador = {
     
     // Test de view dateIn
     viewIndicadores: async (req,res) => {
+
     let resultadoTest = {}
     /* agregar test para colores */ 
-    
+    let ahora = new Date();
+    let fechaBlue = new Date();
+
+   fechaBlue.setDate(fechaBlue.getDate() + 2);
+
+    let fechaGrean = new Date();
+    fechaGrean.setDate(fechaGrean.getDate() + 7);
+
+    let indicador1 = await crearIndicador(1,1,2,'indicador de prueba1','indicador de prueba para prueba de metricas color rojo',1,ahora);
+    let indicador2 = await crearIndicador(1,1,2,'indicador de prueba2','indicador de prueba para prueba de metricas color azul',1,fechaBlue);
+    let indicador3 = await crearIndicador(1,1,2,'indicador de prueba3','indicador de prueba para prueba de metricas color verde',1,fechaGrean);
+
     fetch('http://localhost:3030/apis/dateIn',{
         method:'POST',
         headers: {
             "Content-Type": "application/json"
         },
-       body: JSON.stringify({user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}})
+       body: JSON.stringify({user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}})
     })
     .then(apis => {
         return apis.json();
     })
-    .then(apis => {
+    .then(async apis => {
         
         // test de restorno de apis
         if(apis.error == 0){
@@ -127,32 +139,108 @@ const controlador = {
             }
         }
 
+        let primerIndicador = apis.objeto.find(indicador => indicador.id_indicador == indicador1.id_indicador);
+
         // view primer indicador
-        if(apis.objeto[0].nombre_indicador == 'Ventas Mensuales'){
+        if(primerIndicador.nombre_indicador == 'indicador de prueba1'){
             resultadoTest.test1 = {
-                descripcion : "Primer indicador Ventas Mensuales",
+                descripcion : "Primer indicador nombre",
                 estado      : "Correcto"
             }
-
         }else{
             resultadoTest.test1 = {
-                descripcion : "Primer indicador Ventas Mensuales",
-                estado      : "Error"
+                descripcion : "Primer indicador nombre",
+                estado      : "Error",
+                esperado: 'indicador de prueba1',
+                recibido: primerIndicador.nombre_indicador
             }
         }
 
-        // view segundo indicador
-        if(apis.objeto[1].nombre_indicador == 'Campañas Publicitarias'){
+        // Color del primer indicador vencido
+        if(primerIndicador.color == '#DC3545'){
             resultadoTest.test2 = {
-                descripcion:"Segundo indicador Campañas Publicitarias",
-                estado: "Correcto"
+                descripcion : "Primer indicador color",
+                estado      : "Correcto"
             }
         }else{
             resultadoTest.test2 = {
-                descripcion:"Segundo indicador Campañas Publicitarias",
-                estado: "Correcto"
+                descripcion : "Primer indicador color",
+                estado      : "Error",
+                esperado: '#DC3545',
+                recibido: primerIndicador.color
             }
         }
+
+        
+        let segundoIndicador = apis.objeto.find(indicador => indicador.id_indicador == indicador2.id_indicador);
+
+        // view segundo indicador
+        if(segundoIndicador.nombre_indicador == 'indicador de prueba2'){
+            resultadoTest.test3 = {
+                descripcion : "Segundo indicador nombre",
+                estado      : "Correcto"
+            }
+        }else{
+            resultadoTest.test3 = {
+                descripcion : "Segundo indicador nombre",
+                estado      : "Error",
+                esperado: 'indicador de prueba2',
+                recibido: segundoIndicador.nombre_indicador
+            }
+        }
+
+        // Color del primer indicador vencido
+        if(segundoIndicador.color == '#17A2B8'){
+            resultadoTest.test4 = {
+                descripcion : "Segundo indicador color",
+                estado      : "Correcto"
+            }
+        }else{
+            resultadoTest.test4 = {
+                descripcion : "Segundo indicador color",
+                estado      : "Error",
+                esperado: '#17A2B8',
+                recibido: segundoIndicador.color
+            }
+        }
+
+        
+        let tercerIndicador = apis.objeto.find(indicador => indicador.id_indicador == indicador3.id_indicador);
+
+        // view tercer indicador
+        if(tercerIndicador.nombre_indicador == 'indicador de prueba3'){
+            resultadoTest.test5 = {
+                descripcion : "Tercer indicador nombre",
+                estado      : "Correcto"
+            }
+        }else{
+            resultadoTest.test5 = {
+                descripcion : "Tercer indicador nombre",
+                estado      : "Error",
+                esperado: 'indicador de prueba3',
+                recibido: tercerIndicador.nombre_indicador
+            }
+        }
+
+        // Color del primer indicador vencido
+        if(tercerIndicador.color ==  '#28A745'){
+            resultadoTest.test6 = {
+                descripcion : "Tercer indicador color",
+                estado      : "Correcto"
+            }
+        }else{
+            resultadoTest.test6 = {
+                descripcion : "Tercer indicador color",
+                estado      : "Error",
+                esperado:  '#28A745',
+                recibido: tercerIndicador.color
+            }
+        }
+
+        await eliminarIndicadorEjemplo(indicador1.id_indicador);
+        await eliminarIndicadorEjemplo(indicador2.id_indicador);
+        await eliminarIndicadorEjemplo(indicador3.id_indicador);
+
         res.json({resultadoTest,resultadoApi:apis});
         
     })
@@ -277,7 +365,6 @@ const controlador = {
         })
     },
 
-  
     editIndicadores: async (req,res) => {
         let resultadoTest = {};
         // creo indicador de prueba
