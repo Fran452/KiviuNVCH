@@ -214,26 +214,14 @@ const controlador = {
 
     editIndicadores: async (req,res) => {
         let resultadoTest = {};
-        // creo indicador de prueba
-        let creacionApisJSON = await fetch('http://localhost:3030/apis/dateIn/newIndicador',{
-            method:'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-           body: JSON.stringify({
-            responsable : "franciscolemacr@gmail.com",
-            empleadoSuplente : "testUser@kiviu.com",
-            tipo_recordartorio : 1,
-            nombre_indicador : "indicador de prueba",
-            detalles_metrica : "indicador para las prubeas de funcionalidad",
-            user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}}
-        )});
 
-        let  creacionApis = await creacionApisJSON.json();
-        let IdindicadorDePrueba = creacionApis.objeto.id_indicador;
+        // creo indicador de prueba
+        let ahora = new Date()
+        let indicadorEjemplo = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba','indicador para las prubeas de funcionalidad',1,ahora);
+
 
         // Busco indicador de prueba
-        let indicadorDePrueba = await buscarIndicadorEjemplo(IdindicadorDePrueba);
+        let indicadorDePrueba = await buscarIndicadorEjemplo(indicadorEjemplo.id_indicador);
 
         // Modifico indicador de prueba
         let modificacionApisJSON = await fetch('http://localhost:3030/apis/dateIn/editIndicador',{
@@ -244,7 +232,7 @@ const controlador = {
            body: JSON.stringify({
             responsable : "testUser@kiviu.com",
             empleadoSuplente : "franciscolemacr@gmail.com",
-            tipo_recordartorio : 1,
+            tipo_recordartorio : 2,
             nombre_indicador : "indicador de prueba Editado",
             detalles_metrica : "indicador para las prubeas de funcionalidad editado",
             user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'},
@@ -254,117 +242,48 @@ const controlador = {
 
         let modificacionApis = await modificacionApisJSON.json();
 
-        let indicadorDePruebaModificado = await buscarIndicadorEjemplo(IdindicadorDePrueba);
+        let indicadorDePruebaModificado = await buscarIndicadorEjemplo(indicadorEjemplo.id_indicador);
 
         modificacionApis.objeto = indicadorDePruebaModificado;
 
-        if(modificacionApis.error == 0){
-            resultadoTest.test0 = {
-                descripcion : "Subida a base de datos",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test0 = {
-                descripcion : "Subida a base de datos",
-                estado : "Error"
-            }
-            res.json({resultadoTest,resultadoApi:apis});
-        }
+        // test de restorno de apis
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Sin errores de Base de datos",0,modificacionApis.error,1);
 
         // test modificacion responsable
-        if(indicadorDePruebaModificado.Empleados.mail == "testUser@kiviu.com"){
-            resultadoTest.test1 = {
-                descripcion : "modificacion responsable",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test1 = {
-                descripcion : "modificacion responsable",
-                estado : "Error"
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"modificacion responsable",'testUser@kiviu.com',indicadorDePruebaModificado.Empleados.mail,1);
 
         // test modificacion responsable suplente
-        if(indicadorDePruebaModificado.ResponsableSuplente.mail == "franciscolemacr@gmail.com"){
-            resultadoTest.test2 = {
-                descripcion : "modificacion responsable suplente",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test2 = {
-                descripcion : "modificacion responsable suplente",
-                estado : "Error"
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"modificacion responsable suplente",'franciscolemacr@gmail.com',indicadorDePruebaModificado.ResponsableSuplente.mail,1);
 
         // test modificacion tipo de recordatorio
-        if(indicadorDePruebaModificado.tipo_recordartorio == 2){
-            resultadoTest.test3 = {
-                descripcion : "tipo de recordatorio",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test3 = {
-                descripcion : "tipo de recordatorio",
-                estado : "Error"
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"tipo de recordatorio",2,indicadorDePruebaModificado.tipo_recordartorio,1);
 
         // test modificacion nombre
-        if(indicadorDePruebaModificado.nombre_indicador == "indicador de prueba Editado" && indicadorDePruebaModificado.nombre_indicador != indicadorDePrueba.nombre_indicador){
-            resultadoTest.test4 = {
-                descripcion : "modificacion nombre",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test4 = {
-                descripcion : "modificacion nombre",
-                estado : "Error"
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"modificacion nombre",'indicador de prueba Editado',indicadorDePruebaModificado.nombre_indicador,1);
 
         // test modificacion detalle
-        if(indicadorDePruebaModificado.detalles_metrica == "indicador para las prubeas de funcionalidad editado"){
-            resultadoTest.test3 = {
-                descripcion : "modificacion detalle",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test3 = {
-                descripcion : "modificacion detalle",
-                estado : "Error"
-            }
-        }
-        
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"modificacion detalle",'indicador para las prubeas de funcionalidad editado',indicadorDePruebaModificado.detalles_metrica,1);        
 
-        await eliminarIndicadorEjemplo(IdindicadorDePrueba);
+        // Eliminar indicadores de prueba
+        await funcionesDeTest.eliminarIndicadorEjemplo(indicadorEjemplo.id_indicador);
+
         res.json({resultadoTest,resultadoApi:modificacionApis});
 
     },
 
     deleteIndicadores: async (req,res) => {
         let resultadoTest = {};
-         // creo indicador de prueba
-         let creacionApisJSON = await fetch('http://localhost:3030/apis/dateIn/newIndicador',{
-            method:'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-           body: JSON.stringify({
-            responsable : "franciscolemacr@gmail.com",
-            empleadoSuplente : "testUser@kiviu.com",
-            tipo_recordartorio : 1,
-            nombre_indicador : "indicador de prueba",
-            detalles_metrica : "indicador para las prubeas de funcionalidad",
-            user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}}
-        )});
+        
+        // creo indicador de prueba
+        let ahora = new Date()
+        let indicadorEjemplo = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba','indicador para las prubeas de funcionalidad',1,ahora);
 
-        let  creacionApis = await creacionApisJSON.json();
-        let IdindicadorDePrueba = creacionApis.objeto.id_indicador;
+        let IdindicadorDePrueba = indicadorEjemplo.id_indicador;
 
         // Busco indicador de prueba
         let indicadorDePrueba = await buscarIndicadorEjemplo(IdindicadorDePrueba);
 
+        // eliminio el indicador de prueba
         let apisEliminadoJSON = await fetch('http://localhost:3030/apis/dateIn/deleteIndicador',{
             method:'POST',
             headers: {
@@ -379,35 +298,21 @@ const controlador = {
 
         let indicadorDePruebaEliminado = await buscarIndicadorEjemplo(IdindicadorDePrueba);
 
-        // Subida a base de datos 
-        if(apisEliminado.error == 0){
-            resultadoTest.test0 = {
-                descripcion : "Subida a base de datos",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test0 = {
-                descripcion : "Subida a base de datos",
-                estado : "Error"
-            }
-        }
+
+        // test de restorno de apis
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Sin errores de apis",0,apisEliminado.error,1);
+
 
         // Eliminacion de archivos
         if(indicadorDePrueba.mostrar == 1 && indicadorDePruebaEliminado.mostrar == 0) {
-            resultadoTest.test1 = {
-                descripcion : "Eliminacion de Indicador",
-                estado : "Correcto"
-            }
+            resultadoTest = funcionesDeTest.crearTestCorrecto(resultadoTest,'Eliminacion de Indicador');
+
         }else{
-            resultadoTest.test1 = {
-                descripcion : "Eliminacion de Indicador",
-                estado : "Error",
-                buscado:indicadorDePruebaEliminado,
-                restorno:indicadorDePrueba,
-            }
+            resultadoTest = funcionesDeTest.crearTestError(resultadoTest,'Eliminacion de Indicador',`view antes: ${1} / view despues: ${0}`,`view antes: ${indicadorDePrueba.mostrar} / view despues: ${indicadorDePruebaEliminado.mostrar}`);
         }
 
-        await eliminarIndicadorEjemplo(IdindicadorDePrueba);
+        // eliminacion de test
+        await funcionesDeTest.eliminarIndicadorEjemplo(IdindicadorDePrueba);
 
         res.json({resultadoTest,resultadoApi:apisEliminado});
 

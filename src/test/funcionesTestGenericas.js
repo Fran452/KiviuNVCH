@@ -90,7 +90,6 @@ let controlador = {
                 break;
                 
         }
-        console.log(objetoTest);
         return objetoTest;
 
     },
@@ -158,7 +157,6 @@ let controlador = {
             where : {id_indicador: id}
         });
     },
-    
     
     // Para metricas
     buscarMetricaEjemplo: async function(id) {
