@@ -200,12 +200,10 @@ const controlador = {
     newMetrica: async (req,res) => {
         try{
             const ahora = new Date();
-            const fechaFormateada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
-            
             let metrica = await dataBaseSQL.metricas.create({
                 fk_indicador:   req.body.fk_indicador,
                 dato_metrica:   req.body.dato_metrica,
-                fecha_Metrica:  fechaFormateada,
+                fecha_Metrica:  ahora,
                 log_de_usuario: req.body.user.id
             });
 

@@ -321,7 +321,7 @@ const controlador = {
     newMetrica: async (req,res) => {
         let resultadoTest = {};
         const ahora = new Date();
-        let indicador = await crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
+        let indicador = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
 
         console.log(indicador);
         let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newMetrica',{
@@ -339,108 +339,45 @@ const controlador = {
         let apis = await apisJSON.json();
 
         // retorno de error 
-        if(apis.error == 0){
-            resultadoTest.test0 = {
-                descripcion : "retorno de error",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test0 = {
-                descripcion : "retorno de error",
-                estado : "Error"
-            }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Sin errores de apis",0,apis.error,1);
+        
+        if(resultadoTest.test0.estado == "Error"){
             res.json({resultadoTest,resultadoApi:apis});
-            return 0;
+            return 1;
         }
 
         // Subida base de datos 
-        let metricaEjemplo = await buscarMetricaEjemplo(apis.objeto.id_metrica)
-        if(metricaEjemplo != undefined){
-            resultadoTest.test1 = {
-                descripcion : "Subida a base de datos",
-                estado : "Correcto"
-            }
+        let metricaEjemplo = await buscarMetricaEjemplo(apis.objeto.id_metrica);
+
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Subida a base de datos",undefined,metricaEjemplo,4);
+
+        if(resultadoTest.test1.estado != "Error"){
 
             // subida de dato
-            if(metricaEjemplo.dato_metrica == 100){
-                resultadoTest.test2 = {
-                    descripcion : "Dato de la metrica",
-                    estado : "Correcto"
-                }
-            }else{
-                resultadoTest.test2 = {
-                    descripcion : "Dato de la metrica",
-                    estado : "Error",
-                    Esperado : 100,
-                    Recibido : metricaEjemplo.dato_metrica
-                }
-            }
+            resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Dato de la metrica",100,metricaEjemplo.dato_metrica,1);
 
             // fecha de subida
-            
-            const fechaBuscada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
-            
-            if(metricaEjemplo.fecha_Metrica = fechaBuscada){
-                resultadoTest.test3 = {
-                    descripcion : "fecha de la metrica",
-                    estado : "Correcto"
-                }
-            }else{
-                resultadoTest.test3 = {
-                    descripcion : "fecha de la metrica",
-                    estado : "Error",
-                    Esperado : fechaBuscada,
-                    Recibido : metricaEjemplo.fecha_Metrica
-                }
-            }
+            const fechaBuscada = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
+            const fechaDeLaMetrica = new Date(metricaEjemplo.fecha_Metrica).toLocaleDateString('es-ES').replace(/\//g, '-');
+
+            resultadoTest = funcionesDeTest.crearTest(resultadoTest,"fecha de la metrica",fechaBuscada,fechaDeLaMetrica,1);
 
 
-            // Modificacion recodatorio del indicador
-            console.log(indicador.id_indicador);
+            // Fecha del recordatorrio modificada
             let indicadorEditado = await buscarIndicadorEjemplo(indicador.id_indicador);
             ahora.setDate(ahora.getDate() + 7);
             let fechaBuscadaISO = ahora.toISOString().split('T')[0];
             let fechaBD = indicadorEditado.dataValues.fecha_del_recodatorio.split('T')[0]
 
-            if(fechaBD == fechaBuscadaISO){
-                resultadoTest.test5 = {
-                    descripcion : "Fecha del recordatorrio",
-                    estado      : "Correcto"
-                }
-            }else{
-                resultadoTest.test5 = {
-                    descripcion : "Fecha del recordatorrio",
-                    estado      : "Error",
-                    esperado    : fechaBuscadaISO,
-                    recibido    : fechaBD
-                }
-            }
+            resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Fecha del recordatorrio modificada",fechaBuscadaISO,fechaBD,1);
 
             // detalle del usuario
-            if(metricaEjemplo.Empleados.nombre == "Francisco Lema"){
-                resultadoTest.test4 = {
-                    descripcion : "Nombre del ingresante de la metrica",
-                    estado : "Correcto"
-                }
-            }else{
-                resultadoTest.test4 = {
-                    descripcion : "Nombre del ingresante de la metrica",
-                    estado : "Error",
-                    Esperado : "Francisco Lema",
-                    Recibido : metricaEjemplo.Empleados.nombre
-                }
-            }
+            resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Nombre del ingresante de la metrica','Francisco Lema',metricaEjemplo.Empleados.nombre,1);
 
-        }else{
-            resultadoTest.test1 = {
-                descripcion : "Subida a base de datos",
-                estado : "Error"
-            }
         }
 
-        
-        await eliminarMetricaEjemplo(apis.objeto.id_metrica);
-        await eliminarIndicadorEjemplo(indicador.id_indicador)
+        await funcionesDeTest.eliminarMetricaEjemplo(apis.objeto.id_metrica);
+        await funcionesDeTest.eliminarIndicadorEjemplo(indicador.id_indicador);
         res.json({resultadoTest,resultadoApi:apis});
 
     },
@@ -448,13 +385,17 @@ const controlador = {
     editMetrica: async (req,res) => {
         let resultadoTest = {}; 
         const ahora = new Date();
+        
+        // creacion indicador de test
+        let indicador = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
 
-        let indicador = await crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
+        // creacion metrica test
+        let metrica = await funcionesDeTest.crearMetrica(indicador.id_indicador,500,'2024-08-07',1);
+        
+        // busqueda de metrica test  
+        let metricaCreada = await funcionesDeTest.buscarMetricaEjemplo(metrica.id_metrica);
 
-        let metrica = await crearMetrica(indicador.id_indicador,500,'2024-08-07',1);
-
-        let metricaCreada = await buscarMetricaEjemplo(metrica.id_metrica);
-
+        // edicion metrica test
         let apisEditMetricaJSON = await fetch('http://localhost:3030/apis/dateIn/editMegrica',{
             method:'POST',
             headers: {
@@ -468,152 +409,84 @@ const controlador = {
         });
 
         let apisEditMetrica = await apisEditMetricaJSON.json();
-        let metricaEditada = await buscarMetricaEjemplo(metricaCreada.id_metrica);
+        let metricaEditada = await funcionesDeTest.buscarMetricaEjemplo(metricaCreada.id_metrica);
         
         // retorno de error 
-        if(apisEditMetrica.error == 0){
-            resultadoTest.test0 = {
-                descripcion : "retorno de error",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test0 = {
-                descripcion : "retorno de error",
-                estado : "Error"
-            }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apisEditMetrica.error,1);
+
+        if(resultadoTest.test0.estado == 'Error'){
             res.json({resultadoTest,resultadoApi:metricaEditada});
             return 0
         }
         
         // diferencia entre metrica antigua
-        if(metricaEditada.dato_metrica != metricaCreada.dato_metrica){
-            resultadoTest.test1 = {
-                descripcion : "Diferencia entre metrica subida y metrica editada",
-                estado : "Correcto"
-            };
-        }else{
-            resultadoTest.test1 = {
-                descripcion : "Diferencia entre metrica subida y metrica editada",
-                estado : "Error"
-            };
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Diferencia entre metrica subida y metrica editada',metricaCreada.dato_metrica,metricaEditada.dato_metrica,4);
+
 
         // edicion de dato metrica
-        if(metricaEditada.dato_metrica == 100){
-            resultadoTest.test2 = {
-                descripcion : "edicion de dato metrica",
-                estado : "Correcto"
-            };
-        }else{
-            resultadoTest.test2 = {
-                descripcion : "edicion de dato metrica",
-                estado : "Error",
-                esperado: 100,
-                recibido:metricaEditada.dato_metrica
-            };
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Edicion de dato metrica',100,metricaEditada.dato_metrica,1);
 
         // Edicion de usuario
-        if(metricaEditada.Empleados.nombre == 'Nombre Apellico'){
-            resultadoTest.test3 = {
-                descripcion : 'Edicion de usuario',
-                estado : "Correcto"
-            };
-        }else{
-            resultadoTest.test3 = {
-                descripcion : "Edicion de usuario",
-                estado : "Error",
-                esperado:'Nombre Apellico',
-                recibido:metricaEditada.Empleados.nombre
-            };
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Edicion de usuario','Nombre Apellico',metricaEditada.Empleados.nombre,1);
 
-        await eliminarMetricaEjemplo(metricaCreada.id_metrica);
+        // eliminacion de elementos de test
+        await funcionesDeTest.eliminarMetricaEjemplo(metricaCreada.id_metrica);
+        await funcionesDeTest.eliminarIndicadorEjemplo(indicador.id_indicador);
         res.json({resultadoTest,resultadoApi:apisEditMetrica});
     },
 
     ultimasTresMetricas: async (req,res) => {
         let resultadoTest = {}; 
 
-        // fk_indicador,dato_metrica,fecha_Metrica,hora_Metrica,log_de_usuario
-        let apisNewMetrica1 = await crearMetrica(1,100,'2024-08-07',1);
-        let apisNewMetrica2 = await crearMetrica(1,200,'2024-08-06',1);
-        let apisNewMetrica3 = await crearMetrica(1,300,'2024-08-05',1);
+        // crear indicador de prueba
+        let ahora = new Date()
+        let indicador = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
+        
+        // crear metricas de prueba
+        let apisNewMetrica1 = await funcionesDeTest.crearMetrica(indicador.id_indicador,100,'2024-08-07',1);
+        let apisNewMetrica2 = await funcionesDeTest.crearMetrica(indicador.id_indicador,200,'2024-08-06',1);
+        let apisNewMetrica3 = await funcionesDeTest.crearMetrica(indicador.id_indicador,300,'2024-08-05',1);
+
         let ejemplos = {
             ejemplo1 : apisNewMetrica1,
             ejemplo2 : apisNewMetrica2,
             ejemplo3 : apisNewMetrica3
         };
 
+        // correr api
         let apisEnvio3MetricasJSON = await fetch('http://localhost:3030/apis/dateIn/ultimas3Metricas',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
             },
            body: JSON.stringify({
-            fkIndicador : 1,
+            fkIndicador : indicador.id_indicador,
             user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
             })
         });
         let apisEnvio3Metricas = await apisEnvio3MetricasJSON.json();
 
         // retorno de error 
-        if(apisEnvio3Metricas.error == 0){
-            resultadoTest.test0 = {
-                descripcion : "retorno de error",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test0 = {
-                descripcion : "retorno de error",
-                estado : "Error"
-            }
-            res.json({resultadoTest,resultadoApi:apisEnvio3Metricas});
-            return 0;
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apisEnvio3Metricas.error,1);
+
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:metricaEditada});
+            return 0
         }
 
         // Mostrar primer ejemplo
-        if(apisEnvio3Metricas.objeto[0].id_metrica == ejemplos.ejemplo1.id_metrica){
-            resultadoTest.test1 = {
-                descripcion : "retorno de error",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test1 = {
-                descripcion : "retorno de error",
-                estado : "Error"
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Primera metrica encontrado',ejemplos.ejemplo1.id_metrica,apisEnvio3Metricas.objeto[0].id_metrica,1);
 
         // Mostrar segundo ejemplo
-        if(apisEnvio3Metricas.objeto[1].id_metrica == ejemplos.ejemplo2.id_metrica){
-            resultadoTest.test2 = {
-                descripcion : "retorno de error",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test2 = {
-                descripcion : "retorno de error",
-                estado : "Error"
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Segunda metrica encontrado',ejemplos.ejemplo2.id_metrica,apisEnvio3Metricas.objeto[1].id_metrica,1);
 
         // Mostrar tercer ejemplo
-        if(apisEnvio3Metricas.objeto[2].id_metrica == ejemplos.ejemplo3.id_metrica){
-            resultadoTest.test3 = {
-                descripcion : "retorno de error",
-                estado : "Correcto"
-            }
-        }else{
-            resultadoTest.test3 = {
-                descripcion : "retorno de error",
-                estado : "Error"
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Tercero metrica encontrado',ejemplos.ejemplo3.id_metrica,apisEnvio3Metricas.objeto[2].id_metrica,1);
 
-        await eliminarMetricaEjemplo(ejemplos.ejemplo1.id_metrica);
-        await eliminarMetricaEjemplo(ejemplos.ejemplo2.id_metrica);
-        await eliminarMetricaEjemplo(ejemplos.ejemplo3.id_metrica);
+        // eliminacion de elementos de test
+        await funcionesDeTest.eliminarMetricaEjemplo(ejemplos.ejemplo1.id_metrica);
+        await funcionesDeTest.eliminarMetricaEjemplo(ejemplos.ejemplo2.id_metrica);
+        await funcionesDeTest.eliminarMetricaEjemplo(ejemplos.ejemplo3.id_metrica);
 
         res.json({resultadoTest,resultadoApi:apisEnvio3Metricas});
     },
