@@ -1,18 +1,7 @@
 const dataBaseSQL = require("../databaseSQL/models");
-const {Sequelize, DATE} = require('sequelize');
+const funcionesDeTest = require('./funcionesTestGenericas')
 
 const path = require("path");
-
-
-const baseDeDatos = {
-    empleados : path.join(__dirname, "../database/db_user.json"),
-    area      : path.join(__dirname, "../database/db_areas.json"),
-    tareas    : path.join(__dirname, "../database/db_tareas.json"),
-    view      : path.join(__dirname, "../database/db_view.json"),
-    okr       : path.join(__dirname, "../database/db_okrs.json")
-}
-
-
 
 const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
@@ -110,9 +99,9 @@ const controlador = {
     let fechaGrean = new Date();
     fechaGrean.setDate(fechaGrean.getDate() + 7);
 
-    let indicador1 = await crearIndicador(1,1,2,'indicador de prueba1','indicador de prueba para prueba de metricas color rojo',1,ahora);
-    let indicador2 = await crearIndicador(1,1,2,'indicador de prueba2','indicador de prueba para prueba de metricas color azul',1,fechaBlue);
-    let indicador3 = await crearIndicador(1,1,2,'indicador de prueba3','indicador de prueba para prueba de metricas color verde',1,fechaGrean);
+    let indicador1 = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba1','indicador de prueba para prueba de metricas color rojo',1,ahora);
+    let indicador2 = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba2','indicador de prueba para prueba de metricas color azul',1,fechaBlue);
+    let indicador3 = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba3','indicador de prueba para prueba de metricas color verde',1,fechaGrean);
 
     fetch('http://localhost:3030/apis/dateIn',{
         method:'POST',
@@ -125,121 +114,34 @@ const controlador = {
         return apis.json();
     })
     .then(async apis => {
+        // Sin errores en api
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Sin errores de Base de datos",0,apis.error,1);
         
-        // test de restorno de apis
-        if(apis.error == 0){
-            resultadoTest.test0 = {
-                descripcion : "Sin errores de Base de datos",
-                estado      : "Correcto"    
-            }
-        }else{
-             resultadoTest.test0  = {
-                descripcion : "Sin errores de Base de datos",
-                estado      : "Error"    
-            }
-        }
-
-        let primerIndicador = apis.objeto.find(indicador => indicador.id_indicador == indicador1.id_indicador);
-
         // view primer indicador
-        if(primerIndicador.nombre_indicador == 'indicador de prueba1'){
-            resultadoTest.test1 = {
-                descripcion : "Primer indicador nombre",
-                estado      : "Correcto"
-            }
-        }else{
-            resultadoTest.test1 = {
-                descripcion : "Primer indicador nombre",
-                estado      : "Error",
-                esperado: 'indicador de prueba1',
-                recibido: primerIndicador.nombre_indicador
-            }
-        }
+        let primerIndicador = apis.objeto.find(indicador => indicador.id_indicador == indicador1.id_indicador);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"indicador de prueba1",'indicador de prueba1',primerIndicador.nombre_indicador,1);
 
         // Color del primer indicador vencido
-        if(primerIndicador.color == '#DC3545'){
-            resultadoTest.test2 = {
-                descripcion : "Primer indicador color",
-                estado      : "Correcto"
-            }
-        }else{
-            resultadoTest.test2 = {
-                descripcion : "Primer indicador color",
-                estado      : "Error",
-                esperado: '#DC3545',
-                recibido: primerIndicador.color
-            }
-        }
-
-        
-        let segundoIndicador = apis.objeto.find(indicador => indicador.id_indicador == indicador2.id_indicador);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Primer indicador color",'#DC3545',primerIndicador.color,1);
 
         // view segundo indicador
-        if(segundoIndicador.nombre_indicador == 'indicador de prueba2'){
-            resultadoTest.test3 = {
-                descripcion : "Segundo indicador nombre",
-                estado      : "Correcto"
-            }
-        }else{
-            resultadoTest.test3 = {
-                descripcion : "Segundo indicador nombre",
-                estado      : "Error",
-                esperado: 'indicador de prueba2',
-                recibido: segundoIndicador.nombre_indicador
-            }
-        }
+        let segundoIndicador = apis.objeto.find(indicador => indicador.id_indicador == indicador2.id_indicador);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Segundo indicador nombre','indicador de prueba2',segundoIndicador.nombre_indicador,1);
 
         // Color del primer indicador vencido
-        if(segundoIndicador.color == '#17A2B8'){
-            resultadoTest.test4 = {
-                descripcion : "Segundo indicador color",
-                estado      : "Correcto"
-            }
-        }else{
-            resultadoTest.test4 = {
-                descripcion : "Segundo indicador color",
-                estado      : "Error",
-                esperado: '#17A2B8',
-                recibido: segundoIndicador.color
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Segundo indicador color','#17A2B8',segundoIndicador.color,1);
 
-        
+        // view tercer indicador 
         let tercerIndicador = apis.objeto.find(indicador => indicador.id_indicador == indicador3.id_indicador);
-
-        // view tercer indicador
-        if(tercerIndicador.nombre_indicador == 'indicador de prueba3'){
-            resultadoTest.test5 = {
-                descripcion : "Tercer indicador nombre",
-                estado      : "Correcto"
-            }
-        }else{
-            resultadoTest.test5 = {
-                descripcion : "Tercer indicador nombre",
-                estado      : "Error",
-                esperado: 'indicador de prueba3',
-                recibido: tercerIndicador.nombre_indicador
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Tercer indicador nombre','indicador de prueba3',tercerIndicador.nombre_indicador,1);
 
         // Color del primer indicador vencido
-        if(tercerIndicador.color ==  '#28A745'){
-            resultadoTest.test6 = {
-                descripcion : "Tercer indicador color",
-                estado      : "Correcto"
-            }
-        }else{
-            resultadoTest.test6 = {
-                descripcion : "Tercer indicador color",
-                estado      : "Error",
-                esperado:  '#28A745',
-                recibido: tercerIndicador.color
-            }
-        }
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Tercer indicador color','#28A745',tercerIndicador.color,1);
 
-        await eliminarIndicadorEjemplo(indicador1.id_indicador);
-        await eliminarIndicadorEjemplo(indicador2.id_indicador);
-        await eliminarIndicadorEjemplo(indicador3.id_indicador);
+
+        await funcionesDeTest.eliminarIndicadorEjemplo(indicador1.id_indicador);
+        await funcionesDeTest.eliminarIndicadorEjemplo(indicador2.id_indicador);
+        await funcionesDeTest.eliminarIndicadorEjemplo(indicador3.id_indicador);
 
         res.json({resultadoTest,resultadoApi:apis});
         
@@ -270,94 +172,39 @@ const controlador = {
         })
         .then(async (apis) => {
 
+            
             // test de restorno de apis
-            if(apis.error == 0){
-                resultadoTest.test0 = {
-                    descripcion : "Sin errores de Base de datos",
-                    estado      : "Correcto"
-                }
-
-            }else{
-                resultadoTest.test0 = {
-                    descripcion : "Sin errores de Base de datos",
-                    estado      : "Error"
-                }
-            }
-
-            // Test de fecha
-            let fechaBuscada = new Date();
-            fechaBuscada.setDate(fechaBuscada.getDate() + 7);
-            let fechaBuscadaISO = fechaBuscada.toISOString().split('T')[0];
-            let fechaBD = apis.objeto.fecha_del_recodatorio.split('T')[0]
-
-            if(fechaBD == fechaBuscadaISO){
-                resultadoTest.test1 = {
-                    descripcion : "Fecha del recordatorrio",
-                    estado      : "Correcto"
-                }
-            }else{
-                resultadoTest.test1 = {
-                    descripcion : "Fecha del recordatorrio",
-                    estado      : "Error",
-                    retorno     : `fecha BD = ${fechaBD} / fecha buscada = ${fechaBuscadaISO}`
-                }
-            }
+            resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Sin errores de Base de datos",0,apis.error,1);
+            
+            
 
             // test de subida a base de datos
+            let indicadorsubido = await funcionesDeTest.buscarIndicadorEjemplo(apis.objeto.id_indicador);
 
-            let busquedaBdJSON =  await fetch('http://localhost:3030/apis/dateIn',{
-                method:'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-               body: JSON.stringify({user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}})
-            })
-            let busquedaBd = await busquedaBdJSON.json();
+            if(indicadorsubido != undefined){
+                    resultadoTest = funcionesDeTest.crearTestCorrecto(resultadoTest,"Objeto subido");
 
-            let indicadorsubido = busquedaBd.objeto.find(indicador => indicador.id_indicador == apis.objeto.id_indicador);
-                if(indicadorsubido != undefined ){
-                    resultadoTest.test2 = {
-                        descripcion : "Objeto subido",
-                        estado : "Correcto"
-                    }
-    
+                    // Test de fecha
+                    let fechaBuscada = new Date();
+                    fechaBuscada.setDate(fechaBuscada.getDate() + 7);
+                    let fechaBuscadaISO = fechaBuscada.toISOString().split('T')[0];
+                    let fechaBD = apis.objeto.fecha_del_recodatorio.split('T')[0];
+
+                    resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Fecha del recordatorrio",fechaBuscadaISO,fechaBD,1);
+
                     // test de usuario responsable
-                    if(indicadorsubido.Empleados.nombre == "Francisco Lema"){
-                        resultadoTest.test3 = {
-                            descripcion : "Responsable nombre",
-                            estado : "Correcto"
-                        }
-                    }else{
-                        resultadoTest.test3 = {
-                            descripcion : "Responsable nombre",
-                            estado : "Correcto"
-                        }
-                    }
+                    resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Fecha del recordatorrio",indicadorsubido.Empleados.nombre,'Francisco Lema',1);
                     
                     // test de usuario suplente 
-                    if(indicadorsubido.ResponsableSuplente.nombre == "Nombre Apellico"){
-                        resultadoTest.test4 = {
-                            descripcion : "Responsable Suplente nombre",
-                            estado : "Correcto"
-                        }
-                    }else{
-                        resultadoTest.test4 = {
-                            descripcion : "Responsable Suplente subido",
-                            estado : "Correcto"
-                        }
-                    }
-                }else{
-                    resultadoTest.test2 = {
-                        descripcion : "Objeto subido",
-                        estado : "Error"
-                    }
-                }
+                    resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Fecha del recordatorrio",indicadorsubido.ResponsableSuplente.nombre,'Nombre Apellico',1);
+                    
+            }else{
+                resultadoTest = funcionesDeTest.crearTestCorrecto(resultadoTest,"Objeto subido",0,indicadorsubido);
+            }
 
-                await dataBaseSQL.indicadores.destroy({
-                    where : {id_indicador: apis.objeto.id_indicador}
-                });
+            await funcionesDeTest.eliminarIndicadorEjemplo(apis.objeto.id_indicador);
 
-                res.json({resultadoTest,resultadoApi:apis});
+            res.json({resultadoTest,resultadoApi:apis});
           
         })
         .catch(error => {
