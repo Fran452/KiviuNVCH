@@ -483,6 +483,7 @@ const controlador = {
         let resultadoTest = {};
         const ahora = new Date();
         let indicador = await crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
+
         console.log(indicador);
         let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newMetrica',{
             method:'POST',
@@ -607,20 +608,13 @@ const controlador = {
 
     editMetrica: async (req,res) => {
         let resultadoTest = {}; 
-        let NewMetricaJSON = await fetch('http://localhost:3030/apis/dateIn/newMetrica',{
-            method:'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-           body: JSON.stringify({
-            fk_indicador : 1,
-            dato_metrica: 500,
-            user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
-            })
-        })
-        
-        let apisNewMetrica = await NewMetricaJSON.json();
-        let metricaCreada = await buscarMetricaEjemplo(apisNewMetrica.objeto.id_metrica);
+        const ahora = new Date();
+
+        let indicador = await crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
+
+        let metrica = await crearMetrica(indicador.id_indicador,500,'2024-08-07',1);
+
+        let metricaCreada = await buscarMetricaEjemplo(metrica.id_metrica);
 
         let apisEditMetricaJSON = await fetch('http://localhost:3030/apis/dateIn/editMegrica',{
             method:'POST',
@@ -629,14 +623,13 @@ const controlador = {
             },
            body: JSON.stringify({
             dato_metrica: 100,
-            idMetrica: apisNewMetrica.objeto.id_metrica,
+            idMetrica: metricaCreada.id_metrica,
             user:{id: 2,nombre: 'Nombre Apellico',area: 1,puesto: 2,mail: 'testUser@kiviu.com'}
             })
         });
 
         let apisEditMetrica = await apisEditMetricaJSON.json();
-        let metricaEditada = await buscarMetricaEjemplo(apisNewMetrica.objeto.id_metrica);
-
+        let metricaEditada = await buscarMetricaEjemplo(metricaCreada.id_metrica);
         
         // retorno de error 
         if(apisEditMetrica.error == 0){
@@ -696,7 +689,7 @@ const controlador = {
             };
         }
 
-        await eliminarMetricaEjemplo(apisNewMetrica.objeto.id_metrica);
+        await eliminarMetricaEjemplo(metricaCreada.id_metrica);
         res.json({resultadoTest,resultadoApi:apisEditMetrica});
     },
 
@@ -708,9 +701,9 @@ const controlador = {
         let apisNewMetrica2 = await crearMetrica(1,200,'2024-08-06',1);
         let apisNewMetrica3 = await crearMetrica(1,300,'2024-08-05',1);
         let ejemplos = {
-            ejemplo1 : apisNewMetrica1.dataValues,
-            ejemplo2 : apisNewMetrica2.dataValues,
-            ejemplo3 : apisNewMetrica3.dataValues
+            ejemplo1 : apisNewMetrica1,
+            ejemplo2 : apisNewMetrica2,
+            ejemplo3 : apisNewMetrica3
         };
 
         let apisEnvio3MetricasJSON = await fetch('http://localhost:3030/apis/dateIn/ultimas3Metricas',{
@@ -850,7 +843,7 @@ async function crearMetrica(fk_indicador,dato_metrica,fecha_Metrica,log_de_usuar
         fecha_Metrica:  fecha_Metrica,
         log_de_usuario: log_de_usuario
     });
-    return metrica;
+    return metrica.dataValues;
 }
 /*
 
