@@ -12,7 +12,7 @@ export const tareasContext = React.createContext()
 
 function Tareas() {
   
-  const { loadingTar, errorTar, proyectos, setProyectos, fetchProyectos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
+  const { loadingTar, setLoadingTar, setErrorTar, errorTar, proyectos, setProyectos, fetchProyectos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
   
   const [modalDeleteProyecto, setModalDeleteProyecto] = useState(false)
   const [modalEditProyecto, setModalEditProyecto] = useState(false)
@@ -21,6 +21,7 @@ function Tareas() {
   const [tareaObj, setTareaObj] = useState(null)
   const [idTask, setIdTask] = useState(null)
   const [modalDeleteTarea, setModalDeleteTarea] = useState(false)
+  const [errorDel, setErrorDel] = useState(null)
 
   useEffect(() => {
   },[])
@@ -100,13 +101,25 @@ function Tareas() {
       })
       const data = await res.json()
       if(data.error !== 0){
-        console.log(data.errorDetalle)
+        setErrorDel(data.errorDetalle)
       } else {
         setModalDeleteTarea(false)
+        // actualiza tareas
+        setLoadingTar(true)
         fetchTareasById(idProyecto)
+        .then(res => {
+            if(res.error !== 0){
+                setLoadingTar(false)
+                setErrorTar(res.errorDetalle)
+            } else {
+                setLoadingTar(false)
+                setTareasByProyecto(res.objeto)
+            }
+        })
+        // fin de actualiza tareas
       }
     } catch (error) {
-      console.log(error)
+      setErrorDel(error)
     } 
   }
 
@@ -133,9 +146,12 @@ function Tareas() {
           <Modal.Title><h3>Eliminar tarea</h3></Modal.Title>
         </Modal.Header>
         <Modal.Body>¿Está seguro de eliminar esta tarea?</Modal.Body>
-        <Modal.Footer>
-          <button className='btn btn-secondary rounded-pill' onClick={() => setModalDeleteTarea(false)}>Cancelar</button>
-          <button className='btn btn-danger rounded-pill' onClick={handleDeleteTarea}>Borrar</button>
+        <Modal.Footer className='d-flex flex-column'>
+          <div className='d-flex flex-row align-items-center align-self-end'>
+            <button className='btn btn-secondary rounded-pill me-2' onClick={() => setModalDeleteTarea(false)}>Cancelar</button>
+            <button className='btn btn-danger rounded-pill' onClick={handleDeleteTarea}>Borrar</button>
+          </div>
+          {errorDel && <p>{errorDel}</p>}
         </Modal.Footer>
       </Modal>
       {loadingTar ? (

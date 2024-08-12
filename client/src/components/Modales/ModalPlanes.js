@@ -94,8 +94,8 @@ function ModalPlanes(props) {
           setModalErr(null)
           setProyectoSelec(null)
           props.onHide()
-          setLoadingTar(true)
           // actualiza tareas
+          setLoadingTar(true)
           fetchTareasById(idProyecto)
           .then(res => {
               if(res.error !== 0){
@@ -109,10 +109,10 @@ function ModalPlanes(props) {
           // fin de actualiza tareas
         }
       } catch (error) {
-        console.log(error)
+        setModalErr(error)
       }
     } else {
-      console.log("Form no enviado")
+      setModalErr("Completar los campos mencionados.")
     }
   }
 
@@ -217,12 +217,26 @@ function ModalPlanes(props) {
           setModalErr(null)
           setTareaObj(null)
           setProyectoSelec(null)
-          fetchTareasById(idProyecto)
           props.onHide()
+          // actualiza tareas
+          setLoadingTar(true)
+          fetchTareasById(idProyecto)
+          .then(res => {
+              if(res.error !== 0){
+                  setLoadingTar(false)
+                  setErrorTar(res.errorDetalle)
+              } else {
+                  setLoadingTar(false)
+                  setTareasByProyecto(res.objeto)
+              }
+          })
+          // fin de actualiza tareas
         }
       } catch (error) {
         setModalErr(error)
       }
+    } else {
+      setModalErr("Completar los campos mencionados.")
     }
   }
 
