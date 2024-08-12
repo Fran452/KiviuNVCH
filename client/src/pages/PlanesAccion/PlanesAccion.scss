@@ -18,6 +18,19 @@
     }
 }
 
+.planes__error {
+    height: calc(100% - 48px);
+
+    img {
+        width: 200px;
+        max-width: 100%;
+    }
+
+    h2 {
+        color: $blue-500
+    }
+}
+
 .loading__proyectos {
     width: 100%;
     height: calc(100% - 48px);

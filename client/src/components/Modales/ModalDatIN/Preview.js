@@ -74,7 +74,7 @@ function Preview() {
     })
     arrMet.reverse()
     arrLabel.reverse()
-    arrMet.push(logData.log)
+    arrMet.push(parseInt(logData.log))
     arrLabel.push(actualDay)
     setArrMetrica(arrMet)
     setArrLabels(arrLabel)
@@ -109,14 +109,14 @@ function Preview() {
         <h4 className='mb-0 text-muted'>{userData.area}</h4>
         {/* Nombre indicador */}
         <div className='d-flex flex-row align-items-center'>
-          <h2 className='mb-0 me-2 '>{userData.indicador}</h2>
-          <OverlayTrigger
-            placement="right"
-            delay={{ show: 100, hide: 100 }}
-            overlay={renderTooltip}
-          >
-              <i className="bi bi-info-circle"></i>
-          </OverlayTrigger>
+            <h2 className='mb-0 me-2 '>{userData.indicador}</h2>
+            <OverlayTrigger
+              placement="right"
+              delay={{ show: 100, hide: 100 }}
+              overlay={renderTooltip}
+            >
+                <i className="bi bi-info-circle"></i>
+            </OverlayTrigger>
         </div>
         {/* Nombre indicador fin */}
         <p className='mb-0'>Frecuencia:
@@ -125,53 +125,53 @@ function Preview() {
           })}
         </p>
       </div>
-      <div className='preview__logs d-flex flex-row justify-content-between'>
-          <div className='preview__logs__lista'>
+      <div className='preview__logs d-flex flex-row'>
+        <div className='preview__logs__lista'>
           <div className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
+            <div className='d-flex flex-row align-items-center'>
+              <img className='me-1' src={Avatar} alt="" />
+              <p className='mb-0'>{userData.responsable}</p>
+            </div>
+            <div className='d-flex flex-row align-items-center justify-content-between'>
+              <p className='d-flex flex-row mb-0'><i className='bi bi-bar-chart-fill me-2'></i>{logData.log}</p>
+              <div className='d-flex flex-row'>
+                <p className='me-2 d-flex flex-row mb-0'><i className="bi bi-calendar-event me-1"></i>
+                  {actualDay}
+                </p>
+                <p className='d-flex flex-row mb-0'><i className="bi bi-clock me-1"></i>
+                  {actualHour}
+                </p>
+              </div>
+            </div>
+          </div>
+        {
+          lastThree.map((e, i) => {
+            return <div className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
               <div className='d-flex flex-row align-items-center'>
                 <img className='me-1' src={Avatar} alt="" />
-                <p className='mb-0'>{userData.responsable}</p>
+                <p className='mb-0'>{e.log_de_usuario.nombre}</p>
               </div>
               <div className='d-flex flex-row align-items-center justify-content-between'>
-                <p className='d-flex flex-row mb-0'><i className='bi bi-bar-chart-fill me-2'></i>{logData.log}</p>
+                <p className='d-flex flex-row mb-0'><i className='bi bi-bar-chart-fill me-2'></i>{e.dato_metrica}</p>
                 <div className='d-flex flex-row'>
                   <p className='me-2 d-flex flex-row mb-0'><i className="bi bi-calendar-event me-1"></i>
-                    {actualDay}
+                    {new Date(e.fecha_Metrica.replace(/-/g, '/')).toLocaleDateString()}
                   </p>
                   <p className='d-flex flex-row mb-0'><i className="bi bi-clock me-1"></i>
-                    {actualHour}
+                    {e.hora_Metrica}
                   </p>
                 </div>
               </div>
             </div>
-            {
-              lastThree.map((e, i) => {
-                return <div className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
-                  <div className='d-flex flex-row align-items-center'>
-                    <img className='me-1' src={Avatar} alt="" />
-                    <p className='mb-0'>{e.log_de_usuario.nombre}</p>
-                  </div>
-                  <div className='d-flex flex-row align-items-center justify-content-between'>
-                    <p className='d-flex flex-row mb-0'><i className='bi bi-bar-chart-fill me-2'></i>{e.dato_metrica}</p>
-                    <div className='d-flex flex-row'>
-                      <p className='me-2 d-flex flex-row mb-0'><i className="bi bi-calendar-event me-1"></i>
-                        {new Date(e.fecha_Metrica.replace(/-/g, '/')).toLocaleDateString()}
-                      </p>
-                      <p className='d-flex flex-row mb-0'><i className="bi bi-clock me-1"></i>
-                        {e.hora_Metrica}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              })
-            }
-          </div>
-          <div className='preview__logs__grafica'>
+          })
+        }
+        </div>
+        <div className='preview__logs__grafica'>
             <Bar 
               data = {data}
               options = {options}
             />
-          </div>
+        </div>
       </div>
     </div>
   )

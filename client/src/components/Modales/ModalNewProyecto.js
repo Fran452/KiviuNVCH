@@ -5,7 +5,7 @@ import "./ModalProyecto.scss"
 import { newContext } from '../../pages/PlanesAccion/PlanesAccion';
 
 function ModalNewProyecto(props) {
-    const { proyectos, handleUpdate } = useContext(newContext)
+    const { proyectos, setProyectos, fetchProyectos } = useContext(newContext)
     const auth = localStorage.getItem("token")
     const jwtParse = jwtDecode(auth)
 
@@ -70,7 +70,7 @@ function ModalNewProyecto(props) {
                 if(data.error !== 0){
                     setErrorFetch(data.errorDetalle)
                 } else {
-                    handleUpdate(true)
+                    fetchProyectos().then(res => setProyectos(res.objeto))
                     setFormProyecto({
                         nombre: "",
                         detalles: ""

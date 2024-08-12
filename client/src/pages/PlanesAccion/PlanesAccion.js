@@ -5,6 +5,7 @@ import Tareas from '../../components/Tareas';
 import { Oval } from 'react-loader-spinner'
 import "./PlanesAccion.scss"
 import ModalNewProyecto from '../../components/Modales/ModalNewProyecto';
+import IllustrationAccess from "../../assets/img/access.png"
 
 export const newContext = React.createContext()
 
@@ -25,6 +26,7 @@ function PlanesAccion() {
     const USER = jwtParse.apirest.objeto
 
     useEffect(() => {
+
         const fetchAreas = async () => {
             try {
             const res = await fetch("http://localhost:3030/apis/index",{
@@ -36,36 +38,42 @@ function PlanesAccion() {
             console.log(error)
             }
         }
-
-        // Proyectos
-        if(loading) {
-            async function fetchProyectos() {
-                try {
-                    const res = await fetch("http://localhost:3030/apis/plan-accion/viewProyect", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                        user: USER
-                        })
-                    })
-                    const data = await res.json()
-                    setProyectos(data.objeto)
-                    setLoading(false)
-                } catch (error) {
-                    setError(error)
-                }
-            }
+        
+        const firstFetch = () => {
             fetchProyectos()
+            .then(res => {
+                if(res.error !== 0){
+                    setLoading(false)
+                    setError(res.errorDetalle)
+                } else {
+                    setLoading(false)
+                    setProyectos(res.objeto)
+                }
+            })
         }
-
+        
         fetchAreas()
+        firstFetch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loading])
+    }, [])
 
-    const handleUpdate = (value) => {
-        setLoading(value)
+    // Actualizar el listado de proyectos
+    const fetchProyectos = async () => {
+        try {
+            const res = await fetch("http://localhost:3030/apis/plan-accion/viewProyect", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                user: USER
+                })
+            });
+            const data = await res.json()
+            return data
+        } catch (error) {
+            setError(error)
+        }
     }
 
     const fetchTareasById = async(id) => {
@@ -82,7 +90,6 @@ function PlanesAccion() {
             })
             const data = await res.json()
             setTareasByProyecto(data.objeto)
-            handleUpdate(true)
         } catch (error) {
         console.log(error)
         }
@@ -104,7 +111,7 @@ function PlanesAccion() {
     return (
         <>
             <newContext.Provider 
-                value={{proyectos, loading, handleUpdate, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, areas, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
+                value={{proyectos, setProyectos, fetchProyectos, loading, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, areas, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
                 <ModalNewProyecto show={modalProyecto} onHide={()=>setModalProyecto(false)}/>
                 <div className='planes__accion section'>
                     <div className='section__header d-flex flex-row align-items-end mb-4'>
@@ -126,43 +133,53 @@ function PlanesAccion() {
                         </div>
                     ) : (
                         <>
-                            {proyectos.length === 0 ? (
-                                <div className='planes__accion--empty d-flex flex-column align-items-center justify-content-center rounded-3'>
-                                    <h2 className='fw-semibold mb-1 text-center'>No tienes Proyectos aún.</h2>
-                                    <p className='mb-3 text-center'>Para comenzar, crea tu primer proyecto:</p>
-                                    <button 
-                                        className='planes__accion--empty__btn btn btn-primary rounded-pill shadow-sm fw-medium'
-                                        onClick={handleFormProyecto}
-                                        >Agregar proyecto
-                                    </button>
+                            {error ? (
+                                <div className='planes__error d-flex flex-column align-items-center justify-content-center'>
+                                    <img className='mb-4' src={IllustrationAccess} alt="" />
+                                    <h2>Mensaje de error:</h2>
+                                    <p>{error}</p>
                                 </div>
                             ) : (
-                                <div className='planes__accion__main d-flex flex-column flex-md-row'>
-                                    <div className='planes__accion__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
-                                        <div className='container__accordion'>
-                                            <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
-                                                {areas.map((a, i) => {
-                                                    return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
-                                                        <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
-                                                        <Accordion.Body className='d-flex flex-column align-items-start'>
-                                                            {proyectos.map((p, index) => {
-                                                                return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre, p.detalles)}>
-                                                                    <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
-                                                                </button>
-                                                            })}
-                                                        </Accordion.Body>
-                                                    </Accordion.Item>
-                                                })}
-                                            </Accordion>
-                                        </div>
+                                <>
+                                    {proyectos.length === 0 ? (
+                                    <div className='planes__accion--empty d-flex flex-column align-items-center justify-content-center rounded-3'>
+                                        <h2 className='fw-semibold mb-1 text-center'>No tienes Proyectos aún.</h2>
+                                        <p className='mb-3 text-center'>Para comenzar, crea tu primer proyecto:</p>
                                         <button 
-                                            className='planes__accion__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
+                                            className='planes__accion--empty__btn btn btn-primary rounded-pill shadow-sm fw-medium'
                                             onClick={handleFormProyecto}
                                             >Agregar proyecto
                                         </button>
                                     </div>
-                                    <Tareas />
-                                </div>
+                                    ) : (
+                                        <div className='planes__accion__main d-flex flex-column flex-md-row'>
+                                            <div className='planes__accion__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
+                                                <div className='container__accordion'>
+                                                    <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
+                                                        {areas.map((a, i) => {
+                                                            return a.id_area === USER.area && <Accordion.Item key={a.id_area} eventKey={i}>
+                                                                <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
+                                                                <Accordion.Body className='d-flex flex-column align-items-start'>
+                                                                    {proyectos.map((p, index) => {
+                                                                        return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre, p.detalles)}>
+                                                                            <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
+                                                                        </button>
+                                                                    })}
+                                                                </Accordion.Body>
+                                                            </Accordion.Item>
+                                                        })}
+                                                    </Accordion>
+                                                </div>
+                                                <button 
+                                                    className='planes__accion__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
+                                                    onClick={handleFormProyecto}
+                                                    >Agregar proyecto
+                                                </button>
+                                            </div>
+                                            <Tareas />
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </>
                     )}

@@ -1,20 +1,75 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap/scss/_variables.scss';
 
-.datin {
+.loading__datin {
+    width: 100%;
     height: calc(100% - 48px);
+
+    div {
+        margin-bottom: 10px;
+        svg g g circle[stroke] {
+            stroke: $blue-500;
+        }
+    }
+
+    p {
+        color: $blue-500
+    }
+}
+
+.btn__addIndicador {
+    width: 180px;
+    height: 40px;
+}
+
+.datin {
+    height: 100%;
     
     &--empty__main {
+        height: calc(100% - 48px);
         border: 2px dashed $blue-500;
         height: 100%;
 
         h2 {
             color: $blue-500
         }
+    }
 
-        .btn__addIndicador {
-            width: 180px;
-            height: 40px;
+    &__main {
+        height: calc(100% - 48px);
+        display: grid;
+        grid-template-columns: 1fr;
+        column-gap: 20px;
+        row-gap: 20px;
+
+        &__indicador {
+            height: 150px;
+
+            p {
+                font-size: 14px;
+            }
+
+            &__fecha {
+                background-color: $blue-500;
+            }
         }
     }
+}
+
+@media screen and (min-width: 768px) {
+    .datin {
+        &__main {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+}
+
+@media screen and (min-width: 992px) {
+    .datin {
+        &__main {
+            grid-template-columns: 1fr 1fr 1fr 1fr
+        }
+    }
+    
 }

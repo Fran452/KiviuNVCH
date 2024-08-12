@@ -32,7 +32,7 @@ const controlador = {
                     ver:1
                 },
             });
-            res.json({erro:0,ErrorDetalle:"",objeto:proyectos});
+            res.json({error:0, ErrorDetalle:"", objeto:proyectos});
 
         }
         catch(error){

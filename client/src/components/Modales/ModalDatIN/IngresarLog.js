@@ -23,7 +23,7 @@ function IngresarLog() {
           <div className='col-12 col-md-9'>
             <input
               onChange={handleChange}
-              type="text"  
+              type="number"  
               name="log" 
               autoFocus
               className="form-control form-control-sm"

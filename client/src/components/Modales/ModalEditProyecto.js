@@ -84,7 +84,7 @@ function ModalEditProyecto(props) {
                     })
                     setErrorFetch(null)
                     setProyecto(null)
-                    handleUpdate(true)
+                    // handleUpdate(true)
                     setTitleProyecto(formProyecto.nombre)
                     setDescripcionProyecto(formProyecto.detalles)
                     props.onHide()

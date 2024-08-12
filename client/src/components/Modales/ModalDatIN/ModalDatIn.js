@@ -39,12 +39,14 @@ function ModalDatIn(props) {
     }
 
     const handleSendData = () => {
-        setUserData({})
-        setLogData({})
+        console.log("clic")
     }
 
     const handleClose = () => {
         props.onHide()
+        setUserData({})
+        setLogData({})
+        setCurrentStep(1)
     }
 
     return (
