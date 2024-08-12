@@ -5,8 +5,8 @@ import { tareasContext } from '../Tareas';
 import { newContext } from '../../pages/PlanesAccion/PlanesAccion'
 
 function ModalPlanes(props) {
-  const { USER, areas, handleUpdate, fetchTareasById, idProyecto } = useContext(newContext)
-  const { tareaObj, setTareaObj, proyecto, setProyecto } = useContext(tareasContext)
+  const { USER, areas, fetchTareasById, idProyecto, setLoadingTar, setErrorTar, setTareasByProyecto } = useContext(newContext)
+  const { tareaObj, setTareaObj, proyectoSelec, setProyectoSelec } = useContext(tareasContext)
 
   // State
   const [formData, setFormData] = useState({
@@ -53,7 +53,7 @@ function ModalPlanes(props) {
     e.preventDefault()
     const newErrors = validateForm(formData);
     setErrors(newErrors)
-    const pro = JSON.parse(proyecto)
+    const pro = JSON.parse(proyectoSelec)
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
@@ -68,7 +68,6 @@ function ModalPlanes(props) {
         progreso: parseInt(formData.progreso),
         idProyecto: pro.id_proyecto
       }
-
       try {
         const res = await fetch("http://localhost:3030/apis/plan-accion/addTask", {
           method: "POST",
@@ -79,7 +78,6 @@ function ModalPlanes(props) {
         })
         const data = await res.json()
         if(data.error !== 0) {
-          handleUpdate(false)
           setModalErr(data.errorDetalle)
         } else {
           setFormData({
@@ -94,10 +92,21 @@ function ModalPlanes(props) {
             progreso: 0
           })
           setModalErr(null)
-          setProyecto(null)
-          handleUpdate(true)
-          fetchTareasById(idProyecto)
+          setProyectoSelec(null)
           props.onHide()
+          setLoadingTar(true)
+          // actualiza tareas
+          fetchTareasById(idProyecto)
+          .then(res => {
+              if(res.error !== 0){
+                  setLoadingTar(false)
+                  setErrorTar(res.errorDetalle)
+              } else {
+                  setLoadingTar(false)
+                  setTareasByProyecto(res.objeto)
+              }
+          })
+          // fin de actualiza tareas
         }
       } catch (error) {
         console.log(error)
@@ -156,7 +165,7 @@ function ModalPlanes(props) {
       progreso: 0
     })
     props.onHide()
-    setProyecto(null)
+    setProyectoSelec(null)
     setTareaObj(null)
     setModalErr(null)
   }
@@ -166,7 +175,7 @@ function ModalPlanes(props) {
     const newErrors = validateForm(formData);
     setErrors(newErrors)
     const task = JSON.parse(tareaObj)
-    const pro = JSON.parse(proyecto)
+    const pro = JSON.parse(proyectoSelec)
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
@@ -192,7 +201,6 @@ function ModalPlanes(props) {
         })
         const data = await res.json()
         if(data.error !== 0) {
-          handleUpdate(false)
           setModalErr(data.errorDetalle)
         } else {
           setFormData({
@@ -208,10 +216,9 @@ function ModalPlanes(props) {
           })
           setModalErr(null)
           setTareaObj(null)
-          setProyecto(null)
+          setProyectoSelec(null)
           fetchTareasById(idProyecto)
           props.onHide()
-
         }
       } catch (error) {
         setModalErr(error)

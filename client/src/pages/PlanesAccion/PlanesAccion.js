@@ -11,7 +11,9 @@ export const newContext = React.createContext()
 
 function PlanesAccion() {
     const [loading, setLoading] = useState(true)
+    const [loadingTar, setLoadingTar] = useState(false)
     const [error, setError] = useState(null)
+    const [errorTar, setErrorTar] = useState(null)
     const [areas, setAreas] = useState([]);
     const [proyectos, setProyectos] = useState([])
     const [tareasByProyecto, setTareasByProyecto] = useState(null)
@@ -89,14 +91,24 @@ function PlanesAccion() {
               })
             })
             const data = await res.json()
-            setTareasByProyecto(data.objeto)
+            return data
         } catch (error) {
         console.log(error)
         }
     }
 
     const handleTareaById = async (id, titleArea, titleProyecto, detalles) => {
+        setLoadingTar(true)
         fetchTareasById(id)
+        .then(res => {
+            if(res.error !== 0){
+                setLoadingTar(false)
+                setErrorTar(res.errorDetalle)
+            } else {
+                setLoadingTar(false)
+                setTareasByProyecto(res.objeto)
+            }
+        })
         setIdProyecto(id)
         setTitleArea(titleArea)
         setTitleProyecto(titleProyecto)
@@ -111,7 +123,7 @@ function PlanesAccion() {
     return (
         <>
             <newContext.Provider 
-                value={{proyectos, setProyectos, fetchProyectos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, areas, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
+                value={{loadingTar, setLoadingTar, errorTar, setErrorTar, proyectos, setProyectos, fetchProyectos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, areas, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
                 <ModalNewProyecto show={modalProyecto} onHide={()=>setModalProyecto(false)}/>
                 <div className='planes__accion section'>
                     <div className='section__header d-flex flex-row align-items-end mb-4'>
