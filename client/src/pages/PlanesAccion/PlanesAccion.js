@@ -111,7 +111,7 @@ function PlanesAccion() {
     return (
         <>
             <newContext.Provider 
-                value={{proyectos, setProyectos, fetchProyectos, loading, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, areas, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
+                value={{proyectos, setProyectos, fetchProyectos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, areas, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
                 <ModalNewProyecto show={modalProyecto} onHide={()=>setModalProyecto(false)}/>
                 <div className='planes__accion section'>
                     <div className='section__header d-flex flex-row align-items-end mb-4'>

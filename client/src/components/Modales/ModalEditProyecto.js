@@ -5,8 +5,8 @@ import { tareasContext } from '../Tareas';
 import { newContext } from '../../pages/PlanesAccion/PlanesAccion';
 
 function ModalEditProyecto(props) {
-    const { proyectos, handleUpdate, setTitleProyecto, setDescripcionProyecto } = useContext(newContext)
-    const { proyecto, setProyecto } = useContext(tareasContext)
+    const { proyectos, setProyectos, fetchProyectos, setTitleProyecto, setDescripcionProyecto } = useContext(newContext)
+    const { proyectoSelec, setProyectoSelec } = useContext(tareasContext)
 
     const [formProyecto, setFormProyecto] = useState({
         nombre: "",
@@ -16,15 +16,15 @@ function ModalEditProyecto(props) {
     const [errorFetch, setErrorFetch] = useState(null)
 
     useEffect(() => {
-        if(proyecto){
-            const pro = JSON.parse(proyecto)
+        if(proyectoSelec){
+            const pro = JSON.parse(proyectoSelec)
             const obj = proyectos.find((e) => e.id_proyecto === pro.id_proyecto)
             setFormProyecto({
                 nombre: obj.nombre,
                 detalles: obj.detalles
             })
         }
-    },[proyecto, proyectos])
+    },[proyectoSelec, proyectos])
 
     const handleClose = () => {
         setErrors({})
@@ -32,7 +32,7 @@ function ModalEditProyecto(props) {
             nombre: "",
             detalles: ""
         })
-        setProyecto(null)
+        setProyectoSelec(null)
         setErrorFetch(null)
         props.onHide()
     }
@@ -60,7 +60,7 @@ function ModalEditProyecto(props) {
         e.preventDefault()
         const newErrors = validateForm(formProyecto)
         setErrors(newErrors)
-        const pro = JSON.parse(proyecto)
+        const pro = JSON.parse(proyectoSelec)
         if (Object.keys(newErrors).length === 0){
             try {
                 const res = await fetch("http://localhost:3030/apis/plan-accion/modProyect", {
@@ -83,10 +83,10 @@ function ModalEditProyecto(props) {
                         detalles: ""
                     })
                     setErrorFetch(null)
-                    setProyecto(null)
-                    // handleUpdate(true)
+                    setProyectoSelec(null)
                     setTitleProyecto(formProyecto.nombre)
                     setDescripcionProyecto(formProyecto.detalles)
+                    fetchProyectos().then(res => setProyectos(res.objeto))
                     props.onHide()
                 }
             } catch (error) {

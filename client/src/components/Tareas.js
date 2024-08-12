@@ -11,18 +11,18 @@ export const tareasContext = React.createContext()
 
 function Tareas() {
   
-  const { proyectos, loading, handleUpdate, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
+  const { loading, proyectos, setProyectos, fetchProyectos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
   
   const [modalDeleteProyecto, setModalDeleteProyecto] = useState(false)
   const [modalEditProyecto, setModalEditProyecto] = useState(false)
   const [modalTarea, setModalTarea] = useState(false)
-  const [proyecto, setProyecto] = useState(null)
+  const [proyectoSelec, setProyectoSelec] = useState(null)
   const [tareaObj, setTareaObj] = useState(null)
   const [idTask, setIdTask] = useState(null)
   const [modalDeleteTarea, setModalDeleteTarea] = useState(false)
 
   useEffect(() => {
-  },[loading])
+  },[])
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -32,7 +32,7 @@ function Tareas() {
 
   const handleEditProyecto = () => {
     const pro = proyectos.find(e => e.id_proyecto === idProyecto)
-    setProyecto(JSON.stringify(pro))
+    setProyectoSelec(JSON.stringify(pro))
     setModalEditProyecto(true)
   }
 
@@ -55,9 +55,9 @@ function Tareas() {
       if(data.error !== 0){
         console.log(data.errorDetalle)
       } else {
-        handleUpdate(true)
         setTareasByProyecto(null)
         setIdProyecto(null)
+        fetchProyectos().then(res => setProyectos(res.objeto))
         setModalDeleteProyecto(false)
       }
     } catch (error) {
@@ -68,7 +68,7 @@ function Tareas() {
   const handleNewTarea = (e) => {
     e.preventDefault()
     const pro = proyectos.find(e => e.id_proyecto === idProyecto)
-    setProyecto(JSON.stringify(pro))
+    setProyectoSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
 
@@ -76,7 +76,7 @@ function Tareas() {
     const obj = tareasByProyecto.find((e) => e.id_tarea === id)
     setTareaObj(JSON.stringify(obj))
     const pro = proyectos.find(e => e.id_proyecto === idProyecto)
-    setProyecto(JSON.stringify(pro))
+    setProyectoSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
 
@@ -111,7 +111,7 @@ function Tareas() {
 
   return (
     <>
-      <tareasContext.Provider value={{proyecto, setProyecto, tareaObj, setTareaObj}}>
+      <tareasContext.Provider value={{proyectoSelec, setProyectoSelec, tareaObj, setTareaObj}}>
         <ModalEditProyecto show={modalEditProyecto} onHide={()=>setModalEditProyecto(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
       </tareasContext.Provider>
