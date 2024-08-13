@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react'
-import './Pasos.scss'
 
 function Pasos({steps, currentStep}) {
     const [ newStep, setNewStep ] = useState([])
@@ -84,8 +83,10 @@ function Pasos({steps, currentStep}) {
     })
 
     return (
-        <div className='d-flex align-items-center justify-content-between mb-4'>
-            {displaySteps}
+        <div className='steps__container mb-4'>
+            <div className='steps__container__main mx-auto d-flex align-items-center justify-content-between'>
+                {displaySteps}
+            </div>
         </div>
     )
 }

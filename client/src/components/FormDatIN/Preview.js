@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import { 
   Chart as ChartJS,
   BarElement,
+  Tooltip,
   CategoryScale,
   LinearScale,
   Legend
 } from "chart.js";
 import { Bar } from 'react-chartjs-2'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { PasosContext } from '../../../context/PasosContext'
-import Avatar from '../../../assets/img/avatar-2.png'
+// import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { PasosContext } from '../../context/PasosContext'
+import Avatar from '../../assets/img/avatar-2.png'
 
 const FRECUENCIAS = [
   { id: 1, tipo: "Semanal" },
@@ -22,6 +23,7 @@ ChartJS.register(
   BarElement,
   CategoryScale,
   LinearScale,
+  Tooltip,
   Legend
 )
 
@@ -56,7 +58,7 @@ const lastThree = [
 ]
 
 function Preview() {
-  const { userData, setUserData, logData, setLogData } = useContext(PasosContext)
+  const { userData, logData } = useContext(PasosContext)
   const [arrMetrica, setArrMetrica] = useState(null)
   const [arrLabels, setArrLabels] = useState(null)
 
@@ -97,18 +99,20 @@ function Preview() {
 
   }
 
-  const renderTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      {userData.descripcion}
-    </Tooltip>
-  );
+  // const renderTooltip = (props) => (
+  //   <Tooltip id="button-tooltip" {...props}>
+  //     {userData.descripcion}
+  //   </Tooltip>
+  // );
 
   return (
-    <div className='preview'>
+    <div className='preview mb-4'>
       <div className='preview__title d-flex flex-column mb-4'>
         <h4 className='mb-0 text-muted'>{userData.area}</h4>
+        <h2 className='mb-0 me-2 '>{userData.indicador}</h2>
+        <p className='mb-0'><span className='text-muted'>Descripción: </span>{userData.descripcion}</p>
         {/* Nombre indicador */}
-        <div className='d-flex flex-row align-items-center'>
+        {/* <div className='d-flex flex-row align-items-center'>
             <h2 className='mb-0 me-2 '>{userData.indicador}</h2>
             <OverlayTrigger
               placement="right"
@@ -117,17 +121,17 @@ function Preview() {
             >
                 <i className="bi bi-info-circle"></i>
             </OverlayTrigger>
-        </div>
+        </div> */}
         {/* Nombre indicador fin */}
-        <p className='mb-0'>Frecuencia:
-          {FRECUENCIAS.map(e => {
-            return e.id === parseInt(userData.frecuencia) && <span> {e.tipo}</span>
+        <p className='mb-0'><span className='text-muted'>Frecuencia:</span>
+          {FRECUENCIAS.map((e, i) => {
+            return e.id === parseInt(userData.frecuencia) && <span key={i}> {e.tipo}</span>
           })}
         </p>
       </div>
       <div className='preview__logs d-flex flex-row'>
-        <div className='preview__logs__lista'>
-          <div className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
+        <div className='preview__logs__lista me-4'>
+          <div className='preview__logs__lista__log mb-2 shadow-sm rounded-3 border border-light'>
             <div className='d-flex flex-row align-items-center'>
               <img className='me-1' src={Avatar} alt="" />
               <p className='mb-0'>{userData.responsable}</p>
@@ -144,9 +148,10 @@ function Preview() {
               </div>
             </div>
           </div>
+          <p className='mb-1'>Últimos 3 logs:</p>
         {
           lastThree.map((e, i) => {
-            return <div className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
+            return <div key={i} className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
               <div className='d-flex flex-row align-items-center'>
                 <img className='me-1' src={Avatar} alt="" />
                 <p className='mb-0'>{e.log_de_usuario.nombre}</p>
