@@ -70,12 +70,12 @@ function Preview() {
   useEffect(() => {
     let arrMet = []
     let arrLabel = []
-    lastThree.forEach((e) => {
-      arrMet.push(parseInt(e.dato_metrica))
-      arrLabel.push(new Date(e.fecha_Metrica.replace(/-/g, '/')).toLocaleDateString())
-    })
-    arrMet.reverse()
-    arrLabel.reverse()
+    // lastThree.forEach((e) => {
+    //   arrMet.push(parseInt(e.dato_metrica))
+    //   arrLabel.push(new Date(e.fecha_Metrica.replace(/-/g, '/')).toLocaleDateString())
+    // })
+    // arrMet.reverse()
+    // arrLabel.reverse()
     arrMet.push(parseInt(logData.log))
     arrLabel.push(actualDay)
     setArrMetrica(arrMet)
@@ -148,7 +148,7 @@ function Preview() {
               </div>
             </div>
           </div>
-          <p className='mb-1'>Últimos 3 logs:</p>
+          {/* <p className='mb-1'>Últimos 3 logs:</p>
         {
           lastThree.map((e, i) => {
             return <div key={i} className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
@@ -169,7 +169,7 @@ function Preview() {
               </div>
             </div>
           })
-        }
+        } */}
         </div>
         <div className='preview__logs__grafica'>
             <Bar 

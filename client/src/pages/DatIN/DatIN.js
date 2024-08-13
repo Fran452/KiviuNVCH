@@ -14,6 +14,7 @@ function DatIN() {
   const [addIndicador, setAddIndicador] = useState(false)
   const [modalIndicador, setModalIndicador] = useState(false)
   const [arrTresMetricas, setArrTresMetricas] = useState([])
+  const [indicadorID, setIndicadorID] = useState({})
 
   const auth = localStorage.getItem("token")
   const jwtParse = jwtDecode(auth)
@@ -71,6 +72,8 @@ function DatIN() {
       })
       const data = await res.json()
       setArrTresMetricas(data.objeto)
+      const obj = indicadores.find(e => e.id_indicador === id)
+      setIndicadorID(obj)
     } catch (error) {
       console.log(error)
     }
@@ -79,7 +82,7 @@ function DatIN() {
 
   return (
     <>
-      <DataInContext.Provider value={{ arrTresMetricas }}>
+      <DataInContext.Provider value={{ arrTresMetricas, setArrTresMetricas, indicadorID, setIndicadorID }}>
         <ModalShowIndicadores show={modalIndicador} onHide={()=>setModalIndicador(false)} />
       </DataInContext.Provider>
       <div className='datin section'>

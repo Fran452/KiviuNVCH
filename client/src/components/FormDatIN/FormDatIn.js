@@ -117,6 +117,34 @@ function FormDatIn({addIndicador, setAddIndicador, fetchIndicadores, setLoading,
         console.log(newStep)
     }
 
+    const newMetrica = async (id) => {
+        const obj = {
+            fk_indicador: parseInt(id),
+            dato_metrica: parseInt(logData.log),
+            user: USER
+        }
+        try {
+            const res = await fetch("http://localhost:3030/apis/dateIn/newMetrica", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj)
+            })
+            const data = await res.json()
+            if(data.error !== 0) {
+                console.log(data.errorDetalle)
+            } else {
+                setLogData({
+                    log: ""
+                })
+                console.log("Se ingresó la métrica")
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const handleSendData = async () => {
         const obj = {
             user: USER,
@@ -126,7 +154,6 @@ function FormDatIn({addIndicador, setAddIndicador, fetchIndicadores, setLoading,
             responsable: userData.responsable,
             empleadoSuplente: userData.suplente,
         }
-        console.log(obj)
         try {
             const res = await fetch("http://localhost:3030/apis/dateIn/newIndicador", {
                 method: "POST",
@@ -139,6 +166,8 @@ function FormDatIn({addIndicador, setAddIndicador, fetchIndicadores, setLoading,
             if(data.error !== 0){
                 setErrorFetch(data.errorDetalle)
             } else {
+                const id = data.objeto.id_indicador
+                newMetrica(id)
                 setUserData({
                     area: "",
                     indicador: "",
@@ -146,9 +175,6 @@ function FormDatIn({addIndicador, setAddIndicador, fetchIndicadores, setLoading,
                     frecuencia: "",
                     responsable: "",
                     suplente: ""
-                })
-                setLogData({
-                    log: ""
                 })
                 console.log("Se ingresó el indicador")
             }
