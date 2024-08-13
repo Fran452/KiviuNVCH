@@ -1,0 +1,401 @@
+const dataBaseSQL = require("../databaseSQL/models");
+const funcionesDeTest = require('./funcionesTestGenericas')
+
+const path = require("path");
+
+const bcrypt = require("bcrypt");
+const funcionesGenericas = require("../funcionesGenerales");
+
+
+const controlador = {
+    
+    testGenerico: async (req,res) => {
+        
+    },
+  
+    createProyecto: async (req,res) => {
+        let resultadoTest = {}
+
+        // Crear proyecto desde la api
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addProyect',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nombre: "Proyecto de prueba",
+                detalles: "Detalle del proyecto de prueba",
+                user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            })
+        });
+
+        let apis = await apisJSON.json();
+
+        // Retorno de error 
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:metricaEditada});
+            return 1;
+        }
+
+        // Busqueda en la base de datos 
+        let proyectoSubido = await funcionesDeTest.buscarProyecto(apis.objeto.id_proyecto);
+        console.log(proyectoSubido);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Subida a base de datos',undefined,proyectoSubido,4);
+        if(resultadoTest.test1.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:metricaEditada});
+            return 1;
+        }
+
+        // Nombre del proyecto subido 
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Nombre del proyecto subido','Proyecto de prueba',proyectoSubido.nombre,1);
+
+        // Descripcion del proyecto subido
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Descripcion del proyecto subido','Detalle del proyecto de prueba',proyectoSubido.detalles,1);
+
+        // Area del proyecto
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Area del proyecto',1,proyectoSubido.fk_area,1);
+
+        // Eliminar ejemplo
+        await funcionesDeTest.eliminarProyecto(proyectoSubido.id_proyecto);
+
+        res.json({resultadoTest,resultadoApi:apis});
+        return 0;
+
+    },
+
+    readProyecto: async (req,res) => {
+        let resultadoTest = {}
+        // Crear proyecto de prueba
+        let proyectoTest = await funcionesDeTest.crearProyecto(1,"test de prueba","test de prueba");
+
+        // Buscar muestra de proyecto con usuario con area en el proyecto
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+           body: JSON.stringify({
+            user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            })
+        })
+        
+        let apis = await apisJSON.json();
+        
+        // Sin error de apis
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        }
+
+        // Buscar proyecto subido
+        let proyecto = apis.objeto.find(proyecto => proyecto.id_proyecto == proyectoTest.id_proyecto)
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado',undefined,proyecto,4);
+
+
+        // Buscar muestra de proyecto con usuario sin area en el proyecto
+        let apisCaso2JSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+           body: JSON.stringify({
+            user:{id: 1,nombre: 'Francisco Lema',area: 2,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            })
+        })
+        
+        let apisCaso2 = await apisCaso2JSON.json();
+
+        // Sin error de apis
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis caso 2',0,apisCaso2.error,1);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        }
+
+        // Buscar proyecto subido
+        let proyecto2 = apisCaso2.objeto.find(proyecto => proyecto.id_proyecto == proyectoTest.id_proyecto)
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado para usuario de otra area',undefined,proyecto2,1);
+
+
+        // Eliminar ejemplo
+        await funcionesDeTest.eliminarProyecto(proyectoTest.id_proyecto);
+
+        res.json({resultadoTest,resultadoApi:{
+            apisCaso1: apis,
+            apisCaso2: apisCaso2
+        }});
+    },
+
+    editeProyecto: async (req,res) => {
+        let resultadoTest = {}
+
+        // Crear proyecto de prueba
+        let crearProyecto = await funcionesDeTest.crearProyecto(1,"test de prueba","test de prueba");
+        let proyectoAntiguo = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+
+        // Edicion de proyecto
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modProyect',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nombre:"test de prueba modificado",
+                detalles: 'test de prueba descripcion modifcado',
+                idProyecto: proyectoAntiguo.id_proyecto,
+                user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            })
+        });
+        
+        let apis = await apisJSON.json();
+
+        // Sin error de apis
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        }
+
+        let proyectoEditado = await funcionesDeTest.buscarProyecto(proyectoAntiguo.id_proyecto);
+        // Diferencia entre nombre antiguo y actual
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Diferencia entre nombre antiguo y actual',proyectoAntiguo.nombre,proyectoEditado.nombre,4);
+
+        // Editado nombre
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Editado nombre','test de prueba modificado',proyectoEditado.nombre,1);
+        
+        // Diferencia entre detalle antiguo y detalle actual
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Diferencia entre nombre antiguo y actual',proyectoAntiguo.detalles,proyectoEditado.detalles,4);
+
+        // Editado descipcion
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Detalles editada','test de prueba descripcion modifcado',proyectoEditado.detalles,1);
+        
+        
+        // Eliminar ejemplo
+        await funcionesDeTest.eliminarProyecto(proyectoAntiguo.id_proyecto);
+
+        res.json({resultadoTest,resultadoApi:apis});
+        
+
+    },
+
+    deleteProyecto: async (req,res) => {
+        let resultadoTest = {}
+        // Crear proyecto de prueba
+        let crearProyecto = await funcionesDeTest.crearProyecto(1,"test de prueba","test de prueba");
+
+        // Edicion de proyecto
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/deleteProyect',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                idProyecto: crearProyecto.id_proyecto,
+                user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            })
+        });
+        
+        let apis = await apisJSON.json();
+
+        // Sin error de apis
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        }
+
+        let proyectoEliminado = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'opcion ver en 0',0,proyectoEliminado.ver,1);
+
+        let apisVerJSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            })
+        });
+
+        let apisVer = await apisVerJSON.json();
+
+        let proyectoElimiandoVer = apisVer.objeto.find(proyecto => proyecto.id_proyecto == proyectoEliminado.id_proyecto);
+
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'No aparece entrando desde api',undefined,proyectoElimiandoVer,1);
+
+        await funcionesDeTest.eliminarProyecto(proyectoEliminado.id_proyecto);
+        res.json({resultadoTest,resultadoApi:apis});
+        
+    },
+
+    createTarea: async (req,res) => {
+        let resultadoTest = {}
+
+        // Crear proyecto de prueba
+        let crearProyecto = await funcionesDeTest.crearProyecto(1,"test de prueba","test de prueba");
+        let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+
+        let ahora = new Date();
+
+        let fechaDeInicio = ahora.toISOString().split('T')[0];
+        ahora.setDate(ahora.getDate() + 7);
+        
+        let fechaDelFinal = ahora.toISOString().split('T')[0];
+        let areaDeApoyo = 2;
+        let usuario = {
+            id:     1,
+            nombre: 'Francisco Lema',
+            area:   1,
+            puesto: 2,
+            mail:   'franciscolemacr@gmail.com'
+        };
+
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                empleado_asignado:  'franciscolemacr@gmail.com',
+                fechaInicio:        fechaDeInicio,
+                fechaFinal:         fechaDelFinal,
+                nombre:             'Tarea de prueba',
+                estado:             1,
+                prioridad:          1,    
+                notas:              'Tarea de prueba para hacer los test',
+                areaApoyo:          areaDeApoyo,    
+                progreso:           0,    
+                idProyecto:         proyecto.id_proyecto,     
+                user:               usuario
+            })
+        });
+
+        let apis = await apisJSON.json();
+
+        // Sin error de apis
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        console.log(apis.error);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        };
+
+       
+
+        // Se subio a la base de datos
+        let tareaEjemplo = await funcionesDeTest.buscarTarea(apis.objeto.id_tarea);
+
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Se subio a la base de datos',undefined,tareaEjemplo,4);
+        
+        // Se subio con el nombre correcto
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Se subio con el nombre correcto','Tarea de prueba',tareaEjemplo.nombre,1);
+
+        // Se subio con el descripcion correcto
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Se subio con la descripcion correcto','Tarea de prueba para hacer los test',tareaEjemplo.notas,1);
+
+        // Se subio bien el area
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Se subio con el area correcto',usuario.area,tareaEjemplo.Areas.id_area,1);
+
+        // Error de usuario no existente
+        let apisErrorJSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                empleado_asignado:  'noExiste@gmail.com',
+                fechaInicio:        fechaDeInicio,
+                fechaFinal:         fechaDelFinal,
+                nombre:             'Tarea de prueba',
+                estado:             1,
+                prioridad:          1,    
+                notas:              'Tarea de prueba para hacer los test',
+                areaApoyo:          areaDeApoyo,    
+                progreso:           0,    
+                idProyecto:         proyecto.id_proyecto,     
+                user:               usuario
+            })
+        });
+
+        let apisError = await apisErrorJSON.json();
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de mail',10,apisError.error,1);
+
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de mail detalle','El correo del responsable no existe.',apisError.errorDetalle,1);
+        
+        // Error de fechas mal subidas
+        ahora.setDate(ahora.getDate() - 15);
+
+        let fechaDeFinalError = ahora.toISOString().split('T')[0];
+
+        let apisError2JSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                empleado_asignado:  'franciscolemacr@gmail.com',
+                fechaInicio:        fechaDeInicio,
+                fechaFinal:         fechaDeFinalError,
+                nombre:             'Tarea de prueba',
+                estado:             1,
+                prioridad:          1,    
+                notas:              'Tarea de prueba para hacer los test',
+                areaApoyo:          areaDeApoyo,    
+                progreso:           0,    
+                idProyecto:         proyecto.id_proyecto,     
+                user:               usuario
+            })
+        });
+
+        let apisError2 = await apisError2JSON.json();
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal',99,apisError2.error,1);
+
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal','fecha_inicio is greater than the current',apisError2.errorDetalle,1);
+        
+
+        // eliminar ejemplo
+        await funcionesDeTest.eliminarTarea(tareaEjemplo.id_tarea);    
+
+        await funcionesDeTest.eliminarProyecto(crearProyecto.id_proyecto);
+
+        res.json({resultadoTest,resultadoApi:apis});
+
+    },
+
+    readTarea: async (req,res) => {
+        let resultadoTest = {}
+    },
+
+    editeTarea: async (req,res) => {
+        let resultadoTest = {}
+    },
+
+    deleteTarea: async (req,res) => {
+        let resultadoTest = {}
+    },
+    
+
+}
+
+module.exports = controlador;
+
+/*
+
+let apisJSON = await fetch('http://localhost:3030/apis/',{
+    method:'POST',
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+    })
+})
+
+let apis = await apisJSON.json();
+
+*/

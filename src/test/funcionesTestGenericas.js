@@ -118,12 +118,82 @@ let controlador = {
             esperado: esperado,
             recibido,recibido
         }
-        console.log(objetoTest);
         return objetoTest;
     },
 
+    // Para proyectos
+    crearProyecto: async function(area,nombre,detalle){
+        let objetoCreado = await dataBaseSQL.proyectos.create({
+            fk_area: area,
+            nombre: nombre,
+            detalles:detalle,
+            ver:1
+        });
+        return objetoCreado.dataValues;
+    },
+
+    buscarProyecto: async function(id){
+        let busqueda = await dataBaseSQL.proyectos.findOne({
+            where: {
+                id_proyecto : id
+            },
+            attributes: ['id_proyecto','fk_area','nombre','detalles','ver'],
+            include: [
+                {association : "Areas",attributes: ['id_area','nombre_del_Area']},
+            ]
+        });
+        return busqueda.dataValues;
+    },
+    
+    eliminarProyecto: async function(id){
+        await dataBaseSQL.proyectos.destroy({
+            where : {id_proyecto: id}
+        });
+    },
+
+    // Para Tareas 
+    crearTarea: async function(fk_empleado_asignado,fk_area,fk_area_apoyo,nombre,fk_proyecto,estado,prioridad,fecha_inicio,fecha_final,notas,progreso){
+        let objetoCreado = await dataBaseSQL.tareas.create({
+            fk_empleado_asignado,
+            fk_area,
+            fk_area_apoyo,
+            fk_proyecto,
+            nombre,
+            estado,
+            prioridad,
+            fecha_inicio,
+            fecha_final,
+            notas,
+            progreso,
+            mostrar : 1,
+        });
+        return objetoCreado.dataValues;
+    },
+
+    buscarTarea: async function(id){
+        let busqueda = await dataBaseSQL.tareas.findOne({
+            where: {
+                id_tarea : id
+            },
+            attributes: ['id_tarea','nombre','estado','prioridad','fecha_inicio','fecha_final','notas','progreso'],
+            include: [
+                {association : "Empleados",attributes: ['nombre','fk_area','fk_puesto','mail']},
+                {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']},
+                {association : "Proyectos",attributes: ['id_proyecto','nombre']},
+                {association : "Areas",attributes: ['id_area','nombre_del_Area']},                
+            ]
+        });
+        return busqueda.dataValues;
+    },
+    
+    eliminarTarea: async function(id){
+        await dataBaseSQL.tareas.destroy({
+            where : {id_tarea: id}
+        });
+    },
+
     // Para indicadores
-    crearIndicador : async function(fk_area,fk_responsable,fk_responsable_suplente,nombre_indicador,detalles_metrica,tipo_recordartorio,fecha_del_recodatorio){
+    crearIndicador: async function(fk_area,fk_responsable,fk_responsable_suplente,nombre_indicador,detalles_metrica,tipo_recordartorio,fecha_del_recodatorio){
         let indicador = await dataBaseSQL.indicadores.create({
             fk_area : fk_area,
             fk_responsable : fk_responsable,
@@ -157,7 +227,7 @@ let controlador = {
             where : {id_indicador: id}
         });
     },
-    
+
     // Para metricas
     buscarMetricaEjemplo: async function(id) {
         let metrica = await dataBaseSQL.metricas.findAll({
@@ -186,6 +256,66 @@ let controlador = {
         });
     
     },
+
+    // Para usuarios
+    buscarUsuario: async function(id) {
+        busqueda = await dataBaseSQL.empleados.findOne(
+            {
+                where: {
+                    id_empleado : id
+                },
+                include: [{association : "Areas"},{association : "Puestos"}]
+            }
+        );
+        return busqueda;
+    },
+
+    crearUsuario: async function (area,puesto,nombre,contraseña,mail,sucursal) {
+        let creacion = await dataBaseSQL.empleados.create({
+            fk_area:    area,
+            fk_puesto:  puesto,
+            nombre:     nombre,
+            password:   contraseña,
+            mail:       mail,
+            sucursal:   sucursal
+        });
+        return creacion.dataValues;
+    },
+
+    eliminarUsuario: async function (id) {
+        await dataBaseSQL.empleados.destroy({
+            where : {id_empleado : id}
+        });
+    },
+
+    // Para Areas
+    buscarArea: async function(id) {
+        busqueda = await dataBaseSQL.areas.findOne(
+            {
+                where: {
+                    id_area : id
+                },
+            }
+        );
+        return busqueda;
+    },
+
+    crearArea: async function (nombre,power_Bi) {
+        let metrica = await dataBaseSQL.areas.create({
+            power_Bi:           power_Bi,
+            nombre_del_Area:    nombre,
+        });
+
+        return metrica.dataValues;
+    },
+
+    eliminarArea: async function (id) {
+        await dataBaseSQL.areas.destroy({
+            where : {id_area: id}
+        });
+    
+    },
+
 }
 
 

@@ -32,7 +32,7 @@ const controlador = {
                     ver:1
                 },
             });
-            res.json({erro:0,ErrorDetalle:"",objeto:proyectos});
+            res.json({error:0,ErrorDetalle:"",objeto:proyectos});
 
         }
         catch(error){
@@ -97,6 +97,7 @@ const controlador = {
             return 1;
         }
     },
+    
     /* CRUD De Tareas */
 
     // Ver tareas
@@ -155,8 +156,9 @@ const controlador = {
     // Agregar tareas 
     addTarea:  async (req,res) => { 
         try{
-            let fechaActua = new DATE ;
-            let fechaDeLaTarea = new DATE(req.body.fechaInicio);
+            let fechaDeLaTareaI = new Date(req.body.fechaInicio);
+            let fechaDeLaTareaF = new Date(req.body.fechaFinal);
+
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
@@ -168,7 +170,7 @@ const controlador = {
             if (empleadoAsignado === null){
                 res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                 return 1;
-            }else if(fechaDeLaTarea > fechaActua){
+            }else if(fechaDeLaTareaI > fechaDeLaTareaF){
                 res.json({error : 99, errorDetalle: "fecha_inicio is greater than the current"});
                 return 1;
             }else{
