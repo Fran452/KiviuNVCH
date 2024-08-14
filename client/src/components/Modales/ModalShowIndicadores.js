@@ -33,11 +33,13 @@ ChartJS.register(
 
 function ModalShowIndicadores(props) {
 
-  const { arrTresMetricas, setArrTresMetricas, indicadorID, setIndicadorID, areaSelec, loadingMet, setLoadingMet, handleShowIndicador } = useContext(DataInContext)
+  const { arrTresMetricas, setArrTresMetricas, indicadorID, setIndicadorID, areaSelec, handleShowIndicador } = useContext(DataInContext)
 
   const [arrMetrica, setArrMetrica] = useState(null)
   const [arrLabels, setArrLabels] = useState(null)
   const [formMetrica, setFormMetrica] = useState(false)
+
+  const [loadingMet, setLoadingMet] = useState(false)
 
   const [newLog, setNewLog] = useState({
     log: ""
@@ -52,20 +54,18 @@ function ModalShowIndicadores(props) {
   useEffect(() => {
     if(loadingMet){
       handleShowIndicador(indicadorID.id_indicador)
+      setLoadingMet(false)
     }
-
     let arrMet = []
     let arrLabel = []
     arrTresMetricas.forEach((e) => {
       arrMet.push(parseInt(e.dato_metrica))
       arrLabel.push((e.fecha_Metrica.slice(0,10)).replace(/-/g, '/').split("/").reverse().join("/"))
-      // arrLabel.push(new Date(e.fecha_Metrica).getDate() + "-" + (new Date(e.fecha_Metrica).getMonth()+1) + "-" + new Date(e.fecha_Metrica).getFullYear())
     })
     arrMet.reverse()
     arrLabel.reverse()
     setArrMetrica(arrMet)
     setArrLabels(arrLabel)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[arrTresMetricas, loadingMet])
 
   const handleClose = () => {
@@ -211,11 +211,9 @@ function ModalShowIndicadores(props) {
                         <div className='d-flex flex-row justify-content-between'>
                             <p className='me-2 d-flex flex-row mb-0'><i className="bi bi-calendar-event me-1"></i>
                             {(e.fecha_Metrica.slice(0,10)).replace(/-/g, '/').split("/").reverse().join("/")}
-                            {/* {new Date(e.fecha_Metrica).getDate().toString().padStart(2, "0") + "/" + (new Date(e.fecha_Metrica).getMonth()+1).toString().padStart(2, "0") + "/" + new Date(e.fecha_Metrica).getFullYear()} */}
                             </p>
                             <p className='d-flex flex-row mb-0'><i className="bi bi-clock me-1"></i>
                             {(e.fecha_Metrica.slice(11,16))}
-                            {/* {(new Date(e.fecha_Metrica).getHours()+5).toString().padStart(2, "0") + ":" + new Date(e.fecha_Metrica).getMinutes().toString().padStart(2, "0")} */}
                             </p>
                         </div>
                       </div>
