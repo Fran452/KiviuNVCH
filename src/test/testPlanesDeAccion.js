@@ -10,7 +10,7 @@ const funcionesGenericas = require("../funcionesGenerales");
 const controlador = {
     
     testGenerico: async (req,res) => {
-        
+
     },
   
     createProyecto: async (req,res) => {
@@ -241,10 +241,8 @@ const controlador = {
         let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
 
         let ahora = new Date();
-
         let fechaDeInicio = ahora.toISOString().split('T')[0];
         ahora.setDate(ahora.getDate() + 7);
-        
         let fechaDelFinal = ahora.toISOString().split('T')[0];
         let areaDeApoyo = 2;
         let usuario = {
@@ -369,14 +367,110 @@ const controlador = {
 
     readTarea: async (req,res) => {
         let resultadoTest = {}
+
+        // Armado de ambiente test
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+    
+        // Areas Usadas 
+        let area        = baseDeDatos.areas[0].id_area
+        let areaApoyo   = baseDeDatos.areas[1].id_area
+        
+        // fecha usada
+        let ahora = new Date();
+        let fechaInicio = ahora.toISOString().split('T')[0];
+        ahora.setDate(ahora.getDate() + 7);
+        let fechaFin = ahora.toISOString().split('T')[0];
+
+        // proyecto para las tareas 
+        let crearProyecto = await funcionesDeTest.crearProyecto(area,"test de prueba","test de prueba");
+        let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+
+        // tareas de ejemplo
+        let tarea1 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n1`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+        let tarea2 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n2`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',25);
+        let tarea3 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n3`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',75);
+
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewTask',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                idProyecto: proyecto.id_proyecto,
+                user:       {
+                                id:         baseDeDatos.empleados[0].id_empleado,
+                                nombre:     baseDeDatos.empleados[0].nombre,
+                                area:       baseDeDatos.empleados[0].fk_area,
+                                puesto:     baseDeDatos.empleados[0].fk_puesto,
+                                mail:       baseDeDatos.empleados[0].mail
+                            }
+            })
+        })
+        
+        let apis = await apisJSON.json();
+
+        // Sin error de apis
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        console.log(apis.error);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        };
+
+        // Mostrar primer elemento
+        let tarea1BD = apis.objeto.find(tarea => tarea.id_tarea == tarea1.id_tarea);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar primer elemento',undefined,tarea1BD,4);
+        
+        // Mostrar segundo elemento
+        let tarea2BD = apis.objeto.find(tarea => tarea.id_tarea == tarea2.id_tarea);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar segundo elemento',undefined,tarea2BD,4);
+
+        // Mostrar tercer elemento
+        let tarea3BD = apis.objeto.find(tarea => tarea.id_tarea == tarea3.id_tarea);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar tercero elemento',undefined,tarea3BD,4);
+
+        // Eliminar ejemplos
+        await funcionesDeTest.eliminarTarea(tarea1BD.id_tarea);
+        await funcionesDeTest.eliminarTarea(tarea2BD.id_tarea);
+        await funcionesDeTest.eliminarTarea(tarea3BD.id_tarea);
+        await funcionesDeTest.eliminarProyecto(proyecto.id_proyecto);
+        await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
+
+        res.json({resultadoTest,resultadoApi:apis});
     },
 
     editeTarea: async (req,res) => {
         let resultadoTest = {}
+
+        // Armado de ambiente test
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+    
+        // Areas Usadas 
+        let area        = baseDeDatos.areas[0].id_area
+        let areaApoyo   = baseDeDatos.areas[1].id_area
+        
+        // fecha usada
+        let ahora = new Date();
+        let fechaInicio = ahora.toISOString().split('T')[0];
+        ahora.setDate(ahora.getDate() + 7);
+        let fechaFin = ahora.toISOString().split('T')[0];
+
+        // proyecto para las tareas 
+        let crearProyecto = await funcionesDeTest.crearProyecto(area,"test de prueba","test de prueba");
+        let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+
+        // tareas de ejemplo
+        let tarea1 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n1`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+        
+        res.json({resultadoTest,resultadoApi:apis});
     },
 
     deleteTarea: async (req,res) => {
         let resultadoTest = {}
+
+
+        
+        res.json({resultadoTest,resultadoApi:apis});
     },
     
 

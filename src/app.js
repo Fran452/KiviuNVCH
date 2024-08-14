@@ -41,7 +41,7 @@ app.use('/',rutasMain);
 /**************** Inicio de apliacion *******//********************/
 
 app.listen(PORT, () => {
-    console.log(`Servidor en funcionamiento en el puerto ${process.env.HOST||`http://localhost:${PORT}`}`);
+    console.log(`Servidor en funcionamiento en el puerto ${process.env.HOST||`http://localhost:${PORT}`}, test en el puerto ${process.env.HOST||`http://localhost:${PORT}`}/test`);
 });
 
 /**************** Error 404 ***************************/

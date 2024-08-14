@@ -3,8 +3,9 @@ const express = require("express");
 const router = express.Router();
 const testDateIn = require("../test/testDateIn");
 const testPlanesDeAccion = require("../test/testPlanesDeAccion");
+const testIndex = require('../test/testIndex');
 
-/*router.get('/',testController.testGenerico);
+/*
 
 
 
@@ -12,7 +13,12 @@ router.post('/bi',apisHome.bi);
 router.post('/login',apisUser.loginFuction);
 
 */
-router.post('/plan-accion',testPlanesDeAccion.testGenerico);
+
+
+router.get('/',testIndex.testGenerico);
+
+
+router.get('/plan-accion',testPlanesDeAccion.testGenerico);
 
 router.get('/plan-accion/addProyect',testPlanesDeAccion.createProyecto);
 router.get('/plan-accion/viewProyect',testPlanesDeAccion.readProyecto);

@@ -121,6 +121,37 @@ let controlador = {
         return objetoTest;
     },
 
+    crarAmbienteGenerico: async function () {
+        let areas = [];
+        let empleados = [];
+
+        for(let i = 0;i<3;i++){
+            let areaCrada = await this.crearArea(`nombre del area ${i}`,'sin Power Bi');
+            
+            for(let j = 0;j < 3 ; j++){
+                let empleado = await this.crearUsuario(areaCrada.id_area,j,`Nombre del empelado ${j}`,'1234',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`,'sin interes');
+                empleados.push(empleado);
+            }
+            areas.push(areaCrada);
+        };
+
+        return {areas : areas, empleados : empleados};
+
+    },
+
+    eliminarAmbienteGenerico: async function (objeto) {
+        for(let i = 0; i< objeto.empleados.length;i++){
+            await this.eliminarUsuario(objeto.empleados[i].id_empleado);
+        };
+
+        for(let i = 0; i< objeto.areas.length;i++){
+            await this.eliminarArea(objeto.areas[i].id_area);
+        };
+        
+        
+    },
+
+
     // Para proyectos
     crearProyecto: async function(area,nombre,detalle){
         let objetoCreado = await dataBaseSQL.proyectos.create({
@@ -273,7 +304,7 @@ let controlador = {
     crearUsuario: async function (area,puesto,nombre,contraseña,mail,sucursal) {
         let creacion = await dataBaseSQL.empleados.create({
             fk_area:    area,
-            fk_puesto:  puesto,
+            fk_Puesto:  puesto,
             nombre:     nombre,
             password:   contraseña,
             mail:       mail,
