@@ -10,7 +10,10 @@ const funcionesGenericas = require("../funcionesGenerales");
 const controlador = {
     
     testGenerico: async (req,res) => {
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
 
+        await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
+        res.json(baseDeDatos);
     },
   
     createProyecto: async (req,res) => {
@@ -236,21 +239,32 @@ const controlador = {
     createTarea: async (req,res) => {
         let resultadoTest = {}
 
+        // Base de datos
+        let baseDeDatoTest = await funcionesDeTest.crarAmbienteGenerico();
+        
         // Crear proyecto de prueba
-        let crearProyecto = await funcionesDeTest.crearProyecto(1,"test de prueba","test de prueba");
+        let crearProyecto = await funcionesDeTest.crearProyecto(baseDeDatoTest.empleados[0].fk_area,"test de prueba","test de prueba");
         let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
-
+        
         let ahora = new Date();
         let fechaDeInicio = ahora.toISOString().split('T')[0];
         ahora.setDate(ahora.getDate() + 7);
         let fechaDelFinal = ahora.toISOString().split('T')[0];
-        let areaDeApoyo = 2;
+        let areaDeApoyo = baseDeDatoTest.areas[1].id_area;
         let usuario = {
-            id:     1,
-            nombre: 'Francisco Lema',
-            area:   1,
-            puesto: 2,
-            mail:   'franciscolemacr@gmail.com'
+            id:     baseDeDatoTest.empleados[0].id_empleado,
+            nombre: baseDeDatoTest.empleados[0].nombre,
+            area:   baseDeDatoTest.empleados[0].fk_area,
+            puesto: baseDeDatoTest.empleados[0].fk_puesto,
+            mail:   baseDeDatoTest.empleados[0].mail
+        };
+
+        let usuario2 = {
+            id:     baseDeDatoTest.empleados[4].id_empleado,
+            nombre: baseDeDatoTest.empleados[4].nombre,
+            area:   baseDeDatoTest.empleados[4].fk_area,
+            puesto: baseDeDatoTest.empleados[4].fk_puesto,
+            mail:   baseDeDatoTest.empleados[4].mail
         };
 
         let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
@@ -259,7 +273,7 @@ const controlador = {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                empleado_asignado:  'franciscolemacr@gmail.com',
+                empleado_asignado:  usuario.mail,
                 fechaInicio:        fechaDeInicio,
                 fechaFinal:         fechaDelFinal,
                 nombre:             'Tarea de prueba',
@@ -336,7 +350,7 @@ const controlador = {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                empleado_asignado:  'franciscolemacr@gmail.com',
+                empleado_asignado:  usuario.mail,
                 fechaInicio:        fechaDeInicio,
                 fechaFinal:         fechaDeFinalError,
                 nombre:             'Tarea de prueba',
@@ -355,11 +369,37 @@ const controlador = {
 
         resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal','fecha_inicio is greater than the current',apisError2.errorDetalle,1);
         
+        // Error de usuario no existente
+        let apisError3JSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                empleado_asignado:  usuario2.mail,
+                fechaInicio:        fechaDeInicio,
+                fechaFinal:         fechaDelFinal,
+                nombre:             'Tarea de prueba',
+                estado:             1,
+                prioridad:          1,    
+                notas:              'Tarea de prueba para hacer los test',
+                areaApoyo:          areaDeApoyo,    
+                progreso:           0,    
+                idProyecto:         proyecto.id_proyecto,     
+                user:               usuario
+            })
+        });
+
+        let apisError3 = await apisError3JSON.json();
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de mail',99,apisError3.error,1);
+
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de usuario de otra area','Usuario indicado no perteneciente al area',apisError3.errorDetalle,1);
+        
 
         // eliminar ejemplo
         await funcionesDeTest.eliminarTarea(tareaEjemplo.id_tarea);    
-
         await funcionesDeTest.eliminarProyecto(crearProyecto.id_proyecto);
+        await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatoTest);
 
         res.json({resultadoTest,resultadoApi:apis});
 
@@ -411,7 +451,6 @@ const controlador = {
 
         // Sin error de apis
         resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
-        console.log(apis.error);
         if(resultadoTest.test0.estado == 'Error'){
             res.json({resultadoTest,resultadoApi:apis});
             return 1;
@@ -446,8 +485,10 @@ const controlador = {
         let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
     
         // Areas Usadas 
-        let area        = baseDeDatos.areas[0].id_area
-        let areaApoyo   = baseDeDatos.areas[1].id_area
+        let area        = baseDeDatos.areas[0].id_area;
+        let areaApoyo   = baseDeDatos.areas[1].id_area;
+        let empleado1   = baseDeDatos.usuario[0];
+        let empleado2   = baseDeDatos.usuario[0];
         
         // fecha usada
         let ahora = new Date();
@@ -460,16 +501,72 @@ const controlador = {
         let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
 
         // tareas de ejemplo
-        let tarea1 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n1`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+        let tareaAntes = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `tarea de prueba`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
         
+        let apisJSON = await fetch('http://localhost:3030/apis/',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                tarea             :  tareaAntes,
+                empleado_asignado : empleado1.id_empleado,             
+                nombre            : 'tarea de prueba editado', 
+                estado            : 0, 
+                prioridad         : 0,     
+                fechaInicio       : fechaInicio,     
+                fechaFinal        : fechaFin,     
+                notas             : 'cambiando la nota', 
+                areaApoyo         : areaApoyo,     
+                progreso          : 40,     
+                idProyecto        : proyecto.id_proyecto,     
+                user              : {
+                                        id:     empleado1.id_empleado,
+                                        nombre: empleado1.nombre,
+                                        area:   empleado1.fk_area,
+                                        puesto: empleado1.fk_puesto,
+                                        mail:   empleado1.mail
+                                    }
+            })
+        })
+        
+        let apis = await apisJSON.json();
+        // Sin error de apis
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        };
+
+        let tareaDespues = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `tarea de prueba`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+        
+
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Cambio de la tarea de forma correcta','tarea de prueba',apis.error,1);
+
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Diferencia con la tarea origianl',0,apis.error,1);
+        
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'texto de pruebas para tareas',0,apis.error,1);
+
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Diferencia entre texto antes y despues de edicion',0,apis.error,1);
+
+        
+        
+
+        // Eliminar ejemplos
+        await funcionesDeTest.eliminarTarea(tarea1.id_tarea);
+        await funcionesDeTest.eliminarProyecto(proyecto.id_proyecto);
+        await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);    
+
         res.json({resultadoTest,resultadoApi:apis});
+
     },
 
     deleteTarea: async (req,res) => {
         let resultadoTest = {}
 
 
-        
+
         res.json({resultadoTest,resultadoApi:apis});
     },
     
@@ -491,5 +588,13 @@ let apisJSON = await fetch('http://localhost:3030/apis/',{
 })
 
 let apis = await apisJSON.json();
+
+// Sin error de apis
+resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+console.log(apis.error);
+if(resultadoTest.test0.estado == 'Error'){
+    res.json({resultadoTest,resultadoApi:apis});
+    return 1;
+};
 
 */

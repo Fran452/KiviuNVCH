@@ -120,32 +120,46 @@ let controlador = {
         }
         return objetoTest;
     },
-
+/**
+ * 
+ * @returns array
+ * {
+ *   area : datos de area,
+ *   empleados : [empleados]
+ * }
+ */
     crarAmbienteGenerico: async function () {
-        let areas = [];
-        let empleados = [];
-
+        let baseDeDatos = [];
+        
         for(let i = 0;i<3;i++){
+            let objeto = {}
             let areaCrada = await this.crearArea(`nombre del area ${i}`,'sin Power Bi');
-            
+            let empleados = []
             for(let j = 0;j < 3 ; j++){
+                
                 let empleado = await this.crearUsuario(areaCrada.id_area,j,`Nombre del empelado ${j}`,'1234',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`,'sin interes');
                 empleados.push(empleado);
             }
-            areas.push(areaCrada);
-        };
 
-        return {areas : areas, empleados : empleados};
+            objeto = {
+                area : areaCrada,
+                empleados : empleados
+            }
+
+            baseDeDatos.push(objeto);
+        };
+        console.log(baseDeDatos);
+        return baseDeDatos;
 
     },
 
     eliminarAmbienteGenerico: async function (objeto) {
-        for(let i = 0; i< objeto.empleados.length;i++){
-            await this.eliminarUsuario(objeto.empleados[i].id_empleado);
-        };
-
-        for(let i = 0; i< objeto.areas.length;i++){
-            await this.eliminarArea(objeto.areas[i].id_area);
+        
+        for(let i = 0; i < objeto.length;i++){
+            for(let j = 0; j < objeto[i].empleados.length;j++){
+                await this.eliminarUsuario(objeto[i].empleados[j].id_empleado);
+            };
+            await this.eliminarArea(objeto[i].area.id_area);
         };
         
         

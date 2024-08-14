@@ -153,7 +153,21 @@ const controlador = {
         }
     },    
 
-    // Agregar tareas 
+    // Agregar tareas
+    /*
+    Estados:
+        0
+        1
+        2
+        3
+    Prioridad
+        0
+        1
+        2
+        3
+        4
+
+    */ 
     addTarea:  async (req,res) => { 
         try{
             let fechaDeLaTareaI = new Date(req.body.fechaInicio);
@@ -167,9 +181,12 @@ const controlador = {
                 }
             );
 
-            if (empleadoAsignado === null){
+            if(empleadoAsignado === null){
                 res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                 return 1;
+            }else if(empleadoAsignado.fk_area != req.body.user.area){
+                res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area"});
+                return 1
             }else if(fechaDeLaTareaI > fechaDeLaTareaF){
                 res.json({error : 99, errorDetalle: "fecha_inicio is greater than the current"});
                 return 1;
@@ -203,7 +220,7 @@ const controlador = {
     modTarea: async (req,res) => { 
         try{
             let empleadoAsignado;
-            if(req.body.empleado_asignado){
+            if(req.body.empleado_asignado != req.body.tarea.Empleado.mail){
                 empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
@@ -211,13 +228,17 @@ const controlador = {
                         },
                     }
                 );
+                if(empleadoAsignado === null){
+                    res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
+                    return 1;
+                }
             }else{
-                empleadoAsignado = req.body.tarea.fk_empleado_asignado;
+                empleadoAsignado = req.body.tarea.Empleado;
             }
 
             let tareaModificada = await dataBaseSQL.tareas.update({
                 fk_empleado_asignado : empleadoAsignado.id_empleado,
-                fk_area : req.body.user.area,
+                //fk_area : req.body.user.area,
                 nombre : req.body.nombre,
                 estado : req.body.estado,
                 prioridad : req.body.prioridad,
@@ -225,14 +246,15 @@ const controlador = {
                 fecha_final : req.body.fechaFinal,
                 notas : req.body.notas,
                 fk_area_apoyo: req.body.areaApoyo,
-                progreso:req.body.progreso,
-                fk_proyecto: req.body.idProyecto
+                //fk_proyecto: req.body.idProyecto,
+                progreso:req.body.progreso
             },{
                 where:{
                     id_tarea : req.body.idTarea
                 }
             });
             res.json({error: 0, errorDetalle:"",objeto:tareaModificada});
+            
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
