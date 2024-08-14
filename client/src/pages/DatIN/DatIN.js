@@ -4,6 +4,7 @@ import FormDatIn from '../../components/FormDatIN/FormDatIn'
 import './DatIN.scss'
 import { jwtDecode } from "jwt-decode"
 import { Oval } from 'react-loader-spinner'
+import { Modal } from 'react-bootstrap';
 import IllustrationAccess from "../../assets/img/access.png"
 import ModalShowIndicadores from '../../components/Modales/ModalShowIndicadores'
 
@@ -16,6 +17,9 @@ function DatIN() {
   const [arrTresMetricas, setArrTresMetricas] = useState([])
   const [indicadorID, setIndicadorID] = useState({})
   const [areaSelec, setAreaSelec] = useState(null)
+
+  const [modalDeleteIndicador, setModalDeleteIndicador] = useState(false)
+  const [idIndicador, setIdIndicador] = useState(null)
  
 
   const auth = localStorage.getItem("token")
@@ -83,11 +87,66 @@ function DatIN() {
     }
   }
 
+  const handleEditIndicador = () => {
+    console.log("editar")
+  }
+
+  // ELIMINAR INDICADOR
+  const showModalDeleteIndicador = (i) => {
+    setIdIndicador(i)
+    setModalDeleteIndicador(true)
+  }
+
+  const handleDeleteIndicador = async () => {
+    const obj = {
+      idIndicador: parseInt(idIndicador)
+    }
+    try {
+      const res = await fetch("http://localhost:3030/apis/dateIn/deleteIndicador", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(obj)
+      })
+      const data = await res.json()
+      if(data.error !== 0){
+        console.log(data.errorDetalle)
+      } else {
+        setModalDeleteIndicador(false)
+        fetchIndicadores()
+        .then(res => {
+          if(res.error !== 0){
+            setLoading(false)
+            setError(res.errorDetalle)
+          } else {
+            setLoading(false)
+            setIndicadores(res.objeto)
+          }
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    } 
+  }
+
   return (
     <>
       <DataInContext.Provider value={{ arrTresMetricas, setArrTresMetricas, indicadorID, setIndicadorID, areaSelec, handleShowIndicador }}>
         <ModalShowIndicadores show={modalIndicador} onHide={()=>setModalIndicador(false)} />
       </DataInContext.Provider>
+      {/* Modal Eliminar Indicador */}
+      <Modal className='modal__delete__proyecto' show={modalDeleteIndicador} onHide={() => setModalDeleteIndicador(false)} backdrop="static" centered>
+        <Modal.Header closeButton>
+          <Modal.Title><h3>Eliminar proyecto</h3></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>¿Está seguro de eliminar este proyecto?</Modal.Body>
+        <Modal.Footer>
+          <button className='btn btn-secondary rounded-pill' onClick={() => setModalDeleteIndicador(false)}>Cancelar</button>
+          <button className='btn btn-danger rounded-pill' onClick={handleDeleteIndicador}>Borrar</button>
+        </Modal.Footer>
+      </Modal>
+      {/* Fin Modal Eliminar Indicador */}
       <div className='datin section'>
         <div className='section__header d-flex flex-row align-items-end mb-4'>
           <i className='bi bi-bar-chart-fill me-2'></i>
@@ -143,18 +202,24 @@ function DatIN() {
                     ) : (
                       <div className='datin__main position-relative'>
                         {indicadores.map((e,i) => {
-                          return <div key={i} onClick={()=>handleShowIndicador(e.id_indicador)} className='datin__main__indicador d-flex flex-column justify-content-between shadow-sm rounded-3'>
-                              <div className='p-3'>
-                                <p className='mb-1'>{e.Areas.nombre_del_Area}</p>
-                                <h4 className='mb-0'>{e.nombre_indicador}</h4>
-                              </div>
-                              <div className='datin__main__indicador__fecha px-3 py-2 d-flex flex-row rounded-bottom-3 align-items-center justify-content-between'>
-                                <p className='text-white mb-0'>{e.Empleados.nombre}</p>
-                                <div className='d-flex flex-row text-white align-items-center'>
-                                  <i className="bi bi-calendar-event me-1"></i>
-                                  <p className='mb-0'>{new Date(e.fecha_del_recodatorio.replace(/-/g, '/')).toLocaleDateString()}</p>
+                          return <div className='datin__main__container'>
+                              <div key={i} onClick={()=>handleShowIndicador(e.id_indicador)} className='datin__main__indicador d-flex flex-column justify-content-between shadow-sm rounded-3'>
+                                <div className='p-3'>
+                                  <p className='mb-1'>{e.Areas.nombre_del_Area}</p>
+                                  <h4 className='mb-0'>{e.nombre_indicador}</h4>
+                                </div>
+                                <div className='datin__main__indicador__fecha px-3 py-2 d-flex flex-row rounded-bottom-3 align-items-center justify-content-between'>
+                                  <p className='text-white mb-0'>{e.Empleados.nombre}</p>
+                                  <div className='d-flex flex-row text-white align-items-center'>
+                                    <i className="bi bi-calendar-event me-1"></i>
+                                    <p className='mb-0'>{new Date(e.fecha_del_recodatorio.replace(/-/g, '/')).toLocaleDateString()}</p>
+                                  </div>
                                 </div>
                               </div>
+                              <div className='datin__main__container__buttons p-3 active'>
+                                  <button onClick={handleEditIndicador} className='btn__edit btn bg-success rounded-circle mb-2 text-white' ><i className="bi bi-pencil"></i></button>
+                                  <button onClick={()=>showModalDeleteIndicador(e.id_indicador)} className='btn__delete btn bg-danger rounded-circle text-white' ><i className="bi bi-trash3"></i></button>
+                                </div>
                             </div>
                         })}
                         <button className='position-absolute bottom-0 end-0 btn__addIndicador btn btn-primary rounded-pill shadow-sm fw-medium' 

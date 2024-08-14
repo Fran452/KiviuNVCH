@@ -28,8 +28,8 @@ router.post('/login',apisUser.loginFuction);
 router.post('/dateIn',apisDateIn.viewIndicadores);
 
 router.post('/dateIn/newIndicador',apisDateIn.newindicador);
-router.post('/dateIn/editIndicador',apisDateIn.editIndicadores);
-router.post('/dateIn/deleteIndicador',apisDateIn.deleteIndicadores);
+router.put('/dateIn/editIndicador',apisDateIn.editIndicadores);
+router.put('/dateIn/deleteIndicador',apisDateIn.deleteIndicadores);
 
 router.post('/dateIn/newMetrica',apisDateIn.newMetrica);
 router.post('/dateIn/editMegrica',apisDateIn.editMetrica);

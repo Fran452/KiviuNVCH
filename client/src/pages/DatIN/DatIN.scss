@@ -59,10 +59,32 @@
         column-gap: 20px;
         row-gap: 20px;
 
-        &__indicador {
+        &__container {
             cursor: pointer;
             height: 150px;
+            position: relative;
 
+            &__buttons {
+                display: none;
+                position: absolute;
+                flex-direction: column;
+                top: 0;
+                right: 0;
+
+                button {
+                    width: 36px;
+                    height: 36px;
+                    padding: 0;
+                }
+            }
+        }
+
+        &__container:hover .active {
+            display: flex;
+        }
+
+        &__indicador {
+            height: 100%;
             p {
                 font-size: 14px;
             }
