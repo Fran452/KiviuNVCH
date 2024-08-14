@@ -7,6 +7,7 @@ import { Oval } from 'react-loader-spinner'
 import { Modal } from 'react-bootstrap';
 import IllustrationAccess from "../../assets/img/access.png"
 import ModalShowIndicadores from '../../components/Modales/ModalShowIndicadores'
+import ModalEditIndicador from '../../components/Modales/ModalEditIndicador';
 
 function DatIN() {
   const [loading, setLoading] = useState(true)
@@ -15,10 +16,14 @@ function DatIN() {
   const [addIndicador, setAddIndicador] = useState(false)
   const [modalIndicador, setModalIndicador] = useState(false)
   const [arrTresMetricas, setArrTresMetricas] = useState([])
+  
   const [indicadorID, setIndicadorID] = useState({})
+  const [editIndicador, setEditIndicador] = useState(null)
   const [areaSelec, setAreaSelec] = useState(null)
-
+  
+  const [ModalEditInd, setModalEditInd] = useState(false)
   const [modalDeleteIndicador, setModalDeleteIndicador] = useState(false)
+
   const [idIndicador, setIdIndicador] = useState(null)
  
 
@@ -87,8 +92,10 @@ function DatIN() {
     }
   }
 
-  const handleEditIndicador = () => {
-    console.log("editar")
+  const handleEditIndicador = (id) => {
+    const obj = indicadores.find(e => e.id_indicador === id)
+    setEditIndicador(JSON.stringify(obj))
+    setModalEditInd(true)
   }
 
   // ELIMINAR INDICADOR
@@ -114,6 +121,7 @@ function DatIN() {
         console.log(data.errorDetalle)
       } else {
         setModalDeleteIndicador(false)
+        setLoading(true)
         fetchIndicadores()
         .then(res => {
           if(res.error !== 0){
@@ -132,8 +140,9 @@ function DatIN() {
 
   return (
     <>
-      <DataInContext.Provider value={{ arrTresMetricas, setArrTresMetricas, indicadorID, setIndicadorID, areaSelec, handleShowIndicador }}>
+      <DataInContext.Provider value={{ arrTresMetricas, setArrTresMetricas, indicadorID, setIndicadorID, areaSelec, editIndicador, handleShowIndicador, setLoading, fetchIndicadores, setError, setIndicadores }}>
         <ModalShowIndicadores show={modalIndicador} onHide={()=>setModalIndicador(false)} />
+        <ModalEditIndicador show={ModalEditInd} onHide={()=>setModalEditInd(false)} />
       </DataInContext.Provider>
       {/* Modal Eliminar Indicador */}
       <Modal className='modal__delete__proyecto' show={modalDeleteIndicador} onHide={() => setModalDeleteIndicador(false)} backdrop="static" centered>
@@ -202,8 +211,8 @@ function DatIN() {
                     ) : (
                       <div className='datin__main position-relative'>
                         {indicadores.map((e,i) => {
-                          return <div className='datin__main__container'>
-                              <div key={i} onClick={()=>handleShowIndicador(e.id_indicador)} className='datin__main__indicador d-flex flex-column justify-content-between shadow-sm rounded-3'>
+                          return <div key={i} className='datin__main__container'>
+                              <div onClick={()=>handleShowIndicador(e.id_indicador)} className='datin__main__indicador d-flex flex-column justify-content-between shadow-sm rounded-3 border border-light-subtle'>
                                 <div className='p-3'>
                                   <p className='mb-1'>{e.Areas.nombre_del_Area}</p>
                                   <h4 className='mb-0'>{e.nombre_indicador}</h4>
@@ -217,7 +226,7 @@ function DatIN() {
                                 </div>
                               </div>
                               <div className='datin__main__container__buttons p-3 active'>
-                                  <button onClick={handleEditIndicador} className='btn__edit btn bg-success rounded-circle mb-2 text-white' ><i className="bi bi-pencil"></i></button>
+                                  <button onClick={()=>handleEditIndicador(e.id_indicador)} className='btn__edit btn bg-success rounded-circle mb-2 text-white' ><i className="bi bi-pencil"></i></button>
                                   <button onClick={()=>showModalDeleteIndicador(e.id_indicador)} className='btn__delete btn bg-danger rounded-circle text-white' ><i className="bi bi-trash3"></i></button>
                                 </div>
                             </div>
