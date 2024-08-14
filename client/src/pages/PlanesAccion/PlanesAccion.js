@@ -80,7 +80,7 @@ function PlanesAccion() {
 
     const fetchTareasById = async(id) => {
         try {
-            const res = await fetch("http://localhost:3030/apis/plan-accion", {
+            const res = await fetch("http://localhost:3030/apis/plan-accion/viewTask", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json"

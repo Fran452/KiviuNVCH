@@ -12,7 +12,7 @@ router.get('/index',apisHome.index);
 router.post('/bi',apisHome.bi);
 
 
-router.post('/plan-accion',apisPlanDeAccion.viewTareas);
+router.post('/plan-accion/viewTask',apisPlanDeAccion.viewTareas);
 router.post('/plan-accion/addTask',apisPlanDeAccion.addTarea);
 router.put('/plan-accion/modTask',apisPlanDeAccion.modTarea);
 router.put('/plan-accion/deleteTask',apisPlanDeAccion.deleteTarea);

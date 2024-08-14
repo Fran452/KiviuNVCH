@@ -202,6 +202,7 @@ function FormDatIn({addIndicador, setAddIndicador, fetchIndicadores, setLoading,
                             currentStep={currentStep}
                             setCurrentStep={setCurrentStep}
                             steps={steps}
+                            setAddIndicador={setAddIndicador}
                         />
                     </div>
                 </div>

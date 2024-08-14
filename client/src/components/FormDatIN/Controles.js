@@ -1,21 +1,25 @@
 import React from 'react'
 import './Controles.scss'
 
-function Controles({ handleClick, currentStep, steps, handleSendData, setCurrentStep }) {
+function Controles({ handleClick, currentStep, steps, handleSendData, setCurrentStep, setAddIndicador }) {
+
   const handleSendForm = () => {
     handleSendData()
     setCurrentStep(4)
   }
+
+  const backListado = () => {
+    setAddIndicador(false)
+  }
+
   return (
     <>
       {currentStep < 4 ? (
         <div className='controles d-flex flex-row justify-content-between'>
           <button 
-            onClick={()=>handleClick()}
-            className={
-              `controles__back btn btn-outline-primary rounded-pill shadow-sm fw-medium px-4
-              ${currentStep === 1 ? "active" : ""}`}>
-              Anterior
+            onClick={currentStep === 1 ? ()=>backListado() : ()=>handleClick()}
+            className='controles__back btn btn-outline-primary rounded-pill shadow-sm fw-medium px-4'>
+              {currentStep === 1 ? "Regresar al listado" : "Anterior"}
           </button>
           <button 
             onClick={currentStep === steps.length-1 ? handleSendForm : ()=>handleClick("next")}

@@ -39,7 +39,8 @@ function ModalShowIndicadores(props) {
     let arrLabel = []
     arrTresMetricas.forEach((e) => {
       arrMet.push(parseInt(e.dato_metrica))
-      arrLabel.push(new Date(e.fecha_Metrica).getDate() + "-" + (new Date(e.fecha_Metrica).getMonth()+1) + "-" + new Date(e.fecha_Metrica).getFullYear())
+      arrLabel.push((e.fecha_Metrica.slice(0,10)).replace(/-/g, '/').split("/").reverse().join("/"))
+      // arrLabel.push(new Date(e.fecha_Metrica).getDate() + "-" + (new Date(e.fecha_Metrica).getMonth()+1) + "-" + new Date(e.fecha_Metrica).getFullYear())
     })
     arrMet.reverse()
     arrLabel.reverse()
@@ -104,12 +105,14 @@ function ModalShowIndicadores(props) {
                           <p className='mb-0'>{e.Empleados.nombre}</p>
                       </div>
                       <p className='d-flex flex-row mb-0'><i className='bi bi-bar-chart-fill me-2'></i>{e.dato_metrica}</p>
-                      <div className='d-flex flex-row'>
+                      <div className='d-flex flex-row justify-content-between'>
                           <p className='me-2 d-flex flex-row mb-0'><i className="bi bi-calendar-event me-1"></i>
-                          {new Date(e.fecha_Metrica).getDate() + "-" + (new Date(e.fecha_Metrica).getMonth()+1) + "-" + new Date(e.fecha_Metrica).getFullYear()}
+                          {(e.fecha_Metrica.slice(0,10)).replace(/-/g, '/').split("/").reverse().join("/")}
+                          {/* {new Date(e.fecha_Metrica).getDate().toString().padStart(2, "0") + "/" + (new Date(e.fecha_Metrica).getMonth()+1).toString().padStart(2, "0") + "/" + new Date(e.fecha_Metrica).getFullYear()} */}
                           </p>
                           <p className='d-flex flex-row mb-0'><i className="bi bi-clock me-1"></i>
-                          {new Date(e.fecha_Metrica).getHours() + "-" + new Date(e.fecha_Metrica).getMinutes() + "-" + new Date(e.fecha_Metrica).getSeconds()}
+                          {(e.fecha_Metrica.slice(11,16))}
+                          {/* {(new Date(e.fecha_Metrica).getHours()+5).toString().padStart(2, "0") + ":" + new Date(e.fecha_Metrica).getMinutes().toString().padStart(2, "0")} */}
                           </p>
                       </div>
                     </div>
