@@ -15,6 +15,8 @@ function DatIN() {
   const [modalIndicador, setModalIndicador] = useState(false)
   const [arrTresMetricas, setArrTresMetricas] = useState([])
   const [indicadorID, setIndicadorID] = useState({})
+  const [areaSelec, setAreaSelec] = useState(null)
+  const [loadingMet, setLoadingMet] = useState(true)
 
   const auth = localStorage.getItem("token")
   const jwtParse = jwtDecode(auth)
@@ -61,6 +63,7 @@ function DatIN() {
 
   const handleShowIndicador = async (id) => {
     try {
+      setModalIndicador(true)
       const res = await fetch("http://localhost:3030/apis/dateIn/ultimas3Metricas", {
         method: "POST",
         headers: {
@@ -74,15 +77,16 @@ function DatIN() {
       setArrTresMetricas(data.objeto)
       const obj = indicadores.find(e => e.id_indicador === id)
       setIndicadorID(obj)
+      setAreaSelec(obj.Areas.nombre_del_Area)
+      setLoadingMet(false)
     } catch (error) {
       console.log(error)
     }
-    setModalIndicador(true)
   }
 
   return (
     <>
-      <DataInContext.Provider value={{ arrTresMetricas, setArrTresMetricas, indicadorID, setIndicadorID }}>
+      <DataInContext.Provider value={{ arrTresMetricas, setArrTresMetricas, indicadorID, setIndicadorID, areaSelec, loadingMet, setLoadingMet, handleShowIndicador }}>
         <ModalShowIndicadores show={modalIndicador} onHide={()=>setModalIndicador(false)} />
       </DataInContext.Provider>
       <div className='datin section'>

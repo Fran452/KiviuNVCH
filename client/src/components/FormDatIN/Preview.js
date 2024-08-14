@@ -27,36 +27,6 @@ ChartJS.register(
   Legend
 )
 
-const lastThree = [
-  {
-    fk_indicador: 1,
-    dato_metrica: "7",
-    fecha_Metrica: "2024-07-01",
-    hora_Metrica: "13:24:12",
-    log_de_usuario: {
-      nombre: "Carlos Gutiérrez"
-    }
-  },
-  {
-    fk_indicador: 1,
-    dato_metrica: "5",
-    fecha_Metrica: "2024-06-01",
-    hora_Metrica: "14:32:45",
-    log_de_usuario: {
-      nombre: "Alessia Ramos"
-    }
-  },
-  {
-    fk_indicador: 1,
-    dato_metrica: "3",
-    fecha_Metrica: "2024-05-01",
-    hora_Metrica: "12:40:15",
-    log_de_usuario: {
-      nombre: "Richard Dawson"
-    }
-  }
-]
-
 function Preview() {
   const { userData, logData } = useContext(PasosContext)
   const [arrMetrica, setArrMetrica] = useState(null)
