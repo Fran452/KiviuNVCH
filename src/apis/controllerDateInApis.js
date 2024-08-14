@@ -201,16 +201,30 @@ const controlador = {
     newMetrica: async (req,res) => {
         try{
             const ahora = new Date();
-            const fechaFormateada = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, '0')}-${String(ahora.getDate()).padStart(2, '0')}`;  
-            const horaFormateada = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
-
             let metrica = await dataBaseSQL.metricas.create({
                 fk_indicador:   req.body.fk_indicador,
                 dato_metrica:   req.body.dato_metrica,
-                fecha_Metrica:  fechaFormateada,
-                hora_Metrica:   horaFormateada,
+                fecha_Metrica:  ahora,
                 log_de_usuario: req.body.user.id
             });
+
+            let indicadorDeLaMetrica = await dataBaseSQL.indicadores.findOne({
+                where:{
+                    id_indicador: req.body.fk_indicador
+                }
+            });
+
+            let fechaActual = new Date();
+            let fechaRecordatorio = funcionesGenericas.generarRecordatorio(fechaActual,indicadorDeLaMetrica.dataValues.tipo_recordartorio); 
+            
+            let indicadorModificado = await dataBaseSQL.indicadores.update({
+                fecha_del_recodatorio:  fechaRecordatorio,
+            },{
+                where:{
+                    id_indicador : req.body.fk_indicador
+                }
+            });
+            
             res.json({error :0, errorDetalle: "", objeto:metrica});
             return 0;
         }

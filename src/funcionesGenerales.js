@@ -71,11 +71,11 @@ function asignarColor(fecha){
 	let resultadoDia = fechaEnviada.getDate() - fechaActual.getDate();
 	
 	if(resultadoAño < 0 || resultadoMes < 0 || resultadoDia < 0 ){
-		return "rojo"
+		return '#DC3545'
 	}else if(resultadoAño == 2 || resultadoMes == 2 || resultadoDia < 2){
-		return "Azul"
+		return '#17A2B8'
 	}else{	
-		return "Verde"
+		return "#28A745"
 	}
 }
 module.exports = {archivoJSON, subirArchivo, crearID,armadoCodigoDeError,generarRecordatorio,asignarColor}
