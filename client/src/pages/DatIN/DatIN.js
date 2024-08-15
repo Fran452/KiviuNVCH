@@ -215,9 +215,9 @@ function DatIN() {
                               <div onClick={()=>handleShowIndicador(e.id_indicador)} className='datin__main__indicador d-flex flex-column justify-content-between shadow-sm rounded-3 border border-light-subtle'>
                                 <div className='p-3'>
                                   <p className='mb-1'>{e.Areas.nombre_del_Area}</p>
-                                  <h4 className='mb-0'>{e.nombre_indicador}</h4>
+                                  <h4 style={{color:e.color}} className='mb-0'>{e.nombre_indicador}</h4>
                                 </div>
-                                <div className='datin__main__indicador__fecha px-3 py-2 d-flex flex-row rounded-bottom-3 align-items-center justify-content-between'>
+                                <div style={{backgroundColor:e.color}} className='datin__main__indicador__fecha px-3 py-2 d-flex flex-row rounded-bottom-3 align-items-center justify-content-between'>
                                   <p className='text-white mb-0'>{e.Empleados.nombre}</p>
                                   <div className='d-flex flex-row text-white align-items-center'>
                                     <i className="bi bi-calendar-event me-1"></i>

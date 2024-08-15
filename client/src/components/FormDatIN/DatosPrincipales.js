@@ -1,8 +1,17 @@
 import React, { useContext } from 'react'
 import { PasosContext } from '../../context/PasosContext'
 
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+
 function DatosPrincipales() {
   const { userData, setUserData, errorsDatos } = useContext(PasosContext)
+
+  const Icono = ({ id, children, title }) => (
+    <OverlayTrigger overlay={<Tooltip id={id}>{title}</Tooltip>}>
+      {children}
+    </OverlayTrigger>
+  );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,8 +27,13 @@ function DatosPrincipales() {
       <div className='form__datos'>
         {/* Area o proyecto */}
         <div className='d-flex flex-column flex-md-row align-items-center mb-2'>
-          <label className='me-1 col-12 col-md-3 col-form-label'>Área o proyecto</label>
-          <div className='d-flex flex-column col-12 col-md-9'>
+          <div className='col-12 col-md-4 d-flex flex-row align-items-center me-1'>
+            <label className='me-1 col-form-label'>Área o proyecto</label>
+            <Icono title="Designe el indicador a un área o proyecto." id="1">
+              <i className="icon__dato bi bi-info-circle"></i>
+            </Icono>
+          </div>
+          <div className='d-flex flex-column col-12 col-md-8'>
             <input
               onChange={handleChange}
               type="text"  
@@ -33,8 +47,13 @@ function DatosPrincipales() {
         </div>
         {/* Nombre del indicador */}
         <div className='d-flex flex-column flex-md-row align-items-center mb-2'>
-          <label className='me-1 col-12 col-md-3 col-form-label'>Nombre del indicador</label>
-          <div className='d-flex flex-column col-12 col-md-9'>
+          <div className='col-12 col-md-4 d-flex flex-row align-items-center me-1'>
+            <label className='me-1 col-form-label'>Nombre del indicador</label>
+            <Icono title="Ingrese el nombre del indicador." id="2">
+              <i className="icon__dato bi bi-info-circle"></i>
+            </Icono>
+          </div>
+          <div className='d-flex flex-column col-12 col-md-8'>
             <input
               onChange={handleChange}
               type="text"  
@@ -47,8 +66,13 @@ function DatosPrincipales() {
         </div>
         {/* Descripción del indicador */}
         <div className='d-flex flex-column flex-md-row align-items-center mb-2'>
-          <label className='me-1 col-12 col-md-3 col-form-label'>Descripción del indicador</label>
-          <div className='d-flex flex-column col-12 col-md-9'>
+          <div className='col-12 col-md-4 d-flex flex-row align-items-center me-1'>
+            <label className='me-1 col-form-label'>Descripción del indicador</label>
+            <Icono title="Ingrese la descripción del indicador." id="3">
+              <i className="icon__dato bi bi-info-circle"></i>
+            </Icono>
+          </div>
+          <div className='d-flex flex-column col-12 col-md-8'>
             <input
               onChange={handleChange}
               type="text"  
@@ -61,7 +85,12 @@ function DatosPrincipales() {
         </div>
         {/* Frecuencia de carga */}
         <div className="d-flex flex-column flex-md-row align-items-center mb-2">
-          <label className='me-1 col-12 col-md-3 col-form-label'>Frecuencia</label>
+          <div className='col-12 col-md-4 d-flex flex-row align-items-center me-1'>
+            <label className='me-1 col-form-label'>Frecuencia</label>
+            <Icono title="Seleccione la frecuencia con la que se deben cargar los datos de este KPI (Semanal, Quincenal, Mensual, Trimestral)." id="4">
+              <i className="icon__dato bi bi-info-circle"></i>
+            </Icono>
+          </div>
           <div className='d-flex flex-column col-12 col-md-3'>
             <select 
               className="form-select form-select-sm" 
@@ -80,8 +109,13 @@ function DatosPrincipales() {
         </div>
         {/* Email del responsable */}
         <div className='d-flex flex-column flex-md-row align-items-center mb-2'>
-          <label className='me-1 col-12 col-md-3 col-form-label'>Responsable</label>
-          <div className='d-flex flex-column col-12 col-md-9'>
+          <div className='col-12 col-md-4 d-flex flex-row align-items-center me-1'>
+            <label className='me-1 col-form-label'>Responsable</label>
+            <Icono title="Ingrese el correo electrónico del responsable." id="5">
+              <i className="icon__dato bi bi-info-circle"></i>
+            </Icono>
+          </div>
+          <div className='d-flex flex-column col-12 col-md-8'>
             <input
               onChange={handleChange}
               type="email"  
@@ -95,8 +129,13 @@ function DatosPrincipales() {
         </div>
         {/* Email del suplente */}
         <div className='d-flex flex-column flex-md-row align-items-center mb-2'>
-          <label className='me-1 col-12 col-md-3 col-form-label'>Responsable suplente</label>
-          <div className='d-flex flex-column col-12 col-md-9'>
+          <div className='col-12 col-md-4 d-flex flex-row align-items-center me-1'>
+            <label className='me-1 col-form-label'>Responsable suplente</label>
+            <Icono title="Ingrese el correo electrónico del responsable suplente." id="6">
+              <i className="icon__dato bi bi-info-circle"></i>
+            </Icono>
+          </div>
+          <div className='d-flex flex-column col-12 col-md-8'>
             <input
               onChange={handleChange}
               type="email"  

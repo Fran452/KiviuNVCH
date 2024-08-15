@@ -18,14 +18,14 @@ function IngresarLog() {
       <div className='form__log'>
         {/* Log (métrica) */}
         <div className='d-flex flex-column flex-md-row align-items-center mb-2'>
-          <label className='me-1 col-12 col-md-3 col-form-label'>Ingresar el valor</label>
+          <label className='me-1 col-12 col-md-3 col-form-label'>Ingresa el valor:</label>
           <div className='d-flex flex-column col-12 col-md-9'>
             <input
               onChange={handleChange}
               type="number"  
               name="log" 
               autoFocus
-              className="form-control form-control-sm"
+              className="input--arrows form-control form-control-sm"
               value={logData.log}
             />
             {errorsLog.log && <span className='formDataIn__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errorsLog.log}</span>}

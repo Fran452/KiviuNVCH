@@ -38,14 +38,21 @@ function ModalShowIndicadores(props) {
   const [arrMetrica, setArrMetrica] = useState(null)
   const [arrLabels, setArrLabels] = useState(null)
   const [formMetrica, setFormMetrica] = useState(false)
+  const [formEditMetrica, setFormEditMetrica] = useState(false)
 
   const [loadingMet, setLoadingMet] = useState(false)
 
   const [newLog, setNewLog] = useState({
     log: ""
   })
+
+  const [editLog, setEditLog] = useState({
+    log: ""
+  })
   const [errorNewLog, setErrorNewLog] = useState({})
   const [errorLogFetch, setErrorLogFetch] = useState(null)
+
+  const [idMetrica, setIdMetrica] = useState(null)
 
   const auth = localStorage.getItem("token")
   const jwtParse = jwtDecode(auth)
@@ -86,7 +93,7 @@ function ModalShowIndicadores(props) {
       {
         label: indicadorID.nombre_indicador,
         data: arrMetrica,
-        backgroundColor: 'rgba(13, 110, 253, 100)',
+        backgroundColor: indicadorID.color,
         borderWidth: 1
       }
     ]
@@ -100,6 +107,14 @@ function ModalShowIndicadores(props) {
     const { name, value } = e.target;
     setNewLog({
       ...newLog,
+      [name]: value,
+    })
+  }
+
+  const handleChangeEdit = (e) => {
+    const { name, value } = e.target;
+    setEditLog({
+      ...editLog,
       [name]: value,
     })
   }
@@ -138,7 +153,7 @@ function ModalShowIndicadores(props) {
                 log: ""
             })
             console.log("Se ingresó la métrica")
-            setFormMetrica(!formMetrica)
+            setFormMetrica(false)
             setLoadingMet(true)
         }
       } catch (error) {
@@ -148,7 +163,67 @@ function ModalShowIndicadores(props) {
   }
 
   const handleShowForm = () => {
-    setFormMetrica(!formMetrica)
+    setFormMetrica(true)
+  }
+
+  const handleCloseForm = () => {
+    setFormMetrica(false)
+    setFormEditMetrica(false)
+    setErrorNewLog({})
+    setNewLog({
+      log: ""
+    })
+    setEditLog({
+      log: ""
+    })
+    setErrorLogFetch(null)
+    setIdMetrica(null)
+  }
+
+  // Editar métrica
+  const showEditMetrica = (id) => {
+    const obj = arrTresMetricas.find(e => e.id_metrica === id)
+    setEditLog({
+      log: obj.dato_metrica
+    })
+    setIdMetrica(id)
+    setFormEditMetrica(true)
+  }
+
+  const modMetrica = async (e) => {
+    e.preventDefault()
+    const errorLog = validateFormLog(editLog)
+    setErrorNewLog(errorLog)
+    if(Object.keys(errorLog).length === 0){
+      const obj = {
+        idMetrica: parseInt(idMetrica),
+        dato_metrica: parseInt(editLog.log),
+        user: USER
+      }
+      try {
+        const res = await fetch("http://localhost:3030/apis/dateIn/editMetrica", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        })
+        const data = await res.json()
+        if(data.error !== 0) {
+          setErrorLogFetch(data.errorDetalle)
+        } else {
+            setEditLog({
+              log: ""
+            })
+            console.log("Se corrigió la métrica")
+            setFormEditMetrica(false)
+            setIdMetrica(null)
+            setLoadingMet(true)
+        }
+      } catch (error) {
+        setErrorLogFetch(error)
+      }
+    }
   }
 
   return (
@@ -188,7 +263,7 @@ function ModalShowIndicadores(props) {
                 <div className='d-flex flex-row align-items-center justify-content-between'>
                   <div className='preview__title d-flex flex-column mb-4'>
                     <h4 className='mb-0 text-muted'>{areaSelec}</h4>
-                    <h2 className='mb-0 me-2'>{indicadorID.nombre_indicador}</h2>
+                    <h2 style={{color:indicadorID.color}} className='mb-0 me-2'>{indicadorID.nombre_indicador}</h2>
                     <p className='mb-0'><span className='text-muted'>Descripción: </span>{indicadorID.detalles_metrica}</p>
                     <p className='mb-0'><span className='text-muted'>Frecuencia:</span>
                       {FRECUENCIAS.map((e, i) => {
@@ -216,6 +291,9 @@ function ModalShowIndicadores(props) {
                             {(e.fecha_Metrica.slice(11,16))}
                             </p>
                         </div>
+                        <div className='preview__logs__lista__log__btn p-2 active'>
+                          <button onClick={()=>showEditMetrica(e.id_metrica)} className='btn__edit btn bg-success rounded-circle mb-2 text-white' ><i className="bi bi-pencil text-white"></i></button>
+                        </div>
                       </div>
                     })}
                   </div>
@@ -228,25 +306,54 @@ function ModalShowIndicadores(props) {
                 </div>
               </div>
           </Modal.Body>
+          {editLog && <>
+            {formEditMetrica && <Modal.Footer>
+                  <div className='form__metrica d-flex flex-row align-items-center w-100'>
+                    <form onSubmit={modMetrica} className='d-flex flex-column flex-md-row justify-content-between align-items-center w-100'>
+                      <div className='form__input d-flex flex-row align-items-center me-3'>
+                        <label className='me-1 col-12 col-md-3 col-form-label'>Modifica el valor:</label>
+                        <div className='d-flex flex-column col-12 col-md-9'>
+                          <input
+                            onChange={handleChangeEdit}
+                            type="number"  
+                            name="log" 
+                            autoFocus
+                            className="input--arrows form-control form-control-sm"
+                            value={editLog.log}
+                          />
+                          {errorNewLog.log && <span className='formDataIn__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errorNewLog.log}</span>}
+                          {errorLogFetch && <span className='formDataIn__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errorLogFetch}</span>}
+                        </div>
+                      </div>
+                      <button type="submit" className='btn__metrica btn btn-primary rounded-pill shadow-sm fw-medium'>Modificar métrica</button>
+                    </form>
+                    <button className='btn' onClick={handleCloseForm}><i className="bi bi-x-lg fw-bold"></i></button>
+                  </div>
+                </Modal.Footer>
+                }
+          </>}
           {formMetrica && <Modal.Footer>
-            <form onSubmit={newMetrica} className='d-flex flex-column flex-md-row justify-content-between align-items-center w-100'>
-              <div className='d-flex flex-row align-items-center w-75'>
-                <label className='me-1 col-12 col-md-3 col-form-label'>Ingresar el valor</label>
-                <div className='d-flex flex-column col-12 col-md-9'>
-                  <input
-                    onChange={handleChange}
-                    type="number"  
-                    name="log" 
-                    autoFocus
-                    className="form-control form-control-sm"
-                    value={newLog.log}
-                  />
-                  {errorNewLog.log && <span className='formDataIn__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errorNewLog.log}</span>}
-                  {errorLogFetch && <span className='formDataIn__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errorLogFetch}</span>}
+            <div className='form__metrica d-flex flex-row align-items-center w-100'>
+              <form onSubmit={newMetrica} className='d-flex flex-column flex-md-row justify-content-between align-items-center w-100'>
+                <div className='form__input d-flex flex-row align-items-center me-3'>
+                  <label className='me-1 col-12 col-md-3 col-form-label'>Ingresa el valor:</label>
+                  <div className='d-flex flex-column col-12 col-md-9'>
+                    <input
+                      onChange={handleChange}
+                      type="number"  
+                      name="log" 
+                      autoFocus
+                      className="input--arrows form-control form-control-sm"
+                      value={newLog.log}
+                    />
+                    {errorNewLog.log && <span className='formDataIn__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errorNewLog.log}</span>}
+                    {errorLogFetch && <span className='formDataIn__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errorLogFetch}</span>}
+                  </div>
                 </div>
-              </div>
-              <button type="submit" className='btn btn-primary rounded-pill shadow-sm fw-medium px-4'>Insertar métrica</button>
-            </form>
+                <button type="submit" className='btn__metrica btn btn-primary rounded-pill shadow-sm fw-medium'>Insertar métrica</button>
+              </form>
+              <button className='btn' onClick={handleCloseForm}><i className="bi bi-x-lg fw-bold"></i></button>
+            </div>
           </Modal.Footer>
           }
         </>

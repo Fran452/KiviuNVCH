@@ -32,7 +32,7 @@ router.put('/dateIn/editIndicador',apisDateIn.editIndicadores);
 router.put('/dateIn/deleteIndicador',apisDateIn.deleteIndicadores);
 
 router.post('/dateIn/newMetrica',apisDateIn.newMetrica);
-router.post('/dateIn/editMegrica',apisDateIn.editMetrica);
+router.put('/dateIn/editMetrica',apisDateIn.editMetrica);
 router.post('/dateIn/ultimas3Metricas',apisDateIn.ultimasTresMetricas);
 /*
 
