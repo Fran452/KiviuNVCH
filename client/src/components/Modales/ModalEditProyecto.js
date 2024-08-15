@@ -63,7 +63,7 @@ function ModalEditProyecto(props) {
         const pro = JSON.parse(proyectoSelec)
         if (Object.keys(newErrors).length === 0){
             try {
-                const res = await fetch("http://localhost:3030/apis/plan-accion/modProyect", {
+                const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/modProyect", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"

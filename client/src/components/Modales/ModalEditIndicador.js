@@ -103,7 +103,7 @@ function ModalEditIndicador(props) {
                 empleadoSuplente: userDatos.suplente
             }
             try {
-                const res = await fetch("http://localhost:3030/apis/dateIn/editIndicador", {
+                const res = await fetch("http://164.92.77.143:3030/apis/dateIn/editIndicador", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
