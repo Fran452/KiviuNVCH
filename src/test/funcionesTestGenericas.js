@@ -136,9 +136,8 @@ let controlador = {
             let areaCrada = await this.crearArea(`nombre del area ${i}`,'sin Power Bi');
             let empleados = []
             for(let j = 0;j < 3 ; j++){
-                
                 let empleado = await this.crearUsuario(areaCrada.id_area,j,`Nombre del empelado ${j}`,'1234',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`,'sin interes');
-                empleados.push(empleado);
+                empleados.push(empleado); 
             }
 
             objeto = {

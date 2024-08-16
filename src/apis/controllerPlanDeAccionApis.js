@@ -73,14 +73,30 @@ const controlador = {
 
     modProyecto: async (req,res) => {
         try{
-            let proyecto = await dataBaseSQL.proyectos.update({
-                nombre : req.body.nombre,
-                detalles : req.body.detalles,
-            },{
-                where:{
-                    id_proyecto: req.body.idProyecto
+            let proyecto
+            if(req.body.user.puesto <= 1){
+                proyecto = await dataBaseSQL.proyectos.update({
+                    nombre : req.body.nombre,
+                    detalles : req.body.detalles,
+                },{
+                    where:{
+                        id_proyecto: req.body.idProyecto
+                    }
+                });
+                
+            }else{
+                let proyectoAModificar = await dataBaseSQL.proyectos.findOne({
+                    where: {
+                        id_proyecto : req.body.idProyecto
+                    },
+                    attributes: ['fk_area'],
+                });
+                if(proyectoAModificar.fk_area != req.body.user.area){
+                    res.json({error :99, errorDetalle: "Sin permisos para modificar proyectos de otras areas", objeto: {}});
+                    return 1
                 }
-            });
+            }
+           
             res.json({error :0, errorDetalle: "", objeto:proyecto});
         }
         catch(error){

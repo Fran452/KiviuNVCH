@@ -17,6 +17,10 @@ router.post('/plan-accion/addTask',apisPlanDeAccion.addTarea);
 router.put('/plan-accion/modTask',apisPlanDeAccion.modTarea);
 router.put('/plan-accion/deleteTask',apisPlanDeAccion.deleteTarea);
 
+router.post('/plan-accion/viewProyect',apisPlanDeAccion.viewProyecto);
+router.post('/plan-accion/addProyect',apisPlanDeAccion.addProyecto);
+router.put('/plan-accion/modProyect',apisPlanDeAccion.modProyecto);
+router.put('/plan-accion/deleteProyect',apisPlanDeAccion.deleteProyecto);
 
 router.post('/login',apisUser.loginFuction);
 
