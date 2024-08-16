@@ -26,12 +26,22 @@ const controlador = {
 
     viewProyecto: async (req,res) => {
         try{
-            proyectos = await dataBaseSQL.proyectos.findAll({
-                where: {
-                    fk_area : req.body.user.area,
-                    ver:1
-                },
-            });
+            let proyectos
+            if(req.body.user.puesto <= 1){
+                proyectos = await dataBaseSQL.proyectos.findAll({
+                    where: {
+                        ver: 1
+                    },
+                });
+            }else{
+                proyectos = await dataBaseSQL.proyectos.findAll({
+                    where: {
+                        fk_area : req.body.user.area,
+                        ver: 1
+                    },
+                });
+            }
+            
             res.json({error:0, ErrorDetalle:"", objeto:proyectos});
 
         }

@@ -19,6 +19,16 @@ const controlador = {
     createProyecto: async (req,res) => {
         let resultadoTest = {}
 
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+
+        let usuario = {
+            id: baseDeDatos[0].empleados[1].id_empleado,
+            nombre:baseDeDatos[0].empleados[1].nombre,
+            area:baseDeDatos[0].empleados[1].fk_area,
+            puesto:baseDeDatos[0].empleados[1].fk_puesto,
+            mail:baseDeDatos[0].empleados[1].mail  
+        };
+
         // Crear proyecto desde la api
         let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addProyect',{
             method:'POST',
@@ -28,7 +38,7 @@ const controlador = {
             body: JSON.stringify({
                 nombre: "Proyecto de prueba",
                 detalles: "Detalle del proyecto de prueba",
-                user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+                user: usuario
             })
         });
 
@@ -57,7 +67,7 @@ const controlador = {
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Descripcion del proyecto subido','Detalle del proyecto de prueba',proyectoSubido.detalles,1);
 
         // Area del proyecto
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Area del proyecto',1,proyectoSubido.fk_area,1);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Area del proyecto',usuario.puesto,proyectoSubido.fk_area,1);
 
         // Eliminar ejemplo
         await funcionesDeTest.eliminarProyecto(proyectoSubido.id_proyecto);
@@ -69,8 +79,37 @@ const controlador = {
 
     readProyecto: async (req,res) => {
         let resultadoTest = {}
+        
+        // Crear base de datos
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+        req.json(baseDeDatos)
+        let usuarioArea1 = {
+            id:     baseDeDatos[0].empleados[2].id_empleado,
+            nombre: baseDeDatos[0].empleados[2].nombre,
+            area:   baseDeDatos[0].empleados[2].fk_area,
+            puesto: baseDeDatos[0].empleados[2].fk_puesto,
+            mail:   baseDeDatos[0].empleados[2].mail  
+        };
+
+        let usuarioArea2 = {
+            id:     baseDeDatos[1].empleados[2].id_empleado,
+            nombre: baseDeDatos[1].empleados[2].nombre,
+            area:   baseDeDatos[1].empleados[2].fk_area,
+            puesto: baseDeDatos[1].empleados[2].fk_puesto,
+            mail:   baseDeDatos[1].empleados[2].mail  
+        };
+
+        let jefeArea = {
+            id:     baseDeDatos[1].empleados[1].id_empleado,
+            nombre: baseDeDatos[1].empleados[1].nombre,
+            area:   baseDeDatos[1].empleados[1].fk_area,
+            puesto: baseDeDatos[1].empleados[1].fk_puesto,
+            mail:   baseDeDatos[1].empleados[1].mail  
+        };
+
+        console.log(usuarioArea1);
         // Crear proyecto de prueba
-        let proyectoTest = await funcionesDeTest.crearProyecto(1,"test de prueba","test de prueba");
+        let proyectoTest = await funcionesDeTest.crearProyecto(usuarioArea1.area,"test de prueba","test de prueba");
 
         // Buscar muestra de proyecto con usuario con area en el proyecto
         let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
@@ -78,8 +117,8 @@ const controlador = {
             headers: {
                 "Content-Type": "application/json"
             },
-           body: JSON.stringify({
-            user:{id: 1,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            body: JSON.stringify({
+                user:usuarioArea1
             })
         })
         
@@ -96,7 +135,7 @@ const controlador = {
         let proyecto = apis.objeto.find(proyecto => proyecto.id_proyecto == proyectoTest.id_proyecto)
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado',undefined,proyecto,4);
 
-
+        console.log("pase parte 1");
         // Buscar muestra de proyecto con usuario sin area en el proyecto
         let apisCaso2JSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
             method:'POST',
@@ -104,7 +143,7 @@ const controlador = {
                 "Content-Type": "application/json"
             },
            body: JSON.stringify({
-            user:{id: 1,nombre: 'Francisco Lema',area: 2,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+            user: usuarioArea2
             })
         })
         
@@ -120,6 +159,32 @@ const controlador = {
         // Buscar proyecto subido
         let proyecto2 = apisCaso2.objeto.find(proyecto => proyecto.id_proyecto == proyectoTest.id_proyecto)
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado para usuario de otra area',undefined,proyecto2,1);
+
+        console.log("pase parte 2");
+
+        // Buscar muestra de proyecto con usuario sin area en el proyecto
+        let apisCaso3JSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+           body: JSON.stringify({
+            user: usuarioArea2
+            })
+        })
+        
+        let apisCaso3 = await apisCaso3JSON.json();
+
+        // Sin error de apis
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis caso 2',0,apisCaso2.error,1);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        }
+
+        // Buscar proyecto subido
+        proyecto = apisCaso3.objeto.find(proyecto => proyecto.id_proyecto == proyectoTest.id_proyecto)
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado vista jefe',undefined,proyecto,4);
 
 
         // Eliminar ejemplo
@@ -148,7 +213,7 @@ const controlador = {
                 nombre:"test de prueba modificado",
                 detalles: 'test de prueba descripcion modifcado',
                 idProyecto: proyectoAntiguo.id_proyecto,
-                user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+                user:jefeArea
             })
         });
         
