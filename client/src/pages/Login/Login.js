@@ -38,7 +38,6 @@ function Login() {
         .then(res => res.json())
         .then(data => {
             const obj = jwtDecode(data)
-            console.log(obj)
             setLoading(false)
             if(obj.apirest.status === 0){
                 localStorage.setItem('token', JSON.stringify(data))

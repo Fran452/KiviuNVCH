@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import {Link, useLocation, useNavigate} from "react-router-dom"
-import Logo from "../assets/img/logo-v2.png"
+import Logo from "../../assets/img/logo-v2.png"
 import "./Sidebar.scss"
-import Avatar from "../assets/img/avatar.jpg"
+import Avatar from "../../assets/img/avatar.jpg"
 import { jwtDecode } from "jwt-decode"
 
 const lista = [
   { label: "Dashboard", icon: "bi-house-door-fill", to: "/home" },
   { label: "Planes de Acción", icon: "bi-bar-chart-steps", to: "/planes-de-accion" },
-  { label: "OKR", icon: "bi-list-check", to: "/okr" },
+  { label: "DatIN", icon: "bi-bar-chart-fill", to: "/dat-in" },
   { label: "Asistente IA", icon: "bi-lightning-charge-fill", to: "/asistente-ia" },
-  { label: "DatIN", icon: "bi-bar-chart-fill", to: "/dat-in" }
+  { label: "OKR", icon: "bi-list-check", to: "/okr" }
 ]
 
 function Sidebar({sidebarOpen, setSidebarOpen}) {

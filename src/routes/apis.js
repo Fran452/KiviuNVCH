@@ -12,11 +12,6 @@ router.get('/index',apisHome.index);
 router.post('/bi',apisHome.bi);
 
 
-router.post('/plan-accion/viewProyect',apisPlanDeAccion.viewProyecto);
-router.post('/plan-accion/addProyect',apisPlanDeAccion.addProyecto);
-router.put('/plan-accion/modProyect',apisPlanDeAccion.modProyecto);
-router.delete('/plan-accion/deleteProyect',apisPlanDeAccion.deleteProyecto);
-
 router.post('/plan-accion/viewTask',apisPlanDeAccion.viewTareas);
 router.post('/plan-accion/addTask',apisPlanDeAccion.addTarea);
 router.put('/plan-accion/modTask',apisPlanDeAccion.modTarea);
@@ -33,7 +28,7 @@ router.put('/dateIn/editIndicador',apisDateIn.editIndicadores);
 router.put('/dateIn/deleteIndicador',apisDateIn.deleteIndicadores);
 
 router.post('/dateIn/newMetrica',apisDateIn.newMetrica);
-router.put('/dateIn/editMegrica',apisDateIn.editMetrica);
+router.put('/dateIn/editMetrica',apisDateIn.editMetrica);
 router.post('/dateIn/ultimas3Metricas',apisDateIn.ultimasTresMetricas);
 /*
 

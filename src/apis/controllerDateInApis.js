@@ -88,8 +88,8 @@ const controlador = {
                     attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio'],
                     include: [
                         {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                        {association : "Empleados",attributes: ['nombre','mail']},
-                        {association : "ResponsableSuplente",attributes: ['nombre','mail']}
+                        {association : "Empleados",attributes: ['id_empleado','nombre','mail']},
+                        {association : "ResponsableSuplente",attributes: ['id_empleado','nombre','mail']}
                     ]
                 });
 
@@ -102,8 +102,8 @@ const controlador = {
                     attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio','fecha_del_recodatorio'],
                     include: [
                         {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                        {association : "Empleados",attributes: ['nombre','mail']},
-                        {association : "ResponsableSuplente",attributes: ['nombre','mail']}
+                        {association : "Empleados",attributes: ['id_empleado','nombre','mail']},
+                        {association : "ResponsableSuplente",attributes: ['id_empleado','nombre','mail']}
                     ]
                 });
             };            
@@ -139,7 +139,9 @@ const controlador = {
     
                 
             }else{
-                empleadoResponsable = req.body.indicador.fk_responsable;
+                console.log(req.body.indicador.Empleados)
+                empleadoResponsable = req.body.indicador.Empleados.id_empleado;
+                
             };
 
             if(req.body.empleadoSuplente != req.body.indicador.ResponsableSuplente.mail){
@@ -152,14 +154,13 @@ const controlador = {
                     }
                 );
             }else{
-                empleadoSuplente = req.body.indicador.fk_responsable_suplente;
+                console.log(req.body.indicador.ResponsableSuplente)
+                empleadoSuplente = req.body.indicador.ResponsableSuplente.id_empleado;
             };
-            console.log(empleadoResponsable.dataValues.id_empleado );
-            console.log(empleadoSuplente.dataValues.id_empleado);
             let indicadorModificado = await dataBaseSQL.indicadores.update({
-                fk_area:                    req.body.user.fk_area,
-                fk_responsable:             empleadoResponsable.dataValues.id_empleado,
-                fk_responsable_suplente:    empleadoSuplente.dataValues.id_empleado,
+                fk_area:                    req.body.user.area,
+                fk_responsable:             empleadoResponsable.id_empleado,
+                fk_responsable_suplente:   empleadoSuplente.id_empleado,
                 nombre_indicador:           req.body.nombre_indicador,
                 detalles_metrica:           req.body.detalles_metrica,
                 tipo_recordartorio:         req.body.tipo_recordartorio,

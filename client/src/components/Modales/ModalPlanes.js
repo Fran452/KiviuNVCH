@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Modal, ProgressBar } from 'react-bootstrap';
 import "./ModalPlanes.scss"
-import { jwtDecode } from "jwt-decode"
-import { loadingContext } from '../pages/PlanesAccion/PlanesAccion';
+import { tareasContext } from '../Tareas';
+import { newContext } from '../../pages/PlanesAccion/PlanesAccion'
 
 function ModalPlanes(props) {
-  const { handleUpdate, tareaObj, setTareaObj, proyectoObj, setProyectoObj } = useContext(loadingContext)
-  const auth = localStorage.getItem("token")
-  const jwtParse = jwtDecode(auth)
+  const { USER, areas, fetchTareasById, idProyecto, setLoadingTar, setErrorTar, setTareasByProyecto } = useContext(newContext)
+  const { tareaObj, setTareaObj, proyectoSelec, setProyectoSelec } = useContext(tareasContext)
 
   // State
-  const [areas, setAreas] = useState([]);
   const [formData, setFormData] = useState({
     nombre: "",
     fechaInicio: "",
@@ -24,19 +22,6 @@ function ModalPlanes(props) {
   })
   const [errors, setErrors] = useState({})
   const [modalErr, setModalErr] = useState(null)
-
-  // Obtener áreas
-  const fetchAreas = async () => {
-    try {
-      const res = await fetch("http://164.92.77.143:3030/apis/index",{
-        method: "GET"
-      })
-      const data = await res.json()
-      setAreas(data.objeto.areas)
-    } catch (error) {
-      console.log(error)
-    }
-  }
 
   useEffect(() => {
     if(tareaObj){
@@ -53,7 +38,6 @@ function ModalPlanes(props) {
         progreso: obj.progreso,
       })
     }
-    fetchAreas()
   }, [tareaObj])
 
   const handleChange = (e) => {
@@ -69,11 +53,11 @@ function ModalPlanes(props) {
     e.preventDefault()
     const newErrors = validateForm(formData);
     setErrors(newErrors)
-    const proyecto = JSON.parse(proyectoObj)
+    const pro = JSON.parse(proyectoSelec)
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
-        user: jwtParse.apirest.objeto,
+        user: USER,
         nombre: formData.nombre,
         estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
@@ -82,9 +66,8 @@ function ModalPlanes(props) {
         notas: formData.notas,
         areaApoyo: parseInt(formData.equipo),
         progreso: parseInt(formData.progreso),
-        idProyecto: proyecto.id_proyecto
+        idProyecto: pro.id_proyecto
       }
-
       try {
         const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/addTask", {
           method: "POST",
@@ -95,7 +78,6 @@ function ModalPlanes(props) {
         })
         const data = await res.json()
         if(data.error !== 0) {
-          handleUpdate(false)
           setModalErr(data.errorDetalle)
         } else {
           setFormData({
@@ -110,15 +92,27 @@ function ModalPlanes(props) {
             progreso: 0
           })
           setModalErr(null)
-          handleUpdate()
-          setProyectoObj(null)
+          setProyectoSelec(null)
           props.onHide()
+          // actualiza tareas
+          setLoadingTar(true)
+          fetchTareasById(idProyecto)
+          .then(res => {
+              if(res.error !== 0){
+                  setLoadingTar(false)
+                  setErrorTar(res.errorDetalle)
+              } else {
+                  setLoadingTar(false)
+                  setTareasByProyecto(res.objeto)
+              }
+          })
+          // fin de actualiza tareas
         }
       } catch (error) {
-        console.log(error)
+        setModalErr(error)
       }
     } else {
-      console.log("Form no enviado")
+      setModalErr("Completar los campos mencionados.")
     }
   }
 
@@ -171,7 +165,7 @@ function ModalPlanes(props) {
       progreso: 0
     })
     props.onHide()
-    setProyectoObj(null)
+    setProyectoSelec(null)
     setTareaObj(null)
     setModalErr(null)
   }
@@ -181,11 +175,11 @@ function ModalPlanes(props) {
     const newErrors = validateForm(formData);
     setErrors(newErrors)
     const task = JSON.parse(tareaObj)
-    const proyecto = JSON.parse(proyectoObj)
+    const pro = JSON.parse(proyectoSelec)
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
-        user: jwtParse.apirest.objeto,
+        user: USER,
         nombre: formData.nombre,
         estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
@@ -195,7 +189,7 @@ function ModalPlanes(props) {
         areaApoyo: parseInt(formData.equipo),
         idTarea: task.id_tarea,
         progreso: parseInt(formData.progreso),
-        idProyecto: proyecto.id_proyecto
+        idProyecto: pro.id_proyecto
       }
       try {
         const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/modTask", {
@@ -207,7 +201,6 @@ function ModalPlanes(props) {
         })
         const data = await res.json()
         if(data.error !== 0) {
-          handleUpdate(false)
           setModalErr(data.errorDetalle)
         } else {
           setFormData({
@@ -222,16 +215,28 @@ function ModalPlanes(props) {
             progreso: 0
           })
           setModalErr(null)
-          handleUpdate()
-          props.onHide()
           setTareaObj(null)
-          setProyectoObj(null)
+          setProyectoSelec(null)
+          props.onHide()
+          // actualiza tareas
+          setLoadingTar(true)
+          fetchTareasById(idProyecto)
+          .then(res => {
+              if(res.error !== 0){
+                  setLoadingTar(false)
+                  setErrorTar(res.errorDetalle)
+              } else {
+                  setLoadingTar(false)
+                  setTareasByProyecto(res.objeto)
+              }
+          })
+          // fin de actualiza tareas
         }
       } catch (error) {
-        console.log(error)
+        setModalErr(error)
       }
     } else {
-      console.log("Form no actualizado")
+      setModalErr("Completar los campos mencionados.")
     }
   }
 
@@ -577,9 +582,6 @@ function ModalPlanes(props) {
           </form>
         )}
         </Modal.Body>
-      {/* <Modal.Footer>
-        <Button onClick={handleSubmit}>Close</Button>
-      </Modal.Footer> */}
     </Modal>
   )
 }
