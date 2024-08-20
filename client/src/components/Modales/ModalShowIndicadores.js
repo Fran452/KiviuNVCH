@@ -138,7 +138,7 @@ function ModalShowIndicadores(props) {
         user: USER
       }
       try {
-        const res = await fetch("http://164.92.77.143:3030/apis/dateIn/newMetrica", {
+        const res = await fetch("http://localhost:3030/apis/dateIn/newMetrica", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -201,7 +201,7 @@ function ModalShowIndicadores(props) {
         user: USER
       }
       try {
-        const res = await fetch("http://164.92.77.143:3030/apis/dateIn/editMetrica", {
+        const res = await fetch("http://localhost:3030/apis/dateIn/editMetrica", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -260,8 +260,8 @@ function ModalShowIndicadores(props) {
           </Modal.Header>
           <Modal.Body>
               <div className='preview'>
-                <div className='d-flex flex-row align-items-center justify-content-between'>
-                  <div className='preview__title d-flex flex-column mb-4'>
+                <div className='d-flex flex-column flex-md-row align-items-center justify-content-between mb-4'>
+                  <div className='preview__title d-flex flex-column mb-4 mb-md-0'>
                     <h4 className='mb-0 text-muted'>{areaSelec}</h4>
                     <h2 style={{color:indicadorID.color}} className='mb-0 me-2'>{indicadorID.nombre_indicador}</h2>
                     <p className='mb-0'><span className='text-muted'>Descripción: </span>{indicadorID.detalles_metrica}</p>
@@ -273,9 +273,8 @@ function ModalShowIndicadores(props) {
                   </div>
                   <button onClick={handleShowForm} className='btn btn-primary rounded-pill shadow-sm fw-medium px-4'>Agregar métrica</button>
                 </div>
-                
-                <div className='preview__logs d-flex flex-row'>
-                  <div className='preview__logs__lista me-4'>
+                <div className='preview__logs d-flex flex-column-reverse flex-md-row'>
+                  <div className='preview__logs__lista me-0 me-md-4'>
                     {arrTresMetricas.map((e, i) => {
                     return <div key={i} className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
                         <div className='d-flex flex-row align-items-center'>
@@ -297,7 +296,7 @@ function ModalShowIndicadores(props) {
                       </div>
                     })}
                   </div>
-                  <div className='preview__logs__grafica'>
+                  <div className='preview__logs__grafica mb-4 mb-md-0'>
                     <Bar 
                       data = {data}
                       options = {options}
@@ -308,9 +307,9 @@ function ModalShowIndicadores(props) {
           </Modal.Body>
           {editLog && <>
             {formEditMetrica && <Modal.Footer>
-                  <div className='form__metrica d-flex flex-row align-items-center w-100'>
+                  <div className='form__metrica d-flex flex-column-reverse flex-md-row align-items-center w-100'>
                     <form onSubmit={modMetrica} className='d-flex flex-column flex-md-row justify-content-between align-items-center w-100'>
-                      <div className='form__input d-flex flex-row align-items-center me-3'>
+                      <div className='form__input d-flex flex-column flex-md-row align-items-center me-0 me-md-3 mb-3 mb-md-0'>
                         <label className='me-1 col-12 col-md-3 col-form-label'>Modifica el valor:</label>
                         <div className='d-flex flex-column col-12 col-md-9'>
                           <input
@@ -333,9 +332,9 @@ function ModalShowIndicadores(props) {
                 }
           </>}
           {formMetrica && <Modal.Footer>
-            <div className='form__metrica d-flex flex-row align-items-center w-100'>
+            <div className='form__metrica d-flex flex-column-reverse flex-md-row align-items-center w-100'>
               <form onSubmit={newMetrica} className='d-flex flex-column flex-md-row justify-content-between align-items-center w-100'>
-                <div className='form__input d-flex flex-row align-items-center me-3'>
+                <div className='form__input d-flex flex-column flex-md-row align-items-center me-0 me-md-3 mb-3 mb-md-0'>
                   <label className='me-1 col-12 col-md-3 col-form-label'>Ingresa el valor:</label>
                   <div className='d-flex flex-column col-12 col-md-9'>
                     <input

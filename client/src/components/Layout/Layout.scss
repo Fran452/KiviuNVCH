@@ -19,7 +19,6 @@
         overflow: scroll;
 
         &__outlet__container {
-            margin: 20px;
             padding: 20px;
         }
 
@@ -31,9 +30,8 @@
         .main {
             display: grid;
             grid-template-rows: 80px auto;
-            margin: 0 40px 40px 0;
-            width: calc(100% - 40px);
-            height: calc(100vh - 40px);
+            width: 100%;
+            height: 100vh;
             overflow: auto;
 
             &__outlet__container {

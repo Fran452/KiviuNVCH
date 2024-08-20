@@ -91,13 +91,33 @@
                 font-size: 14px;
             }
         }
+
+        .btn__addIndicador {
+            grid-row-start: 1;
+            justify-self: center;
+        }
     }
 }
 
 @media screen and (min-width: 768px) {
+    .formIn__container {
+        &__main {
+            height: 100%;
+        }
+    }
+
     .datin {
         &__main {
+            position: relative;
             grid-template-columns: 1fr 1fr;
+
+            .btn__addIndicador {
+                grid-row-start: auto;
+                justify-self: auto;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+            }
         }
     }
 

@@ -8,7 +8,7 @@
 }
 
 .formDatIn {
-    width: 100%;
+    // width: 100%;
     height: calc(100% - 56px);
     overflow-y: scroll;
 
@@ -43,14 +43,16 @@
     }
 
     &__line {
-        border: 2px solid $gray-300;
+        width: 2px;
+        height: 20px;
+        background-color: $gray-300;
         transition-property: all;
         transition-timing-function: linear;
         transition-duration: 10ms;
     }
 
     &__line.active {
-        border: 2px solid $blue-500;
+        background-color: $blue-500;
     }
 }
 
@@ -106,6 +108,11 @@
         }
 
         &__grafica {
+            width: 100%;
+
+            &__container {
+                width: 90%;
+            }
         }
     }
 }
@@ -121,6 +128,35 @@
     }
 }
 
+@media screen and (min-width: 768px) {
+    .formDatIn {
+        height: calc(100% - 72px);
+    }
+    .steps {
+        &__line {
+            width: auto;
+            height: auto;
+            border: 2px solid $gray-300;
+        }
+
+        &__line.active {
+            border: 2px solid $blue-500;
+        }
+    }
+
+    .preview {
+        &__logs {
+            &__grafica {
+                width: calc(100% - 264px);
+
+                &__container {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
 @media screen and (min-width: 992px) {
     .steps__container {
         &__main {
@@ -131,14 +167,6 @@
     .formDatIn {
         &__main {
             width: 75%;
-        }
-    }
-
-    .preview {
-        &__logs {
-            &__grafica {
-                width: calc(100% - 264px);
-            }
         }
     }
 }
