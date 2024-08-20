@@ -13,7 +13,8 @@ function Layout() {
             <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
             <div className="main">
                 <Navbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}/>
-                <div className='main__outlet__container bg-white rounded-3'>
+                {/* <div className='main__outlet__container bg-white rounded-3'> */}
+                <div className='main__outlet__container bg-white'>
                     <Outlet />
                 </div>
             </div>

@@ -13,6 +13,9 @@
     
 }
 .login {
+    background: linear-gradient(135deg, $blue-500 0%, $blue-300 100%);
+    background-repeat: no-repeat;
+
     &__container {
         margin: 0 auto;
         height: 75%;

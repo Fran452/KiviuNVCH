@@ -40,6 +40,7 @@ function DatIN() {
           setError(res.errorDetalle)
         } else {
           setLoading(false)
+          console.log(res.objeto)
           setIndicadores(res.objeto)
         }
       })
@@ -177,8 +178,8 @@ function DatIN() {
         ) : (
           <>
             {addIndicador ? (
-              <div className='formIn__container w-100 '>
-                <div className='formIn__container__main h-100'>
+              <div className='formIn__container w-100'>
+                <div className='formIn__container__main'>
                   <FormDatIn 
                     addIndicador={addIndicador} 
                     setAddIndicador={setAddIndicador} 
@@ -209,7 +210,7 @@ function DatIN() {
                         </button>
                       </div>
                     ) : (
-                      <div className='datin__main position-relative'>
+                      <div className='datin__main'>
                         {indicadores.map((e,i) => {
                           return <div key={i} className='datin__main__container'>
                               <div onClick={()=>handleShowIndicador(e.id_indicador)} className='datin__main__indicador d-flex flex-column justify-content-between shadow-sm rounded-3 border border-light-subtle'>
@@ -221,7 +222,8 @@ function DatIN() {
                                   <p className='text-white mb-0'>{e.Empleados.nombre}</p>
                                   <div className='d-flex flex-row text-white align-items-center'>
                                     <i className="bi bi-calendar-event me-1"></i>
-                                    <p className='mb-0'>{new Date(e.fecha_del_recodatorio.replace(/-/g, '/')).toLocaleDateString()}</p>
+                                    <p className='mb-0'>{e.fecha_del_recodatorio.replace(/-/g, '/').split("/").reverse().join("/")}</p>
+                                    {/* <p className='mb-0'>{new Date(e.fecha_del_recodatorio.replace(/-/g, '/')).toLocaleDateString()}</p> */}
                                   </div>
                                 </div>
                               </div>
@@ -231,7 +233,7 @@ function DatIN() {
                                 </div>
                             </div>
                         })}
-                        <button className='position-absolute bottom-0 end-0 btn__addIndicador btn btn-primary rounded-pill shadow-sm fw-medium' 
+                        <button className='btn__addIndicador btn btn-primary rounded-pill shadow-sm fw-medium' 
                           onClick={handleNewIndicador}>
                             Agregar indicador
                         </button>

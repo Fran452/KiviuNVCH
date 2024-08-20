@@ -34,7 +34,7 @@ function Preview() {
 
   // const actualDay = new Date().toLocaleDateString("es-ES", { day: 'numeric' }).substring(0,3) + " " + new Date().toLocaleDateString("es-ES", { month: 'long' }).slice(0,3);
  
-  const actualDay = new Date().toLocaleString().slice(0,8)
+  const actualDay = new Date().toLocaleString("es-ES", {day: 'numeric', month: '2-digit', year: 'numeric'})
   const actualHour = new Date().toLocaleString("es-ES", {minute: '2-digit', hour: '2-digit', second: '2-digit'});
 
   useEffect(() => {
@@ -99,14 +99,14 @@ function Preview() {
           })}
         </p>
       </div>
-      <div className='preview__logs d-flex flex-row'>
-        <div className='preview__logs__lista me-4'>
+      <div className='preview__logs d-flex flex-column-reverse flex-md-row'>
+        <div className='preview__logs__lista me-0 me-md-4'>
           <div className='preview__logs__lista__log mb-2 shadow-sm rounded-3 border border-light'>
             <div className='d-flex flex-row align-items-center'>
               <img className='me-1' src={Avatar} alt="" />
               <p className='mb-0'>{userData.responsable}</p>
             </div>
-            <div className='d-flex flex-row align-items-center justify-content-between'>
+            <div className='d-flex flex-column'>
               <p className='d-flex flex-row mb-0'><i className='bi bi-bar-chart-fill me-2'></i>{logData.log}</p>
               <div className='d-flex flex-row'>
                 <p className='me-2 d-flex flex-row mb-0'><i className="bi bi-calendar-event me-1"></i>
@@ -118,34 +118,14 @@ function Preview() {
               </div>
             </div>
           </div>
-          {/* <p className='mb-1'>Últimos 3 logs:</p>
-        {
-          lastThree.map((e, i) => {
-            return <div key={i} className='preview__logs__lista__log shadow-sm rounded-3 border border-light'>
-              <div className='d-flex flex-row align-items-center'>
-                <img className='me-1' src={Avatar} alt="" />
-                <p className='mb-0'>{e.log_de_usuario.nombre}</p>
-              </div>
-              <div className='d-flex flex-row align-items-center justify-content-between'>
-                <p className='d-flex flex-row mb-0'><i className='bi bi-bar-chart-fill me-2'></i>{e.dato_metrica}</p>
-                <div className='d-flex flex-row'>
-                  <p className='me-2 d-flex flex-row mb-0'><i className="bi bi-calendar-event me-1"></i>
-                    {new Date(e.fecha_Metrica.replace(/-/g, '/')).toLocaleDateString()}
-                  </p>
-                  <p className='d-flex flex-row mb-0'><i className="bi bi-clock me-1"></i>
-                    {e.hora_Metrica}
-                  </p>
-                </div>
-              </div>
-            </div>
-          })
-        } */}
         </div>
-        <div className='preview__logs__grafica'>
+        <div className='preview__logs__grafica d-flex justify-content-center d-md-block '>
+          <div className='preview__logs__grafica__container'>
             <Bar 
               data = {data}
               options = {options}
             />
+          </div>
         </div>
       </div>
     </div>

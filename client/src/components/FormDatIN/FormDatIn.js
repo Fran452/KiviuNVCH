@@ -193,7 +193,7 @@ function FormDatIn({addIndicador, setAddIndicador, fetchIndicadores, setLoading,
                 />
                 {/* Formularios */}
                 <div className='formDatIn scroll--y'>
-                    <div className='formDatIn__main mx-auto border border-light-subtle shadow-sm rounded-3 p-5'>
+                    <div className='formDatIn__main mx-auto border border-light-subtle shadow-sm rounded-3 p-3 p-md-5'>
                         {displayStep(currentStep)}
                         {/* Botones */}
                         <Controles 

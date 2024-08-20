@@ -6,6 +6,8 @@
     height: 80px;
     padding: 20px;
     z-index: 3;
+    background: linear-gradient(135deg, $blue-500 0%, $blue-300 100%);
+    background-repeat: no-repeat;
 
     a {
         display: block;
@@ -94,18 +96,20 @@
 }
 
 .sidebar {
+    background: linear-gradient(135deg, $blue-500 0%, $blue-300 100%);
+    background-repeat: no-repeat;
     position: sticky;
     height: 100vh;
 
     &__btn {
-        width: 40px;
         height: 80px;
-        right: -40px;
+        right: -72px;
         z-index: 100;
 
         i {
-            font-size: 28px;
-            color: #fff;
+            line-height: normal;
+            font-size: 32px;
+            color: $blue-500;
         }
     }
 
