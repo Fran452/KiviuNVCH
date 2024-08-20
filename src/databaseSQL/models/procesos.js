@@ -1,26 +1,34 @@
 /*
-CREATE TABLE Proyecto ( 
-    id_preyecto                             INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE Procesos ( 
+    id_procesos                             INT PRIMARY KEY AUTO_INCREMENT,
     fk_area                                 INT NOT NULL,
+    fk_ciclo                                INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
     detalles                                VARCHAR(255) NOT NULL,
-    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area),
+    ver                                     INT NOT NULL,
+    FOREIGN KEY (fk_ciclo)                   REFERENCES Ciclos(id_ciclo),
+    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 
 */
 module.exports = (sequelize,DataTypes) => {
 
-    let nombre = "proyectos";
+    let nombre = "procesos";
     
     let columnas = {
 
-        "id_proyecto": {
+        "id_procesos": {
             type:DataTypes.INTEGER(),
             primaryKey: true,
             autoIncrement: true,
         },
 
         "fk_area": {
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
+
+        "fk_ciclo": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -41,28 +49,33 @@ module.exports = (sequelize,DataTypes) => {
 
     let config =  {
         timestamps: false,
-        tableName : "Proyectos"
+        tableName : "Procesos"
     };
 
-    const proyectos = sequelize.define(nombre,columnas,config);
+    const procesos = sequelize.define(nombre,columnas,config);
     
     
-    proyectos.associate = (models) => {
+    procesos.associate = (models) => {
 
         // Union con Areas
-        proyectos.belongsTo(models.areas,{
+        procesos.belongsTo(models.areas,{
             foreignKey : 'fk_area',
             as : 'Areas'
         });
 
         // Union con Tareas
-        proyectos.hasMany(models.tareas,{
+        procesos.hasMany(models.tareas,{
             foreignKey : 'fk_proyecto',
             as : 'Tareas'
         });
 
+        procesos.belongsTo(models.ciclos,{
+            foreignKey : 'fk_ciclo',
+            as : 'Ciclos'
+        });
+
     }
 
-    return proyectos;
+    return procesos;
 
 };
