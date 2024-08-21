@@ -40,7 +40,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
-        "fk_proyecto": {
+        "fk_procesos": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -111,10 +111,10 @@ module.exports = (sequelize,DataTypes) => {
             as : 'AreasApollo'
         });
 
-        /* Union con Proyectos */
-        tareas.belongsTo(models.proyectos,{
-            foreignKey : 'fk_proyecto',
-            as : 'Proyectos'
+        /* Union con Procesos */
+        tareas.belongsTo(models.procesos,{
+            foreignKey : 'fk_procesos',
+            as : 'Procesos'
         });
 
     }

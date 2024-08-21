@@ -51,6 +51,7 @@ const controlador = {
                 };
             }else{
                 if(bcrypt.compareSync(req.body.pass,empleados.password)){
+
                     req.session.user = {
                         id : empleados.id_empleado,
                         nombre : empleados.nombre,
@@ -58,17 +59,20 @@ const controlador = {
                         puesto: empleados.fk_Puesto,
                         mail : empleados.mail
                     }
+
                     console.log(req.session.user);
+                    
                     apirest = {
                         status: 0,
                         codeError : "",
                         objeto: req.session.user
                     }
+
                     const token = jwt.sign({apirest}, "Stack",{
                         expiresIn: '24h'
                     })
                     res.json(token);
-                    //
+                
                     return apirest;
                 }else{
                     apirest = {
