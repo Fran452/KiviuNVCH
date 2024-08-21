@@ -7,7 +7,7 @@ USE kiviuTest;
 CREATE TABLE Areas (
     id_area                                INT PRIMARY KEY AUTO_INCREMENT, 
     power_Bi                               VARCHAR(255),
-    nombre_del_Area                        VARCHAR(255)  
+    nombre_del_Area                        VARCHAR(255)
 );
 
 CREATE TABLE Puestos (         
@@ -29,9 +29,11 @@ CREATE TABLE Empleados (
 
 CREATE TABLE Ciclos ( 
     id_ciclo                                INT PRIMARY KEY AUTO_INCREMENT,
+    fk_area                                 INT PRIMARY KEY AUTO_INCREMENT,
     nombre                                  VARCHAR(255) NOT NULL,
     detalles                                VARCHAR(255) NOT NULL,
-    ver                                     INT NOT NULL
+    ver                                     INT NOT NULL,
+    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 
 CREATE TABLE Procesos ( 
@@ -50,7 +52,7 @@ CREATE TABLE Tareas (
     fk_empleado_asignado                    INT NOT NULL,
     fk_area                                 INT NOT NULL,
     fk_area_apoyo                           INT NOT NULL,
-    fk_procesos                             INT NOT NULL, 
+    fk_procesos                             INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
     estado	                                INT NOT NULL,
     prioridad					            INT NOT NULL,
@@ -59,6 +61,7 @@ CREATE TABLE Tareas (
     notas                                   VARCHAR(255),
     mostrar                                 INT NOT NULL,
     progreso					            INT,
+    horas_Necesarias                        INT NOT NULL,
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
     FOREIGN KEY (fk_procesos)               REFERENCES Procesos(id_procesos),
@@ -68,13 +71,16 @@ CREATE TABLE Tareas (
 CREATE TABLE Subtareas (
     id_sub_tarea                            INT PRIMARY KEY AUTO_INCREMENT,
     fk_tareas                               INT NOT NULL,
-    orden                                   INT NOT NULL,    
-    titulo                                  VARCHAR(255) NOT NULL,    
-    asignacion                              INT NOT NULL,        
-    horasAprox                              INT NOT NULL,        
-    estado                                  VARCHAR(255) NOT NULL, 
-    FOREIGN KEY (fk_tareas)                 REFERENCES Tareas(id_tarea)  
-);                                      
+    orden                                   INT NOT NULL,
+    titulo                                  VARCHAR(255) NOT NULL,
+    asignacion                              INT NOT NULL,
+    horasAprox                              INT NOT NULL,
+    avece                                   VARCHAR(255) NOT NULL,
+    estado                                  VARCHAR(255) NOT NULL,
+    prioridad                               VARCHAR(255) NOT NULL,
+    notas                                   VARCHAR(255) NOT NULL,
+    FOREIGN KEY (fk_tareas)                 REFERENCES Tareas(id_tarea)
+);                 
 
 CREATE TABLE Indicadores (
     id_indicador                           INT PRIMARY KEY AUTO_INCREMENT,
@@ -84,7 +90,7 @@ CREATE TABLE Indicadores (
     nombre_indicador                       VARCHAR(255),
     detalles_metrica                       VARCHAR(255),
     tipo_recordartorio                     INT NOT NULL,
-    fecha_del_recodatorio                  DATE, 
+    fecha_del_recodatorio                  DATE,
     mostrar                                INT NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),

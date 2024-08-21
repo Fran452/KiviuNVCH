@@ -22,15 +22,79 @@ const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
 
 const controlador = {
-    
-    /* CRUD De Proyecto */
+    /* CRUD De Ciclos */
+    viewCiclos: async (req,res) => {
+        try{
+            let ciclos = await dataBaseSQL.procesos.findAll({
+                where: {
+                    fk_area :   req.body.user.area,
+                    ver:        1
+                },
+            });
+            res.json({error:0, ErrorDetalle:"", objeto:procesos});
 
-    viewProyecto: async (req,res) => {
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+    
+    addCiclos: async (req,res) => {
+        try{
+            let ciclo = await dataBaseSQL.ciclos.create({
+                fk_area :   req.body.user.area,
+                nombre  :   req.body.nombre,
+                detalles:   req.body.detalles,
+                fk_ciclo:   req.body.ciclo,
+                ver     :   1
+            });
+            res.json({error :0, errorDetalle: "", objeto:procesos});
+            return 0
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    modCiclos: async (req,res) => {
+        try{
+
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    deleteCiclos: async (req,res) => {
+        try{
+
+        }
+        catch(error){
+            let ciclo = await dataBaseSQL.ciclos.update({
+                ver:    0
+            },{
+                where:{
+                    id_ciclo: req.body.id_ciclo
+                }
+            });
+            res.json({error :0, errorDetalle: "", objeto:ciclo});
+        }
+    },
+
+    /* CRUD De Proceos */
+
+    viewProceso: async (req,res) => {
         try{
             let procesos = await dataBaseSQL.procesos.findAll({
                 where: {
-                    fk_area : req.body.user.area,
-                    ver:1
+                    fk_area :   req.body.user.area,
+                    ver:        1
                 },
             });
             res.json({error:0, ErrorDetalle:"", objeto:procesos});
@@ -43,17 +107,17 @@ const controlador = {
         }
     },
 
-    addProyecto: async (req,res) => {
+    addProceso: async (req,res) => {
         try{
-
             let procesos = await dataBaseSQL.procesos.create({
-                fk_area : req.body.user.area,
-                nombre : req.body.nombre,
-                detalles : req.body.detalles,
-                ver:1
+                fk_area :   req.body.user.area,
+                nombre  :   req.body.nombre,
+                detalles:   req.body.detalles,
+                fk_ciclo:   req.body.ciclo,
+                ver     :   1
             });
             res.json({error :0, errorDetalle: "", objeto:procesos});
-            return 0
+            return 0;
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
@@ -62,14 +126,14 @@ const controlador = {
         }
     },
 
-    modProyecto: async (req,res) => {
+    modProceso: async (req,res) => {
         try{
             let procesos = await dataBaseSQL.procesos.update({
-                nombre : req.body.nombre,
-                detalles : req.body.detalles,
+                nombre      : req.body.nombre,
+                detalles    : req.body.detalles,
             },{
                 where:{
-                    id_procesos: req.body.idProyecto
+                    id_procesos: req.body.idProceso
                 }
             });
             res.json({error :0, errorDetalle: "", objeto:procesos});
@@ -81,13 +145,13 @@ const controlador = {
         }
     },
 
-    deleteProyecto: async (req,res) => {
+    deleteProceso: async (req,res) => {
         try{
             let procesos = await dataBaseSQL.procesos.update({
-                ver:0
+                ver:    0
             },{
                 where:{
-                    id_procesos: req.body.idProyecto
+                    id_procesos: req.body.idProceso
                 }
             });
             res.json({error :0, errorDetalle: "", objeto:procesos});
@@ -110,7 +174,7 @@ const controlador = {
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
                         mostrar : 1,
-                        fk_procesos : req.body.idProyecto
+                        fk_procesos : req.body.idProceso
                     },
                     attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso"],
                     include: [
@@ -125,9 +189,9 @@ const controlador = {
                     where: {
                         fk_area: req.body.user.area,
                         mostrar : 1,
-                        fk_proyecto : req.body.idProyecto
+                        fk_Proceso : req.body.idProceso
                     },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso"],
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso","horas_Necesarias"],
                     include: [
                         {association : "Areas",attributes: ['id_area','nombre_del_Area']},
                         {association : "Empleados",attributes: ['nombre','mail']},
@@ -176,18 +240,19 @@ const controlador = {
                 return 1;
             }else{
                 let tarea = await dataBaseSQL.tareas.create({
-                    fk_empleado_asignado : empleadoAsignado.id_empleado,
-                    fk_area : req.body.user.area,
-                    nombre : req.body.nombre,
-                    estado : req.body.estado,
-                    prioridad : req.body.prioridad,
-                    fecha_inicio : req.body.fechaInicio,
-                    fecha_final : req.body.fechaFinal,
-                    notas : req.body.notas,
-                    fk_area_apoyo: req.body.areaApoyo,
-                    progreso:req.body.progreso,
-                    mostrar : 1,
-                    fk_proceso: req.body.idProyecto
+                    fk_empleado_asignado :  empleadoAsignado.id_empleado,
+                    fk_area :               req.body.user.area,
+                    nombre :                req.body.nombre,
+                    estado :                req.body.estado,
+                    prioridad :             req.body.prioridad,
+                    fecha_inicio :          req.body.fechaInicio,
+                    fecha_final :           req.body.fechaFinal,
+                    notas :                 req.body.notas,
+                    fk_area_apoyo:          req.body.areaApoyo,
+                    progreso:               req.body.progreso,
+                    horas_Necesarias:       req.body.horas,
+                    mostrar :               1,
+                    fk_proceso:             req.body.idProceso
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0
@@ -213,21 +278,22 @@ const controlador = {
                     }
                 );
             }else{
-                empleadoAsignado = req.body.tarea.fk_empleado_asignado;
+                empleadoAsignado =      req.body.tarea.fk_empleado_asignado;
             }
 
             let tareaModificada = await dataBaseSQL.tareas.update({
-                fk_empleado_asignado : empleadoAsignado.id_empleado,
-                fk_area : req.body.user.area,
-                nombre : req.body.nombre,
-                estado : req.body.estado,
-                prioridad : req.body.prioridad,
-                fecha_inicio : req.body.fechaInicio,
-                fecha_final : req.body.fechaFinal,
-                notas : req.body.notas,
-                fk_area_apoyo: req.body.areaApoyo,
-                progreso:req.body.progreso,
-                fk_proceso: req.body.idProyecto
+                fk_empleado_asignado :  empleadoAsignado.id_empleado,
+                fk_area :               req.body.user.area,
+                nombre :                req.body.nombre,
+                estado :                req.body.estado,
+                prioridad :             req.body.prioridad,
+                fecha_inicio :          req.body.fechaInicio,
+                fecha_final :           req.body.fechaFinal,
+                notas :                 req.body.notas,
+                fk_area_apoyo:          req.body.areaApoyo,
+                progreso:               req.body.progreso,
+                horas_Necesarias:       req.body.horas,
+                fk_proceso:             req.body.idProceso
             },{
                 where:{
                     id_tarea : req.body.idTarea

@@ -18,6 +18,11 @@ module.exports = (sequelize,DataTypes) => {
             autoIncrement: true,
         },
 
+        "fk_area": {
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        },
+
         "nombre":{
             type: DataTypes.STRING(255),
         },
@@ -46,7 +51,13 @@ module.exports = (sequelize,DataTypes) => {
         cilcos.hasMany(models.procesos,{
             foreignKey : 'fk_ciclo',
             as : 'Procesos'
-        });        
+        });
+        
+        // Union con Areas
+        cilcos.belongsTo(models.areas,{
+            foreignKey : 'fk_area',
+            as : 'Areas'
+        });
 
     }
 
