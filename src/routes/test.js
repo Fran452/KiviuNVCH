@@ -20,10 +20,15 @@ router.get('/',testIndex.testGenerico);
 
 router.get('/plan-accion',testPlanesDeAccion.testGenerico);
 
-router.get('/plan-accion/addProyect',testPlanesDeAccion.createProyecto);
-router.get('/plan-accion/viewProyect',testPlanesDeAccion.readProyecto);
-router.get('/plan-accion/modProyect',testPlanesDeAccion.editeProyecto);
-router.get('/plan-accion/deleteProyect',testPlanesDeAccion.deleteProyecto);
+router.get('/plan-accion/viewCiclos',testPlanesDeAccion.verCiclos);
+router.get('/plan-accion/addCiclos',testPlanesDeAccion.crearCiclo);
+router.get('/plan-accion/modCiclos',testPlanesDeAccion.editarCiclos);
+router.get('/plan-accion/deleteCiclos',testPlanesDeAccion.eliminarCiclos);
+
+router.get('/plan-accion/viewProcesos',testPlanesDeAccion.readProceso);
+router.get('/plan-accion/addProceso',testPlanesDeAccion.createProceso);
+router.get('/plan-accion/modProceso',testPlanesDeAccion.editeProceso);
+router.get('/plan-accion/deleteProceso',testPlanesDeAccion.deleteProceso);
 
 router.get('/plan-accion/addTask',testPlanesDeAccion.createTarea);
 router.get('/plan-accion/viewTareas',testPlanesDeAccion.readTarea);

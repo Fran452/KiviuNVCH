@@ -25,13 +25,13 @@ const controlador = {
     /* CRUD De Ciclos */
     viewCiclos: async (req,res) => {
         try{
-            let ciclos = await dataBaseSQL.procesos.findAll({
+            let ciclos = await dataBaseSQL.ciclos.findAll({
                 where: {
                     fk_area :   req.body.user.area,
                     ver:        1
                 },
             });
-            res.json({error:0, ErrorDetalle:"", objeto:procesos});
+            res.json({error:0, ErrorDetalle:"", objeto:ciclos});
 
         }
         catch(error){
@@ -47,10 +47,9 @@ const controlador = {
                 fk_area :   req.body.user.area,
                 nombre  :   req.body.nombre,
                 detalles:   req.body.detalles,
-                fk_ciclo:   req.body.ciclo,
                 ver     :   1
             });
-            res.json({error :0, errorDetalle: "", objeto:procesos});
+            res.json({error :0, errorDetalle: "", objeto:ciclo});
             return 0
         }
         catch(error){
@@ -62,7 +61,16 @@ const controlador = {
 
     modCiclos: async (req,res) => {
         try{
-
+            let ciclo = await dataBaseSQL.ciclos.update({
+                nombre    : req.body.nombre,
+                detalles    : req.body.detalles,
+            },{
+                where:{
+                    id_ciclo: req.body.id_ciclo
+                }
+            });
+            res.json({error :0, errorDetalle: "", objeto:ciclo});
+            return 0;
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
@@ -73,7 +81,16 @@ const controlador = {
 
     deleteCiclos: async (req,res) => {
         try{
-
+            let ciclo = await dataBaseSQL.ciclos.update({
+                ver         : 0,
+            },{
+                where:{
+                    id_ciclo: req.body.id_ciclo
+                }
+            });
+            
+            res.json({error :0, errorDetalle: "", objeto:ciclo});
+            return 0;
         }
         catch(error){
             let ciclo = await dataBaseSQL.ciclos.update({
@@ -94,6 +111,7 @@ const controlador = {
             let procesos = await dataBaseSQL.procesos.findAll({
                 where: {
                     fk_area :   req.body.user.area,
+                    fk_ciclo:   req.body.ciclo,
                     ver:        1
                 },
             });

@@ -15,8 +15,8 @@ const controlador = {
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
         res.json(baseDeDatos);
     },
-  
-    createProyecto: async (req,res) => {
+    
+    crearCiclo : async (req,res) => {
         let resultadoTest = {}
 
         let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
@@ -29,16 +29,255 @@ const controlador = {
             mail:baseDeDatos[0].empleados[1].mail  
         };
 
-        // Crear proyecto desde la api
-        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addProyect',{
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addCiclos',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                nombre: "Proyecto de prueba",
-                detalles: "Detalle del proyecto de prueba",
-                user: usuario
+                nombre      : "Ciclo de ejemplo",
+                detalles    : "Ciclo de ejemplo detalles",
+                user        : usuario
+            })
+        })
+        
+        let apis = await apisJSON.json();
+        
+        // Sin error de apis
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        console.log(apis.error);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        };
+
+        // Busco el ciclo
+        cicloEncontrado = await funcionesDeTest.buscarCiclo(apis.objeto.id_ciclo);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Se encontro el ciclo creado',undefined,cicloEncontrado,4);
+        
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Nombre subido','Ciclo de ejemplo',cicloEncontrado.nombre,1);
+        
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Detalle subido','Ciclo de ejemplo detalles',cicloEncontrado.detalles,1);
+        
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Area subida',usuario.area,cicloEncontrado.fk_area,1);
+        
+        // Eliminar ejemplo
+        await funcionesDeTest.eliminarCiclo(cicloEncontrado.id_ciclo);
+
+        await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
+        res.json({resultadoTest,resultadoApi:apis});
+        return 0;
+    },
+
+    verCiclos: async (req,res) => {
+        let resultadoTest = {}
+
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+
+        let usuario = {
+            id:     baseDeDatos[0].empleados[1].id_empleado,
+            nombre: baseDeDatos[0].empleados[1].nombre,
+            area:   baseDeDatos[0].empleados[1].fk_area,
+            puesto: baseDeDatos[0].empleados[1].fk_puesto,
+            mail:   baseDeDatos[0].empleados[1].mail  
+        };
+
+        let usuarioOtraArea = {
+            id:     baseDeDatos[1].empleados[1].id_empleado,
+            nombre: baseDeDatos[1].empleados[1].nombre,
+            area:   baseDeDatos[1].empleados[1].fk_area,
+            puesto: baseDeDatos[1].empleados[1].fk_puesto,
+            mail:   baseDeDatos[1].empleados[1].mail  
+        };
+
+        let cicloSubicos = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+        let cicloSubicosNoVer = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo No mostrar","ciclo de ejemplo detalle",0);
+
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewCiclos',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user:   usuario
+            })
+        });
+        
+        let apis = await apisJSON.json();
+        
+        // Sin error de apis
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        console.log(apis.error);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        };
+
+        // Ciclos encontrados
+        let encontrarCiclo = apis.objeto.find(ciclos => ciclos.id_ciclo == cicloSubicos.id_ciclo);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Objeto de test mostrado',undefined,encontrarCiclo,4);
+        
+        // Ciclos que no se tiene que mostrar
+        let noMostrarCiclo = apis.objeto.find(ciclos => ciclos.id_ciclo == cicloSubicosNoVer.id_ciclo);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Objeto de test que no se tiene que mostrar',undefined,noMostrarCiclo,1);
+
+
+        let apis2JSON = await fetch('http://localhost:3030/apis/plan-accion/viewCiclos',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                user:   usuarioOtraArea
+            })
+        });
+        
+        let apis2 = await apis2JSON.json();
+
+        // Ciclos encontrados
+        encontrarCiclo = apis2.objeto.find(ciclos => ciclos.id_ciclo == cicloSubicos.id_ciclo);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Objeto de test no mostrado para otra area',undefined,encontrarCiclo,1);
+
+        
+        // Eliminar ejemplo
+        await funcionesDeTest.eliminarCiclo(cicloSubicos.id_ciclo);
+        await funcionesDeTest.eliminarCiclo(cicloSubicosNoVer.id_ciclo);
+
+        await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
+        res.json({resultadoTest,resultadoApi:{apisMismaArea:apis,apisDiferenteArea:apis2}});
+        return 0;
+    },
+
+    editarCiclos: async (req,res) => {
+        let resultadoTest = {}
+
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+
+        let usuario = {
+            id: baseDeDatos[0].empleados[1].id_empleado,
+            nombre:baseDeDatos[0].empleados[1].nombre,
+            area:baseDeDatos[0].empleados[1].fk_area,
+            puesto:baseDeDatos[0].empleados[1].fk_puesto,
+            mail:baseDeDatos[0].empleados[1].mail  
+        };
+
+        let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+        
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modCiclos',{
+            method:'PUT',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({  
+                nombre      : "Cambiado",   
+                detalles    : "Cambiado detalle",       
+                id_ciclo    : cicloSubidosAntes.id_ciclo,       
+                user        : usuario
+            })
+        })
+
+        let apis = await apisJSON.json();
+
+        // Sin error de apis
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        };
+
+        let cicloSubidosDespues = await funcionesDeTest.buscarCiclo(cicloSubidosAntes.id_ciclo);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Titulo modificado' ,'Cambiado',cicloSubidosDespues.nombre,1);
+        
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Detalle modificado','Cambiado detalle',cicloSubidosDespues.detalles,1);
+
+        // Eliminar ejemplo
+        await funcionesDeTest.eliminarCiclo(cicloSubidosAntes.id_ciclo);
+
+        await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
+
+        res.json({resultadoTest,resultadoApi:apis});
+        return 0;
+    },
+
+    eliminarCiclos: async (req,res) => {
+        let resultadoTest = {}
+
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+
+        let usuario = {
+            id: baseDeDatos[0].empleados[1].id_empleado,
+            nombre:baseDeDatos[0].empleados[1].nombre,
+            area:baseDeDatos[0].empleados[1].fk_area,
+            puesto:baseDeDatos[0].empleados[1].fk_puesto,
+            mail:baseDeDatos[0].empleados[1].mail  
+        };
+
+        let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/deleteCiclos',{
+            method:'PUT',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id_ciclo:   cicloSubidosAntes.id_ciclo,
+                user:       usuario
+            })
+        })
+        
+        let apis = await apisJSON.json();
+        
+        // Sin error de apis
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+        if(resultadoTest.test0.estado == 'Error'){
+            res.json({resultadoTest,resultadoApi:apis});
+            return 1;
+        };
+
+        let cicloSubidosDespues = await funcionesDeTest.buscarCiclo(cicloSubidosAntes.id_ciclo);
+        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificion del campo de ver' ,0,cicloSubidosDespues.ver,1);
+
+
+        // Eliminar ejemplo
+        await funcionesDeTest.eliminarCiclo(cicloSubidosAntes.id_ciclo);
+
+        await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
+
+        res.json({resultadoTest,resultadoApi:apis});
+        return 0;
+    },
+
+    createProceso: async (req,res) => {
+        // AGREGA FALTA DE CAMPOS
+        
+        let resultadoTest = {};
+
+        let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+
+        let usuario = {
+            id:     baseDeDatos[0].empleados[1].id_empleado,
+            nombre: baseDeDatos[0].empleados[1].nombre,
+            area:   baseDeDatos[0].empleados[1].fk_area,
+            puesto: baseDeDatos[0].empleados[1].fk_puesto,
+            mail:   baseDeDatos[0].empleados[1].mail  
+        };
+
+        let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+
+        console.log(cicloSubidosAntes);
+
+        // Crear Proceso desde la api
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addProceso',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nombre:     "Proceso de prueba",
+                detalles:   "Detalle del Proceso de prueba",
+                ciclo:      cicloSubidosAntes.id_ciclo,
+                user:       usuario
             })
         });
 
@@ -47,31 +286,34 @@ const controlador = {
         // Retorno de error 
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
         if(resultadoTest.test0.estado == 'Error'){
-            res.json({resultadoTest,resultadoApi:metricaEditada});
+            res.json({resultadoTest,resultadoApi:apis});
             return 1;
         }
 
         // Busqueda en la base de datos 
-        let proyectoSubido = await funcionesDeTest.buscarProyecto(apis.objeto.id_proyecto);
-        console.log(proyectoSubido);
+        let proyectoSubido = await funcionesDeTest.buscarProceso(apis.objeto.id_procesos);
+
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Subida a base de datos',undefined,proyectoSubido,4);
         if(resultadoTest.test1.estado == 'Error'){
-            res.json({resultadoTest,resultadoApi:metricaEditada});
+            res.json({resultadoTest,resultadoApi:apis});
             return 1;
         }
 
-        // Nombre del proyecto subido 
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Nombre del proyecto subido','Proyecto de prueba',proyectoSubido.nombre,1);
+        // Nombre del proceso subido 
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Nombre del proceso subido','Proceso de prueba',proyectoSubido.nombre,1);
 
-        // Descripcion del proyecto subido
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Descripcion del proyecto subido','Detalle del proyecto de prueba',proyectoSubido.detalles,1);
+        // Descripcion del proceso subido
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Descripcion del proceso subido','Detalle del Proceso de prueba',proyectoSubido.detalles,1);
 
-        // Area del proyecto
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Area del proyecto',usuario.area,proyectoSubido.fk_area,1);
+        // Area del proceso
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Area del proceso',usuario.area,proyectoSubido.fk_area,1);
+
+        // Ciclos del proceso
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Ciclos del proceso',cicloSubidosAntes.id_ciclo,proyectoSubido.fk_ciclo,1);
 
         // Eliminar ejemplo
-        await funcionesDeTest.eliminarProyecto(proyectoSubido.id_proyecto);
-
+        await funcionesDeTest.eliminarProceso(proyectoSubido.id_procesos);
+        await funcionesDeTest.eliminarCiclo(cicloSubidosAntes.id_ciclo);
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
 
         res.json({resultadoTest,resultadoApi:apis});
@@ -79,7 +321,7 @@ const controlador = {
 
     },
 
-    readProyecto: async (req,res) => {
+    readProceso: async (req,res) => {
         let resultadoTest = {};
         
         // Crear base de datos
@@ -92,35 +334,24 @@ const controlador = {
             puesto: baseDeDatos[0].empleados[2].fk_Puesto,
             mail:   baseDeDatos[0].empleados[2].mail  
         };
+        
+        // Crear Circuito de prueba
+        let cicloEjemplo1 = await funcionesDeTest.crearCiclo(usuarioArea1.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+        let cicloEjemplo2 = await funcionesDeTest.crearCiclo(usuarioArea1.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
 
-        let usuarioArea2 = {
-            id:     baseDeDatos[1].empleados[2].id_empleado,
-            nombre: baseDeDatos[1].empleados[2].nombre,
-            area:   baseDeDatos[1].empleados[2].fk_area,
-            puesto: baseDeDatos[1].empleados[2].fk_Puesto,
-            mail:   baseDeDatos[1].empleados[2].mail  
-        };
-
-        let jefeArea = {
-            id:     baseDeDatos[1].empleados[1].id_empleado,
-            nombre: baseDeDatos[1].empleados[1].nombre,
-            area:   baseDeDatos[1].empleados[1].fk_area,
-            puesto: baseDeDatos[1].empleados[1].fk_Puesto,
-            mail:   baseDeDatos[1].empleados[1].mail  
-        };
-
-        console.log(usuarioArea1);
         // Crear proyecto de prueba
-        let proyectoTest = await funcionesDeTest.crearProyecto(usuarioArea1.area,"test de prueba","test de prueba");
+        let procesoTest = await funcionesDeTest.crearProceso(usuarioArea1.area,cicloEjemplo1.id_ciclo,"test de prueba","test de prueba",1);
+        let procesoTest2 = await funcionesDeTest.crearProceso(usuarioArea1.area,cicloEjemplo2.id_ciclo,"test de prueba","test de prueba",1);
 
         // Buscar muestra de proyecto con usuario con area en el proyecto
-        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewProceso',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                user:usuarioArea1
+                ciclo:  cicloEjemplo1.id_ciclo,
+                user:   usuarioArea1
             })
         })
         
@@ -132,76 +363,27 @@ const controlador = {
             res.json({resultadoTest,resultadoApi:apis});
             return 1;
         }
-
-        // Buscar proyecto subido
-        let proyecto = apis.objeto.find(proyecto => proyecto.id_proyecto == proyectoTest.id_proyecto)
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado',undefined,proyecto,4);
-
-        // Buscar muestra de proyecto con usuario sin area en el proyecto
-        let apisCaso2JSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
-            method:'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-           body: JSON.stringify({
-            user: usuarioArea2
-            })
-        });
-
-
-        let apisCaso2 = await apisCaso2JSON.json();
-
-        // Sin error de apis
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis caso 2',0,apisCaso2.error,1);
-        if(resultadoTest.test0.estado == 'Error'){
-            res.json({resultadoTest,resultadoApi:apis});
-            return 1;
-        }
-
-        // Buscar proyecto subido
-        let proyecto2 = apisCaso2.objeto.find(proyecto => proyecto.id_proyecto == proyectoTest.id_proyecto);
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado para usuario de otra area',undefined,proyecto2,1);
-
-        // Buscar muestra de proyecto con usuario sin area en el proyecto
-        let apisCaso3JSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
-            method:'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-           body: JSON.stringify({
-            user: jefeArea
-            })
-        });
         
-        let apisCaso3 = await apisCaso3JSON.json();
-
-        // Sin error de apis
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis caso 2',0,apisCaso2.error,1);
-        if(resultadoTest.test0.estado == 'Error'){
-            res.json({resultadoTest,resultadoApi:apis});
-            return 1;
-        };
-
         // Buscar proyecto subido
-        proyecto = apisCaso3.objeto.find(proyecto => proyecto.id_proyecto == proyectoTest.id_proyecto)
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado vista jefe',undefined,proyecto,4);
-        
-        
+        let proceso = apis.objeto.find(proceso => proceso.id_procesos == procesoTest.id_procesos);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado',undefined,proceso,4);
+
+        //Buscar si esta el proyecto de otro ciclo
+        proceso = apis.objeto.find(proceso => proceso.id_procesos == procesoTest2.id_procesos);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'No encontrar proyecto creado de otro ciclo',undefined,proceso,1);
+
 
         // Eliminar ejemplo
-        await funcionesDeTest.eliminarProyecto(proyectoTest.id_proyecto);
+        await funcionesDeTest.eliminarProceso(procesoTest.id_procesos);
+        await funcionesDeTest.eliminarProceso(procesoTest2.id_procesos);
+        await funcionesDeTest.eliminarCiclo(cicloEjemplo1.id_ciclo);
+        await funcionesDeTest.eliminarCiclo(cicloEjemplo2.id_ciclo);
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
-
-
-        res.json({resultadoTest,resultadoApi:{
-            apisCaso1: apis,
-            apisCaso2: apisCaso2,
-            apisCaso3 : apisCaso3
-        }});
+        res.json({resultadoTest,resultadoApi: apis});
     },
 
-    editeProyecto: async (req,res) => {
-        let resultadoTest = {}
+    editeProceso: async (req,res) => {
+        let resultadoTest = {};
 
         // Crear base de datos
         let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
@@ -213,38 +395,23 @@ const controlador = {
             puesto: baseDeDatos[0].empleados[2].fk_Puesto,
             mail:   baseDeDatos[0].empleados[2].mail  
         };
-
-        let usuarioArea2 = {
-            id:     baseDeDatos[1].empleados[2].id_empleado,
-            nombre: baseDeDatos[1].empleados[2].nombre,
-            area:   baseDeDatos[1].empleados[2].fk_area,
-            puesto: baseDeDatos[1].empleados[2].fk_Puesto,
-            mail:   baseDeDatos[1].empleados[2].mail  
-        };
-
-        let jefeArea = {
-            id:     baseDeDatos[1].empleados[1].id_empleado,
-            nombre: baseDeDatos[1].empleados[1].nombre,
-            area:   baseDeDatos[1].empleados[1].fk_area,
-            puesto: baseDeDatos[1].empleados[1].fk_Puesto,
-            mail:   baseDeDatos[1].empleados[1].mail  
-        };
-
+        console.log(baseDeDatos);
         // Crear proyecto de prueba
-        let crearProyecto = await funcionesDeTest.crearProyecto(baseDeDatos[0].id_area,"test de prueba","test de prueba");
-        let proyectoAntiguo = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+        let cicloEjemplo1 = await funcionesDeTest.crearCiclo(usuarioArea1.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+        let crearProceso = await funcionesDeTest.crearProceso(usuarioArea1.area,cicloEjemplo1.id_ciclo,"test de prueba","test de prueba",1);
+        let procesoAntiguo = await funcionesDeTest.buscarProceso(crearProceso.id_procesos);
 
 
         // Edicion de proyecto para usuario miembro del area
-        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modProyect',{
-            method:'POST',
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modProceso',{
+            method:'PUT',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 nombre:"test de prueba modificado",
                 detalles: 'test de prueba descripcion modifcado',
-                idProyecto: proyectoAntiguo.id_proyecto,
+                idProceso: procesoAntiguo.id_procesos,
                 user: usuarioArea1
             })
         });
@@ -259,88 +426,30 @@ const controlador = {
             return 1;
         }
 
-        let proyectoEditado = await funcionesDeTest.buscarProyecto(proyectoAntiguo.id_proyecto);
+        let proyectoEditado = await funcionesDeTest.buscarProceso(procesoAntiguo.id_procesos);
 
         // Diferencia entre nombre antiguo y actual
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Diferencia entre nombre antiguo y actual',proyectoAntiguo.nombre,proyectoEditado.nombre,4);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Diferencia entre nombre antiguo y actual',procesoAntiguo.nombre,proyectoEditado.nombre,4);
 
         // Editado nombre
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Editado nombre','test de prueba modificado',proyectoEditado.nombre,1);
         
         // Diferencia entre detalle antiguo y detalle actual
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Diferencia entre nombre antiguo y actual',proyectoAntiguo.detalles,proyectoEditado.detalles,4);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Diferencia entre nombre antiguo y actual',procesoAntiguo.detalles,proyectoEditado.detalles,4);
 
         // Editado descipcion
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Detalles editada','test de prueba descripcion modifcado',proyectoEditado.detalles,1);
         
-        
-
-        crearProyecto = await funcionesDeTest.crearProyecto(baseDeDatos[0].id_area,"test de prueba","test de prueba");
-        proyectoAntiguo = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
-
-        let apis2JSON = await fetch('http://localhost:3030/apis/plan-accion/modProyect',{
-            method:'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                nombre:"test de prueba modificado",
-                detalles: 'test de prueba descripcion modifcado',
-                idProyecto: proyectoAntiguo.id_proyecto,
-                user: usuarioArea2
-            })
-        });
-        
-        let apis2 = await apis2JSON.json();
-
-        // codigo de error sin permisos
-        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de permisos',99,apis2.error,1);
-
-        // detalle del error correcto
-        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de permisos detalle','Sin permisos para modificar proyectos de otras areas1',apis.errorDetalle,1);
-        
-        let proyectoSinEditar = await funcionesDeTest.buscarProyecto(proyectoAntiguo.id_proyecto);
-
-        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin modificacion del proyecto subido','test de prueba',proyectoSinEditar.nombre,1);
-
-
-        crearProyecto = await funcionesDeTest.crearProyecto(baseDeDatos[0].id_area,"test de prueba","test de prueba");
-        proyectoAntiguo = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
-
-        let apis3JSON = await fetch('http://localhost:3030/apis/plan-accion/modProyect',{
-            method:'POST',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                nombre:"test de prueba modificado",
-                detalles: 'test de prueba descripcion modifcado',
-                idProyecto: proyectoAntiguo.id_proyecto,
-                user: jefeArea
-            })
-        });
-
-        let apis3 = await apis3JSON.json();
-
-        // Sin error de apis
-        resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis3.error,1);
-
-        proyectoEditado = await funcionesDeTest.buscarProyecto(proyectoAntiguo.id_proyecto);
-
-        // Diferencia entre nombre antiguo y actual
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Diferencia entre nombre antiguo y actual',proyectoAntiguo.nombre,proyectoEditado.nombre,4);
-
-        // Editado nombre
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Editado nombre','test de prueba modificado',proyectoEditado.nombre,1);
-
+    
         // Eliminar ejemplo
-        await funcionesDeTest.eliminarProyecto(proyectoAntiguo.id_proyecto);
+        await funcionesDeTest.eliminarProceso(procesoAntiguo.id_procesos);
+        await funcionesDeTest.eliminarCiclo(cicloEjemplo1.id_ciclo);
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
 
-        res.json({resultadoTest,resultadoApi:{apis,apis2,apis3}});
+        res.json({resultadoTest,resultadoApi:apis});
     },
 
-    deleteProyecto: async (req,res) => {
+    deleteProceso: async (req,res) => {
         let resultadoTest = {}
 
         // Crear base de datos
@@ -354,33 +463,20 @@ const controlador = {
             mail:   baseDeDatos[0].empleados[2].mail  
         };
 
-        let usuarioArea2 = {
-            id:     baseDeDatos[1].empleados[2].id_empleado,
-            nombre: baseDeDatos[1].empleados[2].nombre,
-            area:   baseDeDatos[1].empleados[2].fk_area,
-            puesto: baseDeDatos[1].empleados[2].fk_Puesto,
-            mail:   baseDeDatos[1].empleados[2].mail  
-        };
-
-        let jefeArea = {
-            id:     baseDeDatos[1].empleados[1].id_empleado,
-            nombre: baseDeDatos[1].empleados[1].nombre,
-            area:   baseDeDatos[1].empleados[1].fk_area,
-            puesto: baseDeDatos[1].empleados[1].fk_Puesto,
-            mail:   baseDeDatos[1].empleados[1].mail  
-        };
 
         // Crear proyecto de prueba
-        let crearProyecto = await funcionesDeTest.crearProyecto(baseDeDatos[0].id_area,"test de prueba","test de prueba");
+        let cicloEjemplo1 = await funcionesDeTest.crearCiclo(usuarioArea1.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+
+        let crearProceso = await funcionesDeTest.crearProceso(usuarioArea1.area,cicloEjemplo1.id_ciclo,"test de prueba","test de prueba",1);
 
         // Edicion de proyecto
-        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/deleteProyect',{
-            method:'POST',
+        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/deleteProceso',{
+            method:'PUT',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                idProyecto: crearProyecto.id_proyecto,
+                idProceso: crearProceso.id_procesos,
                 user: usuarioArea1
             })
         });
@@ -395,28 +491,32 @@ const controlador = {
             return 1;
         }
 
-        let proyectoEliminado = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+        let procesoEliminado = await funcionesDeTest.buscarProceso(crearProceso.id_procesos);
 
-        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'opcion ver en 0',0,proyectoEliminado.ver,1);
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'opcion ver en 0',0,procesoEliminado.ver,1);
 
-        let apisVerJSON = await fetch('http://localhost:3030/apis/plan-accion/viewProyect',{
+        let apisVerJSON = await fetch('http://localhost:3030/apis/plan-accion/viewProceso',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                user:usuarioArea1
+                ciclo: cicloEjemplo1.id_ciclo,
+                user:   usuarioArea1
             })
         });
 
         let apisVer = await apisVerJSON.json();
 
-        let proyectoElimiandoVer = apisVer.objeto.find(proyecto => proyecto.id_proyecto == proyectoEliminado.id_proyecto);
+        let proyectoElimiandoVer = apisVer.objeto.find(proceso => proceso.id_procesos == procesoEliminado.id_procesos);
 
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'No aparece entrando desde api',undefined,proyectoElimiandoVer,1);
 
+        // eliminar basuda
+        await funcionesDeTest.eliminarProceso(procesoEliminado.id_procesos);
 
-        await funcionesDeTest.eliminarProyecto(proyectoEliminado.id_proyecto);
+        await funcionesDeTest.eliminarCiclo(cicloEjemplo1.id_ciclo);
+
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
         res.json({resultadoTest,resultadoApi:apis});
         
@@ -429,8 +529,8 @@ const controlador = {
         let baseDeDatoTest = await funcionesDeTest.crarAmbienteGenerico();
         
         // Crear proyecto de prueba
-        let crearProyecto = await funcionesDeTest.crearProyecto(baseDeDatoTest.empleados[0].fk_area,"test de prueba","test de prueba");
-        let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+        let crearProceso = await funcionesDeTest.crearProceso(baseDeDatoTest.empleados[0].fk_area,"test de prueba","test de prueba");
+        let proyecto = await funcionesDeTest.buscarProceso(crearProceso.id_procesos);
         
         let ahora = new Date();
         let fechaDeInicio = ahora.toISOString().split('T')[0];
@@ -468,7 +568,7 @@ const controlador = {
                 notas:              'Tarea de prueba para hacer los test',
                 areaApoyo:          areaDeApoyo,    
                 progreso:           0,    
-                idProyecto:         proyecto.id_proyecto,     
+                idProyecto:         proyecto.id_procesos,     
                 user:               usuario
             })
         });
@@ -515,7 +615,7 @@ const controlador = {
                 notas:              'Tarea de prueba para hacer los test',
                 areaApoyo:          areaDeApoyo,    
                 progreso:           0,    
-                idProyecto:         proyecto.id_proyecto,     
+                idProyecto:         proyecto.id_procesos,     
                 user:               usuario
             })
         });
@@ -545,7 +645,7 @@ const controlador = {
                 notas:              'Tarea de prueba para hacer los test',
                 areaApoyo:          areaDeApoyo,    
                 progreso:           0,    
-                idProyecto:         proyecto.id_proyecto,     
+                idProyecto:         proyecto.id_procesos,     
                 user:               usuario
             })
         });
@@ -571,7 +671,7 @@ const controlador = {
                 notas:              'Tarea de prueba para hacer los test',
                 areaApoyo:          areaDeApoyo,    
                 progreso:           0,    
-                idProyecto:         proyecto.id_proyecto,     
+                idProyecto:         proyecto.id_procesos,     
                 user:               usuario
             })
         });
@@ -584,7 +684,7 @@ const controlador = {
 
         // eliminar ejemplo
         await funcionesDeTest.eliminarTarea(tareaEjemplo.id_tarea);    
-        await funcionesDeTest.eliminarProyecto(crearProyecto.id_proyecto);
+        await funcionesDeTest.eliminarProceso(crearProceso.id_procesos);
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatoTest);
 
         res.json({resultadoTest,resultadoApi:apis});
@@ -608,13 +708,13 @@ const controlador = {
         let fechaFin = ahora.toISOString().split('T')[0];
 
         // proyecto para las tareas 
-        let crearProyecto = await funcionesDeTest.crearProyecto(area,"test de prueba","test de prueba");
-        let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+        let crearProceso = await funcionesDeTest.crearProceso(area,"test de prueba","test de prueba");
+        let proyecto = await funcionesDeTest.buscarProceso(crearProceso.id_procesos);
 
         // tareas de ejemplo
-        let tarea1 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n1`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
-        let tarea2 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n2`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',25);
-        let tarea3 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n3`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',75);
+        let tarea1 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n1`,proyecto.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+        let tarea2 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n2`,proyecto.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',25);
+        let tarea3 = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `proyecto de prueba n3`,proyecto.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',75);
 
         let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewTask',{
             method:'POST',
@@ -622,7 +722,7 @@ const controlador = {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                idProyecto: proyecto.id_proyecto,
+                idProyecto: proyecto.id_procesos,
                 user:       {
                                 id:         baseDeDatos.empleados[0].id_empleado,
                                 nombre:     baseDeDatos.empleados[0].nombre,
@@ -658,7 +758,7 @@ const controlador = {
         await funcionesDeTest.eliminarTarea(tarea1BD.id_tarea);
         await funcionesDeTest.eliminarTarea(tarea2BD.id_tarea);
         await funcionesDeTest.eliminarTarea(tarea3BD.id_tarea);
-        await funcionesDeTest.eliminarProyecto(proyecto.id_proyecto);
+        await funcionesDeTest.eliminarProceso(proyecto.id_procesos);
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
 
         res.json({resultadoTest,resultadoApi:apis});
@@ -683,11 +783,11 @@ const controlador = {
         let fechaFin = ahora.toISOString().split('T')[0];
 
         // proyecto para las tareas 
-        let crearProyecto = await funcionesDeTest.crearProyecto(area,"test de prueba","test de prueba");
-        let proyecto = await funcionesDeTest.buscarProyecto(crearProyecto.id_proyecto);
+        let crearProceso = await funcionesDeTest.crearProceso(area,"test de prueba","test de prueba");
+        let proyecto = await funcionesDeTest.buscarProceso(crearProceso.id_procesos);
 
         // tareas de ejemplo
-        let tareaAntes = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `tarea de prueba`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+        let tareaAntes = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `tarea de prueba`,proyecto.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
         
         let apisJSON = await fetch('http://localhost:3030/apis/',{
             method:'POST',
@@ -705,7 +805,7 @@ const controlador = {
                 notas             : 'cambiando la nota', 
                 areaApoyo         : areaApoyo,     
                 progreso          : 40,     
-                idProyecto        : proyecto.id_proyecto,     
+                idProyecto        : proyecto.id_procesos,     
                 user              : {
                                         id:     empleado1.id_empleado,
                                         nombre: empleado1.nombre,
@@ -725,7 +825,7 @@ const controlador = {
             return 1;
         };
 
-        let tareaDespues = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `tarea de prueba`,proyecto.id_proyecto,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+        let tareaDespues = await funcionesDeTest.crearTarea(baseDeDatos.empleados[0].id_empleado,area,areaApoyo, `tarea de prueba`,proyecto.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
         
 
         resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Cambio de la tarea de forma correcta','tarea de prueba',apis.error,1);
@@ -741,7 +841,7 @@ const controlador = {
 
         // Eliminar ejemplos
         await funcionesDeTest.eliminarTarea(tarea1.id_tarea);
-        await funcionesDeTest.eliminarProyecto(proyecto.id_proyecto);
+        await funcionesDeTest.eliminarProceso(proyecto.id_procesos);
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);    
 
         res.json({resultadoTest,resultadoApi:apis});
@@ -769,7 +869,7 @@ let apisJSON = await fetch('http://localhost:3030/apis/',{
         "Content-Type": "application/json"
     },
     body: JSON.stringify({
-        user:{id: 4,nombre: 'Francisco Lema',area: 1,puesto: 2,mail: 'franciscolemacr@gmail.com'}
+        user:   usuario  
     })
 })
 

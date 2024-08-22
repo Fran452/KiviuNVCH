@@ -120,6 +120,7 @@ let controlador = {
         }
         return objetoTest;
     },
+
 /**
  * 
  * @returns array
@@ -136,7 +137,7 @@ let controlador = {
             let areaCrada = await this.crearArea(`nombre del area ${i}`,'sin Power Bi');
             let empleados = []
             for(let j = 0;j < 3 ; j++){
-                let empleado = await this.crearUsuario(areaCrada.id_area,j,`Nombre del empelado ${j}`,'1234',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`,'sin interes');
+                let empleado = await this.crearUsuario(areaCrada.id_area,j,`Nombre del empelado ${j}`,'1234',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`,'');
                 empleados.push(empleado); 
             }
 
@@ -164,24 +165,22 @@ let controlador = {
         
     },
 
-
-    // Para proyectos
-    crearProyecto: async function(area,nombre,detalle){
-        let objetoCreado = await dataBaseSQL.proyectos.create({
-            fk_area: area,
-            nombre: nombre,
-            detalles:detalle,
-            ver:1
+    // Para Ciclo
+    crearCiclo: async function(area,nombre,detalle,ver){
+        let objetoCreado = await dataBaseSQL.ciclos.create({
+            fk_area:    area,
+            nombre:     nombre,
+            detalles:   detalle,
+            ver:        ver
         });
         return objetoCreado.dataValues;
     },
-
-    buscarProyecto: async function(id){
-        let busqueda = await dataBaseSQL.proyectos.findOne({
+    
+    buscarCiclo: async function(id){
+        let busqueda = await dataBaseSQL.ciclos.findOne({
             where: {
-                id_proyecto : id
+                id_ciclo : id
             },
-            attributes: ['id_proyecto','fk_area','nombre','detalles','ver'],
             include: [
                 {association : "Areas",attributes: ['id_area','nombre_del_Area']},
             ]
@@ -189,9 +188,40 @@ let controlador = {
         return busqueda.dataValues;
     },
     
-    eliminarProyecto: async function(id){
-        await dataBaseSQL.proyectos.destroy({
-            where : {id_proyecto: id}
+    eliminarCiclo: async function(id){
+        await dataBaseSQL.ciclos.destroy({
+            where : {id_ciclo: id}
+        });
+    },
+
+    // Para proceso
+    crearProceso: async function(area,ciclo,nombre,detalle,ver){
+        let objetoCreado = await dataBaseSQL.procesos.create({
+            fk_area:    area,
+            fk_ciclo:   ciclo,
+            nombre:     nombre,
+            detalles:   detalle,
+            ver:        ver
+        });
+        return objetoCreado.dataValues;
+    },
+    
+    buscarProceso: async function(id){
+        let busqueda = await dataBaseSQL.procesos.findOne({
+            where: {
+                id_procesos : id
+            },
+            include: [
+                {association : "Areas",attributes: ['id_area','nombre_del_Area']},
+                {association : "Ciclos",attributes: ['id_ciclo','nombre']},
+            ]
+        });
+        return busqueda.dataValues;
+    },
+    
+    eliminarProceso: async function(id){
+        await dataBaseSQL.procesos.destroy({
+            where : {id_procesos: id}
         });
     },
 
@@ -223,7 +253,7 @@ let controlador = {
             include: [
                 {association : "Empleados",attributes: ['nombre','fk_area','fk_puesto','mail']},
                 {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']},
-                {association : "Proyectos",attributes: ['id_proyecto','nombre']},
+                {association : "procesos",attributes: ['id_proyecto','nombre']},
                 {association : "Areas",attributes: ['id_area','nombre_del_Area']},                
             ]
         });
@@ -314,14 +344,14 @@ let controlador = {
         return busqueda;
     },
 
-    crearUsuario: async function (area,puesto,nombre,contraseña,mail,sucursal) {
+    crearUsuario: async function (area,puesto,nombre,contraseña,abreviatura,mail) {
         let creacion = await dataBaseSQL.empleados.create({
             fk_area:    area,
             fk_Puesto:  puesto,
             nombre:     nombre,
             password:   contraseña,
             mail:       mail,
-            sucursal:   sucursal
+            abreviatura: abreviatura
         });
         return creacion.dataValues;
     },

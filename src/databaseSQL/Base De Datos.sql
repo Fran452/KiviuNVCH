@@ -29,7 +29,7 @@ CREATE TABLE Empleados (
 
 CREATE TABLE Ciclos ( 
     id_ciclo                                INT PRIMARY KEY AUTO_INCREMENT,
-    fk_area                                 INT PRIMARY KEY AUTO_INCREMENT,
+    fk_area                                 INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
     detalles                                VARCHAR(255) NOT NULL,
     ver                                     INT NOT NULL,

@@ -12,6 +12,26 @@ const controlador = {
     
     testGenerico: async (req,res) => {
         let links = {
+            planesAcción:{
+                testGenericos: 'http://localhost:3030/test/plan-accion',
+                ciclos:{
+                    add:    'http://localhost:3030/test/plan-accion/addCiclos',
+                    view:   'http://localhost:3030/test/plan-accion/viewCiclos',
+                    mod:    'http://localhost:3030/test/plan-accion/modCiclos',
+                    delete: 'http://localhost:3030/test/plan-accion/deleteCiclos'
+                },
+                procesos:{
+                    add:    'http://localhost:3030/test/plan-accion/addProceso',
+                    view:   'http://localhost:3030/test/plan-accion/viewProcesos',
+                    mod:    'http://localhost:3030/test/plan-accion/modProceso',
+                    delete: 'http://localhost:3030/test/plan-accion/deleteProceso'
+                },
+                tareas:{
+                    add:    'http://localhost:3030/test/plan-accion/addTask',
+                    view:   'http://localhost:3030/test/plan-accion/viewTareas',
+                    mod:    'http://localhost:3030/test/plan-accion/modTask',
+                    delete: 'http://localhost:3030/test/plan-accion/deleteTask'
+                },
             dateIn : {
                 testGenericos: 'http://localhost:3030/test/dateIn',
                 indicadores:{
@@ -26,20 +46,6 @@ const controlador = {
                     mod:    'http://localhost:3030/test/dateIn/editMegrica',
                 }
             },
-            planesAcción:{
-                testGenericos: 'http://localhost:3030/test/plan-accion',
-                proyectos:{
-                    add:    'http://localhost:3030/test/plan-accion/addProyect',
-                    view:   'http://localhost:3030/test/plan-accion/viewProyect',
-                    mod:    'http://localhost:3030/test/plan-accion/modProyect',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteProyect'
-                },
-                tareas:{
-                    add:    'http://localhost:3030/test/plan-accion/addTask',
-                    view:   'http://localhost:3030/test/plan-accion/viewTareas',
-                    mod:    'http://localhost:3030/test/plan-accion/modTask',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteTask'
-                }
             },
 
             usuarios:{
