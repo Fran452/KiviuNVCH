@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from '../pages/Login/Login'
 import Home from '../pages/Home/Home'
-import PlanesAccion from '../pages/PlanesAccion/PlanesAccion'
+// import PlanesAccion from '../pages/PlanesAccion/PlanesAccion'
 import Okr from '../pages/Okr/Okr'
 import AsistenteIA from '../pages/AsistenteIA/AsistenteIA'
 import DatIN from '../pages/DatIN/DatIN'
@@ -11,6 +11,9 @@ import ProtectedRoutes from '../Services/ProtectedRoutes'
 import Layout from '../components/Layout/Layout'
 import PowerBI from '../components/PowerBI'
 import NotFound from '../pages/NotFound/NotFound'
+import CiclosAuditoria from '../pages/PlanesAccion/CiclosAuditoria'
+import Year from '../pages/PlanesAccion/Year'
+import Proceso from '../pages/PlanesAccion/Proceso'
 
 function MyRoutes() {
   return (
@@ -20,8 +23,14 @@ function MyRoutes() {
             {/* protected routes */}
             <Route element={<ProtectedRoutes />}>
               <Route element={<Layout />}>
-                  <Route path="/home" element={<Home />}/>
-                  <Route path="/planes-de-accion" element={<PlanesAccion />}/>
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/ciclos-de-auditoria">
+                    <Route index element={<CiclosAuditoria />} />
+                    <Route path=":year">
+                      <Route index element={<Year />} />
+                      <Route path=":id" element={<Proceso />}></Route>
+                    </Route>
+                  </Route>
                   <Route path="/okr" element={<Okr />}/>
                   <Route path="/asistente-ia" element={<AsistenteIA />}/>
                   <Route path="/dat-in" element={<DatIN />}/>

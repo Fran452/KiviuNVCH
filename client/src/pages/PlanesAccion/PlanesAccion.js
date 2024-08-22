@@ -128,7 +128,7 @@ function PlanesAccion() {
                 <div className='planes__accion section'>
                     <div className='section__header d-flex flex-row align-items-end mb-4'>
                         <i className='bi bi-bar-chart-steps me-2'></i>
-                        <h4 className='m-0'>Planes de Acción</h4>
+                        <h4 className='m-0'>Ciclos de auditoría</h4>
                     </div>
                     {loading ? (
                         <div className='loading__proyectos d-flex flex-column align-items-center justify-content-center'>
