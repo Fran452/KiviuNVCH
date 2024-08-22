@@ -58,7 +58,7 @@ function Home() {
           <p className='fw-medium'>Loading...</p>
         </div>
       ) : (
-        <div className='home__areas mb-4'>
+        <div className='home__areas'>
           {areas.map((e,i) => {
             return <Link to={`/bi/${e.id_area}`} className="btn home__areas__area border border-light-subtle shadow-sm rounded-3 d-flex flex-row align-items-center" key={i}>
               <h4 className='p-0 m-0 text-start'>{e.nombre_del_Area}</h4>
