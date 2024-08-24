@@ -32,7 +32,7 @@ function CiclosAuditoria() {
                     <h4 className='m-0'>Ciclos de auditoría</h4>
                 </div>
                 {loading ? (
-                    <div className='loading__proyectos d-flex flex-column align-items-center justify-content-center'>
+                    <div className='loading__auditoria d-flex flex-column align-items-center justify-content-center'>
                         <Oval
                             visible={true}
                             height="80"

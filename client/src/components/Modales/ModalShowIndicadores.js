@@ -12,6 +12,7 @@ import { Modal } from 'react-bootstrap';
 import Avatar from '../../assets/img/avatar-2.png'
 import { jwtDecode } from "jwt-decode"
 import './ModalShowIndicador.scss'
+import './ModalPlanes.scss'
 import { Oval } from 'react-loader-spinner'
 
 import { DataInContext } from '../../context/DataInContext'
