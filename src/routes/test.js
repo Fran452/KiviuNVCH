@@ -35,7 +35,10 @@ router.get('/plan-accion/viewTareas',testPlanesDeAccion.readTarea);
 router.get('/plan-accion/modTask',testPlanesDeAccion.editeTarea);
 router.get('/plan-accion/deleteTask',testPlanesDeAccion.deleteTarea);
 
-
+router.get('/plan-accion/viewSubTask',testPlanesDeAccion.viewSubTarea);
+router.get('/plan-accion/addSubTask',testPlanesDeAccion.addSubTarea);
+router.get('/plan-accion/modSubTask',testPlanesDeAccion.editSubTarea);
+router.get('/plan-accion/deleteSubTask',testPlanesDeAccion.deleteSubTarea);
 
 router.get('/dateIn',testDateIn.testGenerico);
 

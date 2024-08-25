@@ -133,11 +133,13 @@ let controlador = {
         let baseDeDatos = [];
         
         for(let i = 0;i<3;i++){
+            let puesto = 1
             let objeto = {}
             let areaCrada = await this.crearArea(`nombre del area ${i}`,'sin Power Bi');
             let empleados = []
             for(let j = 0;j < 3 ; j++){
-                let empleado = await this.crearUsuario(areaCrada.id_area,j,`Nombre del empelado ${j}`,'1234',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`,'');
+                let empleado = await this.crearUsuario(areaCrada.id_area,puesto,`Nombre del empelado ${j}`,'1234','',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`);
+                puesto++;
                 empleados.push(empleado); 
             }
 
@@ -148,7 +150,6 @@ let controlador = {
 
             baseDeDatos.push(objeto);
         };
-        console.log(baseDeDatos);
         return baseDeDatos;
 
     },
@@ -226,20 +227,19 @@ let controlador = {
     },
 
     // Para Tareas 
-    crearTarea: async function(fk_empleado_asignado,fk_area,fk_area_apoyo,nombre,fk_proyecto,estado,prioridad,fecha_inicio,fecha_final,notas,progreso){
+    crearTarea: async function(fk_empleado_asignado,fk_area,fk_procesos,nombre,estado,prioridad,fecha_final,notas,progreso,horas_totales){
         let objetoCreado = await dataBaseSQL.tareas.create({
             fk_empleado_asignado,
             fk_area,
-            fk_area_apoyo,
-            fk_proyecto,
+            fk_procesos,
             nombre,
             estado,
             prioridad,
-            fecha_inicio,
             fecha_final,
             notas,
             progreso,
-            mostrar : 1,
+            horas_totales,
+            ver : 1,
         });
         return objetoCreado.dataValues;
     },
@@ -249,11 +249,10 @@ let controlador = {
             where: {
                 id_tarea : id
             },
-            attributes: ['id_tarea','nombre','estado','prioridad','fecha_inicio','fecha_final','notas','progreso'],
+            attributes: ['id_tarea','nombre','estado','prioridad','notas','progreso','horas_totales'],
             include: [
-                {association : "Empleados",attributes: ['nombre','fk_area','fk_puesto','mail']},
-                {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']},
-                {association : "procesos",attributes: ['id_proyecto','nombre']},
+                {association : "Empleado",attributes: ['nombre','fk_area','fk_puesto','mail']},
+                {association : "Proceso",attributes: ['id_procesos','nombre']},
                 {association : "Areas",attributes: ['id_area','nombre_del_Area']},                
             ]
         });
@@ -263,6 +262,42 @@ let controlador = {
     eliminarTarea: async function(id){
         await dataBaseSQL.tareas.destroy({
             where : {id_tarea: id}
+        });
+    },
+
+    // Para sub tareas
+
+    crearSubTarea: async function(fk_tareas, titulo, asignacion, horasAprox, avece, estado, prioridad, notas, ver){
+        let objetoCreado = await dataBaseSQL.subtareas.create({
+            fk_tareas,
+            titulo,
+            asignacion,
+            horasAprox,
+            avece,
+            estado,
+            prioridad,
+            notas,
+            ver
+        });
+        return objetoCreado.dataValues;
+    },
+
+    buscarSubTarea: async function(id){
+        let busqueda = await dataBaseSQL.subtareas.findOne({
+            where: {
+                id_sub_tarea : id
+            },
+            include: [
+                {association : "Tareas",attributes: ['id_tarea','nombre','horas_totales']},            
+            ]
+        });
+        return busqueda.dataValues;
+    },
+
+    eliminarSubTareas: async function(id){
+        await dataBaseSQL.subtareas.destroy({
+            where : {id_sub_tarea: id},
+            
         });
     },
 

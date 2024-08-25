@@ -27,6 +27,12 @@ router.put('/plan-accion/modTask',apisPlanDeAccion.modTarea);
 router.put('/plan-accion/deleteTask',apisPlanDeAccion.deleteTarea);
 
 
+router.post('/plan-accion/viewSubTask',apisPlanDeAccion.viewSubTarea);
+router.post('/plan-accion/addSubTask',apisPlanDeAccion.addSubTarea);
+router.put('/plan-accion/modSubTask',apisPlanDeAccion.modSubTarea);
+router.put('/plan-accion/deleteSubTask',apisPlanDeAccion.deleteSubTarea);
+
+
 
 router.post('/login',apisUser.loginFuction);
 

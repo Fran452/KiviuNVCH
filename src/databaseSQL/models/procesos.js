@@ -65,7 +65,7 @@ module.exports = (sequelize,DataTypes) => {
 
         // Union con Tareas
         procesos.hasMany(models.tareas,{
-            foreignKey : 'fk_proyecto',
+            foreignKey : 'fk_procesos',
             as : 'Tareas'
         });
 

@@ -32,9 +32,13 @@ CREATE TABLE Ciclos (
     fk_area                                 INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
     detalles                                VARCHAR(255) NOT NULL,
+    fecha_inicio                            DATE NOT NULL,
+    fecha_final                             DATE NOT NULL,
     ver                                     INT NOT NULL,
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
+
+-- Agregar Sub ciclos / Analisar utilidad de areas
 
 CREATE TABLE Procesos ( 
     id_procesos                             INT PRIMARY KEY AUTO_INCREMENT,
@@ -51,18 +55,19 @@ CREATE TABLE Tareas (
     id_tarea                                INT PRIMARY KEY AUTO_INCREMENT,
     fk_empleado_asignado                    INT NOT NULL,
     fk_area                                 INT NOT NULL,
-    fk_area_apoyo                           INT NOT NULL,
+--  fk_area_apoyo                           INT NOT NULL,
     fk_procesos                             INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
-    estado	                                INT NOT NULL,
-    prioridad					            INT NOT NULL,
-    fecha_inicio                            DATE NOT NULL,
-    fecha_final                             DATE NOT NULL,
+    estado	                                INT, -- de no ser agregado se le asigna 1
+    prioridad					            INT NOT NULL,  -- default 2
+--  fecha_inicio                            DATE NOT NULL,
+    fecha_final                             DATE NOT NULL, -- 31/12/ actual año
     notas                                   VARCHAR(255),
-    progreso					            INT,
-    horas_Necesarias                        INT NOT NULL,
+    progreso					            INT,            -- 0
+    horas_totales                           INT NOT NULL,  -- 0
+    ver                                     INT NOT NULL, 
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
-    FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
+--  FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
     FOREIGN KEY (fk_procesos)               REFERENCES Procesos(id_procesos),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
@@ -70,14 +75,15 @@ CREATE TABLE Tareas (
 CREATE TABLE Subtareas (
     id_sub_tarea                            INT PRIMARY KEY AUTO_INCREMENT,
     fk_tareas                               INT NOT NULL,
-    orden                                   INT NOT NULL,
     titulo                                  VARCHAR(255) NOT NULL,
-    asignacion                              INT NOT NULL,
+    asignacion                              INT NOT NULL,   -- persona de la tarea
     horasAprox                              INT NOT NULL,
-    avece                                   VARCHAR(255) NOT NULL,
-    estado                                  VARCHAR(255) NOT NULL,
-    prioridad                               VARCHAR(255) NOT NULL,
-    notas                                   VARCHAR(255) NOT NULL,
+    avece                                   VARCHAR(255) NOT NULL, --
+    estado                                  VARCHAR(255) NOT NULL, -- 
+    prioridad                               VARCHAR(255),
+    notas                                   VARCHAR(255),
+    ver                                     INT NOT NULL,
+    FOREIGN KEY (asignacion)                REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_tareas)                 REFERENCES Tareas(id_tarea)
 );                 
 
@@ -105,3 +111,8 @@ CREATE TABLE Metricas (
     FOREIGN KEY (fk_indicador)              REFERENCES Indicadores(id_indicador),
     FOREIGN KEY (log_de_usuario)            REFERENCES Empleados(id_empleado)
 );
+
+INSERT INTO Puestos (nombre_puesto) VALUES 
+('Gerente'), 
+('Analista'), 
+('Asistente');

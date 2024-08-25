@@ -26,11 +26,6 @@ module.exports = (sequelize,DataTypes) => {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
-
-        "orden": {
-            type:DataTypes.INTEGER(),
-            allowNull: false
-        },
         
         "titulo":{
             type: DataTypes.STRING(255),
@@ -50,6 +45,11 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.STRING(255),
         },
 
+        "ver":{
+            type:DataTypes.INTEGER(),
+            allowNull: false
+        }
+
     };
 
     let config =  {
@@ -61,11 +61,17 @@ module.exports = (sequelize,DataTypes) => {
 
     subtareas.associate = (models) => {
 
-        /* Union con Empleados */
         subtareas.belongsTo(models.tareas,{
             foreignKey : 'fk_tareas',
             as: 'Tareas'
         });
+
+        subtareas.belongsTo(models.empleados,{
+            foreignKey : 'asignacion',
+            as: 'Empleados'
+        });
+
+
 
     }
 

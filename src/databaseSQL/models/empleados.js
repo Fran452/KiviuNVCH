@@ -72,7 +72,6 @@ module.exports = (sequelize,DataTypes) => {
             as : 'Puestos'
         });
 
-        
         empleados.hasMany(models.indicadores,{
             foreignKey : 'fk_responsable',
             as : 'Indicadores'
@@ -88,6 +87,16 @@ module.exports = (sequelize,DataTypes) => {
             as : 'Empleados'
         });
 
+        empleados.hasMany(models.tareas,{
+            foreignKey : 'asignacion',
+            as : 'Tareas'
+        });
+
+        empleados.hasMany(models.subtareas,{
+            foreignKey : 'asignacion',
+            as : 'SubTareas'
+        });
+        
     }
 
     return empleados;

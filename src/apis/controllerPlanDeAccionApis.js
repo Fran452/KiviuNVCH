@@ -127,6 +127,12 @@ const controlador = {
 
     addProceso: async (req,res) => {
         try{
+            if(req.body.nombre == "" || req.body.nombre == undefined){
+                req.body.nombre = null;
+            }
+            if(req.body.detalles == "" || req.body.detalles == undefined) {
+                req.body.detalles = null;
+            }
             let procesos = await dataBaseSQL.procesos.create({
                 fk_area :   req.body.user.area,
                 nombre  :   req.body.nombre,
@@ -207,7 +213,7 @@ const controlador = {
                     where: {
                         fk_area: req.body.user.area,
                         mostrar : 1,
-                        fk_Proceso : req.body.idProceso
+                        fk_Procesos : req.body.idProceso
                     },
                     attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso","horas_Necesarias"],
                     include: [
@@ -256,46 +262,46 @@ const controlador = {
         try{
             let fechaActua = new Date() ;
             let fechaDeLaTarea = new Date(req.body.fechaInicio);
+            let fechaDeLaFinal = new Date(req.body.fechaFinal);
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
                         mail : req.body.empleado_asignado
                     },
                 }
-            );
-
+            );            
             if(empleadoAsignado === null){
                 res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                 return 1;
             }else if(empleadoAsignado.fk_area != req.body.user.area){
                 res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area"});
-                return 1
-            }else if(fechaDeLaTareaI > fechaDeLaTareaF){
+                return 1;
+            }else if(fechaDeLaTarea > fechaDeLaFinal){
                 res.json({error : 99, errorDetalle: "fecha_inicio is greater than the current"});
                 return 1;
             }else{
                 let tarea = await dataBaseSQL.tareas.create({
-                    fk_empleado_asignado :  empleadoAsignado.id_empleado,
-                    fk_area :               req.body.user.area,
-                    nombre :                req.body.nombre,
-                    estado :                req.body.estado,
-                    prioridad :             req.body.prioridad,
-                    fecha_inicio :          req.body.fechaInicio,
-                    fecha_final :           req.body.fechaFinal,
-                    notas :                 req.body.notas,
-                    fk_area_apoyo:          req.body.areaApoyo,
-                    progreso:               req.body.progreso,
-                    horas_Necesarias:       req.body.horas,
-                    mostrar :               1,
-                    fk_proceso:             req.body.idProceso
+                    fk_empleado_asignado    : empleadoAsignado.id_empleado,
+                    fk_area                 : req.body.user.area,
+                    fk_area_apoyo           : req.body.areaApoyo,
+                    fk_procesos             : req.body.idProceso,
+                    nombre                  : req.body.nombre,
+                    estado                  : req.body.estado,
+                    prioridad               : req.body.prioridad,
+                    fecha_inicio            : req.body.fechaInicio,
+                    fecha_final             : req.body.fechaFinal,
+                    notas                   : req.body.notas,
+                    progreso                : req.body.progreso,
+                    horas_Necesarias        : req.body.horas,
+                    mostrar                 : 1
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
-                return 0
+                return 0;
             }
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
+            res.json({errorCompleto:error, error : codeError, errorDetalle: error.message});   
             return 1;
         }       
     },  
@@ -304,7 +310,7 @@ const controlador = {
     modTarea: async (req,res) => { 
         try{
             let empleadoAsignado;
-            if(req.body.empleado_asignado != req.body.tarea.Empleado.mail){
+            if(req.body.empleado_asignado != req.body.tarea.Empleados.mail){
                 empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
@@ -317,7 +323,7 @@ const controlador = {
                     return 1;
                 }
             }else{
-                empleadoAsignado =      req.body.tarea.fk_empleado_asignado;
+                empleadoAsignado =      req.body.tarea.Empleados;
             }
 
             let tareaModificada = await dataBaseSQL.tareas.update({
@@ -335,11 +341,10 @@ const controlador = {
                 fk_proceso:             req.body.idProceso
             },{
                 where:{
-                    id_tarea : req.body.idTarea
+                    id_tarea : req.body.tarea.id_tarea
                 }
             });
             res.json({error: 0, errorDetalle:"",objeto:tareaModificada});
-            
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
@@ -369,9 +374,120 @@ const controlador = {
 
 
     // CRUD de Sub tareas
+    /**
+     * 
+     * @param {id_tareas, titulo, asignacion, horasAprox, avece, estado, prioridad, notas, user} req 
+     * @param {*} res 
+     */
+    addSubTarea: async (req,res) => {
+        try{
+            console.log("entre a la api");
+            let titulo      = req.body.titulo || null;
+            let horasAprox  = req.body.horasAprox || null;
+            let avece       = req.body.avece || null;
+            let estado      = req.body.estado || null;
+            let prioridad   = req.body.prioridad || null;
+            let notas       = req.body.notas || null;
 
+            if(req.body.asignacion != undefined){
+                let empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                    {
+                        where: {
+                            mail : req.body.asignacion
+                        },
+                    }
+                );   
+                if(empleadoAsignado === null){
+                    res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
+                    return 1;
+                }else if(empleadoAsignado.fk_area != req.body.user.area){
+                    res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area."});
+                    return 1;
+                }else if(req.body.id_tareas == undefined){
+                    res.json({error : 99, errorDetalle: "No se selecciono una tarea."});
+                    return 1;
+                }else{
+                    let subTarea = await dataBaseSQL.subtareas.create({
+                        fk_tareas: req.body.id_tareas,
+                        titulo: titulo,
+                        asignacion: empleadoAsignado.id_empleado,
+                        horasAprox: horasAprox,
+                        avece: avece,
+                        estado: estado,
+                        prioridad: prioridad,
+                        notas: notas,
+                    });
+                    console.log(subTarea);
+                    
+                    let tarea = await buscarTarea(req.body.id_tareas);
+                    let horas = tarea.horas_Necesarias + horasAprox;
+
+                    await dataBaseSQL.tareas.update({
+                        horas_Necesarias: horas,
+                    },{
+                        where:{
+                            id_tarea : tarea.id_tarea
+                        }
+                    });
+
+                    res.json({error :0, errorDetalle: "", objeto:subTarea});
+                    return 0;
+
+                }
+            }else{
+                res.json({error : 10, errorDetalle: "No se envio ningun empleado."});
+                return 1;
+            }
+        }
+        catch(error){
+
+        }
+    },
+
+    modSubTarea: async (req,res) => {
+        try{
+
+        }
+        catch(error){
+
+        }
+    },
+
+    viewSubTarea: async (req,res) => {
+        try{
+
+        }
+        catch(error){
+
+        }
+    },
+
+    deleteSubTarea: async (req,res) => {
+        try{
+
+        }
+        catch(error){
+
+        }
+    },
 }
 
 
 
 module.exports = controlador;
+
+async function buscarTarea(id){
+    let busqueda = await dataBaseSQL.tareas.findOne({
+        where: {
+            id_tarea : id
+        },
+        attributes: ['id_tarea','nombre','estado','prioridad','fecha_inicio','fecha_final','notas','progreso'],
+        include: [
+            {association : "Empleados",attributes: ['nombre','fk_area','fk_puesto','mail']},
+            {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']},
+            {association : "Procesos",attributes: ['id_procesos','nombre']},
+            {association : "Areas",attributes: ['id_area','nombre_del_Area']},                
+        ]
+    });
+    return busqueda.dataValues;
+}

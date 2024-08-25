@@ -32,6 +32,12 @@ const controlador = {
                     mod:    'http://localhost:3030/test/plan-accion/modTask',
                     delete: 'http://localhost:3030/test/plan-accion/deleteTask'
                 },
+                subTarea:{
+                    add:    'http://localhost:3030/test/plan-accion/addSubTask',    
+                    view:   'http://localhost:3030/test/plan-accion/viewSubTask',
+                    mod:    'http://localhost:3030/test/plan-accion/modSubTask',
+                    delete: 'http://localhost:3030/test/plan-accion/deleteSubTask'
+                },
             dateIn : {
                 testGenericos: 'http://localhost:3030/test/dateIn',
                 indicadores:{
