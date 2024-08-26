@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useParams, Link, useNavigate } from "react-router-dom"
 import './Year.scss'
 import Avatar from "../../assets/img/avatar-3.jpg"
@@ -12,7 +12,7 @@ import {
     LinearScale,
     TimeScale
 } from "chart.js";
-import { Doughnut, Bar } from 'react-chartjs-2'
+import { Doughnut, Bar, getElementAtEvent } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns';
 import {es} from 'date-fns/locale';
 
@@ -43,7 +43,6 @@ const viewPercentage = {
         data.datasets.forEach((dataset, datasetIndex) => {
             dataset.data.forEach((datapoint, index) => {
                 const meta = chart.getDatasetMeta(datasetIndex);
-                console.log(meta)
                 const bar = meta.data[index]
                 const xPos = bar.base
                 ctx.fillText(datapoint.percentage, xPos + 10, y.getPixelForValue(index));
@@ -107,7 +106,7 @@ const list = [
 
 function Year() {
     const { year } = useParams()
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const arr1 = [57, 71]
     const arr2 = [7, 9]
@@ -190,25 +189,25 @@ function Year() {
           {
             label: '',
             data: [
-                {x: ['2024-11-01', '2024-11-30'], y: 'Planeamiento', percentage: '50%'},
-                {x: ['2024-11-01', '2024-12-31'], y: 'Préstamos', percentage: '40%'},
-                {x: ['2024-08-01', '2024-09-30'], y: 'Tarjetas de crédito', percentage: '30%'},
-                {x: ['2024-12-01', '2024-12-31'], y: 'TI - sección 2', percentage: '70%'},
-                {x: ['2024-12-01', '2024-12-31'], y: 'TI - sección 4', percentage: '40%'},
-                {x: ['2024-08-01', '2024-08-31'], y: 'TI - sección 6', percentage: '20%'},
-                {x: ['2024-10-01', '2024-10-31'], y: 'TI - sección 7', percentage: '80%'},
-                {x: ['2024-11-01', '2024-11-30'], y: 'TI - sección 8', percentage: '10%'},
-                {x: ['2024-12-01', '2024-12-31'], y: 'Tecnología Informática', percentage: '90%'},
-                {x: ['2024-08-01', '2024-10-31'], y: 'Depósitos', percentage: '40%'},
-                {x: ['2024-12-01', '2024-12-31'], y: 'Tesorería', percentage: '20%'},
-                {x: ['2024-11-01', '2024-12-31'], y: 'Contabilidad General', percentage: '70%'},
-                {x: ['2024-08-01', '2024-08-31'], y: 'Comercio Exterior', percentage: '60%'},
-                {x: ['2024-08-01', '2024-08-31'], y: 'Transferencia Electrónica de Fondos', percentage: '30%'},
-                {x: ['2024-09-01', '2024-09-30'], y: 'Protección de usuarios de S.F.', percentage: '50%'}
+                {x: ['2024-11-01', '2024-11-30'], y: 'Planeamiento', idCiclo: 0, percentage: '50%'},
+                {x: ['2024-11-01', '2024-12-31'], y: 'Préstamos', idCiclo: 1, percentage: '40%'},
+                {x: ['2024-08-01', '2024-09-30'], y: 'Tarjetas de crédito', idCiclo: 2, percentage: '30%'},
+                {x: ['2024-12-01', '2024-12-31'], y: 'TI - sección 2', idCiclo: 3, percentage: '70%'},
+                {x: ['2024-12-01', '2024-12-31'], y: 'TI - sección 4', idCiclo: 4, percentage: '40%'},
+                {x: ['2024-08-01', '2024-08-31'], y: 'TI - sección 6', idCiclo: 5, percentage: '20%'},
+                {x: ['2024-10-01', '2024-10-31'], y: 'TI - sección 7', idCiclo: 6, percentage: '80%'},
+                {x: ['2024-11-01', '2024-11-30'], y: 'TI - sección 8', idCiclo: 7, percentage: '10%'},
+                {x: ['2024-12-01', '2024-12-31'], y: 'Tecnología Informática', idCiclo: 8, percentage: '90%'},
+                {x: ['2024-08-01', '2024-10-31'], y: 'Depósitos', idCiclo: 9, percentage: '40%'},
+                {x: ['2024-12-01', '2024-12-31'], y: 'Tesorería', idCiclo: 10, percentage: '20%'},
+                {x: ['2024-11-01', '2024-12-31'], y: 'Contabilidad General', idCiclo: 11, percentage: '70%'},
+                {x: ['2024-08-01', '2024-08-31'], y: 'Comercio Exterior', idCiclo: 12, percentage: '60%'},
+                {x: ['2024-08-01', '2024-08-31'], y: 'Transferencia Electrónica de Fondos', idCiclo: 13, percentage: '30%'},
+                {x: ['2024-09-01', '2024-09-30'], y: 'Protección de usuarios de S.F.', idCiclo: 14, percentage: '50%'}
             ],
             // data: [65, 59, 80, 81, 56, 55, 40, 55, 36, 49, 52, 43],
             backgroundColor: '#0d6efd',
-            borderWidth: 1,
+            borderWidth: 0,
             borderSkipped: false,
             borderRadius: 10,
           }
@@ -220,10 +219,22 @@ function Year() {
             legend: {
                 display: false
             },
+            tooltip: {
+                callbacks : {
+                    label: (ctx) => {
+                        const startDate = new Date(ctx.raw.x[0]).toLocaleDateString('es-ES', {timeZone: 'UTC', day: '2-digit', month: 'short'})
+                        const endDate = new Date(ctx.raw.x[1]).toLocaleDateString('es-ES', {timeZone: 'UTC', day: '2-digit', month: 'short'})
+                        return `${startDate} - ${endDate}`
+                    }
+                }
+            }
         },
         layout: {
         },
         indexAxis: 'y',
+        onHover: (event, chartElement) => {
+            event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default'
+        },
         scales: {
             x: {
                 position: 'top',
@@ -258,25 +269,41 @@ function Year() {
         }
     }
 
+    const chartRef = useRef()
+    const onClick = (e) => {
+        if(getElementAtEvent(chartRef.current, e).length > 0){
+            // console.log(getElementAtEvent(chartRef.current, e)[0])
+            const dataPoint = getElementAtEvent(chartRef.current, e)[0].index
+            // console.log(dataBar.datasets[0].data[dataPoint])
+            const data = {
+                title: dataBar.datasets[0].data[dataPoint].y,
+                year: year
+            }
+            navigate(`/ciclos-de-auditoria/${year}/${dataBar.datasets[0].data[dataPoint].idCiclo}`, {state: data})
+        }
+    }
+
     return (
         <>
             <div className='auditoria__year section'>
                 <div className='section__header d-flex flex-row align-items-end mb-4'>
                     <i className='bi bi-bar-chart-steps me-2'></i>
-                    <h4 className='m-0'>Ciclo Anual {year}</h4>
+                    <h4 className='m-0'>Ciclos {year}</h4>
                 </div>
                 {/* <button onClick={()=>navigate(-1)}>Anterior</button> */}
                 <div className='auditoria__year__main'>
                     <div className='auditoria__year__main__content'>
                         <div className='auditoria__year__main__content__introduccion rounded-3 mb-4'>
-                            <h2 className='text-white'>Bienvenido al ciclo anual {year}</h2>
-                            <p className='text-white mb-0'>Aquí encontrarás las estadísticas de los procesos del ciclo anual {year}.</p>
+                            <h2 className='text-white'>Bienvenido/a a los ciclos del año {year}</h2>
+                            <p className='text-white mb-0'>Aquí encontrarás las estadísticas de los ciclos del año {year}.</p>
                         </div>
                         <div className='auditoria__year__main__content__grafica'>
                             <Bar 
                                 data={dataBar}
                                 options={optionsBar}
                                 plugins={[todayLine, viewPercentage]}
+                                onClick={onClick}
+                                ref={chartRef}
                             />
                         </div>
                         {/* <div>

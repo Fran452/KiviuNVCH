@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Modal, ProgressBar } from 'react-bootstrap';
 import "./ModalPlanes.scss"
 import { tareasContext } from '../Tareas';
-import { newContext } from '../../pages/PlanesAccion/PlanesAccion'
+import { newContext } from '../../pages/PlanesAccion/Ciclo'
 
 function ModalPlanes(props) {
-  const { USER, areas, fetchTareasById, idProyecto, setLoadingTar, setErrorTar, setTareasByProyecto } = useContext(newContext)
+  const { USER, subciclos, fetchTareasById, idProyecto, setLoadingTar, setErrorTar, setTareasByProyecto } = useContext(newContext)
   const { tareaObj, setTareaObj, proyectoSelec, setProyectoSelec } = useContext(tareasContext)
 
   // State
@@ -343,7 +343,7 @@ function ModalPlanes(props) {
               <label className='mb-1'>Equipo</label>
               <select className="form-select form-select-sm" id="equipo" name="equipo" onChange={handleChange} value={formData.equipo}>
                 <option value="">Elija el equipo de apoyo</option>
-                {areas.map((e,i) => {
+                {subciclos.map((e,i) => {
                   return <option key={i} value={e.id_area.toString()}>{e.nombre_del_Area}</option>
                 })}
               </select>
@@ -491,7 +491,7 @@ function ModalPlanes(props) {
                 <label className='mb-1'>Equipo</label>
                 <select className="form-select form-select-sm" id="equipo" name="equipo" onChange={handleChange} value={formData.equipo}>
                   <option value="">Elija el equipo de apoyo</option>
-                  {areas.map((e,i) => {
+                  {subciclos.map((e,i) => {
                     return <option key={i} value={e.id_area.toString()}>{e.nombre_del_Area}</option>
                   })}
                 </select>

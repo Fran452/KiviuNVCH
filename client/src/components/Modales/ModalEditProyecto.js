@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Modal } from 'react-bootstrap';
 import "./ModalProyecto.scss"
 import { tareasContext } from '../Tareas';
-import { newContext } from '../../pages/PlanesAccion/PlanesAccion';
+import { newContext } from '../../pages/PlanesAccion/Ciclo';
 
 function ModalEditProyecto(props) {
-    const { proyectos, setProyectos, fetchProyectos, setTitleProyecto, setDescripcionProyecto } = useContext(newContext)
+    const { procesos, setProcesos, fetchProcesos, setTitleProyecto, setDescripcionProyecto } = useContext(newContext)
     const { proyectoSelec, setProyectoSelec } = useContext(tareasContext)
 
     const [formProyecto, setFormProyecto] = useState({
@@ -18,13 +18,13 @@ function ModalEditProyecto(props) {
     useEffect(() => {
         if(proyectoSelec){
             const pro = JSON.parse(proyectoSelec)
-            const obj = proyectos.find((e) => e.id_proyecto === pro.id_proyecto)
+            const obj = procesos.find((e) => e.id_proyecto === pro.id_proyecto)
             setFormProyecto({
                 nombre: obj.nombre,
                 detalles: obj.detalles
             })
         }
-    },[proyectoSelec, proyectos])
+    },[proyectoSelec, procesos])
 
     const handleClose = () => {
         setErrors({})
@@ -86,7 +86,7 @@ function ModalEditProyecto(props) {
                     setProyectoSelec(null)
                     setTitleProyecto(formProyecto.nombre)
                     setDescripcionProyecto(formProyecto.detalles)
-                    fetchProyectos().then(res => setProyectos(res.objeto))
+                    fetchProcesos().then(res => setProcesos(res.objeto))
                     props.onHide()
                 }
             } catch (error) {

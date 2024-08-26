@@ -13,7 +13,7 @@ import PowerBI from '../components/PowerBI'
 import NotFound from '../pages/NotFound/NotFound'
 import CiclosAuditoria from '../pages/PlanesAccion/CiclosAuditoria'
 import Year from '../pages/PlanesAccion/Year'
-import Proceso from '../pages/PlanesAccion/Proceso'
+import Ciclo from '../pages/PlanesAccion/Ciclo'
 
 function MyRoutes() {
   return (
@@ -24,11 +24,12 @@ function MyRoutes() {
             <Route element={<ProtectedRoutes />}>
               <Route element={<Layout />}>
                   <Route path="/home" element={<Home />} />
+                  {/* <Route path="/planes-de-accion" element={<PlanesAccion />} /> */}
                   <Route path="/ciclos-de-auditoria">
                     <Route index element={<CiclosAuditoria />} />
                     <Route path=":year">
                       <Route index element={<Year />} />
-                      <Route path=":id" element={<Proceso />}></Route>
+                      <Route path=":id" element={<Ciclo />}></Route>
                     </Route>
                   </Route>
                   <Route path="/okr" element={<Okr />}/>

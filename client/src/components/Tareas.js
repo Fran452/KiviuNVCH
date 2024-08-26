@@ -1,18 +1,73 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ProgressBar, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { ProgressBar, Modal, OverlayTrigger } from 'react-bootstrap';
 import { Oval } from 'react-loader-spinner'
 import illustrationPlanes from "../assets/img/planes.png"
 import IllustrationAccess from "../assets/img/access.png"
 import "./Tareas.scss"
 import ModalEditProyecto from './Modales/ModalEditProyecto';
 import ModalPlanes from './Modales/ModalPlanes';
-import { newContext } from '../pages/PlanesAccion/PlanesAccion'
+// import { newContext } from '../pages/PlanesAccion/PlanesAccion'
+import { newContext } from '../pages/PlanesAccion/Ciclo'
+
+import { 
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend
+} from "chart.js";
+import { Doughnut } from 'react-chartjs-2'
+
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend
+)
 
 export const tareasContext = React.createContext()
 
 function Tareas() {
+
+  const arr1 = [57, 71]
+  const data = {
+    labels: ['Realizadas', 'No realizadas'],
+    datasets: [{
+        label: '',
+        data: arr1,
+        backgroundColor: ['#0d6efd', '#9ec5fe'],
+        borderColor: '#fff',
+        hoverOffset: 4,
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    let label = context.label;
+                    let value = context.formattedValue;
+    
+                    if (!label)
+                        label = 'Unknown'
+    
+                    let sum = 0;
+                    let dataArr = context.chart.data.datasets[0].data;
+                    dataArr.map(data => {
+                        sum += Number(data);
+                    });
+    
+                    let percentage = (value * 100 / sum).toFixed(2) + '%';
+                    return percentage.slice(0,4) + '%';
+                }
+            }
+        }
+    }]
+  }
+  const options = {
+    plugins: {
+        legend: {
+            display: false
+        },
+    },
+    cutout: 40
+  }
   
-  const { loadingTar, setLoadingTar, setErrorTar, errorTar, proyectos, setProyectos, fetchProyectos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
+  const { loadingTar, setLoadingTar, setErrorTar, errorTar, procesos, setProcesos, fetchProcesos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
   
   const [modalDeleteProyecto, setModalDeleteProyecto] = useState(false)
   const [modalEditProyecto, setModalEditProyecto] = useState(false)
@@ -33,7 +88,7 @@ function Tareas() {
   );
 
   const handleEditProyecto = () => {
-    const pro = proyectos.find(e => e.id_proyecto === idProyecto)
+    const pro = procesos.find(e => e.id_proyecto === idProyecto)
     setProyectoSelec(JSON.stringify(pro))
     setModalEditProyecto(true)
   }
@@ -59,7 +114,7 @@ function Tareas() {
       } else {
         setTareasByProyecto(null)
         setIdProyecto(null)
-        fetchProyectos().then(res => setProyectos(res.objeto))
+        fetchProcesos().then(res => setProcesos(res.objeto))
         setModalDeleteProyecto(false)
       }
     } catch (error) {
@@ -69,7 +124,7 @@ function Tareas() {
 
   const handleNewTarea = (e) => {
     e.preventDefault()
-    const pro = proyectos.find(e => e.id_proyecto === idProyecto)
+    const pro = procesos.find(e => e.id_proyecto === idProyecto)
     setProyectoSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
@@ -77,7 +132,7 @@ function Tareas() {
   const handleEditTarea = (id) => {
     const obj = tareasByProyecto.find((e) => e.id_tarea === id)
     setTareaObj(JSON.stringify(obj))
-    const pro = proyectos.find(e => e.id_proyecto === idProyecto)
+    const pro = procesos.find(e => e.id_proyecto === idProyecto)
     setProyectoSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
@@ -215,7 +270,41 @@ function Tareas() {
                       </button>
                     </div>
                   ) : (
-                    <div className='tareas__main d-flex flex-column flex-md-row w-100'>
+                    <div className='tareas__main d-flex flex-column'>
+                      <div className='tareas__main__graficas mb-4'>
+                        {/* Gráfica 1 */}
+                        <div className='tareas__main__graficas__doughnut d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                          <div className='tareas__main__graficas__doughnut__info d-flex flex-row align-items-center'>
+                              <div className='tareas__main__graficas__doughnut__info__textos'>
+                                  <h4 className='mb-2'>Total de tareas</h4>
+                                  <p className='mb-1 fw-medium'>Tareas realizadas: <span>{arr1[0]}</span></p>
+                                  <p className='mb-0'>Tareas no realizadas: <span>{arr1[1]}</span></p>
+                              </div>
+                              <div className='tareas__main__graficas__doughnut__info__chart'>
+                                  <Doughnut 
+                                      data = {data}
+                                      options={options}
+                                  />
+                              </div>
+                          </div>
+                        </div>
+                        {/* Gráfica 2 */}
+                        <div className='tareas__main__graficas__doughnut d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                          <div className='tareas__main__graficas__doughnut__info d-flex flex-row align-items-center'>
+                              <div className='tareas__main__graficas__doughnut__info__textos'>
+                                  <h4 className='mb-2'>Total de tareas</h4>
+                                  <p className='mb-1 fw-medium'>Tareas realizadas: <span>{arr1[0]}</span></p>
+                                  <p className='mb-0'>Tareas no realizadas: <span>{arr1[1]}</span></p>
+                              </div>
+                              <div className='tareas__main__graficas__doughnut__info__chart'>
+                                  <Doughnut 
+                                      data = {data}
+                                      options={options}
+                                  />
+                              </div>
+                          </div>
+                        </div>
+                      </div>
                       <div className='tareas__main__tabla'>
                         <table className='table table-striped align-middle'>
                           <thead>

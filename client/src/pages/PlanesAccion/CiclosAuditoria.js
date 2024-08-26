@@ -49,14 +49,14 @@ function CiclosAuditoria() {
                         <div className='ciclos__auditoria__main__info rounded-3'>
                             <div className='ciclos__auditoria__main__info__textos mb-3 mb-xl-0'>
                                 <h2 className='text-white'>Tus ciclos de auditoría están aquí</h2>
-                                <p className='text-white m-0'>Cada ciclo cuenta con proyectos, que a su vez tiene tareas y subtareas.</p>
+                                <p className='text-white m-0'>Aquí podrás editar las tareas y subtareas de tus ciclos por año.</p>
                             </div>
                             <img className='' src={Auditoria} alt="" />
                         </div>
                         <div className='ciclos__auditoria__main__years'>
                             {ciclos.map((e,i) => {
                                 return <Link className="card__year d-flex flex-row align-items-center btn shadow-sm rounded-3 border border-light-subtle" to={`/ciclos-de-auditoria/${e.año}`} key={i}>
-                                    <h4 className='p-0 m-0 text-start'>Ciclo {e.año}</h4>
+                                    <h4 className='p-0 m-0 text-start'>Ciclos {e.año}</h4>
                                 </Link>
                             })}
                         </div>

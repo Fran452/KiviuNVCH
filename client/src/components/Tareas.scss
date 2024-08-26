@@ -81,6 +81,45 @@
             font-size: 12px;
         }
 
+        &__graficas {
+            display: flex;
+            gap: 20px;
+
+            &__doughnut {
+                width: 100%;
+                padding: 20px;
+                margin-bottom: 20px;
+
+                &__info {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    
+                    &__textos {
+                        h4 {
+                            color: $blue-500;
+                        }
+
+                        p {
+                            font-size: 14px;
+                        }
+
+                        p:first-child {
+                            color: $blue-500;
+                        }
+                    }
+
+                    &__chart {
+                        width: 120px;
+                        height: 120px;
+                    }
+                }
+            }
+            &__doughnut:last-child {
+                margin-bottom: 0;
+            }
+        }
+
         &__tabla {
             overflow-x: scroll;
             width: calc(100vw - 40px);
@@ -225,6 +264,24 @@
 
             img {
                 width: 200px;
+            }
+        }
+
+        &__main {
+            &__graficas {
+                display: flex;
+                gap: 20px;
+    
+                &__doughnut {
+                    width: 50%;
+                    padding: 30px;
+                    margin-bottom: 0;
+                }
+            }
+
+            &__tabla {
+                width: 100%;
+                height: 100%;
             }
         }
     }
