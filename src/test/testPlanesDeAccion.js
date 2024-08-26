@@ -34,6 +34,7 @@ const controlador = {
             tarea     = await funcionesDeTest.buscarTarea(tarea.id_tarea);
             subtarea  = await funcionesDeTest.buscarSubTarea(subtarea.id_sub_tarea);
 
+            let Tareas_SubTareas = await funcionesDeTest.buscarTareaConSubTareas(tarea.id_tarea)
 
 
             let retorno = {
@@ -42,6 +43,7 @@ const controlador = {
                 proceso,
                 tarea,
                 subtarea,
+                Tareas_SubTareas
             }
 
 
@@ -643,7 +645,6 @@ const controlador = {
             let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
             
             let ahora = new Date();
-            let fechaDeInicio = ahora.toISOString().split('T')[0];
             ahora.setDate(ahora.getDate() + 7);
             let fechaDelFinal = ahora.toISOString().split('T')[0];
             let areaDeApoyo = baseDeDatos[1].area.id_area;
@@ -682,7 +683,6 @@ const controlador = {
                     nombre              : 'Tarea de prueba',
                     estado              : 1,
                     prioridad           : 1,    
-                    fechaInicio         : fechaDeInicio,
                     fechaFinal          : fechaDelFinal,
                     notas               : 'Tarea de prueba para hacer los test',
                     progreso            : 0,  
@@ -724,7 +724,6 @@ const controlador = {
                 },
                 body: JSON.stringify({
                     empleado_asignado   : 'noExiste@gmail.com',
-                    fechaInicio         : fechaDeInicio,
                     fechaFinal          : fechaDelFinal,
                     nombre              : 'Tarea de prueba',
                     estado              : 1,
@@ -746,7 +745,7 @@ const controlador = {
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de mail detalle','El correo del responsable no existe.',apisError.errorDetalle,1);
             
             // Error de fechas mal subidas
-            ahora.setDate(ahora.getDate() - 15);
+            ahora.setDate(ahora.getDate() - 30);
 
             let fechaDeFinalError = ahora.toISOString().split('T')[0];
 
@@ -757,7 +756,6 @@ const controlador = {
                 },
                 body: JSON.stringify({
                     empleado_asignado   : usuario.mail,
-                    fechaInicio         : fechaDeInicio,
                     fechaFinal          : fechaDeFinalError,
                     nombre              : 'Tarea de prueba',
                     estado              : 1,
@@ -774,7 +772,7 @@ const controlador = {
             let apisError2 = await apisError2JSON.json();
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal',99,apisError2.error,1);
 
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal','fecha_inicio is greater than the current',apisError2.errorDetalle,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal','fecha_final is greater than the current',apisError2.errorDetalle,1);
             
             // Error de usuario no existente
             let apisError3JSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
@@ -784,7 +782,6 @@ const controlador = {
                 },
                 body: JSON.stringify({
                     empleado_asignado:  usuario2.mail,
-                    fechaInicio:        fechaDeInicio,
                     fechaFinal:         fechaDelFinal,
                     nombre:             'Tarea de prueba',
                     estado:             1,
@@ -851,9 +848,14 @@ const controlador = {
             let crearProceso = await funcionesDeTest.crearProceso(area,creaCiclo.id_ciclo,"test de prueba","test de prueba",1);
             let proyecto = await funcionesDeTest.buscarProceso(crearProceso.id_procesos)
             // tareas de ejemplo
-            let tarea1 = await funcionesDeTest.crearTarea(usuario.id,area,areaApoyo, `proyecto de prueba n1`,proyecto.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
-            let tarea2 = await funcionesDeTest.crearTarea(usuario.id,area,areaApoyo, `proyecto de prueba n2`,proyecto.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',25);
-            let tarea3 = await funcionesDeTest.crearTarea(usuario.id,area,areaApoyo, `proyecto de prueba n3`,proyecto.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',75);
+            let tarea1 = await funcionesDeTest.crearTarea(usuario.id,area,proyecto.id_procesos,`proyecto de prueba n1`,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+            let tarea2 = await funcionesDeTest.crearTarea(usuario.id,area,proyecto.id_procesos,`proyecto de prueba n2`,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',25);
+            let tarea3 = await funcionesDeTest.crearTarea(usuario.id,area,proyecto.id_procesos,`proyecto de prueba n3`,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',75);
+
+
+            let subtarea1  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
+            let subtarea2  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
+            let subtarea3  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
 
             let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewTask',{
                 method:'POST',
@@ -888,9 +890,15 @@ const controlador = {
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar tercero elemento',undefined,tarea3BD,4);
 
             // Eliminar ejemplos
+            await funcionesDeTest.eliminarSubTareas(subtarea1.id_sub_tarea);
+            await funcionesDeTest.eliminarSubTareas(subtarea2.id_sub_tarea);
+            await funcionesDeTest.eliminarSubTareas(subtarea3.id_sub_tarea);
+            
+            
             await funcionesDeTest.eliminarTarea(tarea1BD.id_tarea);
             await funcionesDeTest.eliminarTarea(tarea2BD.id_tarea);
             await funcionesDeTest.eliminarTarea(tarea3BD.id_tarea);
+            
             await funcionesDeTest.eliminarProceso(proyecto.id_procesos);
             await funcionesDeTest.eliminarCiclo(creaCiclo.id_ciclo);
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
@@ -1035,8 +1043,8 @@ const controlador = {
 
             let crearCiclo = await funcionesDeTest.crearCiclo(usuario.area,"ciclo de test","ciclo de test Detalle",1)
             let crearProceso = await funcionesDeTest.crearProceso(usuario.area,crearCiclo.id_ciclo,"test de prueba","test de prueba",1);
-            let tareaCreadaAntigua = await funcionesDeTest.crearTarea(usuario.id,usuario.area,usuario2.area, `tarea de prueba`,crearProceso.id_procesos,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
-            console.log("entre a la api");
+            let tareaCreadaAntigua = await funcionesDeTest.crearTarea(usuario.id,usuario.area,crearProceso.id_procesos,`tarea de prueba`,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas',50);
+
             let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addSubTask',{
                 method:'POST',
                 headers: {
@@ -1059,16 +1067,22 @@ const controlador = {
             
             // Sin error de apis
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
-        
-
             if(resultadoTest.test0.estado == 'Error'){
                 res.json({resultadoTest,resultadoApi:apis});
                 return 1;
             };
             
+            // Sub tarea subida correcto
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
 
+            // SubTarea subida con el nombre
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
 
+            // SubTarea asignada bien 
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
 
+            //Tarea modificada por las horas de la subTarea
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
 
 
             // Eliminar ejemplos

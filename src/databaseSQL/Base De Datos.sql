@@ -78,7 +78,7 @@ CREATE TABLE Subtareas (
     titulo                                  VARCHAR(255) NOT NULL,
     asignacion                              INT NOT NULL,   -- persona de la tarea
     horasAprox                              INT NOT NULL,
-    avece                                   VARCHAR(255) NOT NULL, --
+    avance                                  INT NOT NULL, --
     estado                                  VARCHAR(255) NOT NULL, -- 
     prioridad                               VARCHAR(255),
     notas                                   VARCHAR(255),

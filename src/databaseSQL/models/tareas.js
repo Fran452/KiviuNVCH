@@ -140,7 +140,7 @@ module.exports = (sequelize,DataTypes) => {
         
         tareas.hasMany(models.subtareas,{
             foreignKey : 'fk_tareas',
-            as : 'Tareas'
+            as : 'Subtareas'
         });
     }
 

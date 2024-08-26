@@ -197,14 +197,14 @@ const controlador = {
             if(req.body.user.puesto < 1){
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
-                        mostrar : 1,
+                        ver : 1,
                         fk_procesos : req.body.idProceso
                     },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso"],
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_final","notas","progreso","horas_totales"],
                     include: [
                         {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                        {association : "Empleados",attributes: ['nombre','mail']},
-                        {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']}
+                        {association : "Empleado",attributes: ['nombre','mail']},
+                        {association : "Subtareas",attributes: ['id_sub_tarea', 'avance', 'horasAprox']},
                     ]
                 });
 
@@ -212,17 +212,39 @@ const controlador = {
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
                         fk_area: req.body.user.area,
-                        mostrar : 1,
+                        ver : 1,
                         fk_Procesos : req.body.idProceso
                     },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio","fecha_final","notas","progreso","horas_Necesarias"],
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_final","notas","progreso","horas_totales"],
                     include: [
-                        {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                        {association : "Empleados",attributes: ['nombre','mail']},
-                        {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']}
+                            {association : "Areas",attributes: ['id_area','nombre_del_Area']},
+                            {association : "Empleado",attributes: ['nombre','mail']},
+                            {association : "Subtareas",attributes: ['id_sub_tarea', 'avance', 'horasAprox']}
                         ]
                 });
-            }            
+            };
+            let horas_Finalizadas;
+            tareas.forEach(tarea => {
+                if(tarea.Subtareas.length > 0){
+                    horas_Finalizadas = tarea.Subtareas.reduce(function(acumulador,elemento){return acumulador += (elemento.avance * elemento.horasAprox / 100)},0);
+                    let total_horas_subTareas = tarea.Subtareas.reduce(function(acumulador,elemento){  
+                        
+                        console.log(elemento.horasAprox);
+                        acumulador +=elemento.horasAprox
+                        return acumulador
+                    },0);
+                    tarea.dataValues.horas_totales = total_horas_subTareas;
+                    tarea.dataValues.progreso = horas_Finalizadas * 100 / total_horas_subTareas;
+
+                }else{
+                    tarea.dataValues.horas_totales   = 0;
+                    tarea.dataValues.progreso        = 0;
+                }
+                
+            });
+
+            
+
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
@@ -261,7 +283,6 @@ const controlador = {
     addTarea:  async (req,res) => { 
         try{
             let fechaActua = new Date() ;
-            let fechaDeLaTarea = new Date(req.body.fechaInicio);
             let fechaDeLaFinal = new Date(req.body.fechaFinal);
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
@@ -276,23 +297,21 @@ const controlador = {
             }else if(empleadoAsignado.fk_area != req.body.user.area){
                 res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area"});
                 return 1;
-            }else if(fechaDeLaTarea > fechaDeLaFinal){
-                res.json({error : 99, errorDetalle: "fecha_inicio is greater than the current"});
+            }else if(fechaDeLaFinal < fechaActua){
+                res.json({error : 99, errorDetalle: "fecha_final is greater than the current"});
                 return 1;
             }else{
                 let tarea = await dataBaseSQL.tareas.create({
                     fk_empleado_asignado    : empleadoAsignado.id_empleado,
                     fk_area                 : req.body.user.area,
-                    fk_area_apoyo           : req.body.areaApoyo,
                     fk_procesos             : req.body.idProceso,
                     nombre                  : req.body.nombre,
                     estado                  : req.body.estado,
                     prioridad               : req.body.prioridad,
-                    fecha_inicio            : req.body.fechaInicio,
                     fecha_final             : req.body.fechaFinal,
                     notas                   : req.body.notas,
                     progreso                : req.body.progreso,
-                    horas_Necesarias        : req.body.horas,
+                    horas_Necesarias        : 0,
                     mostrar                 : 1
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
@@ -416,18 +435,6 @@ const controlador = {
                         estado: estado,
                         prioridad: prioridad,
                         notas: notas,
-                    });
-                    console.log(subTarea);
-                    
-                    let tarea = await buscarTarea(req.body.id_tareas);
-                    let horas = tarea.horas_Necesarias + horasAprox;
-
-                    await dataBaseSQL.tareas.update({
-                        horas_Necesarias: horas,
-                    },{
-                        where:{
-                            id_tarea : tarea.id_tarea
-                        }
                     });
 
                     res.json({error :0, errorDetalle: "", objeto:subTarea});

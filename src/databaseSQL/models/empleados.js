@@ -88,7 +88,7 @@ module.exports = (sequelize,DataTypes) => {
         });
 
         empleados.hasMany(models.tareas,{
-            foreignKey : 'asignacion',
+            foreignKey : 'fk_empleado_asignado',
             as : 'Tareas'
         });
 

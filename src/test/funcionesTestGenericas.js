@@ -259,6 +259,19 @@ let controlador = {
         return busqueda.dataValues;
     },
     
+    buscarTareaConSubTareas: async function(id){
+        let busqueda = await dataBaseSQL.tareas.findOne({
+            where: {
+                id_tarea : id
+            },
+            attributes: ['id_tarea','nombre','estado','prioridad','notas','progreso','horas_totales'],
+            include: [
+                {association : "Subtareas",attributes: ['id_sub_tarea','horasAprox','titulo']},
+            ]
+        });
+        return busqueda.dataValues;
+    },
+
     eliminarTarea: async function(id){
         await dataBaseSQL.tareas.destroy({
             where : {id_tarea: id}
@@ -267,13 +280,13 @@ let controlador = {
 
     // Para sub tareas
 
-    crearSubTarea: async function(fk_tareas, titulo, asignacion, horasAprox, avece, estado, prioridad, notas, ver){
+    crearSubTarea: async function(fk_tareas, titulo, asignacion, horasAprox, avance, estado, prioridad, notas, ver){
         let objetoCreado = await dataBaseSQL.subtareas.create({
             fk_tareas,
             titulo,
             asignacion,
             horasAprox,
-            avece,
+            avance,
             estado,
             prioridad,
             notas,
