@@ -301,7 +301,8 @@ let controlador = {
                 id_sub_tarea : id
             },
             include: [
-                {association : "Tareas",attributes: ['id_tarea','nombre','horas_totales']},            
+                {association : "Tareas",attributes: ['id_tarea','nombre','horas_totales']}, 
+                {association : "Empleados",attributes: ['id_empleado']},          
             ]
         });
         return busqueda.dataValues;

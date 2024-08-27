@@ -403,11 +403,12 @@ const controlador = {
             console.log("entre a la api");
             let titulo      = req.body.titulo || null;
             let horasAprox  = req.body.horasAprox || null;
-            let avece       = req.body.avece || null;
-            let estado      = req.body.estado || null;
-            let prioridad   = req.body.prioridad || null;
+            let avance       = req.body.avance 
+            let estado      = req.body.estado;
+            let prioridad   = req.body.prioridad;
             let notas       = req.body.notas || null;
 
+            console.log(req.body.avance);
             if(req.body.asignacion != undefined){
                 let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
@@ -427,14 +428,15 @@ const controlador = {
                     return 1;
                 }else{
                     let subTarea = await dataBaseSQL.subtareas.create({
-                        fk_tareas: req.body.id_tareas,
-                        titulo: titulo,
+                        fk_tareas:  req.body.id_tareas,
+                        titulo:     titulo,
                         asignacion: empleadoAsignado.id_empleado,
                         horasAprox: horasAprox,
-                        avece: avece,
-                        estado: estado,
-                        prioridad: prioridad,
-                        notas: notas,
+                        avance:     avance,
+                        estado:     estado,
+                        prioridad:  prioridad,
+                        notas:      notas,
+                        ver:        1
                     });
 
                     res.json({error :0, errorDetalle: "", objeto:subTarea});
@@ -447,36 +449,111 @@ const controlador = {
             }
         }
         catch(error){
-
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 
     modSubTarea: async (req,res) => {
         try{
+            let empleadoAsignado;
+            if(req.body.asignacion != req.body.subtarea.Empleados.mail){
+                empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                    {
+                        where: {
+                            mail : req.body.empleado_asignado
+                        },
+                    }
+                );
+                if(empleadoAsignado === null){
+                    res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
+                    return 1;
+                }
+            }else{
+                empleadoAsignado =  req.body.subtarea.Empleados;
+            }
 
+            let subtarea = await dataBaseSQL.subtareas.update({
+                titulo          : req.body.titulo,    
+                asignacion      : empleadoAsignado.id_empleado,        
+                horasAprox      : req.body.horasAprox,        
+                avece           : req.body.avece,    
+                estado          : req.body.estado,    
+                prioridad       : req.body.prioridad,        
+                notas           : req.body.notas,    
+            },{
+                where:{
+                    id_sub_tarea : req.body.subtarea.id_sub_tarea
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:subtarea});
         }
         catch(error){
-
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 
     viewSubTarea: async (req,res) => {
         try{
+            let subtareas = await dataBaseSQL.subtareas.findAll({
+                where: {
+                    ver : 1,
+                    fk_tareas : req.body.idTarea
+                },
+                attributes: ['titulo','horasAprox','avece','estado','prioridad','notas'],
+                include: [
+                    {association : "Empleado",attributes: ['nombre','mail']},
+                ]
+            });
 
+            res.json({error: 0, errorDetalle:"",objeto:subtareas});
         }
         catch(error){
-
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 
     deleteSubTarea: async (req,res) => {
         try{
-
+            let subtarea = await dataBaseSQL.subtareas.update({
+                ver : 0 
+            },{
+                where:{
+                    id_sub_tarea : req.body.tarea.id_subtarea
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:subtarea});
         }
         catch(error){
-
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
+
+    terminarSubTarea: async (req,res) => {
+        try{
+            let subtarea = await dataBaseSQL.subtareas.update({
+                avance : 100 
+            },{
+                where:{
+                    id_sub_tarea : req.body.tarea.id_subtarea
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:subtarea});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
 }
 
 

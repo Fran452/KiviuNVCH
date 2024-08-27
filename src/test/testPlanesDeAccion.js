@@ -11,8 +11,7 @@ const controlador = {
     
     testGenerico: async (req,res) => {
         try{
-            let ahora = new Date();
-            let fechaInicio = ahora.toISOString().split('T')[0];
+            let ahora = new Date()
             ahora.setDate(ahora.getDate() + 7);
             let fechaFin = ahora.toISOString().split('T')[0];
 
@@ -857,6 +856,9 @@ const controlador = {
             let subtarea2  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
             let subtarea3  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
 
+            let subtarea4  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,0,1,1,"esto son notas",1);
+            let subtarea5  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
+
             let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewTask',{
                 method:'POST',
                 headers: {
@@ -881,18 +883,40 @@ const controlador = {
             let tarea1BD = apis.objeto.find(tarea => tarea.id_tarea == tarea1.id_tarea);
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar primer elemento',undefined,tarea1BD,4);
             
+            // Mostrar horas de las 3 subtareas
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 1)',15,tarea1BD.horas_totales,1);
+
+            // Mostar porsentaje de avance
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 1)',100,tarea1BD.progreso,1);
+            
             // Mostrar segundo elemento
             let tarea2BD = apis.objeto.find(tarea => tarea.id_tarea == tarea2.id_tarea);
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar segundo elemento',undefined,tarea2BD,4);
+
+            // Mostrar horas de las 2 subtareas
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 2)',10,tarea2BD.horas_totales,1);
+
+            // Mostar porsentaje de avance
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 2)',50,tarea2BD.progreso,1);
 
             // Mostrar tercer elemento
             let tarea3BD = apis.objeto.find(tarea => tarea.id_tarea == tarea3.id_tarea);
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar tercero elemento',undefined,tarea3BD,4);
 
+            // Mostrar horas sin subtareas 
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 3)',0,tarea3BD.horas_totales,1);
+
+            // Mostar porsentaje de avance
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 3)',0,tarea3BD.progreso,1);
+
+
+
             // Eliminar ejemplos
             await funcionesDeTest.eliminarSubTareas(subtarea1.id_sub_tarea);
             await funcionesDeTest.eliminarSubTareas(subtarea2.id_sub_tarea);
             await funcionesDeTest.eliminarSubTareas(subtarea3.id_sub_tarea);
+            await funcionesDeTest.eliminarSubTareas(subtarea4.id_sub_tarea);
+            await funcionesDeTest.eliminarSubTareas(subtarea5.id_sub_tarea);
             
             
             await funcionesDeTest.eliminarTarea(tarea1BD.id_tarea);
@@ -1027,13 +1051,7 @@ const controlador = {
                 puesto: baseDeDatos[0].empleados[2].fk_Puesto,
                 mail:   baseDeDatos[0].empleados[2].mail  
             };
-            let usuario2 = {
-                id:     baseDeDatos[1].empleados[2].id_empleado,
-                nombre: baseDeDatos[1].empleados[2].nombre,
-                area:   baseDeDatos[1].empleados[2].fk_area,
-                puesto: baseDeDatos[1].empleados[2].fk_Puesto,
-                mail:   baseDeDatos[1].empleados[2].mail  
-            };
+
 
             // fecha usada
             let ahora = new Date();
@@ -1055,7 +1073,7 @@ const controlador = {
                     titulo          : "Sub tarea de ejemplo",      
                     asignacion      : usuario.mail,          
                     horasAprox      : 4,          
-                    avece           : 0,      
+                    avance           : 0,      
                     estado          : 0,      
                     prioridad       : 0,          
                     notas           : "Nota ",      
@@ -1072,25 +1090,26 @@ const controlador = {
                 return 1;
             };
             
+            let subtarea = await funcionesDeTest.buscarSubTarea(apis.objeto.id_sub_tarea);
+
             // Sub tarea subida correcto
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sub tarea subida correcto',undefined,subtarea,4);
 
             // SubTarea subida con el nombre
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'SubTarea subida con el nombre',"Sub tarea de ejemplo",subtarea.titulo,1);
 
             // SubTarea asignada bien 
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
-
-            //Tarea modificada por las horas de la subTarea
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'SubTarea asignada bien',usuario.id,subtarea.Empleados.id_empleado,1);
 
 
             // Eliminar ejemplos
-            await funcionesDeTest.eliminarTarea(tareaAntes.id_tarea);
-            await funcionesDeTest.eliminarProceso(proyecto.id_procesos);
+             
+            await funcionesDeTest.eliminarSubTareas(subtarea.id_sub_tarea);
+            await funcionesDeTest.eliminarTarea(tareaCreadaAntigua.id_tarea);
+            await funcionesDeTest.eliminarProceso(crearProceso.id_procesos);
             await funcionesDeTest.eliminarCiclo(crearCiclo.id_ciclo);
-            await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);    
 
+            await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);    
             res.json({resultadoTest,resultadoApi:apis});
         }
         catch(error){
@@ -1103,16 +1122,88 @@ const controlador = {
 
     editSubTarea: async (req,res) => {
         try{
+            let resultadoTest = {};
+            let ahora = new Date();
+            ahora.setDate(ahora.getDate() + 7);
+            let fechaFin = ahora.toISOString().split('T')[0];
+
+            let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+            let usuario = {
+                id: baseDeDatos[0].empleados[1].id_empleado,
+                nombre:baseDeDatos[0].empleados[1].nombre,
+                area:baseDeDatos[0].empleados[1].fk_area,
+                puesto:baseDeDatos[0].empleados[1].fk_puesto,
+                mail:baseDeDatos[0].empleados[1].mail  
+            };
+            let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo ejemplo","Ciclo ejemplo",1);
+            let proceso   = await funcionesDeTest.crearProceso(usuario.area,ciclo.id_ciclo,"Proceso ejemplo","Proceso ejemplo",1);
+            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,proceso.id_procesos,"Tarea de ejemplo",1,1,fechaFin,"notas",5,0);
+            let subtareaAntes  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
+            console.log(subtareaAntes);
+            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modSubTask',{
+                method:'PUT',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    subtarea        : subtareaAntes,
+                    titulo          : 'cambio de titulo',
+                    asignacion      : usuario.mail,    
+                    horasAprox      : 5,    
+                    avance           : 50,
+                    estado          : 2,
+                    prioridad       : 2,    
+                    notas           : 'Notas editadas',
+                    user            : usuario  
+                })
+            })
+            
+            let apis = await apisJSON.json();
+            
+            // Sin error de apis
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
+            console.log(apis.error);
+            if(resultadoTest.test0.estado == 'Error'){
+                res.json({resultadoTest,resultadoApi:apis});
+                return 1;
+            };
+
+            let subtareaMod  = await funcionesDeTest.buscarSubTarea(subtareaAntes.id_sub_tarea);
+
+            // Modificacion de titulo
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de titulo','cambio de titulo',subtareaMod.titulo,1);
+
+            // Modificacion de horasAprox
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de horasAprox',5,subtareaMod.horasAprox,1);
+
+            // Modificacion de avece
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de avece',50,subtareaMod.avece,1);
+
+            // Modificacion de estado
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de estado',2,subtareaMod.estado,1);
+
+            
+            
+            // Eliminar ejemplos
+            await funcionesDeTest.eliminarSubTareas(subtareaMod.id_sub_tarea);
+            await funcionesDeTest.eliminarTarea(tarea.id_tarea);
+            await funcionesDeTest.eliminarProceso(proceso.id_procesos);
+            await funcionesDeTest.eliminarCiclo(ciclo.id_ciclo);
+            
+            await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
 
         }
         catch(error){
-
+            console.log(error);
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 
     viewSubTarea: async (req,res) => {
         try{
-
+            let resultadoTest = {};
         }
         catch(error){
 
@@ -1121,7 +1212,7 @@ const controlador = {
 
     deleteSubTarea: async (req,res) => {
         try{
-
+            let resultadoTest = {};
         }
         catch(error){
 
