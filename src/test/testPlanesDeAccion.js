@@ -1,10 +1,12 @@
 const dataBaseSQL = require("../databaseSQL/models");
 const funcionesDeTest = require('./funcionesTestGenericas')
+const {Sequelize, DATE} = require('sequelize');
 
 const path = require("path");
 
 const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
+const { unsubscribe } = require("diagnostics_channel");
 
 
 const controlador = {
@@ -16,6 +18,11 @@ const controlador = {
             ahora.setDate(ahora.getDate() + 7);
             let fechaFin = ahora.toISOString().split('T')[0];
 
+            let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('franciscolemacr@gmail.com');
+            if(empleadoYaSubido != undefined){
+                res.json("base de datos ya subida anteriormente");
+                return 0;
+            }
             let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
             
             let area =  await funcionesDeTest.crearArea('Prestamos','sin powe By');
@@ -479,7 +486,11 @@ const controlador = {
 
     readProceso: async (req,res) => {
         let resultadoTest = {};
-        
+
+        let ahora = new Date()
+       ahora.setDate(ahora.getDate() + 7);
+       let fechaFin = ahora.toISOString().split('T')[0];
+
         // Crear base de datos
         let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
 
@@ -497,6 +508,10 @@ const controlador = {
 
         // Crear proyecto de prueba
         let procesoTest = await funcionesDeTest.crearProceso(usuarioArea1.area,cicloEjemplo1.id_ciclo,"test de prueba","test de prueba",1);
+        let tarea = await funcionesDeTest.crearTarea(usuarioArea1.id,usuarioArea1.area,procesoTest.id_procesos,"Cartera Comercial y Asimilable",1,1,fechaFin,"notas",0,0);
+        let subtarea = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"TR Cartera Comercial y Asimilable",usuarioArea1.id,5,100,1,1,"esto son notas",1);
+        let subtarea2 = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Muestra Altas Líneas Comerciales",usuarioArea1.id,5,0,1,1,"esto son notas",1);
+
         let procesoTest2 = await funcionesDeTest.crearProceso(usuarioArea1.area,cicloEjemplo2.id_ciclo,"test de prueba","test de prueba",1);
 
         // Buscar muestra de proyecto con usuario con area en el proyecto
@@ -519,10 +534,14 @@ const controlador = {
             res.json({resultadoTest,resultadoApi:apis});
             return 1;
         }
-        
+
         // Buscar proyecto subido
         let proceso = apis.objeto.find(proceso => proceso.id_procesos == procesoTest.id_procesos);
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Encontrar proyecto creado',undefined,proceso,4);
+
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Horas del proceso creado bien',10,proceso.horas_proceso,1);
+
+        resultadoTest = funcionesDeTest.crearTest(resultadoTest,'Progreso bien',50,proceso.progreso_proceso,1);
 
         //Buscar si esta el proyecto de otro ciclo
         proceso = apis.objeto.find(proceso => proceso.id_procesos == procesoTest2.id_procesos);
@@ -530,8 +549,15 @@ const controlador = {
 
 
         // Eliminar ejemplo
+
+        await funcionesDeTest.eliminarSubTareas(subtarea.id_sub_tarea);
+        await funcionesDeTest.eliminarSubTareas(subtarea2.id_sub_tarea);
+
+        await funcionesDeTest.eliminarTarea(tarea.id_tarea);
+
         await funcionesDeTest.eliminarProceso(procesoTest.id_procesos);
         await funcionesDeTest.eliminarProceso(procesoTest2.id_procesos);
+
         await funcionesDeTest.eliminarCiclo(cicloEjemplo1.id_ciclo);
         await funcionesDeTest.eliminarCiclo(cicloEjemplo2.id_ciclo);
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
@@ -1079,7 +1105,6 @@ const controlador = {
         res.json({resultadoTest,resultadoApi:apis});
     },
     
-
     addSubTarea: async (req,res) => {
         try{
             let resultadoTest = {}
@@ -1180,8 +1205,11 @@ const controlador = {
             let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo ejemplo","Ciclo ejemplo",1);
             let proceso   = await funcionesDeTest.crearProceso(usuario.area,ciclo.id_ciclo,"Proceso ejemplo","Proceso ejemplo",1);
             let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,proceso.id_procesos,"Tarea de ejemplo",1,1,fechaFin,"notas",5,0);
-            let subtareaAntes  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
+            let crearSubtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
+            let subtareaAntes   = await funcionesDeTest.buscarSubTarea(crearSubtarea.id_sub_tarea);
             console.log(subtareaAntes);
+            
+            
             let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modSubTask',{
                 method:'PUT',
                 headers: {
@@ -1192,7 +1220,7 @@ const controlador = {
                     titulo          : 'cambio de titulo',
                     asignacion      : usuario.mail,    
                     horasAprox      : 5,    
-                    avance           : 50,
+                    avance          : 50,
                     estado          : 2,
                     prioridad       : 2,    
                     notas           : 'Notas editadas',
@@ -1219,7 +1247,7 @@ const controlador = {
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de horasAprox',5,subtareaMod.horasAprox,1);
 
             // Modificacion de avece
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de avece',50,subtareaMod.avece,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de avece',50,subtareaMod.avance,1);
 
             // Modificacion de estado
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de estado',2,subtareaMod.estado,1);
@@ -1233,7 +1261,7 @@ const controlador = {
             await funcionesDeTest.eliminarCiclo(ciclo.id_ciclo);
             
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
-
+            res.json({resultadoTest,resultadoApi:apis});
         }
         catch(error){
             console.log(error);
@@ -1260,6 +1288,41 @@ const controlador = {
 
         }
     },
+
+
+    pruebasPreImplementacion: async (req,res) => {
+        try{
+            let results = await dataBaseSQL.sequelize.query(
+                "SELECT procesos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM procesos LEFT JOIN tareas ON procesos.id_procesos = tareas.fk_procesos LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE procesos.fk_ciclo = 1 GROUP BY procesos.id_procesos;"
+                ,{
+                replacements: { fkCiclo: 29 },
+                type: Sequelize.QueryTypes.SELECT
+            });
+            /*let area =  await funcionesDeTest.crearArea('Prestamos','sin powe By');
+            
+            let usuarioCreado = await funcionesDeTest.crearUsuario(area.id_area,1,"francisco Lema",'$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','FRAN','franciscolemacr@gmail.com');
+            
+            let usuario = {
+                id: usuarioCreado.id_empleado,
+                nombre:usuarioCreado.nombre,
+                area:usuarioCreado.fk_area,
+                puesto:usuarioCreado.fk_puesto,
+                mail:usuarioCreado.mail  
+            };
+
+            let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de test","Ciclo de prestamos primera revicion",1);
+            let proceso   = await funcionesDeTest.crearProceso(usuario.area,ciclo.id_ciclo,"test"," ",1);
+*/
+            res.json({results});  
+            let resultadoTest = {};
+        }
+        catch(error){
+            console.log(error);
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    }
 }
 
 module.exports = controlador;

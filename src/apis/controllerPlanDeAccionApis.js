@@ -108,13 +108,20 @@ const controlador = {
 
     viewProceso: async (req,res) => {
         try{
-            let procesos = await dataBaseSQL.procesos.findAll({
+            let procesos = await dataBaseSQL.sequelize.query(
+                "SELECT procesos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM procesos LEFT JOIN tareas ON procesos.id_procesos = tareas.fk_procesos LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE procesos.fk_ciclo = :fkCiclo GROUP BY procesos.id_procesos;"
+                ,{
+                replacements: { fkCiclo: req.body.ciclo },
+                type: Sequelize.QueryTypes.SELECT
+            });
+            
+            /*let procesos = await dataBaseSQL.procesos.findAll({
                 where: {
                     fk_area :   req.body.user.area,
                     fk_ciclo:   req.body.ciclo,
                     ver:        1
                 },
-            });
+            });*/
             res.json({error:0, ErrorDetalle:"", objeto:procesos});
 
         }
@@ -478,7 +485,7 @@ const controlador = {
                 titulo          : req.body.titulo,    
                 asignacion      : empleadoAsignado.id_empleado,        
                 horasAprox      : req.body.horasAprox,        
-                avece           : req.body.avece,    
+                avance          : req.body.avance,    
                 estado          : req.body.estado,    
                 prioridad       : req.body.prioridad,        
                 notas           : req.body.notas,    

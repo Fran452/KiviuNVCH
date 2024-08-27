@@ -46,6 +46,8 @@ CREATE TABLE Procesos (
     fk_ciclo                                INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
     detalles                                VARCHAR(255) NOT NULL,
+    fecha_inicio                            DATE NOT NULL,  
+    fecha_final                             DATE NOT NULL,                      
     ver                                     INT NOT NULL,
     FOREIGN KEY (fk_ciclo)                  REFERENCES Ciclos(id_ciclo),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
