@@ -45,6 +45,16 @@ module.exports = (sequelize,DataTypes) => {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
+
+        "fecha_inicio":{
+            type: DataTypes.DATE(255),
+            allowNull: false
+        },
+        
+        "fecha_final":{
+            type: DataTypes.DATE(255),
+            allowNull: false
+        },
     };
 
     let config =  {
@@ -73,6 +83,8 @@ module.exports = (sequelize,DataTypes) => {
             foreignKey : 'fk_ciclo',
             as : 'Ciclos'
         });
+
+        
 
     }
 
