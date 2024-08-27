@@ -279,7 +279,6 @@ let controlador = {
     },
 
     // Para sub tareas
-
     crearSubTarea: async function(fk_tareas, titulo, asignacion, horasAprox, avance, estado, prioridad, notas, ver){
         let objetoCreado = await dataBaseSQL.subtareas.create({
             fk_tareas,
@@ -302,7 +301,7 @@ let controlador = {
             },
             include: [
                 {association : "Tareas",attributes: ['id_tarea','nombre','horas_totales']}, 
-                {association : "Empleados",attributes: ['id_empleado']},          
+                {association : "Empleados",attributes: ['id_empleado', 'nombre','mail']},          
             ]
         });
         return busqueda.dataValues;
@@ -393,6 +392,18 @@ let controlador = {
         return busqueda;
     },
 
+    buscarUsuarioPorMail: async function(mail) {
+        busqueda = await dataBaseSQL.empleados.findOne(
+            {
+                where: {
+                    mail : mail
+                },
+                include: [{association : "Areas"},{association : "Puestos"}]
+            }
+        );
+        return busqueda;
+    },
+    
     crearUsuario: async function (area,puesto,nombre,contraseña,abreviatura,mail) {
         let creacion = await dataBaseSQL.empleados.create({
             fk_area:    area,
@@ -439,6 +450,15 @@ let controlador = {
     
     },
 
+
+
+
+
+
+
+
+
+    
 }
 
 
