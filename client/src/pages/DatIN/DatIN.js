@@ -51,7 +51,7 @@ function DatIN() {
 
   const fetchIndicadores = async () => {
     try {
-      const res = await fetch("http://localhost:3030/apis/dateIn", {
+      const res = await fetch("http://164.92.77.143:3030/apis/dateIn", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -74,7 +74,7 @@ function DatIN() {
   const handleShowIndicador = async (id) => {
     try {
       setModalIndicador(true)
-      const res = await fetch("http://localhost:3030/apis/dateIn/ultimas3Metricas", {
+      const res = await fetch("http://164.92.77.143:3030/apis/dateIn/ultimas3Metricas", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -110,7 +110,7 @@ function DatIN() {
       idIndicador: parseInt(idIndicador)
     }
     try {
-      const res = await fetch("http://localhost:3030/apis/dateIn/deleteIndicador", {
+      const res = await fetch("http://164.92.77.143:3030/apis/dateIn/deleteIndicador", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"

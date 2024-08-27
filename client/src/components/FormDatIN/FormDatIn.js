@@ -124,7 +124,7 @@ function FormDatIn({addIndicador, setAddIndicador, fetchIndicadores, setLoading,
             user: USER
         }
         try {
-            const res = await fetch("http://localhost:3030/apis/dateIn/newMetrica", {
+            const res = await fetch("http://164.92.77.143:3030/apis/dateIn/newMetrica", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -155,7 +155,7 @@ function FormDatIn({addIndicador, setAddIndicador, fetchIndicadores, setLoading,
             empleadoSuplente: userData.suplente,
         }
         try {
-            const res = await fetch("http://localhost:3030/apis/dateIn/newIndicador", {
+            const res = await fetch("http://164.92.77.143:3030/apis/dateIn/newIndicador", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
