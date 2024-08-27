@@ -154,6 +154,11 @@
                         height: 50px;
                     }
 
+                    &__nombre {
+                        max-width: 300px;
+                        text-overflow: ellipsis;
+                    }
+
                     &__nombre, &__fechaInicial, &__fechaFinal, &__equipo, &__notas {
                         white-space: nowrap;
                         overflow: hidden;
@@ -231,6 +236,17 @@
                             padding: 0;
                         }
                     } 
+
+                    .btn__subtarea {
+                        background-color: $blue-500;
+                        color: #fff;
+                        margin: 10px 20px 20px 20px;
+                        width: 180px;
+                    }
+
+                    .btn__subtarea:hover {
+                        background-color: #0b5ed7;
+                    }
                 }
             }
         }
@@ -268,6 +284,8 @@
         }
 
         &__main {
+            height: calc(100% - 48px);
+
             &__graficas {
                 display: flex;
                 gap: 20px;

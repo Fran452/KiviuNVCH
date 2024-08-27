@@ -25,6 +25,41 @@ ChartJS.register(
 
 export const tareasContext = React.createContext()
 
+const subtareas = [
+  {
+    id_subtarea: 1,
+    nombre: "Subtarea 1 de la tarea 1",
+    estado: 2,
+    prioridad: 1,
+    progreso: 10,
+    notas: 'Escriba una nota...',
+    Empleados: {
+      mail: 'correo@gmail.com.ar'
+    },
+    AreasApollo: {
+      nombre_del_Area: 'Recursos Humanos'
+    },
+    fecha_inicio: '2024-09-01',
+    fecha_final: '2024-09-07'
+  },
+  {
+    id_subtarea: 2,
+    nombre: "Subtarea 2 de la tarea 1",
+    estado: 2,
+    prioridad: 1,
+    progreso: 10,
+    notas: 'Escriba una nota...',
+    Empleados: {
+      mail: 'correo@gmail.com.ar'
+    },
+    AreasApollo: {
+      nombre_del_Area: 'Recursos Humanos'
+    },
+    fecha_inicio: '2024-09-08',
+    fecha_final: '2024-09-14'
+  }
+]
+
 function Tareas() {
 
   const arr1 = [57, 71]
@@ -271,8 +306,7 @@ function Tareas() {
                     </div>
                   ) : (
                     <div className='tareas__main d-flex flex-column'>
-                      <div className='tareas__main__graficas mb-4'>
-                        {/* Gráfica 1 */}
+                      {/* <div className='tareas__main__graficas mb-4'>
                         <div className='tareas__main__graficas__doughnut d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                           <div className='tareas__main__graficas__doughnut__info d-flex flex-row align-items-center'>
                               <div className='tareas__main__graficas__doughnut__info__textos'>
@@ -288,7 +322,6 @@ function Tareas() {
                               </div>
                           </div>
                         </div>
-                        {/* Gráfica 2 */}
                         <div className='tareas__main__graficas__doughnut d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                           <div className='tareas__main__graficas__doughnut__info d-flex flex-row align-items-center'>
                               <div className='tareas__main__graficas__doughnut__info__textos'>
@@ -304,10 +337,10 @@ function Tareas() {
                               </div>
                           </div>
                         </div>
-                      </div>
-                      <div className='tareas__main__tabla'>
-                        <table className='table table-striped align-middle'>
-                          <thead>
+                      </div> */}
+                      <div className='tareas__main__tabla scroll--y'>
+                        <table className='table align-middle'>
+                        <thead>
                             <tr>
                               <th scope="col">Tareas</th>
                               <th scope="col">Prioridad</th>
@@ -323,34 +356,72 @@ function Tareas() {
                           </thead>
                           <tbody className='table__tbody'>
                           {tareasByProyecto.map((e,i) => {
-                            return <tr key={i} className='table__tbody__tarea'>
-                              <td className='table__tbody__nombre'>{e.nombre}</td>
-                              <td className='table__tbody__prioridad'>
-                                {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
-                                {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
-                                {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
+                            return <><tr key={i} className='table__tbody__tarea table-secondary'>
+                                <td className='table__tbody__nombre'>{e.nombre}</td>
+                                <td className='table__tbody__prioridad'>
+                                  {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                                  {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                                  {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
+                                  </td>
+                                <td className='table__tbody__estado'>
+                                  {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                                  {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                                  {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                                  {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                                  {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                                  {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
                                 </td>
-                              <td className='table__tbody__estado'>
-                                {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
-                                {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
-                                {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
-                                {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
-                                {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
-                                {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
-                              </td>
-                              <td className='table__tbody__progreso'>
-                                <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
-                              </td>
-                              <td className='table__tbody__notas'>{e.notas}</td>
-                              <td className='table__tbody__notas'>{e.Empleados.mail}</td>
-                              <td className='table__tbody__equipo'>{e.AreasApollo.nombre_del_Area}</td>
-                              <td className='table__tbody__fechaInicial'>{new Date(e.fecha_inicio.replace(/-/g, '/')).toLocaleDateString()}</td>
-                              <td className='table__tbody__fechaFinal'>{new Date(e.fecha_final.replace(/-/g, '/')).toLocaleDateString()}</td>
-                              <td className='table__tbody__buttons active'>
-                                <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
-                                <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
-                              </td>
-                            </tr>
+                                <td className='table__tbody__progreso'>
+                                  <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
+                                </td>
+                                <td className='table__tbody__notas'>{e.notas}</td>
+                                <td className='table__tbody__mail'>{e.Empleados.mail}</td>
+                                <td className='table__tbody__equipo'>{e.AreasApollo.nombre_del_Area}</td>
+                                <td className='table__tbody__fechaInicial'>{new Date(e.fecha_inicio.replace(/-/g, '/')).toLocaleDateString()}</td>
+                                <td className='table__tbody__fechaFinal'>{new Date(e.fecha_final.replace(/-/g, '/')).toLocaleDateString()}</td>
+                                <td className='table__tbody__buttons active'>
+                                  <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
+                                  <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
+                                </td>
+                              </tr>
+                              <>
+                                {
+                                  subtareas.map((e, i) => {
+                                    return <tr key={i} className='table__tbody__tarea'>
+                                      <td className='table__tbody__nombre'>{e.nombre}</td>
+                                      <td className='table__tbody__prioridad'>
+                                        {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                                        {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                                        {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
+                                        </td>
+                                      <td className='table__tbody__estado'>
+                                        {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                                        {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                                        {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                                        {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                                        {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                                        {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                                      </td>
+                                      <td className='table__tbody__progreso'>
+                                        <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
+                                      </td>
+                                      <td className='table__tbody__notas'>{e.notas}</td>
+                                      <td className='table__tbody__mail'>{e.Empleados.mail}</td>
+                                      <td className='table__tbody__equipo'>{e.AreasApollo.nombre_del_Area}</td>
+                                      <td className='table__tbody__fechaInicial'>{new Date(e.fecha_inicio.replace(/-/g, '/')).toLocaleDateString()}</td>
+                                      <td className='table__tbody__fechaFinal'>{new Date(e.fecha_final.replace(/-/g, '/')).toLocaleDateString()}</td>
+                                      <td className='table__tbody__buttons active'>
+                                        <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
+                                        <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
+                                      </td>
+                                    </tr>
+                                  })
+                                }
+                                <tr>
+                                  <button className='btn__subtarea btn rounded-pill fw-medium'>Agregar subtarea</button>
+                                </tr>
+                              </>
+                            </>
                           })}
                           </tbody>
                         </table>
