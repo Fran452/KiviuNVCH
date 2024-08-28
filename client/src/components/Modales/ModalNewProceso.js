@@ -11,7 +11,9 @@ function ModalNewProceso(props) {
 
     const [formProceso, setFormProceso] = useState({
         nombre: "",
-        detalles: ""
+        detalles: "",
+        fechaInicio: "",
+        fechaFinal: "",
     })
     const [errors, setErrors] = useState({})
     const [errorFetch, setErrorFetch] = useState(null)
@@ -24,7 +26,9 @@ function ModalNewProceso(props) {
         setErrors({})
         setFormProceso({
             nombre: "",
-            detalles: ""
+            detalles: "",
+            fechaInicio: "",
+            fechaFinal: "",
         })
         setErrorFetch(null)
         props.onHide()
@@ -46,6 +50,12 @@ function ModalNewProceso(props) {
         if(!data.detalles.trim()) {
             errors.detalles = "Escoja una descripción"
         }
+        if(!data.fechaInicio.trim()) {
+            errors.fechaInicio = "Escoja una fecha de inicio."
+        }
+        if(!data.fechaFinal.trim()) {
+        errors.fechaFinal = "Escoja una fecha de término."
+        }
         return errors;
     }
 
@@ -55,7 +65,7 @@ function ModalNewProceso(props) {
         setErrors(newErrors)
         if (Object.keys(newErrors).length === 0){
             try {
-                const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/addProyect", {
+                const res = await fetch("http://localhost:3030/apis/plan-accion/addProceso", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -63,7 +73,10 @@ function ModalNewProceso(props) {
                     body: JSON.stringify({
                         user: jwtParse.apirest.objeto,
                         nombre: formProceso.nombre,
-                        detalles: formProceso.detalles
+                        detalles: formProceso.detalles,
+                        fecha_inicio: formProceso.fechaInicio,
+                        fecha_final: formProceso.fechaFinal,
+                        ciclo: 1
                     })
                 })
                 const data = await res.json()
@@ -73,7 +86,9 @@ function ModalNewProceso(props) {
                     fetchProcesos().then(res => setProcesos(res.objeto))
                     setFormProceso({
                         nombre: "",
-                        detalles: ""
+                        detalles: "",
+                        fechaInicio: "",
+                        fechaFinal: "",
                     })
                     setErrorFetch(null)
                     props.onHide()
@@ -99,7 +114,7 @@ function ModalNewProceso(props) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form className='form__proyectos d-flex flex-column align-items-center' onSubmit={handleSubmit}>
+                <form className='form__proyectos d-flex flex-column' onSubmit={handleSubmit}>
                     <div className='mb-2 col-12'>
                         <label className='mb-1'>Nombre del Proceso</label>
                         <input 
@@ -125,8 +140,35 @@ function ModalNewProceso(props) {
                         />
                         {errors.detalles && <span className='form__proyectos__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.detalles}</span>}
                     </div>
+                    {/* Agregar fecha inicio y final */}
+                    <div className='row mb-4'>
+                        <div className='col-6'>
+                            <label className='mb-1'>Fecha de inicio</label>
+                            <input
+                                onChange={handleChange}
+                                type="date" 
+                                id="fechaInicio" 
+                                name="fechaInicio" 
+                                className="form-control form-control-sm"
+                                value={formProceso.fechaInicio}
+                            />
+                            {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
+                        </div>
+                        <div className='col-6'>
+                            <label className='mb-1'>Fecha de término</label>
+                            <input
+                                onChange={handleChange}
+                                type="date" 
+                                id="fechaFinal" 
+                                name="fechaFinal" 
+                                className="form-control form-control-sm"
+                                value={formProceso.fechaFinal}
+                            />
+                            {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
+                        </div>
+                    </div>
                     {errorFetch !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{errorFetch}</span>}
-                    <button type='submit' className='btn btn-primary rounded-pill form__proyectos__btn'>
+                    <button type='submit' className='btn btn-primary rounded-pill form__proyectos__btn align-self-center'>
                         Agregar proceso
                     </button>
                 </form>

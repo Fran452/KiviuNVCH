@@ -7,10 +7,6 @@ import Auditoria from '../../assets/img/ciclos-auditoria.png'
 const ciclos = [
     {
         id: 1,
-        año: 2023,
-    },
-    {
-        id: 1,
         año: 2024
     }
 ]

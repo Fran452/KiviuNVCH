@@ -25,41 +25,6 @@ ChartJS.register(
 
 export const tareasContext = React.createContext()
 
-const subtareas = [
-  {
-    id_subtarea: 1,
-    nombre: "Subtarea 1 de la tarea 1",
-    estado: 2,
-    prioridad: 1,
-    progreso: 10,
-    notas: 'Escriba una nota...',
-    Empleados: {
-      mail: 'correo@gmail.com.ar'
-    },
-    AreasApollo: {
-      nombre_del_Area: 'Recursos Humanos'
-    },
-    fecha_inicio: '2024-09-01',
-    fecha_final: '2024-09-07'
-  },
-  {
-    id_subtarea: 2,
-    nombre: "Subtarea 2 de la tarea 1",
-    estado: 2,
-    prioridad: 1,
-    progreso: 10,
-    notas: 'Escriba una nota...',
-    Empleados: {
-      mail: 'correo@gmail.com.ar'
-    },
-    AreasApollo: {
-      nombre_del_Area: 'Recursos Humanos'
-    },
-    fecha_inicio: '2024-09-08',
-    fecha_final: '2024-09-14'
-  }
-]
-
 function Tareas() {
 
   const arr1 = [57, 71]
@@ -102,7 +67,7 @@ function Tareas() {
     cutout: 40
   }
   
-  const { loadingTar, setLoadingTar, setErrorTar, errorTar, procesos, setProcesos, fetchProcesos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
+  const { subtareas, setSubtareas, loadingTar, setLoadingTar, setErrorTar, errorTar, procesos, setProcesos, fetchProcesos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
   
   const [modalDeleteProyecto, setModalDeleteProyecto] = useState(false)
   const [modalEditProyecto, setModalEditProyecto] = useState(false)
@@ -113,7 +78,24 @@ function Tareas() {
   const [modalDeleteTarea, setModalDeleteTarea] = useState(false)
   const [errorDel, setErrorDel] = useState(null)
 
+  // const [subtareas, setSubtareas] = useState([])
+  // const [errorSubtarea, setErrorSubtarea] = useState(null)
+
   useEffect(() => {
+    // const fetchAllSubTareas = () => {
+    //   fetchSubtareasById(idProyecto)
+    //   .then(res => {
+    //     if(res.error !== 0){
+    //       setErrorSubtarea(res.errorDetalle)
+    //     } else {
+    //       setSubtareas(res.objeto)
+    //     }
+    //     console.log(res)
+    //   })
+    // }
+    
+    // fetchAllSubTareas()
+
   },[])
 
   const renderTooltip = (props) => (
@@ -123,7 +105,8 @@ function Tareas() {
   );
 
   const handleEditProyecto = () => {
-    const pro = procesos.find(e => e.id_proyecto === idProyecto)
+    const pro = procesos.find(e => e.id_procesos === idProyecto)
+    console.log(pro)
     setProyectoSelec(JSON.stringify(pro))
     setModalEditProyecto(true)
   }
@@ -134,13 +117,13 @@ function Tareas() {
 
   const handleDeleteProyecto = async () => {
     try {
-      const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/deleteProyect", {
+      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteProceso", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          idProyecto: parseInt(idProyecto)
+          idProceso: parseInt(idProyecto)
         })
       })
       const data = await res.json()
@@ -182,7 +165,7 @@ function Tareas() {
       idTarea: parseInt(idTask)
     }
     try {
-      const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/deleteTask", {
+      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteTask", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -211,6 +194,28 @@ function Tareas() {
     } catch (error) {
       setErrorDel(error)
     } 
+  }
+
+  const fetchSubtareasById = async(id) => {
+    try {
+      const res = await fetch("http://localhost:3030/apis/plan-accion/viewSubTask", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          idTarea: id
+        })
+      })
+      const data = await res.json()
+      if(data.error !== 0){
+        console.log(data.errorDetalle)
+      } else {
+        setSubtareas(data.objeto)
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -342,14 +347,15 @@ function Tareas() {
                         <table className='table align-middle'>
                         <thead>
                             <tr>
+                              <th scope="col"></th>
+                              <th scope="col"></th>
                               <th scope="col">Tareas</th>
                               <th scope="col">Prioridad</th>
                               <th scope="col">Estado</th>
                               <th scope="col">Progreso</th>
+                              <th scope="col">Horas totales</th>
                               <th scope="col">Notas</th>
                               <th scope="col">Responsable</th>
-                              <th scope="col">Equipo de apoyo</th>
-                              <th scope="col">Inicio</th>
                               <th scope="col">Final</th>
                               {/* <th scope="col" className='position-absolute end-0'>Acciones</th> */}
                             </tr>
@@ -357,6 +363,13 @@ function Tareas() {
                           <tbody className='table__tbody'>
                           {tareasByProyecto.map((e,i) => {
                             return <><tr key={i} className='table__tbody__tarea table-secondary'>
+                                <td>
+                                  <button className='btn__showsub btn btn-primary btn-sm rounded-circle' onClick={()=>fetchSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
+                                </td>
+                                <td className='table__tbody__buttons'>
+                                  <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
+                                  <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
+                                </td>
                                 <td className='table__tbody__nombre'>{e.nombre}</td>
                                 <td className='table__tbody__prioridad'>
                                   {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
@@ -374,52 +387,62 @@ function Tareas() {
                                 <td className='table__tbody__progreso'>
                                   <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
                                 </td>
+                                <td className='table__tbody__estado'>{e.horas_totales}</td>
                                 <td className='table__tbody__notas'>{e.notas}</td>
-                                <td className='table__tbody__mail'>{e.Empleados.mail}</td>
-                                <td className='table__tbody__equipo'>{e.AreasApollo.nombre_del_Area}</td>
-                                <td className='table__tbody__fechaInicial'>{new Date(e.fecha_inicio.replace(/-/g, '/')).toLocaleDateString()}</td>
-                                <td className='table__tbody__fechaFinal'>{new Date(e.fecha_final.replace(/-/g, '/')).toLocaleDateString()}</td>
-                                <td className='table__tbody__buttons active'>
-                                  <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
-                                  <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
-                                </td>
+                                <td className='table__tbody__mail'>{e.Empleado.mail}</td>
+                                {/* <td className='table__tbody__equipo'>{e.AreasApollo.nombre_del_Area}</td> */}
+                                {/* <td className='table__tbody__fechaInicial'>{new Date(e.fecha_inicio.replace(/-/g, '/')).toLocaleDateString()}</td> */}
+                                <td className='table__tbody__fechaFinal'>{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</td>
+                                
                               </tr>
                               <>
-                                {
-                                  subtareas.map((e, i) => {
-                                    return <tr key={i} className='table__tbody__tarea'>
-                                      <td className='table__tbody__nombre'>{e.nombre}</td>
-                                      <td className='table__tbody__prioridad'>
-                                        {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
-                                        {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
-                                        {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
-                                        </td>
-                                      <td className='table__tbody__estado'>
-                                        {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
-                                        {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
-                                        {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
-                                        {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
-                                        {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
-                                        {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
-                                      </td>
-                                      <td className='table__tbody__progreso'>
-                                        <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
-                                      </td>
-                                      <td className='table__tbody__notas'>{e.notas}</td>
-                                      <td className='table__tbody__mail'>{e.Empleados.mail}</td>
-                                      <td className='table__tbody__equipo'>{e.AreasApollo.nombre_del_Area}</td>
-                                      <td className='table__tbody__fechaInicial'>{new Date(e.fecha_inicio.replace(/-/g, '/')).toLocaleDateString()}</td>
-                                      <td className='table__tbody__fechaFinal'>{new Date(e.fecha_final.replace(/-/g, '/')).toLocaleDateString()}</td>
-                                      <td className='table__tbody__buttons active'>
-                                        <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
-                                        <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
-                                      </td>
-                                    </tr>
-                                  })
-                                }
-                                <tr>
+                                {subtareas.length === 0 ? (
+                                  ""
+                                ) : (
+                                  <>
+                                    {e.id_tarea === subtareas[0].fk_tareas ? (
+                                      <>
+                                        {
+                                          subtareas.map((s, i) => {
+                                            return <tr key={i} className='table__tbody__tarea'>
+                                              <td></td>
+                                              <td></td>
+                                              <td className='table__tbody__nombre'>{s.titulo}</td>
+                                              <td className='table__tbody__prioridad'>
+                                                {s.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                                                {s.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                                                {s.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
+                                                </td>
+                                              <td className='table__tbody__estado'>
+                                                {s.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                                                {s.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                                                {s.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                                                {s.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                                                {s.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                                                {s.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                                              </td>
+                                              <td className='table__tbody__progreso'>
+                                                <ProgressBar className='table__tbody__progreso__bar' now={s.avance} label={`${s.avance}%`} max={100}/>
+                                              </td>
+                                              <td className='table__tbody__estado'>{s.horasAprox}</td>
+                                              <td className='table__tbody__notas'>{s.notas}</td>
+                                              <td className='table__tbody__mail'>{s.Empleados.mail}</td>
+                                              {/* <td className='table__tbody__buttons active'>
+                                                <button onClick={()=> handleEditTarea(s.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
+                                                <button onClick={()=> handleModalDelete(s.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
+                                              </td> */}
+                                            </tr>
+                                          })
+                                        }
+                                      </>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </>
+                                )}
+                                {/* <tr>
                                   <button className='btn__subtarea btn rounded-pill fw-medium'>Agregar subtarea</button>
-                                </tr>
+                                </tr> */}
                               </>
                             </>
                           })}

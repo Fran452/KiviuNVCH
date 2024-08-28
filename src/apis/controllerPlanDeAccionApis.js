@@ -109,7 +109,7 @@ const controlador = {
     viewProceso: async (req,res) => {
         try{
             let procesos = await dataBaseSQL.sequelize.query(
-                "SELECT procesos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM procesos LEFT JOIN tareas ON procesos.id_procesos = tareas.fk_procesos LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE procesos.fk_ciclo = :fkCiclo GROUP BY procesos.id_procesos;"
+                "SELECT procesos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM procesos LEFT JOIN tareas ON procesos.id_procesos = tareas.fk_procesos LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE procesos.fk_ciclo = :fkCiclo and procesos.ver = 1 GROUP BY procesos.id_procesos;"
                 ,{
                 replacements: { fkCiclo: req.body.ciclo },
                 type: Sequelize.QueryTypes.SELECT
@@ -145,6 +145,8 @@ const controlador = {
                 nombre  :   req.body.nombre,
                 detalles:   req.body.detalles,
                 fk_ciclo:   req.body.ciclo,
+                fecha_inicio:   req.body.fecha_inicio,     
+                fecha_final:   req.body.fecha_final,
                 ver     :   1
             });
             res.json({error :0, errorDetalle: "", objeto:procesos});
@@ -162,6 +164,8 @@ const controlador = {
             let procesos = await dataBaseSQL.procesos.update({
                 nombre      : req.body.nombre,
                 detalles    : req.body.detalles,
+                fecha_inicio:   req.body.fecha_inicio,     
+                fecha_final:   req.body.fecha_final,
             },{
                 where:{
                     id_procesos: req.body.idProceso
@@ -510,9 +514,9 @@ const controlador = {
                     ver : 1,
                     fk_tareas : req.body.idTarea
                 },
-                attributes: ['titulo','horasAprox','avece','estado','prioridad','notas'],
+                attributes: ['titulo','horasAprox','avance','estado','prioridad','notas', 'fk_tareas'],
                 include: [
-                    {association : "Empleado",attributes: ['nombre','mail']},
+                    {association : "Empleados",attributes: ['nombre','mail']},
                 ]
             });
 

@@ -10,65 +10,9 @@ import ModalNewProceso from '../../components/Modales/ModalNewProceso';
 
 const ciclos = [
     {
-        idCiclo: 0,
-        nombre: "Planeamiento"
-    },
-    {
-        idCiclo: 1,
-        nombre: "Préstamos"
-    },
-    {
         idCiclo: 2,
-        nombre: "Tarjetas de crédito"
+        nombre: "Préstamos 2° revisión"
     },
-    {
-        idCiclo: 3,
-        nombre: "TI - sección 2"
-    },
-    {
-        idCiclo: 4,
-        nombre: "TI - sección 4"
-    },
-    {
-        idCiclo: 5,
-        nombre: "TI - sección 6"
-    },
-    {
-        idCiclo: 6,
-        nombre: "TI - sección 7"
-    },
-    {
-        idCiclo: 7,
-        nombre: "TI - sección 8"
-    },
-    {
-        idCiclo: 8,
-        nombre: "Tecnología Informática"
-    },
-    {
-        idCiclo: 9,
-        nombre: "Depósitos"
-    },
-    {
-        idCiclo: 10,
-        nombre: "Tesorería"
-    },
-    {
-        idCiclo: 11,
-        nombre: "Contabilidad General"
-    },
-    {
-        idCiclo: 12,
-        nombre: "Comercio Exterior"
-    },
-    {
-        idCiclo: 13,
-        nombre: "Transferencia Electrónica de Fondos"
-    },
-    {
-        idCiclo: 14,
-        nombre: "Protección de usuarios de servicios financieros"
-    }
 ]
 
 export const newContext = React.createContext()
@@ -96,22 +40,34 @@ function Ciclo() {
     // Anterior proyectos
     const [procesos, setProcesos] = useState([])
 
+    //subtareas
+    const [subtareas, setSubtareas] = useState([])
+
     const auth = localStorage.getItem("token")
     const jwtParse = jwtDecode(auth)
     const USER = jwtParse.apirest.objeto
 
     useEffect(() => {
-        const fetchAreas = async () => {
-            try {
-            const res = await fetch("http://localhost:3030/apis/index",{
-                method: "GET"
-            })
-            const data = await res.json()
-            setSubciclos(data.objeto.areas)
-            } catch (error) {
-            console.log(error)
-            }
-        }
+        // const fetchAreas = async () => {
+        //     try {
+        //     const res = await fetch("http://localhost:3030/apis/index",{
+        //         method: "GET"
+        //     })
+        //     const data = await res.json()
+        //     setSubciclos(data.objeto.areas)
+        //     } catch (error) {
+        //     console.log(error)
+        //     }
+        // }
+
+        setSubciclos(
+            [
+                {
+                    id_area: 4,
+                    nombre_del_Area: "2024"
+                }
+            ]
+        )
 
         const firstFetch = () => {
             fetchProcesos()
@@ -135,20 +91,21 @@ function Ciclo() {
             setLoading(false)
         }
         
-        fetchAreas()
+        // fetchAreas()
         firstFetch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[id])
+    },[])
 
     const fetchProcesos = async () => {
         try {
-            const res = await fetch("http://localhost:3030/apis/plan-accion/viewProyect", {
+            const res = await fetch("http://localhost:3030/apis/plan-accion/viewProceso", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                user: USER
+                    ciclo: 1,
+                    user: USER
                 })
             });
             const data = await res.json()
@@ -167,7 +124,7 @@ function Ciclo() {
               },
               body: JSON.stringify({
                 user: USER,
-                idProyecto: id
+                idProceso: id
               })
             })
             const data = await res.json()
@@ -193,6 +150,7 @@ function Ciclo() {
         setTitleArea(titleArea)
         setTitleProyecto(titleProyecto)
         setDescripcionProyecto(detalles)
+        setSubtareas([])
     }
 
     const handleFormProceso = (e) => {
@@ -202,16 +160,16 @@ function Ciclo() {
 
     return (
         <newContext.Provider 
-            value={{loadingTar, setLoadingTar, errorTar, setErrorTar, procesos, setProcesos, fetchProcesos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, subciclos, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
+            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, procesos, setProcesos, fetchProcesos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, subciclos, titleArea, titleProyecto, descripcionProyecto, setTitleProyecto, setDescripcionProyecto, USER}}>
             <ModalNewProceso show={modalProceso} onHide={()=>setModalProceso(false)}/>
             <div className='ciclo section'>
-                {cicloSelec === null ? "" : (
+                {/* {cicloSelec === null ? "" : (
                     <div className='section__header d-flex flex-row align-items-end mb-4'>
                         <h4 className='btn__back m-0 me-2' onClick={()=>navigate(-1)}>{state.year}</h4>
                         <i className="bi bi-chevron-right me-2"></i>
                         <h4 className='m-0'>{state.title}</h4>
                     </div>
-                )}
+                )} */}
                 {loading ? (
                     <div className='loading__ciclo d-flex flex-column align-items-center justify-content-center'>
                         <Oval
@@ -252,7 +210,7 @@ function Ciclo() {
                                                             <Accordion.Header>{a.nombre_del_Area}</Accordion.Header>
                                                             <Accordion.Body className='d-flex flex-column align-items-start'>
                                                                 {procesos.map((p, index) => {
-                                                                    return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_proyecto, a.nombre_del_Area, p.nombre, p.detalles)}>
+                                                                    return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_procesos, a.nombre_del_Area, p.nombre, p.detalles)}>
                                                                         <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
                                                                     </button>
                                                                 })}

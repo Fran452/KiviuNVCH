@@ -131,7 +131,8 @@
 @media screen and (min-width: 768px) {
     .ciclo {
         &__main {
-            height: calc(100% - 48px);
+            height: 100%;
+            // height: calc(100% - 48px);
 
             &__menu {
                 width: 210px;

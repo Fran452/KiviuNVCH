@@ -1,6 +1,22 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap/scss/_variables.scss';
 
+.loading__year {
+    width: 100%;
+    height: 100%;
+
+    div {
+        margin-bottom: 10px;
+        svg g g circle[stroke] {
+            stroke: $blue-500;
+        }
+    }
+
+    p {
+        color: $blue-500
+    }
+}
+
 .auditoria__year {
     &__main {
         display: grid;
@@ -98,6 +114,8 @@
 
 @media screen and (min-width: 768px) {
     .auditoria__year {
+        height: calc(100% - 48px);
+        
         &__main {
             grid-template-columns: 50% auto;
             grid-template-rows: max-content;
