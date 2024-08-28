@@ -11,6 +11,8 @@ CREATE TABLE Procesos (
 );
 
 */
+
+//! Sin utilizacion eliminacion
 module.exports = (sequelize,DataTypes) => {
 
     let nombre = "procesos";

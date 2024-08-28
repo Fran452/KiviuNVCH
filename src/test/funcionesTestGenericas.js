@@ -166,13 +166,15 @@ let controlador = {
         
     },
 
-    // Para Ciclo
-    crearCiclo: async function(area,nombre,detalle,ver){
+    //* Para Ciclo
+    crearCiclo: async function(area,nombre,detalle,fecha_inicio,fecha_final,ver){
         let objetoCreado = await dataBaseSQL.ciclos.create({
-            fk_area:    area,
-            nombre:     nombre,
-            detalles:   detalle,
-            ver:        ver
+            fk_area     : area,
+            nombre      : nombre,
+            detalles    : detalle,
+            fecha_inicio: fecha_inicio,
+            fecha_final : fecha_final,
+            ver         : ver
         });
         return objetoCreado.dataValues;
     },
@@ -195,6 +197,7 @@ let controlador = {
         });
     },
 
+    //! Futura eliminacion 
     // Para proceso
     crearProceso: async function(area,ciclo,nombre,detalle,ver){
         let objetoCreado = await dataBaseSQL.procesos.create({
@@ -226,12 +229,12 @@ let controlador = {
         });
     },
 
-    // Para Tareas 
-    crearTarea: async function(fk_empleado_asignado,fk_area,fk_procesos,nombre,estado,prioridad,fecha_final,notas,progreso,horas_totales){
+    //* Para Tareas 
+    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclos,nombre,estado,prioridad,fecha_final,notas,progreso,horas_totales){
         let objetoCreado = await dataBaseSQL.tareas.create({
             fk_empleado_asignado,
             fk_area,
-            fk_procesos,
+            fk_ciclos,
             nombre,
             estado,
             prioridad,
@@ -252,7 +255,7 @@ let controlador = {
             attributes: ['id_tarea','nombre','estado','prioridad','notas','progreso','horas_totales'],
             include: [
                 {association : "Empleado",attributes: ['nombre','fk_area','fk_puesto','mail']},
-                {association : "Proceso",attributes: ['id_procesos','nombre']},
+                {association : "Ciclo",attributes: ['id_ciclo','nombre']},
                 {association : "Areas",attributes: ['id_area','nombre_del_Area']},                
             ]
         });
@@ -278,7 +281,7 @@ let controlador = {
         });
     },
 
-    // Para sub tareas
+    //* Para sub tareas
     crearSubTarea: async function(fk_tareas, titulo, asignacion, horasAprox, avance, estado, prioridad, notas, ver){
         let objetoCreado = await dataBaseSQL.subtareas.create({
             fk_tareas,

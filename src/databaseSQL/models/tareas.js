@@ -47,7 +47,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 */
-        "fk_procesos": {
+        "fk_ciclos": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -132,9 +132,9 @@ module.exports = (sequelize,DataTypes) => {
         });
 */
         /* Union con Procesos */
-        tareas.belongsTo(models.procesos,{
-            foreignKey : 'fk_procesos',
-            as : 'Proceso'
+        tareas.belongsTo(models.ciclos,{
+            foreignKey : 'fk_ciclos',
+            as : 'Ciclo'
         });
 
         

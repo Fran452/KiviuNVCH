@@ -116,6 +116,11 @@ const controlador = {
     crearCiclo : async (req,res) => {
         let resultadoTest = {}
 
+        let ahora = new Date()
+        let fechaInicio = ahora.toISOString().split('T')[0];
+        ahora.setDate(ahora.getDate() + 7);
+        let fechaFin = ahora.toISOString().split('T')[0];
+
         let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
 
         let usuario = {
@@ -134,6 +139,8 @@ const controlador = {
             body: JSON.stringify({
                 nombre      : "Ciclo de ejemplo",
                 detalles    : "Ciclo de ejemplo detalles",
+                fechaInicio : fechaInicio,
+                fechaFinal  : fechaFin,
                 user        : usuario
             })
         })
@@ -169,6 +176,11 @@ const controlador = {
     verCiclos: async (req,res) => {
         let resultadoTest = {}
 
+        let ahora = new Date()
+        let fechaInicio = ahora.toISOString().split('T')[0];
+        ahora.setDate(ahora.getDate() + 7);
+        let fechaFin = ahora.toISOString().split('T')[0];
+        
         let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
 
         let usuario = {
@@ -187,8 +199,8 @@ const controlador = {
             mail:   baseDeDatos[1].empleados[1].mail  
         };
 
-        let cicloSubicos = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
-        let cicloSubicosNoVer = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo No mostrar","ciclo de ejemplo detalle",0);
+        let cicloSubicos = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",fechaInicio,fechaFin,1);
+        let cicloSubicosNoVer = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo No mostrar","ciclo de ejemplo detalle",fechaInicio,fechaFin,0);
 
         let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewCiclos',{
             method:'POST',
@@ -248,6 +260,11 @@ const controlador = {
     editarCiclos: async (req,res) => {
         let resultadoTest = {}
 
+        let ahora = new Date()
+        let fechaInicio = ahora.toISOString().split('T')[0];
+        ahora.setDate(ahora.getDate() + 7);
+        let fechaFin = ahora.toISOString().split('T')[0];
+
         let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
 
         let usuario = {
@@ -258,7 +275,7 @@ const controlador = {
             mail:baseDeDatos[0].empleados[1].mail  
         };
 
-        let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+        let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",fechaInicio,fechaFin,1);
         
         let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modCiclos',{
             method:'PUT',
@@ -300,6 +317,11 @@ const controlador = {
     eliminarCiclos: async (req,res) => {
         let resultadoTest = {}
 
+        let ahora = new Date()
+        let fechaInicio = ahora.toISOString().split('T')[0];
+        ahora.setDate(ahora.getDate() + 7);
+        let fechaFin = ahora.toISOString().split('T')[0];
+
         let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
 
         let usuario = {
@@ -310,7 +332,7 @@ const controlador = {
             mail:baseDeDatos[0].empleados[1].mail  
         };
 
-        let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",1);
+        let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",fechaInicio,fechaFin,1);
 
         let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/deleteCiclos',{
             method:'PUT',

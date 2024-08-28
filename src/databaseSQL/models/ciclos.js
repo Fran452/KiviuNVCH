@@ -48,9 +48,9 @@ module.exports = (sequelize,DataTypes) => {
     cilcos.associate = (models) => {
 
         // Union con Empleados
-        cilcos.hasMany(models.procesos,{
+        cilcos.hasMany(models.tareas,{
             foreignKey : 'fk_ciclo',
-            as : 'Procesos'
+            as : 'Tareas'
         });
         
         // Union con Areas
