@@ -340,7 +340,7 @@ const controlador = {
     modTarea: async (req,res) => { 
         try{
             let empleadoAsignado;
-            if(req.body.empleado_asignado != req.body.tarea.Empleados.mail){
+            if(req.body.empleado_asignado != req.body.tarea.Empleado.mail){
                 empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
@@ -353,7 +353,7 @@ const controlador = {
                     return 1;
                 }
             }else{
-                empleadoAsignado =      req.body.tarea.Empleados;
+                empleadoAsignado =      req.body.tarea.Empleado;
             }
 
             let tareaModificada = await dataBaseSQL.tareas.update({
@@ -387,7 +387,7 @@ const controlador = {
     deleteTarea: async (req,res) => { 
         try{
              let tareaModificada = await dataBaseSQL.tareas.update({
-                mostrar : 0,
+                ver : 0,
             },{
                 where:{
                     id_tarea : req.body.idTarea

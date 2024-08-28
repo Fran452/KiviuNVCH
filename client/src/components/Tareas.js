@@ -142,7 +142,7 @@ function Tareas() {
 
   const handleNewTarea = (e) => {
     e.preventDefault()
-    const pro = procesos.find(e => e.id_proyecto === idProyecto)
+    const pro = procesos.find(e => e.id_procesos === idProyecto)
     setProyectoSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
@@ -150,7 +150,7 @@ function Tareas() {
   const handleEditTarea = (id) => {
     const obj = tareasByProyecto.find((e) => e.id_tarea === id)
     setTareaObj(JSON.stringify(obj))
-    const pro = procesos.find(e => e.id_proyecto === idProyecto)
+    const pro = procesos.find(e => e.id_procesos === idProyecto)
     setProyectoSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
@@ -227,9 +227,9 @@ function Tareas() {
       {/* Modal Eliminar Proyecto */}
       <Modal className='modal__delete__proyecto' show={modalDeleteProyecto} onHide={() => setModalDeleteProyecto(false)} backdrop="static" centered>
         <Modal.Header closeButton>
-          <Modal.Title><h3>Eliminar proyecto</h3></Modal.Title>
+          <Modal.Title><h3>Eliminar proceso</h3></Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Está seguro de eliminar este proyecto?</Modal.Body>
+        <Modal.Body>¿Está seguro de eliminar este proceso?</Modal.Body>
         <Modal.Footer>
           <button className='btn btn-secondary rounded-pill' onClick={() => setModalDeleteProyecto(false)}>Cancelar</button>
           <button className='btn btn-danger rounded-pill' onClick={handleDeleteProyecto}>Borrar</button>
@@ -276,7 +276,7 @@ function Tareas() {
                 <div className='tareas__inicio d-flex flex-column align-items-center justify-content-center'>
                 <img className='mb-4' src={illustrationPlanes} alt="" />
                 <h2 className='fw-semibold mb-2'>¡Bienvenido!</h2>
-                <p className='text-center w-75'>Aquí encontrarás los proyectos por cada área. Cada proyecto cuenta con sus propias tareas, 
+                <p className='text-center w-75'>Aquí encontrarás los procesos por cada año. Cada proceso cuenta con sus propias tareas y subtareas, 
                   aquellas que deberás realizar para alcanzar los objetivos establecidos.
                 </p>
               </div>
@@ -302,7 +302,7 @@ function Tareas() {
                   </div>
                   {tareasByProyecto.length === 0 ? (
                     <div className='tareas--empty__main py-4 py-md-0 d-flex flex-column align-items-center justify-content-center rounded-3'>
-                      <h2 className='fw-semibold mb-1 text-center'>No tienes Planes de Acción aún.</h2>
+                      <h2 className='fw-semibold mb-1 text-center'>No tienes tareas aún.</h2>
                       <p className='mb-3 text-center'>Para comenzar, crea tu primera tarea:</p>
                       <button 
                       onClick={handleNewTarea} 
