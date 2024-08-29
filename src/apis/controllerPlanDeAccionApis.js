@@ -25,12 +25,20 @@ const controlador = {
     /* CRUD De Ciclos */
     viewCiclos: async (req,res) => {
         try{
-            let ciclos = await dataBaseSQL.ciclos.findAll({
+            let ciclos = await dataBaseSQL.sequelize.query(
+                "SELECT ciclos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM ciclos LEFT JOIN tareas ON ciclos.id_ciclo = tareas.fk_ciclo LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE ciclos.fk_area = :fkArea and ciclos.ver = 1 GROUP BY ciclos.id_ciclo;"
+                ,{
+                replacements: { fkArea: req.body.user.area },
+                type: Sequelize.QueryTypes.SELECT
+            });
+
+            /*let ciclos = await dataBaseSQL.ciclos.findAll({
                 where: {
                     fk_area :   req.body.user.area,
                     ver:        1
                 },
-            });
+            });*/
+
             res.json({error:0, ErrorDetalle:"", objeto:ciclos});
 
         }
@@ -43,11 +51,16 @@ const controlador = {
     
     addCiclos: async (req,res) => {
         try{
+            console.log("fechas que llegan a la api:");
+            console.log(req.body.fechaInicio);
+            console.log(req.body.fechaFinal);
             let ciclo = await dataBaseSQL.ciclos.create({
-                fk_area :   req.body.user.area,
-                nombre  :   req.body.nombre,
-                detalles:   req.body.detalles,
-                ver     :   1
+                fk_area         : req.body.user.area,
+                nombre          : req.body.nombre,
+                detalles        : req.body.detalles,
+                fecha_inicio    : req.body.fechaInicio,     
+                fecha_final     : req.body.fechaFinal,
+                ver             : 1
             });
             res.json({error :0, errorDetalle: "", objeto:ciclo});
             return 0
@@ -64,6 +77,8 @@ const controlador = {
             let ciclo = await dataBaseSQL.ciclos.update({
                 nombre    : req.body.nombre,
                 detalles    : req.body.detalles,
+                fecha_inicio    : req.body.fechaInicio,     
+                fecha_final     : req.body.fechaFinal,
             },{
                 where:{
                     id_ciclo: req.body.id_ciclo
@@ -205,7 +220,7 @@ const controlador = {
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
                         ver : 1,
-                        fk_procesos : req.body.idProceso
+                        fk_ciclo: req.body.idCiclo
                     },
                     attributes: ["id_tarea","nombre","estado","prioridad","fecha_final","notas","progreso","horas_totales"],
                     include: [
@@ -220,9 +235,9 @@ const controlador = {
                     where: {
                         fk_area: req.body.user.area,
                         ver : 1,
-                        fk_Procesos : req.body.idProceso
+                        fk_ciclo : req.body.idCiclo
                     },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_final","notas","progreso","horas_totales"],
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_final","notas"],
                     include: [
                             {association : "Areas",attributes: ['id_area','nombre_del_Area']},
                             {association : "Empleado",attributes: ['nombre','mail']},
@@ -273,20 +288,6 @@ const controlador = {
     },    
 
     // Agregar tareas
-    /*
-    Estados:
-        0
-        1
-        2
-        3
-    Prioridad
-        0
-        1
-        2
-        3
-        4
-
-    */ 
     addTarea:  async (req,res) => { 
         try{
             let fechaActua = new Date() ;
@@ -311,14 +312,14 @@ const controlador = {
                 let tarea = await dataBaseSQL.tareas.create({
                     fk_empleado_asignado    : empleadoAsignado.id_empleado,
                     fk_area                 : req.body.user.area,
-                    fk_procesos             : req.body.idProceso,
+                    fk_ciclo                : req.body.idCiclo,
                     nombre                  : req.body.nombre,
                     estado                  : req.body.estado,
                     prioridad               : req.body.prioridad,
                     fecha_final             : req.body.fechaFinal,
                     notas                   : req.body.notas,
-                    progreso                : req.body.progreso,
-                    horas_Necesarias        : 0,
+                    //progreso                : req.body.progreso,
+                    //horas_Necesarias        : 0,
                     mostrar                 : 1
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
@@ -336,7 +337,7 @@ const controlador = {
     modTarea: async (req,res) => { 
         try{
             let empleadoAsignado;
-            if(req.body.empleado_asignado != req.body.tarea.Empleados.mail){
+            if(req.body.empleado_asignado != req.body.tarea.Empleado.mail){
                 empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
@@ -349,7 +350,7 @@ const controlador = {
                     return 1;
                 }
             }else{
-                empleadoAsignado =      req.body.tarea.Empleados;
+                empleadoAsignado =      req.body.tarea.Empleado;
             }
 
             let tareaModificada = await dataBaseSQL.tareas.update({
@@ -358,12 +359,11 @@ const controlador = {
                 nombre :                req.body.nombre,
                 estado :                req.body.estado,
                 prioridad :             req.body.prioridad,
-                fecha_inicio :          req.body.fechaInicio,
+                //fecha_inicio :          req.body.fechaInicio,
                 fecha_final :           req.body.fechaFinal,
-                notas :                 req.body.notas,
-                fk_area_apoyo:          req.body.areaApoyo,
+                notas :                 req.body.notas, 
                 progreso:               req.body.progreso,
-                horas_Necesarias:       req.body.horas,
+                //horas_Necesarias:       req.body.horas,
                 fk_proceso:             req.body.idProceso
             },{
                 where:{
@@ -382,8 +382,9 @@ const controlador = {
     // Eliminar tareas 
     deleteTarea: async (req,res) => { 
         try{
-             let tareaModificada = await dataBaseSQL.tareas.update({
-                mostrar : 0,
+            console.log(req.body.idTarea);
+            let tareaModificada = await dataBaseSQL.tareas.update({
+                ver : 0,
             },{
                 where:{
                     id_tarea : req.body.idTarea
@@ -510,9 +511,9 @@ const controlador = {
                     ver : 1,
                     fk_tareas : req.body.idTarea
                 },
-                attributes: ['titulo','horasAprox','avece','estado','prioridad','notas'],
+                attributes: ['id_sub_tarea','titulo','horasAprox','avance','estado','prioridad','notas'],
                 include: [
-                    {association : "Empleado",attributes: ['nombre','mail']},
+                    {association : "Empleados",attributes: ['nombre','mail']},
                 ]
             });
 
@@ -531,7 +532,7 @@ const controlador = {
                 ver : 0 
             },{
                 where:{
-                    id_sub_tarea : req.body.tarea.id_subtarea
+                    id_sub_tarea : req.body.id_subtarea
                 }
             });
             res.json({error: 0, errorDetalle:"",objeto:subtarea});

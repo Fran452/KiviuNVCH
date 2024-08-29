@@ -37,6 +37,7 @@ CREATE TABLE Ciclos (
     ver                                     INT NOT NULL,
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
+
 --! Sin utilizacion eliminacion
 /*
 CREATE TABLE Procesos ( 
@@ -52,20 +53,21 @@ CREATE TABLE Procesos (
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 */
+
 CREATE TABLE Tareas (
     id_tarea                                INT PRIMARY KEY AUTO_INCREMENT,
     fk_empleado_asignado                    INT NOT NULL,
     fk_area                                 INT NOT NULL,
+    fk_ciclo                                INT NOT NULL,
 --  fk_area_apoyo                           INT NOT NULL,
-    fk_ciclos                               INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
     estado	                                INT, -- de no ser agregado se le asigna 1
     prioridad					            INT NOT NULL,  -- default 2
 --  fecha_inicio                            DATE NOT NULL,
     fecha_final                             DATE NOT NULL, -- 31/12/ actual año
     notas                                   VARCHAR(255),
-    progreso					            INT,            -- 0
-    horas_totales                           INT NOT NULL,  -- 0
+--    progreso					            INT,            -- 0
+--    horas_totales                           INT NOT NULL,  -- 0
     ver                                     INT NOT NULL, 
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
 --  FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),

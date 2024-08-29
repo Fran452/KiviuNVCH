@@ -121,14 +121,14 @@ let controlador = {
         return objetoTest;
     },
 
-/**
- * 
- * @returns array
- * {
- *   area : datos de area,
- *   empleados : [empleados]
- * }
- */
+    /**
+     * 
+     * @returns array
+     * {
+     *   area : datos de area,
+     *   empleados : [empleados]
+     * }
+     */
     crarAmbienteGenerico: async function () {
         let baseDeDatos = [];
         
@@ -197,51 +197,17 @@ let controlador = {
         });
     },
 
-    //! Futura eliminacion 
-    // Para proceso
-    crearProceso: async function(area,ciclo,nombre,detalle,ver){
-        let objetoCreado = await dataBaseSQL.procesos.create({
-            fk_area:    area,
-            fk_ciclo:   ciclo,
-            nombre:     nombre,
-            detalles:   detalle,
-            ver:        ver
-        });
-        return objetoCreado.dataValues;
-    },
-    
-    buscarProceso: async function(id){
-        let busqueda = await dataBaseSQL.procesos.findOne({
-            where: {
-                id_procesos : id
-            },
-            include: [
-                {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                {association : "Ciclos",attributes: ['id_ciclo','nombre']},
-            ]
-        });
-        return busqueda.dataValues;
-    },
-    
-    eliminarProceso: async function(id){
-        await dataBaseSQL.procesos.destroy({
-            where : {id_procesos: id}
-        });
-    },
-
     //* Para Tareas 
-    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclos,nombre,estado,prioridad,fecha_final,notas,progreso,horas_totales){
+    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclo,nombre,estado,prioridad,fecha_final,notas){
         let objetoCreado = await dataBaseSQL.tareas.create({
             fk_empleado_asignado,
             fk_area,
-            fk_ciclos,
+            fk_ciclo,
             nombre,
             estado,
             prioridad,
             fecha_final,
             notas,
-            progreso,
-            horas_totales,
             ver : 1,
         });
         return objetoCreado.dataValues;
@@ -252,7 +218,7 @@ let controlador = {
             where: {
                 id_tarea : id
             },
-            attributes: ['id_tarea','nombre','estado','prioridad','notas','progreso','horas_totales'],
+            attributes: ['id_tarea','nombre','estado','prioridad','notas','ver'],
             include: [
                 {association : "Empleado",attributes: ['nombre','fk_area','fk_puesto','mail']},
                 {association : "Ciclo",attributes: ['id_ciclo','nombre']},
@@ -267,7 +233,7 @@ let controlador = {
             where: {
                 id_tarea : id
             },
-            attributes: ['id_tarea','nombre','estado','prioridad','notas','progreso','horas_totales'],
+            attributes: ['id_tarea','nombre','estado','prioridad','notas',],
             include: [
                 {association : "Subtareas",attributes: ['id_sub_tarea','horasAprox','titulo']},
             ]
@@ -303,7 +269,7 @@ let controlador = {
                 id_sub_tarea : id
             },
             include: [
-                {association : "Tareas",attributes: ['id_tarea','nombre','horas_totales']}, 
+                {association : "Tareas",attributes: ['id_tarea','nombre']}, 
                 {association : "Empleados",attributes: ['id_empleado', 'nombre','mail']},          
             ]
         });

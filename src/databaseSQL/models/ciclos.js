@@ -31,6 +31,16 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.STRING(255),
         },
 
+        "fecha_inicio":{
+            type: DataTypes.DATE(255),
+            allowNull: false
+        },
+
+        "fecha_final":{
+            type: DataTypes.DATE(255),
+            allowNull: false
+        },
+
         "ver":{
             type: DataTypes.INTEGER(),
         },
