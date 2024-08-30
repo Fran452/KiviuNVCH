@@ -8,6 +8,7 @@ import ModalEditProyecto from './Modales/ModalEditProyecto';
 import ModalPlanes from './Modales/ModalPlanes';
 // import { newContext } from '../pages/PlanesAccion/PlanesAccion'
 import { newContext } from '../pages/PlanesAccion/Ciclo'
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { 
   Chart as ChartJS,
@@ -77,6 +78,8 @@ function Tareas() {
   const [idTask, setIdTask] = useState(null)
   const [modalDeleteTarea, setModalDeleteTarea] = useState(false)
   const [errorDel, setErrorDel] = useState(null)
+
+  const [expandedRow, setExpandedRow] = useState(null);
 
   // const [subtareas, setSubtareas] = useState([])
   // const [errorSubtarea, setErrorSubtarea] = useState(null)
@@ -197,6 +200,7 @@ function Tareas() {
   }
 
   const fetchSubtareasById = async(id) => {
+    setExpandedRow(expandedRow === id ? null : id);
     try {
       const res = await fetch("http://localhost:3030/apis/plan-accion/viewSubTask", {
         method: "POST",
@@ -217,6 +221,11 @@ function Tareas() {
       console.log(error)
     }
   }
+
+  // Manejador para expandir o colapsar filas
+  // const handleRowClick = (id) => {
+  //   setExpandedRow(expandedRow === id ? null : id);
+  // };
 
   return (
     <>
@@ -344,7 +353,8 @@ function Tareas() {
                         </div>
                       </div> */}
                       <div className='tareas__main__tabla scroll--y'>
-                        <table className='table align-middle'>
+                        {/* Tabla with tag table */}
+                        {/* <table className='table align-middle'>
                         <thead>
                             <tr>
                               <th scope="col"></th>
@@ -357,12 +367,12 @@ function Tareas() {
                               <th scope="col">Notas</th>
                               <th scope="col">Responsable</th>
                               <th scope="col">Final</th>
-                              {/* <th scope="col" className='position-absolute end-0'>Acciones</th> */}
                             </tr>
                           </thead>
                           <tbody className='table__tbody'>
-                          {tareasByProyecto.map((e,i) => {
-                            return <><tr key={i} className='table__tbody__tarea table-secondary'>
+                          {tareasByProyecto.map((e) => {
+                            return <React.Fragment key={e.id_tarea}>
+                            <tr className='table__tbody__tarea table-secondary'>
                                 <td>
                                   <button className='btn__showsub btn btn-primary btn-sm rounded-circle' onClick={()=>fetchSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
                                 </td>
@@ -390,64 +400,168 @@ function Tareas() {
                                 <td className='table__tbody__estado'>{e.horas_totales}</td>
                                 <td className='table__tbody__notas'>{e.notas}</td>
                                 <td className='table__tbody__mail'>{e.Empleado.mail}</td>
-                                {/* <td className='table__tbody__equipo'>{e.AreasApollo.nombre_del_Area}</td> */}
-                                {/* <td className='table__tbody__fechaInicial'>{new Date(e.fecha_inicio.replace(/-/g, '/')).toLocaleDateString()}</td> */}
                                 <td className='table__tbody__fechaFinal'>{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</td>
-                                
-                              </tr>
-                              <>
-                                {subtareas.length === 0 ? (
-                                  ""
-                                ) : (
+                            </tr>
+                            <>
+                              {subtareas.length === 0 ? (
+                                ""
+                              ) : (
+                                <>
+                                  {e.id_tarea === subtareas[0].fk_tareas ? (
+                                    
                                   <>
-                                    {e.id_tarea === subtareas[0].fk_tareas ? (
-                                      <>
-                                        {
-                                          subtareas.map((s, i) => {
-                                            return <tr key={i} className='table__tbody__tarea'>
-                                              <td></td>
-                                              <td></td>
-                                              <td className='table__tbody__nombre'>{s.titulo}</td>
-                                              <td className='table__tbody__prioridad'>
-                                                {s.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
-                                                {s.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
-                                                {s.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
-                                                </td>
-                                              <td className='table__tbody__estado'>
-                                                {s.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
-                                                {s.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
-                                                {s.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
-                                                {s.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
-                                                {s.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
-                                                {s.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                                      {
+                                        subtareas.map((s, i) => {
+                                          
+                                          return <CSSTransition
+                                              in={expandedRow === e.id_tarea}
+                                              timeout={300}
+                                              classNames="details"
+                                              unmountOnExit
+                                          >
+                                          <tr key={i} className='table__tbody__tarea'>
+                                            <td></td>
+                                            <td></td>
+                                            <td className='table__tbody__nombre'>{s.titulo}</td>
+                                            <td className='table__tbody__prioridad'>
+                                              {s.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                                              {s.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                                              {s.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
                                               </td>
-                                              <td className='table__tbody__progreso'>
-                                                <ProgressBar className='table__tbody__progreso__bar' now={s.avance} label={`${s.avance}%`} max={100}/>
-                                              </td>
-                                              <td className='table__tbody__estado'>{s.horasAprox}</td>
-                                              <td className='table__tbody__notas'>{s.notas}</td>
-                                              <td className='table__tbody__mail'>{s.Empleados.mail}</td>
-                                              {/* <td className='table__tbody__buttons active'>
-                                                <button onClick={()=> handleEditTarea(s.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
-                                                <button onClick={()=> handleModalDelete(s.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
-                                              </td> */}
-                                            </tr>
-                                          })
-                                        }
-                                      </>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </>
-                                )}
-                                {/* <tr>
-                                  <button className='btn__subtarea btn rounded-pill fw-medium'>Agregar subtarea</button>
-                                </tr> */}
-                              </>
+                                            <td className='table__tbody__estado'>
+                                              {s.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                                              {s.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                                              {s.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                                              {s.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                                              {s.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                                              {s.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                                            </td>
+                                            <td className='table__tbody__progreso'>
+                                              <ProgressBar className='table__tbody__progreso__bar' now={s.avance} label={`${s.avance}%`} max={100}/>
+                                            </td>
+                                            <td className='table__tbody__estado'>{s.horasAprox}</td>
+                                            <td className='table__tbody__notas'>{s.notas}</td>
+                                            <td className='table__tbody__mail'>{s.Empleados.mail}</td>
+                                          </tr>
+                                          </CSSTransition>
+                                        })
+                                      }
+                                    </>
+                                  ) : (
+                                    ""
+                                  )}
+                                </>
+                              )}
                             </>
+                            </React.Fragment>
                           })}
                           </tbody>
-                        </table>
+                        </table> */}
+                        {/* Table custom */}
+                        <div className='table__custom'>
+                          <div className='table__custom__header'>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'></div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'></div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Tareas</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Prioridad</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Estado</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Progreso</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Horas totales</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Notas</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Responsable</div>
+                            {/* <div className='table__custom__cell table__custom__cell--title fw-bold'>Fecha inicial</div> */}
+                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Fecha final</div>
+                          </div>
+                          <div className='table__custom__body'>
+                            {tareasByProyecto.map((e,i) => {
+                              return <React.Fragment key={e.id_tarea}>
+                                <div className='table__custom__row'>
+                                  <div className='table__custom__cell'>
+                                    <button className='btn' onClick={()=>fetchSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
+                                  </div>
+                                  <div className='table__custom__cell'>
+                                    <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
+                                    <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
+                                  </div>
+                                  <div className='table__custom__cell'>{e.nombre}</div>
+                                  <div className='table__custom__cell'>
+                                    {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                                    {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                                    {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
+                                  </div>
+                                  <div className='table__custom__cell'>
+                                    {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                                    {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                                    {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                                    {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                                    {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                                    {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                                  </div>
+                                  <div className='table__custom__cell'>
+                                    <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
+                                  </div>
+                                  <div className='table__custom__cell'>{e.horas_totales}</div>
+                                  <div className="table__custom__cell">{e.notas}</div>
+                                  <div className="table__custom__cell">{e.Empleado.mail}</div>
+                                  {/* <div className="table__custom__cell">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
+                                  <div className="table__custom__cell">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                </div>
+                                <CSSTransition
+                                    in={expandedRow === e.id_tarea}
+                                    timeout={300}
+                                    classNames="details"
+                                    unmountOnExit
+                                >
+                                <div>
+                                  {subtareas.length === 0 ? (
+                                    <div className='table__custom__row'>
+                                      <div className='table__custom__cell'></div>
+                                      <div className='table__custom__cell'></div>
+                                      <div className='table__custom__cell'>
+                                        <button className='btn btn-primary rounded-pill px-4'>Crea una subtarea</button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <>
+                                      {subtareas.map(s => {
+                                        return <div className='table__custom__row'>
+                                        <div className='table__custom__cell'></div>
+                                        <div className='table__custom__cell'>
+                                          <button onClick={()=> handleEditTarea(e.id_tarea)} className='disabled btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
+                                          <button onClick={()=> handleModalDelete(e.id_tarea)} className='disabled btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
+                                        </div>
+                                        <div className='table__custom__cell'>{s.titulo}</div>
+                                        <div className='table__custom__cell'>
+                                          {s.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                                          {s.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                                          {s.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
+                                        </div>
+                                        <div className='table__custom__cell'>
+                                          {s.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                                          {s.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                                          {s.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                                          {s.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                                          {s.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                                          {s.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                                        </div>
+                                        <div className='table__custom__cell'>
+                                          <ProgressBar className='table__tbody__progreso__bar' now={s.avance} label={`${s.avance}%`} max={100}/>
+                                        </div>
+                                        <div className='table__custom__cell'>{s.horasAprox}</div>
+                                        <div className="table__custom__cell">{s.notas}</div>
+                                        <div className="table__custom__cell">{s.Empleados.mail}</div>
+                                        {/* <div className="table__custom__cell">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
+                                        {/* <div className="table__custom__cell">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
+                                      </div>
+                                      })}
+                                    </>
+                                  )}
+                                </div>
+                                </CSSTransition>
+                              </React.Fragment>
+                            })}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}

@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from "react-router-dom"
+// Prueba table collapse
+import { Table, Collapse, Button, ListGroup } from 'react-bootstrap';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+//
 import './Year.scss'
 import Avatar from "../../assets/img/avatar-3.jpg"
 import { jwtDecode } from "jwt-decode"
@@ -374,6 +378,7 @@ function Year() {
                                 <h2 className='text-white'>Bienvenido/a a los ciclos del año {year}</h2>
                                 <p className='text-white mb-0'>Aquí encontrarás las estadísticas de los ciclos del año {year}.</p>
                             </div>
+
                             <div className='auditoria__year__main__content__grafica'>
                                 <Bar 
                                     data={dataBar}
