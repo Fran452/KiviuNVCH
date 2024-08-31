@@ -352,144 +352,40 @@ function Tareas() {
                           </div>
                         </div>
                       </div> */}
-                      <div className='tareas__main__tabla scroll--y'>
-                        {/* Tabla with tag table */}
-                        {/* <table className='table align-middle'>
-                        <thead>
-                            <tr>
-                              <th scope="col"></th>
-                              <th scope="col"></th>
-                              <th scope="col">Tareas</th>
-                              <th scope="col">Prioridad</th>
-                              <th scope="col">Estado</th>
-                              <th scope="col">Progreso</th>
-                              <th scope="col">Horas totales</th>
-                              <th scope="col">Notas</th>
-                              <th scope="col">Responsable</th>
-                              <th scope="col">Final</th>
-                            </tr>
-                          </thead>
-                          <tbody className='table__tbody'>
-                          {tareasByProyecto.map((e) => {
-                            return <React.Fragment key={e.id_tarea}>
-                            <tr className='table__tbody__tarea table-secondary'>
-                                <td>
-                                  <button className='btn__showsub btn btn-primary btn-sm rounded-circle' onClick={()=>fetchSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
-                                </td>
-                                <td className='table__tbody__buttons'>
-                                  <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn bg-success rounded-circle text-white me-2'><i className="bi bi-pencil"></i></button>
-                                  <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn bg-danger rounded-circle text-white'><i className="bi bi-trash3"></i></button>
-                                </td>
-                                <td className='table__tbody__nombre'>{e.nombre}</td>
-                                <td className='table__tbody__prioridad'>
-                                  {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
-                                  {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
-                                  {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
-                                  </td>
-                                <td className='table__tbody__estado'>
-                                  {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
-                                  {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
-                                  {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
-                                  {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
-                                  {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
-                                  {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
-                                </td>
-                                <td className='table__tbody__progreso'>
-                                  <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
-                                </td>
-                                <td className='table__tbody__estado'>{e.horas_totales}</td>
-                                <td className='table__tbody__notas'>{e.notas}</td>
-                                <td className='table__tbody__mail'>{e.Empleado.mail}</td>
-                                <td className='table__tbody__fechaFinal'>{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</td>
-                            </tr>
-                            <>
-                              {subtareas.length === 0 ? (
-                                ""
-                              ) : (
-                                <>
-                                  {e.id_tarea === subtareas[0].fk_tareas ? (
-                                    
-                                  <>
-                                      {
-                                        subtareas.map((s, i) => {
-                                          
-                                          return <CSSTransition
-                                              in={expandedRow === e.id_tarea}
-                                              timeout={300}
-                                              classNames="details"
-                                              unmountOnExit
-                                          >
-                                          <tr key={i} className='table__tbody__tarea'>
-                                            <td></td>
-                                            <td></td>
-                                            <td className='table__tbody__nombre'>{s.titulo}</td>
-                                            <td className='table__tbody__prioridad'>
-                                              {s.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
-                                              {s.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
-                                              {s.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
-                                              </td>
-                                            <td className='table__tbody__estado'>
-                                              {s.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
-                                              {s.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
-                                              {s.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
-                                              {s.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
-                                              {s.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
-                                              {s.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
-                                            </td>
-                                            <td className='table__tbody__progreso'>
-                                              <ProgressBar className='table__tbody__progreso__bar' now={s.avance} label={`${s.avance}%`} max={100}/>
-                                            </td>
-                                            <td className='table__tbody__estado'>{s.horasAprox}</td>
-                                            <td className='table__tbody__notas'>{s.notas}</td>
-                                            <td className='table__tbody__mail'>{s.Empleados.mail}</td>
-                                          </tr>
-                                          </CSSTransition>
-                                        })
-                                      }
-                                    </>
-                                  ) : (
-                                    ""
-                                  )}
-                                </>
-                              )}
-                            </>
-                            </React.Fragment>
-                          })}
-                          </tbody>
-                        </table> */}
+                      <div className='tareas__main__tabla'>
                         {/* Table custom */}
                         <div className='table__custom'>
                           <div className='table__custom__header'>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'></div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'></div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Tareas</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Prioridad</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Estado</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Progreso</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Horas totales</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Notas</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Responsable</div>
-                            {/* <div className='table__custom__cell table__custom__cell--title fw-bold'>Fecha inicial</div> */}
-                            <div className='table__custom__cell table__custom__cell--title fw-bold'>Fecha final</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__dropdown'></div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__buttons'></div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__nombre'>Tareas</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__prioridad'>Prioridad</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__estado'>Estado</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__progreso'>Progreso</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__horas'>Horas totales</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__notas'>Notas</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__mail'>Responsable</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha inicial</div>
+                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha final</div>
                           </div>
                           <div className='table__custom__body'>
                             {tareasByProyecto.map((e,i) => {
                               return <React.Fragment key={e.id_tarea}>
-                                <div className='table__custom__row'>
-                                  <div className='table__custom__cell'>
+                                <div className='table__custom__row light'>
+                                  <div className='table__custom__cell cell__dropdown'>
                                     <button className='btn' onClick={()=>fetchSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
                                   </div>
-                                  <div className='table__custom__cell'>
+                                  <div className='table__custom__cell cell__buttons'>
                                     <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
                                     <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
                                   </div>
-                                  <div className='table__custom__cell'>{e.nombre}</div>
-                                  <div className='table__custom__cell'>
+                                  <div className='table__custom__cell cell__nombre'>{e.nombre}</div>
+                                  <div className='table__custom__cell cell__prioridad'>
                                     {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
                                     {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
                                     {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
                                   </div>
-                                  <div className='table__custom__cell'>
+                                  <div className='table__custom__cell cell__estado'>
                                     {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
                                     {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
                                     {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
@@ -497,14 +393,15 @@ function Tareas() {
                                     {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
                                     {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
                                   </div>
-                                  <div className='table__custom__cell'>
+                                  <div className='table__custom__cell cell__progreso'>
                                     <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
                                   </div>
-                                  <div className='table__custom__cell'>{e.horas_totales}</div>
-                                  <div className="table__custom__cell">{e.notas}</div>
-                                  <div className="table__custom__cell">{e.Empleado.mail}</div>
+                                  <div className='table__custom__cell cell__horas'>{e.horas_totales}</div>
+                                  <div className="table__custom__cell cell__notas">{e.notas}</div>
+                                  <div className="table__custom__cell cell__mail">{e.Empleado.nombre}</div>
+                                  <div className='table__custom__cell cell__date'>Inicio</div>
                                   {/* <div className="table__custom__cell">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
-                                  <div className="table__custom__cell">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                  <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
                                 </div>
                                 <CSSTransition
                                     in={expandedRow === e.id_tarea}
@@ -515,9 +412,7 @@ function Tareas() {
                                 <div>
                                   {subtareas.length === 0 ? (
                                     <div className='table__custom__row'>
-                                      <div className='table__custom__cell'></div>
-                                      <div className='table__custom__cell'></div>
-                                      <div className='table__custom__cell'>
+                                      <div className='table__custom__cell cell__dropdown'>
                                         <button className='btn btn-primary rounded-pill px-4'>Crea una subtarea</button>
                                       </div>
                                     </div>
@@ -525,18 +420,18 @@ function Tareas() {
                                     <>
                                       {subtareas.map(s => {
                                         return <div className='table__custom__row'>
-                                        <div className='table__custom__cell'></div>
-                                        <div className='table__custom__cell'>
-                                          <button onClick={()=> handleEditTarea(e.id_tarea)} className='disabled btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
-                                          <button onClick={()=> handleModalDelete(e.id_tarea)} className='disabled btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
+                                        <div className='table__custom__cell cell__dropdown'></div>
+                                        <div className='table__custom__cell cell__buttons'>
+                                          <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
+                                          <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
                                         </div>
-                                        <div className='table__custom__cell'>{s.titulo}</div>
-                                        <div className='table__custom__cell'>
+                                        <div className='table__custom__cell cell__nombre'>{s.titulo}</div>
+                                        <div className='table__custom__cell cell__prioridad'>
                                           {s.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
                                           {s.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
                                           {s.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
                                         </div>
-                                        <div className='table__custom__cell'>
+                                        <div className='table__custom__cell cell__estado'>
                                           {s.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
                                           {s.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
                                           {s.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
@@ -544,12 +439,14 @@ function Tareas() {
                                           {s.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
                                           {s.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
                                         </div>
-                                        <div className='table__custom__cell'>
+                                        <div className='table__custom__cell cell__progreso'>
                                           <ProgressBar className='table__tbody__progreso__bar' now={s.avance} label={`${s.avance}%`} max={100}/>
                                         </div>
-                                        <div className='table__custom__cell'>{s.horasAprox}</div>
-                                        <div className="table__custom__cell">{s.notas}</div>
-                                        <div className="table__custom__cell">{s.Empleados.mail}</div>
+                                        <div className='table__custom__cell cell__horas'>{s.horasAprox}</div>
+                                        <div className="table__custom__cell cell__notas">{s.notas}</div>
+                                        <div className="table__custom__cell cell__mail">{s.Empleados.nombre}</div>
+                                        <div className="table__custom__cell cell__date">Inicio</div>
+                                        <div className="table__custom__cell cell__date">Final</div>
                                         {/* <div className="table__custom__cell">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
                                         {/* <div className="table__custom__cell">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
                                       </div>

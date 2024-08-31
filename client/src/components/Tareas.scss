@@ -38,9 +38,10 @@
 
 // Custom table
 .table__custom {
+    width: 1594px;
     display: flex;
     flex-direction: column;
-    // border-collapse: collapse;
+    // width: max-content;
 
     &__header {
         display: flex;
@@ -60,6 +61,10 @@
         border-bottom: 1px solid $gray-300;
     }
 
+    .light {
+        background-color: $light;
+    }
+
     &__cell {
         white-space: nowrap;
         padding: 10px;
@@ -76,6 +81,54 @@
             color: $danger
         }
     }
+
+    // Cell sizes
+    .cell__dropdown {
+        flex: 1 0 64px;
+    }
+
+    .cell__buttons {
+        flex: 1 0 120px; 
+    }
+
+    .cell__nombre {
+        flex: 1 0 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cell__prioridad {
+        flex: 1 0 90px;
+    }
+
+    .cell__estado {
+        flex: 1 0 120px;
+    }
+
+    .cell__progreso {
+        flex: 1 0 140px;
+    }
+
+    .cell__horas {
+        flex: 1 0 120px;
+    }
+
+    .cell__notas {
+        flex: 1 0 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cell__mail {
+        flex: 1 0 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cell__date {
+        flex: 1 0 120px;
+    }
+
 }
 
 .loading__tareas {
