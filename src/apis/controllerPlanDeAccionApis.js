@@ -22,6 +22,7 @@ const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
 
 const controlador = {
+
     /* CRUD De Ciclos */
     viewCiclos: async (req,res) => {
         try{
@@ -51,9 +52,6 @@ const controlador = {
     
     addCiclos: async (req,res) => {
         try{
-            console.log("fechas que llegan a la api:");
-            console.log(req.body.fechaInicio);
-            console.log(req.body.fechaFinal);
             let ciclo = await dataBaseSQL.ciclos.create({
                 fk_area         : req.body.user.area,
                 nombre          : req.body.nombre,
@@ -120,7 +118,6 @@ const controlador = {
     },
 
     /* CRUD De Proceos */
-
     viewProceso: async (req,res) => {
         try{
             let procesos = await dataBaseSQL.sequelize.query(
@@ -209,9 +206,7 @@ const controlador = {
         }
     },
 
-
     /* CRUD De Tareas */
-
     // Ver tareas
     viewTareas: async (req,res) => {
         try{
@@ -250,10 +245,8 @@ const controlador = {
                 if(tarea.Subtareas.length > 0){
                     horas_Finalizadas = tarea.Subtareas.reduce(function(acumulador,elemento){return acumulador += (elemento.avance * elemento.horasAprox / 100)},0);
                     let total_horas_subTareas = tarea.Subtareas.reduce(function(acumulador,elemento){  
-                        
-                        console.log(elemento.horasAprox);
-                        acumulador +=elemento.horasAprox
-                        return acumulador
+                        acumulador += elemento.horasAprox;
+                        return acumulador;
                     },0);
                     tarea.dataValues.horas_totales = total_horas_subTareas;
                     tarea.dataValues.progreso = horas_Finalizadas * 100 / total_horas_subTareas;
@@ -261,12 +254,8 @@ const controlador = {
                 }else{
                     tarea.dataValues.horas_totales   = 0;
                     tarea.dataValues.progreso        = 0;
-                }
-                
-            });
-
-            
-
+                } 
+            });            
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
@@ -285,7 +274,7 @@ const controlador = {
         catch(error){
 
         }
-    },    
+    },
 
     // Agregar tareas
     addTarea:  async (req,res) => { 
@@ -331,7 +320,7 @@ const controlador = {
             res.json({errorCompleto:error, error : codeError, errorDetalle: error.message});   
             return 1;
         }       
-    },  
+    },
     
     // Modificar tareas 
     modTarea: async (req,res) => { 
@@ -377,12 +366,11 @@ const controlador = {
             res.json({error : codeError, errorDetalle: error.message});   
             return 1;
         }
-    },  
+    },
 
     // Eliminar tareas 
     deleteTarea: async (req,res) => { 
         try{
-            console.log(req.body.idTarea);
             let tareaModificada = await dataBaseSQL.tareas.update({
                 ver : 0,
             },{
@@ -397,8 +385,7 @@ const controlador = {
             res.json({error : codeError, errorDetalle: error.message});   
             return 1;
         }
-    },  
-
+    },
 
     // CRUD de Sub tareas
     /**
@@ -408,15 +395,21 @@ const controlador = {
      */
     addSubTarea: async (req,res) => {
         try{
-            console.log("entre a la api");
+            let hoy = new Date();
+            let fehcaIngresadaFinal = new Date(req.body.fechaFinal); 
+            let fehcaIngresadaInicial = new Date(req.body.fechaInicial);
             let titulo      = req.body.titulo || null;
             let horasAprox  = req.body.horasAprox || null;
-            let avance       = req.body.avance 
+            let avance      = req.body.avance 
             let estado      = req.body.estado;
             let prioridad   = req.body.prioridad;
             let notas       = req.body.notas || null;
+            
+            if(fehcaIngresadaFinal < hoy){
+                res.json({error : 10, errorDetalle: "Fecha final menor a fecha de hoy"});
+                return 1;
+            };
 
-            console.log(req.body.avance);
             if(req.body.asignacion != undefined){
                 let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
@@ -436,14 +429,16 @@ const controlador = {
                     return 1;
                 }else{
                     let subTarea = await dataBaseSQL.subtareas.create({
-                        fk_tareas:  req.body.id_tareas,
-                        titulo:     titulo,
-                        asignacion: empleadoAsignado.id_empleado,
-                        horasAprox: horasAprox,
-                        avance:     avance,
-                        estado:     estado,
-                        prioridad:  prioridad,
-                        notas:      notas,
+                        fk_tareas       : req.body.id_tareas,
+                        titulo          : titulo,
+                        asignacion      : empleadoAsignado.id_empleado,
+                        horasAprox      : horasAprox,
+                        avance          : avance,
+                        estado          : estado,
+                        prioridad       : prioridad,
+                        notas           : notas,
+                        fecha_inicio    : fehcaIngresadaFinal,
+                        fecha_final     : fehcaIngresadaInicial,
                         ver:        1
                     });
 
