@@ -21,12 +21,6 @@ const controlador = {
                     mod:    'http://localhost:3030/test/plan-accion/modCiclos',
                     delete: 'http://localhost:3030/test/plan-accion/deleteCiclos'
                 },
-                procesos:{
-                    add:    'http://localhost:3030/test/plan-accion/addProceso',
-                    view:   'http://localhost:3030/test/plan-accion/viewProcesos',
-                    mod:    'http://localhost:3030/test/plan-accion/modProceso',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteProceso'
-                },
                 tareas:{
                     add:    'http://localhost:3030/test/plan-accion/addTask',
                     view:   'http://localhost:3030/test/plan-accion/viewTareas',

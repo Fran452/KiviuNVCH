@@ -26,11 +26,6 @@ router.get('/plan-accion/addCiclos',testPlanesDeAccion.crearCiclo);
 router.get('/plan-accion/modCiclos',testPlanesDeAccion.editarCiclos);
 router.get('/plan-accion/deleteCiclos',testPlanesDeAccion.eliminarCiclos);
 
-router.get('/plan-accion/viewProcesos',testPlanesDeAccion.readProceso);
-router.get('/plan-accion/addProceso',testPlanesDeAccion.createProceso);
-router.get('/plan-accion/modProceso',testPlanesDeAccion.editeProceso);
-router.get('/plan-accion/deleteProceso',testPlanesDeAccion.deleteProceso);
-
 router.get('/plan-accion/addTask',testPlanesDeAccion.createTarea);
 router.get('/plan-accion/viewTareas',testPlanesDeAccion.readTarea);
 router.get('/plan-accion/modTask',testPlanesDeAccion.editeTarea);

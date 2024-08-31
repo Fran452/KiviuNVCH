@@ -47,7 +47,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 */
-        "fk_procesos": {
+        "fk_ciclo": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -62,7 +62,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false,
             defaultValue: 0
         },
-
+/*
         "prioridad": {
             type:DataTypes.INTEGER(),
             allowNull: false,
@@ -75,7 +75,7 @@ module.exports = (sequelize,DataTypes) => {
             defaultValue: 0
         },
         
-/*        "fecha_inicio":{
+       "fecha_inicio":{
             type: DataTypes.DATE(255),
             allowNull: false
         },
@@ -89,12 +89,6 @@ module.exports = (sequelize,DataTypes) => {
         "notas":{
             type: DataTypes.STRING(255),
             defaultValue: ' '
-        },
-        
-        "progreso": {
-            type:DataTypes.INTEGER(),
-            allowNull: false,
-            defaultValue: 0
         },
 
         "ver": {
@@ -132,9 +126,9 @@ module.exports = (sequelize,DataTypes) => {
         });
 */
         /* Union con Procesos */
-        tareas.belongsTo(models.procesos,{
-            foreignKey : 'fk_procesos',
-            as : 'Proceso'
+        tareas.belongsTo(models.ciclos,{
+            foreignKey : 'fk_ciclo',
+            as : 'Ciclo'
         });
 
         

@@ -38,8 +38,8 @@ CREATE TABLE Ciclos (
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 
--- Agregar Sub ciclos / Analisar utilidad de areas
-
+--! Sin utilizacion eliminacion
+/*
 CREATE TABLE Procesos ( 
     id_procesos                             INT PRIMARY KEY AUTO_INCREMENT,
     fk_area                                 INT NOT NULL,
@@ -52,25 +52,26 @@ CREATE TABLE Procesos (
     FOREIGN KEY (fk_ciclo)                  REFERENCES Ciclos(id_ciclo),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
+*/
 
 CREATE TABLE Tareas (
     id_tarea                                INT PRIMARY KEY AUTO_INCREMENT,
     fk_empleado_asignado                    INT NOT NULL,
     fk_area                                 INT NOT NULL,
+    fk_ciclo                                INT NOT NULL,
 --  fk_area_apoyo                           INT NOT NULL,
-    fk_procesos                             INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
     estado	                                INT, -- de no ser agregado se le asigna 1
     prioridad					            INT NOT NULL,  -- default 2
 --  fecha_inicio                            DATE NOT NULL,
     fecha_final                             DATE NOT NULL, -- 31/12/ actual año
     notas                                   VARCHAR(255),
-    progreso					            INT,            -- 0
-    horas_totales                           INT NOT NULL,  -- 0
+--    progreso					            INT,            -- 0
+--    horas_totales                           INT NOT NULL,  -- 0
     ver                                     INT NOT NULL, 
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
 --  FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
-    FOREIGN KEY (fk_procesos)               REFERENCES Procesos(id_procesos),
+    FOREIGN KEY (fk_ciclos)                 REFERENCES Ciclos(id_ciclo),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 
