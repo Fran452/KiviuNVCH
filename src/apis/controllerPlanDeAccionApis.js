@@ -368,7 +368,7 @@ const controlador = {
                 notas :                 req.body.notas, 
                 progreso:               req.body.progreso,
                 //horas_Necesarias:       req.body.horas,
-                fk_proceso:             req.body.idProceso
+                fk_proceso:             req.body.idCiclo
             },{
                 where:{
                     id_tarea : req.body.tarea.id_tarea

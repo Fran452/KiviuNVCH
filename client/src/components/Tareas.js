@@ -4,7 +4,7 @@ import { Oval } from 'react-loader-spinner'
 import illustrationPlanes from "../assets/img/planes.png"
 import IllustrationAccess from "../assets/img/access.png"
 import "./Tareas.scss"
-import ModalEditProyecto from './Modales/ModalEditProyecto';
+import ModalEditCiclo from './Modales/ModalEditCiclo';
 import ModalPlanes from './Modales/ModalPlanes';
 import { newContext } from '../pages/PlanesAccion/Ciclo'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
@@ -69,10 +69,10 @@ function Tareas() {
   
   const { subtareas, setSubtareas, loadingTar, setLoadingTar, setErrorTar, errorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, idCiclo, setIdCiclo, yearSelec, titleCiclo, descripcionCiclo } = useContext(newContext)
   
-  const [modalDeleteProyecto, setModalDeleteProyecto] = useState(false)
-  const [modalEditProyecto, setModalEditProyecto] = useState(false)
+  const [modalDeleteCiclo, setModalDeleteCiclo] = useState(false)
+  const [modalEditCiclo, setModalEditCiclo] = useState(false)
   const [modalTarea, setModalTarea] = useState(false)
-  const [proyectoSelec, setProyectoSelec] = useState(null)
+  const [cicloSelec, setCicloSelec] = useState(null)
   const [tareaObj, setTareaObj] = useState(null)
   const [idTask, setIdTask] = useState(null)
   const [modalDeleteTarea, setModalDeleteTarea] = useState(false)
@@ -106,18 +106,17 @@ function Tareas() {
     </Tooltip>
   );
 
-  const handleEditProyecto = () => {
+  const handleEditCiclo = () => {
     const pro = ciclos.find(e => e.id_ciclo === idCiclo)
-    console.log(pro)
-    setProyectoSelec(JSON.stringify(pro))
-    setModalEditProyecto(true)
+    setCicloSelec(JSON.stringify(pro))
+    setModalEditCiclo(true)
   }
 
-  const handleModalDeleteProyecto = () => {
-    setModalDeleteProyecto(true)
+  const handleModalDeleteCiclo = () => {
+    setModalDeleteCiclo(true)
   }
 
-  const handleDeleteProyecto = async () => {
+  const handleDeleteCiclo = async () => {
     try {
       const res = await fetch("http://localhost:3030/apis/plan-accion/deleteCiclos", {
         method: "PUT",
@@ -135,7 +134,7 @@ function Tareas() {
         setTareasByCiclo(null)
         setIdCiclo(null)
         fetchCiclos().then(res => setCiclos(res.objeto))
-        setModalDeleteProyecto(false)
+        setModalDeleteCiclo(false)
       }
     } catch (error) {
       console.log(error)
@@ -145,15 +144,15 @@ function Tareas() {
   const handleNewTarea = (e) => {
     e.preventDefault()
     const pro = ciclos.find(e => e.id_ciclo === idCiclo)
-    setProyectoSelec(JSON.stringify(pro))
+    setCicloSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
 
   const handleEditTarea = (id) => {
     const obj = tareasByCiclo.find((e) => e.id_tarea === id)
     setTareaObj(JSON.stringify(obj))
-    const pro = ciclos.find(e => e.id_procesos === idCiclo)
-    setProyectoSelec(JSON.stringify(pro))
+    const pro = ciclos.find(e => e.id_ciclo === idCiclo)
+    setCicloSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
 
@@ -223,19 +222,19 @@ function Tareas() {
 
   return (
     <>
-      <tareasContext.Provider value={{proyectoSelec, setProyectoSelec, tareaObj, setTareaObj}}>
-        <ModalEditProyecto show={modalEditProyecto} onHide={()=>setModalEditProyecto(false)} />
+      <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj}}>
+        <ModalEditCiclo show={modalEditCiclo} onHide={()=>setModalEditCiclo(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
       </tareasContext.Provider>
       {/* Modal Eliminar Proyecto */}
-      <Modal className='modal__delete__proyecto' show={modalDeleteProyecto} onHide={() => setModalDeleteProyecto(false)} backdrop="static" centered>
+      <Modal className='modal__delete__proyecto' show={modalDeleteCiclo} onHide={() => setModalDeleteCiclo(false)} backdrop="static" centered>
         <Modal.Header closeButton>
-          <Modal.Title><h3>Eliminar proceso</h3></Modal.Title>
+          <Modal.Title><h3>Eliminar ciclo</h3></Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Está seguro de eliminar este proceso?</Modal.Body>
+        <Modal.Body>¿Está seguro de eliminar este ciclo?</Modal.Body>
         <Modal.Footer>
-          <button className='btn btn-secondary rounded-pill' onClick={() => setModalDeleteProyecto(false)}>Cancelar</button>
-          <button className='btn btn-danger rounded-pill' onClick={handleDeleteProyecto}>Borrar</button>
+          <button className='btn btn-secondary rounded-pill' onClick={() => setModalDeleteCiclo(false)}>Cancelar</button>
+          <button className='btn btn-danger rounded-pill' onClick={handleDeleteCiclo}>Borrar</button>
         </Modal.Footer>
       </Modal>
       {/* Modal Eliminar Tarea */}
@@ -297,8 +296,8 @@ function Tareas() {
                         </OverlayTrigger>
                         </h3>
                         <div className='d-flex flex-column flex-md-row'>
-                            <button className='btn__edit btn bg-success rounded-circle mb-2 mb-md-0 me-md-2 text-white' onClick={()=> handleEditProyecto(idCiclo)}><i className="bi bi-pencil"></i></button>
-                            <button className='btn__delete btn bg-danger rounded-circle text-white' onClick={handleModalDeleteProyecto}><i className="bi bi-trash3"></i></button>
+                            <button className='btn__edit btn bg-success rounded-circle mb-2 mb-md-0 me-md-2 text-white' onClick={()=> handleEditCiclo(idCiclo)}><i className="bi bi-pencil"></i></button>
+                            <button className='btn__delete btn bg-danger rounded-circle text-white' onClick={handleModalDeleteCiclo}><i className="bi bi-trash3"></i></button>
                         </div>
                     </div>
                     <button className='btn__addTarea btn btn-primary rounded-pill fw-medium' onClick={handleNewTarea}>Agregar tarea</button>

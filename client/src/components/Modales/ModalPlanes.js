@@ -5,8 +5,8 @@ import { tareasContext } from '../Tareas';
 import { newContext } from '../../pages/PlanesAccion/Ciclo'
 
 function ModalPlanes(props) {
-  const { USER, fetchTareasById, idProyecto, setLoadingTar, setErrorTar, setTareasByProyecto } = useContext(newContext)
-  const { tareaObj, setTareaObj, proyectoSelec, setProyectoSelec } = useContext(tareasContext)
+  const { USER, fetchTareasById, idCiclo, setLoadingTar, setErrorTar, setTareasByCiclo } = useContext(newContext)
+  const { tareaObj, setTareaObj, cicloSelec, setCicloSelec } = useContext(tareasContext)
 
   // State
   const [formData, setFormData] = useState({
@@ -51,7 +51,7 @@ function ModalPlanes(props) {
     e.preventDefault()
     const newErrors = validateForm(formData);
     setErrors(newErrors)
-    const pro = JSON.parse(proyectoSelec)
+    const pro = JSON.parse(cicloSelec)
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
@@ -64,7 +64,7 @@ function ModalPlanes(props) {
         notas: formData.notas,
         // progreso: parseInt(formData.progreso),
         progreso: 0,
-        idProceso: pro.id_procesos
+        idCiclo: pro.id_ciclo
       }
       try {
         const res = await fetch("http://localhost:3030/apis/plan-accion/addTask", {
@@ -89,18 +89,18 @@ function ModalPlanes(props) {
             // progreso: 0
           })
           setModalErr(null)
-          setProyectoSelec(null)
+          setCicloSelec(null)
           props.onHide()
           // actualiza tareas
           setLoadingTar(true)
-          fetchTareasById(idProyecto)
+          fetchTareasById(idCiclo)
           .then(res => {
               if(res.error !== 0){
                   setLoadingTar(false)
                   setErrorTar(res.errorDetalle)
               } else {
                   setLoadingTar(false)
-                  setTareasByProyecto(res.objeto)
+                  setTareasByCiclo(res.objeto)
               }
           })
           // fin de actualiza tareas
@@ -158,7 +158,7 @@ function ModalPlanes(props) {
       // progreso: 0
     })
     props.onHide()
-    setProyectoSelec(null)
+    setCicloSelec(null)
     setTareaObj(null)
     setModalErr(null)
   }
@@ -168,7 +168,7 @@ function ModalPlanes(props) {
     const newErrors = validateForm(formData);
     setErrors(newErrors)
     const task = JSON.parse(tareaObj)
-    const pro = JSON.parse(proyectoSelec)
+    const pro = JSON.parse(cicloSelec)
     if (Object.keys(newErrors).length === 0){
       const obj = {
         empleado_asignado: formData.responsable,
@@ -182,7 +182,7 @@ function ModalPlanes(props) {
         tarea: task,
         // progreso: parseInt(formData.progreso),
         progreso: 0,
-        idProyecto: pro.id_procesos
+        idCiclo: pro.id_ciclo
       }
       try {
         const res = await fetch("http://localhost:3030/apis/plan-accion/modTask", {
@@ -208,18 +208,18 @@ function ModalPlanes(props) {
           })
           setModalErr(null)
           setTareaObj(null)
-          setProyectoSelec(null)
+          setCicloSelec(null)
           props.onHide()
           // actualiza tareas
           setLoadingTar(true)
-          fetchTareasById(idProyecto)
+          fetchTareasById(idCiclo)
           .then(res => {
               if(res.error !== 0){
                   setLoadingTar(false)
                   setErrorTar(res.errorDetalle)
               } else {
                   setLoadingTar(false)
-                  setTareasByProyecto(res.objeto)
+                  setTareasByCiclo(res.objeto)
               }
           })
           // fin de actualiza tareas

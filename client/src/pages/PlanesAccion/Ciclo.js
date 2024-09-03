@@ -6,7 +6,7 @@ import { jwtDecode } from "jwt-decode"
 import { Oval } from 'react-loader-spinner'
 import IllustrationAccess from "../../assets/img/access.png"
 import Tareas from '../../components/Tareas';
-import ModalNewProceso from '../../components/Modales/ModalNewProceso';
+import ModalNewCiclo from '../../components/Modales/ModalNewCiclo';
 
 
 export const newContext = React.createContext()
@@ -135,7 +135,7 @@ function Ciclo() {
     return (
         <newContext.Provider 
             value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER}}>
-            <ModalNewProceso show={modalCiclo} onHide={()=>setModalCiclo(false)}/>
+            <ModalNewCiclo show={modalCiclo} onHide={()=>setModalCiclo(false)}/>
             <div className='ciclo section'>
                 {/* {cicloSelec === null ? "" : (
                     <div className='section__header d-flex flex-row align-items-end mb-4'>
@@ -166,46 +166,41 @@ function Ciclo() {
                                 <p>{error}</p>
                             </div>
                         ) : (
-                            <div className='ciclo__main d-flex flex-column flex-md-row'>
-                                <div className='ciclo__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
-                                    <div className='container__accordion'>
-                                        <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
-                                            <Accordion.Item>
-                                                <Accordion.Header>{state.year}</Accordion.Header>
-                                                <Accordion.Body className='d-flex flex-column align-items-start'>
-                                                    {ciclos.map((c,i) => {
-                                                        return <button 
-                                                            key={i} 
-                                                            className='btn d-flex align-items-center' 
-                                                            onClick={() => handleTareaById(c.id_ciclo, state.year, c.nombre, c.detalles)}
-                                                            >
-                                                                <i className="bi bi-chevron-right me-2 active"></i><span>{c.nombre}</span>
-                                                        </button>
-                                                    })}
-                                                </Accordion.Body>
-                                            </Accordion.Item>
-                                            {/* {ciclos.map((c, i) => {
-                                                return c.fk_area === USER.fk_area && <Accordion.Item key={c.fk_area} eventKey={i}>
-                                                    <Accordion.Header>{c.nombre}</Accordion.Header>
-                                                    <Accordion.Body className='d-flex flex-column align-items-start'>
-                                                        {ciclos.map((p, index) => {
-                                                            return a.id_area === p.fk_area && <button key={index} className='btn d-flex align-items-center' onClick={() => handleTareaById(p.id_procesos, a.nombre_del_Area, p.nombre, p.detalles)}>
-                                                                <i className="bi bi-chevron-right me-2 active"></i><span>{p.nombre}</span>
-                                                            </button>
-                                                        })}
-                                                    </Accordion.Body>
-                                                </Accordion.Item>
-                                            })} */}
-                                        </Accordion>
+                            <>
+                                {state === null ? (
+                                    <h1>Year equals null</h1>
+                                ) : (
+                                    <div className='ciclo__main d-flex flex-column flex-md-row'>
+                                        <div className='ciclo__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
+                                            <div className='container__accordion'>
+                                                <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
+                                                    <Accordion.Item eventKey='0'>
+                                                        <Accordion.Header>{state.year}</Accordion.Header>
+                                                        <Accordion.Body className='d-flex flex-column align-items-start'>
+                                                            {ciclos.map((c,i) => {
+                                                                return <button
+                                                                    key={i} 
+                                                                    className='btn d-flex align-items-center' 
+                                                                    onClick={() => handleTareaById(c.id_ciclo, state.year, c.nombre, c.detalles)}
+                                                                    >
+                                                                        <i className="bi bi-chevron-right me-2 active"></i><span>{c.nombre}</span>
+                                                                </button>
+                                                            })}
+                                                        </Accordion.Body>
+                                                    </Accordion.Item>
+                                                </Accordion>
+                                            </div>
+                                            <button 
+                                                className='ciclo__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
+                                                onClick={handleFormProceso}
+                                                >Agregar ciclo
+                                            </button>
+                                        </div>
+                                        <Tareas />
                                     </div>
-                                    <button 
-                                        className='ciclo__main__menu__btn btn btn-primary rounded-pill shadow-sm fw-medium'
-                                        onClick={handleFormProceso}
-                                        >Agregar proceso
-                                    </button>
-                                </div>
-                                <Tareas />
-                            </div>
+                                )}
+                            </>
+                            
                         )}
                     </>
                 )}

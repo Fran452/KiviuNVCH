@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Modal } from 'react-bootstrap';
-import { jwtDecode } from "jwt-decode"
 import "./ModalProyecto.scss"
+import { tareasContext } from '../Tareas';
 import { newContext } from '../../pages/PlanesAccion/Ciclo';
 
-function ModalNewProceso(props) {
-    const { procesos, setProcesos, fetchProcesos } = useContext(newContext)
-    const auth = localStorage.getItem("token")
-    const jwtParse = jwtDecode(auth)
+function ModalEditCiclo(props) {
+    const { ciclos, setCiclos, fetchCiclos, setTitleCiclo, setDescripcionCiclo } = useContext(newContext)
+    const { cicloSelec, setCicloSelec } = useContext(tareasContext)
 
-    const [formProceso, setFormProceso] = useState({
+    const [formCiclo, setFormCiclo] = useState({
         nombre: "",
         detalles: "",
         fechaInicio: "",
@@ -19,25 +18,35 @@ function ModalNewProceso(props) {
     const [errorFetch, setErrorFetch] = useState(null)
 
     useEffect(() => {
-
-    },[procesos])
+        if(cicloSelec){
+            const pro = JSON.parse(cicloSelec)
+            const obj = ciclos.find((e) => e.id_ciclo === pro.id_ciclo)
+            setFormCiclo({
+                nombre: obj.nombre,
+                detalles: obj.detalles,
+                fechaInicio: obj.fecha_inicio,
+                fechaFinal: obj.fecha_final,
+            })
+        }
+    },[cicloSelec, ciclos])
 
     const handleClose = () => {
         setErrors({})
-        setFormProceso({
+        setFormCiclo({
             nombre: "",
             detalles: "",
             fechaInicio: "",
-            fechaFinal: "",
+            fechaFinal: ""
         })
+        setCicloSelec(null)
         setErrorFetch(null)
         props.onHide()
     }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormProceso({
-        ...formProceso,
+        setFormCiclo({
+        ...formCiclo,
         [name]: value,
         })
     }
@@ -54,43 +63,46 @@ function ModalNewProceso(props) {
             errors.fechaInicio = "Escoja una fecha de inicio."
         }
         if(!data.fechaFinal.trim()) {
-        errors.fechaFinal = "Escoja una fecha de término."
+            errors.fechaFinal = "Escoja una fecha de término."
         }
         return errors;
     }
 
-    const handleSubmit = async (e) => {
+    const handleChangeProyecto = async (e) => {
         e.preventDefault()
-        const newErrors = validateForm(formProceso)
+        const newErrors = validateForm(formCiclo)
         setErrors(newErrors)
+        const pro = JSON.parse(cicloSelec)
         if (Object.keys(newErrors).length === 0){
             try {
-                const res = await fetch("http://localhost:3030/apis/plan-accion/addCiclos", {
-                    method: "POST",
+                const res = await fetch("http://localhost:3030/apis/plan-accion/modCiclos", {
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        user: jwtParse.apirest.objeto,
-                        nombre: formProceso.nombre,
-                        detalles: formProceso.detalles,
-                        fecha_inicio: formProceso.fechaInicio,
-                        fecha_final: formProceso.fechaFinal,
-                        ciclo: 1
+                        id_ciclo: pro.id_ciclo,
+                        nombre: formCiclo.nombre,
+                        detalles: formCiclo.detalles,
+                        fechaInicio: formCiclo.fechaInicio,
+                        fechaFinal: formCiclo.fechaFinal,
                     })
                 })
                 const data = await res.json()
                 if(data.error !== 0){
                     setErrorFetch(data.errorDetalle)
                 } else {
-                    fetchProcesos().then(res => setProcesos(res.objeto))
-                    setFormProceso({
+                    setFormCiclo({
                         nombre: "",
                         detalles: "",
                         fechaInicio: "",
                         fechaFinal: "",
                     })
                     setErrorFetch(null)
+                    setCicloSelec(null)
+                    setTitleCiclo(formCiclo.nombre)
+                    setDescripcionCiclo(formCiclo.detalles)
+                    fetchCiclos().then(res => setCiclos(res.objeto))
                     props.onHide()
                 }
             } catch (error) {
@@ -109,14 +121,14 @@ function ModalNewProceso(props) {
         >
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter" className='d-flex flex-row'>
-                    <h3 className='m-0'>Crear Proceso</h3>
+                    <h3 className='m-0'>Modificar Ciclo</h3>
                     <button className='btn' onClick={handleClose}><i className="bi bi-x-lg fw-bold"></i></button>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form className='form__proyectos d-flex flex-column' onSubmit={handleSubmit}>
+                <form className='form__proyectos d-flex flex-column' onSubmit={handleChangeProyecto}>
                     <div className='mb-2 col-12'>
-                        <label className='mb-1'>Nombre del Proceso</label>
+                        <label className='mb-1'>Nombre del Ciclo</label>
                         <input 
                             onChange={handleChange}
                             type="text" 
@@ -124,19 +136,19 @@ function ModalNewProceso(props) {
                             name='nombre'
                             autoFocus
                             className="form-control form-control-sm"
-                            value={formProceso.nombre}
+                            value={formCiclo.nombre}
                         />
                         {errors.nombre && <span className='form__proyectos__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
                     </div>
                     <div className='mb-2 col-12'>
-                        <label className='mb-1'>Descripción del Proceso</label>
+                        <label className='mb-1'>Descripción del Ciclo</label>
                         <input 
                             onChange={handleChange}
                             type="text" 
                             id="detalles"
                             name='detalles'
                             className="form-control form-control-sm"
-                            value={formProceso.detalles}
+                            value={formCiclo.detalles}
                         />
                         {errors.detalles && <span className='form__proyectos__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.detalles}</span>}
                     </div>
@@ -145,31 +157,33 @@ function ModalNewProceso(props) {
                         <div className='col-6'>
                             <label className='mb-1'>Fecha de inicio</label>
                             <input
+                                disabled
                                 onChange={handleChange}
                                 type="date" 
                                 id="fechaInicio" 
                                 name="fechaInicio" 
                                 className="form-control form-control-sm"
-                                value={formProceso.fechaInicio}
+                                value={formCiclo.fechaInicio}
                             />
                             {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
                         </div>
                         <div className='col-6'>
                             <label className='mb-1'>Fecha de término</label>
                             <input
+                                disabled
                                 onChange={handleChange}
                                 type="date" 
                                 id="fechaFinal" 
                                 name="fechaFinal" 
                                 className="form-control form-control-sm"
-                                value={formProceso.fechaFinal}
+                                value={formCiclo.fechaFinal}
                             />
                             {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
                         </div>
                     </div>
                     {errorFetch !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{errorFetch}</span>}
                     <button type='submit' className='btn btn-primary rounded-pill form__proyectos__btn align-self-center'>
-                        Agregar proceso
+                        Modificar ciclo
                     </button>
                 </form>
             </Modal.Body>
@@ -177,4 +191,4 @@ function ModalNewProceso(props) {
     )
     }
 
-export default ModalNewProceso
+export default ModalEditCiclo
