@@ -31,6 +31,7 @@ router.post('/plan-accion/viewSubTask',apisPlanDeAccion.viewSubTarea);
 router.post('/plan-accion/addSubTask',apisPlanDeAccion.addSubTarea);
 router.put('/plan-accion/modSubTask',apisPlanDeAccion.modSubTarea);
 router.put('/plan-accion/deleteSubTask',apisPlanDeAccion.deleteSubTarea);
+router.put('/plan-accion/subTareaok',apisPlanDeAccion.terminarSubTarea);
 
 
 

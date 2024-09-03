@@ -67,6 +67,33 @@ const controlador = {
                 },
             })
 
+            let addSubTareasJSON = await fetch('http://localhost:3030/test/plan-accion/addSubTask',{
+                method:'GET',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+
+            let viewSubTareasJSON = await fetch('http://localhost:3030/test/plan-accion/viewSubTask',{
+                method:'GET',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+
+            let ediSubTareasJSON = await fetch('http://localhost:3030/test/plan-accion/modSubTask',{
+                method:'GET',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+
+            let deleteSubTareasJSON = await fetch('http://localhost:3030/test/plan-accion/deleteSubTask',{
+                method:'GET',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
 
 
             let addCiclo = await addCicloJSON.json();
@@ -80,6 +107,10 @@ const controlador = {
             let deleteTarea = await deleteTareasJSON.json();
 
 
+            let addSubTarea = await addSubTareasJSON.json();
+            let viewSubTarea = await viewSubTareasJSON.json();
+            let ediSubTarea = await ediSubTareasJSON.json();
+            let deleteSubTarea = await deleteSubTareasJSON.json();
 
             let retorn = {
                 ciclos: {
@@ -95,7 +126,10 @@ const controlador = {
                     delete  : deleteTarea
                 },
                 subTareas:{
-
+                    add     : addSubTarea,
+                    view    : viewSubTarea,
+                    edit    : ediSubTarea,
+                    delete  : deleteSubTarea
                 }
             }
             res.json(retorn);  
@@ -1144,8 +1178,7 @@ const controlador = {
             })
             
             let apisView = await apisViewJSON.json();
-
-            console.log(apisView);
+            
             let viewSubTarea = apisView.objeto.find(subtarea => subtarea.id_sub_tarea == posSubtarea.id_sub_tarea);
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'No mostrar desde api de view sub tarea',undefined,viewSubTarea,1);
 

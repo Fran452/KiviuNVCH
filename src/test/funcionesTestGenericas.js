@@ -198,7 +198,7 @@ let controlador = {
     },
 
     //* Para Tareas 
-    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclo,nombre,estado,prioridad,fecha_final,notas){
+    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclo,nombre,estado,prioridad,notas){
         let objetoCreado = await dataBaseSQL.tareas.create({
             fk_empleado_asignado,
             fk_area,
@@ -206,7 +206,6 @@ let controlador = {
             nombre,
             estado,
             prioridad,
-            fecha_final,
             notas,
             ver : 1,
         });
@@ -248,7 +247,7 @@ let controlador = {
     },
 
     //* Para sub tareas
-    crearSubTarea: async function(fk_tareas, titulo, asignacion, horasAprox, avance, estado, prioridad, notas, ver){
+    crearSubTarea: async function(fk_tareas, titulo, asignacion, horasAprox, avance, estado, prioridad, fecha_inicio, fecha_final,notas, ver){
         let objetoCreado = await dataBaseSQL.subtareas.create({
             fk_tareas,
             titulo,
@@ -257,6 +256,8 @@ let controlador = {
             avance,
             estado,
             prioridad,
+            fecha_inicio,
+            fecha_final,
             notas,
             ver
         });
