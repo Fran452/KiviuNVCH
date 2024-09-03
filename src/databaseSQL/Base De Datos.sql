@@ -71,7 +71,7 @@ CREATE TABLE Tareas (
     ver                                     INT NOT NULL, 
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
 --  FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
-    FOREIGN KEY (fk_ciclos)                 REFERENCES Ciclos(id_ciclo),
+    FOREIGN KEY (fk_ciclo)                 REFERENCES Ciclos(id_ciclo),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 
