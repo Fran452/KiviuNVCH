@@ -29,7 +29,7 @@ function MyRoutes() {
                     <Route index element={<CiclosAuditoria />} />
                     <Route path=":year">
                       <Route index element={<Year />} />
-                      <Route path=":id" element={<Ciclo />}></Route>
+                      <Route path="ciclos" element={<Ciclo />}></Route>
                     </Route>
                   </Route>
                   <Route path="/okr" element={<Okr />}/>

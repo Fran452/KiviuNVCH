@@ -1,28 +1,27 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { ProgressBar, Modal, OverlayTrigger } from 'react-bootstrap';
+import { ProgressBar, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Oval } from 'react-loader-spinner'
 import illustrationPlanes from "../assets/img/planes.png"
 import IllustrationAccess from "../assets/img/access.png"
 import "./Tareas.scss"
 import ModalEditProyecto from './Modales/ModalEditProyecto';
 import ModalPlanes from './Modales/ModalPlanes';
-// import { newContext } from '../pages/PlanesAccion/PlanesAccion'
 import { newContext } from '../pages/PlanesAccion/Ciclo'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
-import { 
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend
-} from "chart.js";
-import { Doughnut } from 'react-chartjs-2'
+// import { 
+//   Chart as ChartJS,
+//   ArcElement,
+//   Tooltip,
+//   Legend
+// } from "chart.js";
+// import { Doughnut } from 'react-chartjs-2'
 
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend
-)
+// ChartJS.register(
+//   ArcElement,
+//   Tooltip,
+//   Legend
+// )
 
 export const tareasContext = React.createContext()
 
@@ -68,7 +67,7 @@ function Tareas() {
     cutout: 40
   }
   
-  const { subtareas, setSubtareas, loadingTar, setLoadingTar, setErrorTar, errorTar, procesos, setProcesos, fetchProcesos, fetchTareasById, tareasByProyecto, setTareasByProyecto, idProyecto, setIdProyecto, titleArea, titleProyecto, descripcionProyecto } = useContext(newContext)
+  const { subtareas, setSubtareas, loadingTar, setLoadingTar, setErrorTar, errorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, idCiclo, setIdCiclo, yearSelec, titleCiclo, descripcionCiclo } = useContext(newContext)
   
   const [modalDeleteProyecto, setModalDeleteProyecto] = useState(false)
   const [modalEditProyecto, setModalEditProyecto] = useState(false)
@@ -103,12 +102,12 @@ function Tareas() {
 
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
-      {descripcionProyecto}
+      {descripcionCiclo}
     </Tooltip>
   );
 
   const handleEditProyecto = () => {
-    const pro = procesos.find(e => e.id_procesos === idProyecto)
+    const pro = ciclos.find(e => e.id_ciclo === idCiclo)
     console.log(pro)
     setProyectoSelec(JSON.stringify(pro))
     setModalEditProyecto(true)
@@ -120,22 +119,22 @@ function Tareas() {
 
   const handleDeleteProyecto = async () => {
     try {
-      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteProceso", {
+      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteCiclos", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          idProceso: parseInt(idProyecto)
+          id_ciclo: parseInt(idCiclo)
         })
       })
       const data = await res.json()
       if(data.error !== 0){
         console.log(data.errorDetalle)
       } else {
-        setTareasByProyecto(null)
-        setIdProyecto(null)
-        fetchProcesos().then(res => setProcesos(res.objeto))
+        setTareasByCiclo(null)
+        setIdCiclo(null)
+        fetchCiclos().then(res => setCiclos(res.objeto))
         setModalDeleteProyecto(false)
       }
     } catch (error) {
@@ -145,15 +144,15 @@ function Tareas() {
 
   const handleNewTarea = (e) => {
     e.preventDefault()
-    const pro = procesos.find(e => e.id_procesos === idProyecto)
+    const pro = ciclos.find(e => e.id_ciclo === idCiclo)
     setProyectoSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
 
   const handleEditTarea = (id) => {
-    const obj = tareasByProyecto.find((e) => e.id_tarea === id)
+    const obj = tareasByCiclo.find((e) => e.id_tarea === id)
     setTareaObj(JSON.stringify(obj))
-    const pro = procesos.find(e => e.id_procesos === idProyecto)
+    const pro = ciclos.find(e => e.id_procesos === idCiclo)
     setProyectoSelec(JSON.stringify(pro))
     setModalTarea(true)
   }
@@ -182,14 +181,14 @@ function Tareas() {
         setModalDeleteTarea(false)
         // actualiza tareas
         setLoadingTar(true)
-        fetchTareasById(idProyecto)
+        fetchTareasById(idCiclo)
         .then(res => {
             if(res.error !== 0){
                 setLoadingTar(false)
                 setErrorTar(res.errorDetalle)
             } else {
                 setLoadingTar(false)
-                setTareasByProyecto(res.objeto)
+                setTareasByCiclo(res.objeto)
             }
         })
         // fin de actualiza tareas
@@ -221,11 +220,6 @@ function Tareas() {
       console.log(error)
     }
   }
-
-  // Manejador para expandir o colapsar filas
-  // const handleRowClick = (id) => {
-  //   setExpandedRow(expandedRow === id ? null : id);
-  // };
 
   return (
     <>
@@ -281,7 +275,7 @@ function Tareas() {
           </div>
           ) : (
             <>
-              {tareasByProyecto === null ? (
+              {tareasByCiclo === null ? (
                 <div className='tareas__inicio d-flex flex-column align-items-center justify-content-center'>
                 <img className='mb-4' src={illustrationPlanes} alt="" />
                 <h2 className='fw-semibold mb-2'>¡Bienvenido!</h2>
@@ -293,23 +287,23 @@ function Tareas() {
                 <div className='tareas d-flex flex-column'>
                   <div className='tareas__header d-flex flex-column flex-md-row justify-content-between align-items-center mb-4'>
                     <div className='d-flex flex-row flex-md-wrap align-items-center mb-2 mb-md-0'>
-                        <h3 className='m-0 me-2'>{titleArea}<i className="bi bi-chevron-right mx-2"></i>
+                        <h3 className='m-0 me-2'>{yearSelec}<i className="bi bi-chevron-right mx-2"></i>
                         <OverlayTrigger
                           placement="top"
                           delay={{ show: 100, hide: 100 }}
                           overlay={renderTooltip}
                         >
-                            <span className='tareas__header__title'>{titleProyecto}</span>
+                            <span className='tareas__header__title'>{titleCiclo}</span>
                         </OverlayTrigger>
                         </h3>
                         <div className='d-flex flex-column flex-md-row'>
-                            <button className='btn__edit btn bg-success rounded-circle mb-2 mb-md-0 me-md-2 text-white' onClick={()=> handleEditProyecto(idProyecto)}><i className="bi bi-pencil"></i></button>
+                            <button className='btn__edit btn bg-success rounded-circle mb-2 mb-md-0 me-md-2 text-white' onClick={()=> handleEditProyecto(idCiclo)}><i className="bi bi-pencil"></i></button>
                             <button className='btn__delete btn bg-danger rounded-circle text-white' onClick={handleModalDeleteProyecto}><i className="bi bi-trash3"></i></button>
                         </div>
                     </div>
                     <button className='btn__addTarea btn btn-primary rounded-pill fw-medium' onClick={handleNewTarea}>Agregar tarea</button>
                   </div>
-                  {tareasByProyecto.length === 0 ? (
+                  {tareasByCiclo.length === 0 ? (
                     <div className='tareas--empty__main py-4 py-md-0 d-flex flex-column align-items-center justify-content-center rounded-3'>
                       <h2 className='fw-semibold mb-1 text-center'>No tienes tareas aún.</h2>
                       <p className='mb-3 text-center'>Para comenzar, crea tu primera tarea:</p>
@@ -369,7 +363,7 @@ function Tareas() {
                             <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha final</div>
                           </div>
                           <div className='table__custom__body'>
-                            {tareasByProyecto.map((e,i) => {
+                            {tareasByCiclo.map((e,i) => {
                               return <React.Fragment key={e.id_tarea}>
                                 <div className='table__custom__row light'>
                                   <div className='table__custom__cell cell__dropdown'>

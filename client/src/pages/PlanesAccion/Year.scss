@@ -31,8 +31,31 @@
             } 
 
             &__grafica {
+                background-color: #fff;
+                position: relative;
                 width: auto;
-                height: 100%;
+                padding: 20px;
+                // height: auto;
+
+                .btn__expandir {
+                    position: absolute;
+                    right: 30px;
+                    bottom: 36px;
+                    transition: all .2s ease-in-out;
+                    border: 2px solid $blue-500;
+                    border-radius: 10px;
+                    padding: 3px 8px !important;
+
+                    i {
+                        color: $blue-500;
+                        font-size: 20px;
+                    }
+                }
+
+                .btn__expandir:hover {
+                    transform: scale(1.1);
+                    border: 2px solid $blue-500;
+                }
             }
         }
 

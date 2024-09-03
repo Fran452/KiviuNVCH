@@ -65,7 +65,7 @@ function ModalNewProceso(props) {
         setErrors(newErrors)
         if (Object.keys(newErrors).length === 0){
             try {
-                const res = await fetch("http://localhost:3030/apis/plan-accion/addProceso", {
+                const res = await fetch("http://localhost:3030/apis/plan-accion/addCiclos", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

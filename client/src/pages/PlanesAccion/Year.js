@@ -21,6 +21,7 @@ import {
 import { Doughnut, Bar, getElementAtEvent } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns';
 import {es} from 'date-fns/locale';
+import IllustrationAccess from "../../assets/img/access.png"
 
 // Marca el día actual
 const todayLine = {
@@ -115,9 +116,12 @@ function Year() {
     const navigate = useNavigate();
 
     // state
-    const [procesos, setProcesos] = useState([])
+    const [ciclos, setCiclos] = useState([])
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
+
+    const [isFullscreen, setIsFullscreen] = useState(false)
+    const containerRef = useRef(null)
 
     const auth = localStorage.getItem("token")
     const jwtParse = jwtDecode(auth)
@@ -125,14 +129,14 @@ function Year() {
 
     useEffect(() => {
         const firstFetch = () => {
-            fetchProcesos()
+            fetchCiclos()
             .then(res => {
                 if(res.error !== 0){
                     setLoading(false)
                     setError(res.errorDetalle)
                 } else {
                     setLoading(false)
-                    setProcesos(res.objeto)
+                    setCiclos(res.objeto)
                 }
             })
         }
@@ -141,16 +145,53 @@ function Year() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
+    // Fullscreen
+    const enterFullscreen = () => {
+        if (containerRef.current) {
+            if (containerRef.current.requestFullscreen) {
+                containerRef.current.requestFullscreen();
+            } else if (containerRef.current.mozRequestFullScreen) { // Firefox
+                containerRef.current.mozRequestFullScreen();
+            } else if (containerRef.current.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                containerRef.current.webkitRequestFullscreen();
+            } else if (containerRef.current.msRequestFullscreen) { // IE/Edge
+                containerRef.current.msRequestFullscreen();
+            }
+            setIsFullscreen(true);
+        }
+    };
+
+    const exitFullscreen = () => {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) { // Firefox
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { // IE/Edge
+            document.msExitFullscreen();
+        }
+        setIsFullscreen(false);
+    };
+
+    const handleFullscreenToggle = () => {
+        if (isFullscreen) {
+            exitFullscreen();
+        } else {
+            enterFullscreen();
+        }
+    };
+    // Fin fullscreen
+
     // Actualizar el listado de proyectos
-    const fetchProcesos = async () => {
+    const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://localhost:3030/apis/plan-accion/viewProceso", {
+            const res = await fetch("http://localhost:3030/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    ciclo: 1,
                     user: USER
                 })
             });
@@ -236,12 +277,12 @@ function Year() {
     }
 
     const arrGantt = []
-    procesos.map((e) => {
+    ciclos.map((e) => {
         return arrGantt.push(
             {
                 y: e.nombre,
                 x: [e.fecha_inicio, e.fecha_final],
-                idCiclo: e.id_procesos,
+                idCiclo: e.id_ciclo,
                 percentage: '50%'
             }
         )
@@ -277,6 +318,7 @@ function Year() {
             borderWidth: 0,
             borderSkipped: false,
             borderRadius: 10,
+            barThickness: 20
           }
         ]
     }
@@ -344,9 +386,11 @@ function Year() {
             // console.log(dataBar.datasets[0].data[dataPoint])
             const data = {
                 title: dataBar.datasets[0].data[dataPoint].y,
-                year: year
+                year: year,
+                id: dataBar.datasets[0].data[dataPoint].idCiclo
             }
-            navigate(`/ciclos-de-auditoria/${year}/${dataBar.datasets[0].data[dataPoint].idCiclo}`, {state: data})
+            // navigate(`/ciclos-de-auditoria/${year}/${dataBar.datasets[0].data[dataPoint].idCiclo}`, {state: data})
+            navigate(`/ciclos-de-auditoria/${year}/ciclos`, {state: data})
         }
     }
 
@@ -372,73 +416,87 @@ function Year() {
                         <p className='fw-medium'>Loading...</p>
                     </div>
                 ) : (
-                    <div className='auditoria__year__main'>
-                        <div className='auditoria__year__main__content'>
-                            <div className='auditoria__year__main__content__introduccion rounded-3 mb-4'>
-                                <h2 className='text-white'>Bienvenido/a a los ciclos del año {year}</h2>
-                                <p className='text-white mb-0'>Aquí encontrarás las estadísticas de los ciclos del año {year}.</p>
+                    <>
+                        {error ? (
+                            <div className='d-flex flex-column align-items-center justify-content-center'>
+                                <img className='mb-4' src={IllustrationAccess} alt="" />
+                                <h2>Mensaje de error:</h2>
+                                <p>{error}</p>
                             </div>
+                        ) : (
+                            <div className='auditoria__year__main'>
+                                <div className='auditoria__year__main__content'>
+                                    <div className='auditoria__year__main__content__introduccion rounded-3 mb-4'>
+                                        <h2 className='text-white'>Bienvenido/a a los ciclos del año {year}</h2>
+                                        <p className='text-white mb-0'>Aquí encontrarás las estadísticas de los ciclos del año {year}.</p>
+                                    </div>
 
-                            <div className='auditoria__year__main__content__grafica'>
-                                <Bar 
-                                    data={dataBar}
-                                    options={optionsBar}
-                                    plugins={[todayLine, viewPercentage]}
-                                    onClick={onClick}
-                                    ref={chartRef}
-                                />
-                            </div>
-                        </div>
-                        <div className='auditoria__year__main__aside'>
-                            <div className='auditoria__year__main__aside__graficas'>
-                                {/* Gráfica 1 */}
-                                <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
-                                    <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
-                                        <div className='doughnut__grafica__info__textos'>
-                                            <h4 className='mb-2'>Total de tareas</h4>
-                                            <p className='mb-1 fw-medium'>Tareas realizadas: <span>{arr1[0]}</span></p>
-                                            <p className='mb-0'>Tareas no realizadas: <span>{arr1[1]}</span></p>
-                                        </div>
-                                        <div className='doughnut__grafica__info__chart'>
-                                            <Doughnut 
-                                                data = {data}
-                                                options={options}
-                                            />
-                                        </div>
+                                    <div ref={containerRef} className='auditoria__year__main__content__grafica'>
+                                        <Bar 
+                                            data={dataBar}
+                                            options={optionsBar}
+                                            plugins={[todayLine, viewPercentage]}
+                                            onClick={onClick}
+                                            ref={chartRef}
+                                        />
+                                        <button onClick={handleFullscreenToggle} className='btn__expandir btn p-0'>
+                                            {isFullscreen ? <i className="bi bi-arrows-angle-contract"></i> : <i className="bi bi-arrows-angle-expand"></i>}
+                                        </button>
                                     </div>
                                 </div>
-                                {/* Gráfica 2 */}
-                                <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
-                                    <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
-                                        <div className='doughnut__grafica__info__textos'>
-                                            <h4 className='mb-2'>Avance por auditores</h4>
-                                            <p className='mb-1 fw-medium'>Cumplieron sus tareas: <span>{arr2[0]}</span></p>
-                                            <p className='mb-0'>No cumplieron sus tareas: <span>{arr2[1]}</span></p>
-                                        </div>
-                                        <div className='doughnut__grafica__info__chart'>
-                                            <Doughnut 
-                                                data = {data2}
-                                                options={options}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='auditoria__year__main__aside__actividad scroll--y shadow-sm rounded-3 border border-light-subtle'>
-                                <h3 className='mb-4'>Última actividad:</h3>
-                                <ul className='list-group'>
-                                    {list.map((e,i) => {
-                                        return <li className='d-flex flex-row mb-3' key={i}>
-                                            <img className='me-2' src={Avatar} alt="" />
-                                            <div>
-                                                <span className='fw-medium'>{e.nombre}</span> completó la tarea <span className='fw-medium'>{e.task}</span> del proceso <span className='fw-medium'>{e.proceso}</span>
+                                <div className='auditoria__year__main__aside'>
+                                    <div className='auditoria__year__main__aside__graficas'>
+                                        {/* Gráfica 1 */}
+                                        <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                                            <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
+                                                <div className='doughnut__grafica__info__textos'>
+                                                    <h4 className='mb-2'>Total de tareas</h4>
+                                                    <p className='mb-1 fw-medium'>Tareas realizadas: <span>{arr1[0]}</span></p>
+                                                    <p className='mb-0'>Tareas no realizadas: <span>{arr1[1]}</span></p>
+                                                </div>
+                                                <div className='doughnut__grafica__info__chart'>
+                                                    <Doughnut 
+                                                        data = {data}
+                                                        options={options}
+                                                    />
+                                                </div>
                                             </div>
-                                            </li>
-                                    })}
-                                </ul>
+                                        </div>
+                                        {/* Gráfica 2 */}
+                                        <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                                            <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
+                                                <div className='doughnut__grafica__info__textos'>
+                                                    <h4 className='mb-2'>Avance por auditores</h4>
+                                                    <p className='mb-1 fw-medium'>Cumplieron sus tareas: <span>{arr2[0]}</span></p>
+                                                    <p className='mb-0'>No cumplieron sus tareas: <span>{arr2[1]}</span></p>
+                                                </div>
+                                                <div className='doughnut__grafica__info__chart'>
+                                                    <Doughnut 
+                                                        data = {data2}
+                                                        options={options}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='auditoria__year__main__aside__actividad scroll--y shadow-sm rounded-3 border border-light-subtle'>
+                                        <h3 className='mb-4'>Última actividad:</h3>
+                                        <ul className='list-group'>
+                                            {list.map((e,i) => {
+                                                return <li className='d-flex flex-row mb-3' key={i}>
+                                                    <img className='me-2' src={Avatar} alt="" />
+                                                    <div>
+                                                        <span className='fw-medium'>{e.nombre}</span> completó la tarea <span className='fw-medium'>{e.task}</span> del proceso <span className='fw-medium'>{e.proceso}</span>
+                                                    </div>
+                                                </li>
+                                            })}
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        )}
+                    </>
+                    
                 )}
             </div>
         </>
