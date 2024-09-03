@@ -86,7 +86,7 @@ CREATE TABLE Subtareas (
     prioridad                               VARCHAR(255), -- 0 (normal) 1 (prioritario) 2 (muy Prioritario) / Defoult "1"
     notas                                   VARCHAR(255), -- Defoult "notas"
     fecha_inicio                            DATE NOT NULL,
-    fecha_final                             DATE NOT NULL,
+    fecha_final                             DATE,
     ver                                     INT NOT NULL,
     FOREIGN KEY (asignacion)                REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_tareas)                 REFERENCES Tareas(id_tarea)

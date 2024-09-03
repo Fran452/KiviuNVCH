@@ -397,7 +397,7 @@ const controlador = {
         try{
             let hoy = new Date();
             let fehcaIngresadaFinal = new Date(req.body.fechaFinal); 
-            let fehcaIngresadaInicial = new Date(req.body.fechaInicial);
+            //let fehcaIngresadaInicial = new Date(req.body.fechaInicial);
             let titulo      = req.body.titulo || null;
             let horasAprox  = req.body.horasAprox || null;
             let avance      = req.body.avance 
@@ -438,7 +438,7 @@ const controlador = {
                         prioridad       : prioridad,
                         notas           : notas,
                         fecha_inicio    : fehcaIngresadaFinal,
-                        fecha_final     : fehcaIngresadaInicial,
+                        fecha_final     : null,
                         ver:        1
                     });
 
@@ -475,6 +475,10 @@ const controlador = {
                 }
             }else{
                 empleadoAsignado =  req.body.subtarea.Empleados;
+            }
+
+            if(){
+
             }
 
             let subtarea = await dataBaseSQL.subtareas.update({
@@ -541,8 +545,12 @@ const controlador = {
 
     terminarSubTarea: async (req,res) => {
         try{
+            let ahora = new Date()
+            let fechaFinal = ahora.toISOString().split('T')[0];
+            
             let subtarea = await dataBaseSQL.subtareas.update({
-                avance : 100 
+                avance : 100,
+                fecha_final: fechaFinal  
             },{
                 where:{
                     id_sub_tarea : req.body.tarea.id_subtarea
