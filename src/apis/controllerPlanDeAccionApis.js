@@ -473,7 +473,8 @@ const controlador = {
             }else{
                 empleadoAsignado =  req.body.subtarea.Empleados;
             }
-            let fechaFinal
+
+            let fechaFinal;
             if(req.body.avance == 100){
                 fechaFinal = new Date();
             }else{
@@ -483,11 +484,12 @@ const controlador = {
             let subtarea = await dataBaseSQL.subtareas.update({
                 titulo          : req.body.titulo,    
                 asignacion      : empleadoAsignado.id_empleado,        
-                // horasAprox      : req.body.horasAprox,        
+                horasAprox      : req.body.horasAprox,        
                 avance          : req.body.avance,    
                 estado          : req.body.estado,    
                 prioridad       : req.body.prioridad,        
                 notas           : req.body.notas,
+                fecha_inicio    : req.body.fechaInicio,
                 fecha_final     : fechaFinal
             },{
                 where:{

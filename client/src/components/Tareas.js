@@ -68,7 +68,7 @@ function Tareas() {
     cutout: 40
   }
   
-  const { subtareas, setSubtareas, loadingTar, setLoadingTar, setErrorTar, errorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, idCiclo, setIdCiclo, yearSelec, titleCiclo, descripcionCiclo } = useContext(newContext)
+  const { subtareas, setSubtareas, loadingTar, setLoadingTar, setErrorTar, errorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, idCiclo, setIdCiclo, yearSelec, titleCiclo, descripcionCiclo, expandedRow, setExpandedRow } = useContext(newContext)
   
   const [modalDeleteCiclo, setModalDeleteCiclo] = useState(false)
   const [modalEditCiclo, setModalEditCiclo] = useState(false)
@@ -79,7 +79,7 @@ function Tareas() {
   const [modalDeleteTarea, setModalDeleteTarea] = useState(false)
   const [errorDel, setErrorDel] = useState(null)
 
-  const [expandedRow, setExpandedRow] = useState(null);
+  // const [expandedRow, setExpandedRow] = useState(null);
 
   const [loadingSub, setLoadingSub] = useState(true)
   const [errorSub, setErrorSub] = useState(null)
@@ -202,8 +202,6 @@ function Tareas() {
   }
 
   const fetchSubtareasById = async(id) => {
-    // setLoadingSub(true)
-    setExpandedRow(expandedRow === id ? null : id);
     try {
       const res = await fetch("http://localhost:3030/apis/plan-accion/viewSubTask", {
         method: "POST",
@@ -215,23 +213,32 @@ function Tareas() {
         })
       })
       const data = await res.json()
-      if(data.error !== 0){
-        setLoadingSub(false)
-        setErrorSub(data.errorDetalle)
-      } else {
-        setLoadingSub(false)
-        setSubtareas(data.objeto)
-      }
+      return data
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const handleSubtareasById = async (id) => {
+    setExpandedRow(expandedRow === id ? null : id);
+    fetchSubtareasById(id)
+    .then(res => {
+      if(res.error !== 0){
+        setLoadingSub(false)
+        setErrorSub(res.errorDetalle)
+      } else {
+        setLoadingSub(false)
+        setSubtareas(res.objeto)
+      }
+    })
+    setIdTask(id)
   }
 
   const nodeRef = useRef()
 
   return (
     <>
-      <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub}}>
+      <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask }}>
         <ModalEditCiclo show={modalEditCiclo} onHide={()=>setModalEditCiclo(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
       {/* Modal Eliminar Proyecto */}
@@ -374,7 +381,7 @@ function Tareas() {
                               return <React.Fragment key={e.id_tarea}>
                                 <div className='table__custom__row light'>
                                   <div className='table__custom__cell cell__dropdown'>
-                                    <button className='btn' onClick={()=>fetchSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
+                                    <button className='btn' onClick={()=>handleSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
                                   </div>
                                   <div className='table__custom__cell cell__buttons'>
                                     <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>

@@ -28,6 +28,8 @@ function Ciclo() {
     const [descripcionCiclo, setDescripcionCiclo] = useState(null)
     const [modalCiclo, setModalCiclo] = useState(false)
 
+    const [expandedRow, setExpandedRow] = useState(null);
+
     // Anterior areas > subciclos
     // const [areas, setAreas] = useState([]);
     // Anterior proyectos
@@ -112,7 +114,6 @@ function Ciclo() {
         setLoadingTar(true)
         fetchTareasById(id)
         .then(res => {
-            console.log(res)
             if(res.error !== 0){
                 setLoadingTar(false)
                 setErrorTar(res.errorDetalle)
@@ -126,6 +127,7 @@ function Ciclo() {
         setTitleCiclo(titleProyecto)
         setDescripcionCiclo(detalles)
         setSubtareas([])
+        setExpandedRow(null)
     }
 
     const handleFormProceso = (e) => {
@@ -135,7 +137,7 @@ function Ciclo() {
 
     return (
         <newContext.Provider 
-            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER}}>
+            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER, expandedRow, setExpandedRow}}>
             <ModalNewCiclo show={modalCiclo} onHide={()=>setModalCiclo(false)}/>
             <div className='ciclo section'>
                 {/* {cicloSelec === null ? "" : (

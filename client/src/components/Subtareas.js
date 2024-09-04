@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { ProgressBar } from 'react-bootstrap';
+import { ProgressBar, Modal } from 'react-bootstrap';
 import ModalSubtarea from './Modales/ModalSubtarea'
 import { tareasContext } from './Tareas'
 import { Oval } from 'react-loader-spinner'
@@ -8,10 +8,14 @@ export const subtareasContext = React.createContext()
 
 function Subtareas() {
 
-    const { subtareas, loadingSub, errorSub } = useContext(tareasContext)
+    const { subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask } = useContext(tareasContext)
 
+    const [idSubtask, setIdSubtask] = useState(null)
     const [modalSubtarea, setModalSubtarea] = useState(false)
     const [subtareaObj, setSubtareaObj] = useState(null)
+
+    const [modalDeleteSub, setModalDeleteSub] = useState(false)
+    const [errorDel, setErrorDel] = useState(null)
 
     useEffect(()=> {
     },[])
@@ -25,15 +29,70 @@ function Subtareas() {
         setModalSubtarea(true)
     }
 
+    const handleNewSubtarea = (e) => {
+        e.preventDefault()
+        setModalSubtarea(true)
+    }
+
     const handleModalDelete = (id) => {
-        console.log(id)
+        setIdSubtask(id)
+        setModalDeleteSub(true)
+    }
+
+    const handleDeleteSubtarea = async () => {
+        const obj = {
+            id_subtarea: parseInt(idSubtask)
+        }
+        try {
+            const res = await fetch("http://localhost:3030/apis/plan-accion/deleteSubTask", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj)
+            })
+            const data = await res.json()
+            if(data.error !== 0){
+                setErrorDel(data.errorDetalle)
+            } else {
+                setModalDeleteSub(false)
+                // actualiza subtareas
+                setLoadingSub(true)
+                fetchSubtareasById(idTask)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingSub(false)
+                        setErrorSub(res.errorDetalle)
+                    } else {
+                        setLoadingSub(false)
+                        setSubtareas(res.objeto)
+                    }
+                })
+            }
+        } catch (error) {
+            setErrorDel(error)
+        }
     }
 
     return (
         <>  
-            <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj }}>
+            <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask }}>
                 <ModalSubtarea show={modalSubtarea} onHide={()=>setModalSubtarea(false)} />
             </subtareasContext.Provider>
+            {/* Modal Eliminar Tarea */}
+            <Modal className='modal__delete' show={modalDeleteSub} onHide={() => setModalDeleteSub(false)} backdrop="static" centered>
+                <Modal.Header closeButton>
+                <Modal.Title><h3>Eliminar subtarea</h3></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>¿Está seguro de eliminar esta subtarea?</Modal.Body>
+                <Modal.Footer className='d-flex flex-column'>
+                <div className='d-flex flex-row align-items-center align-self-end'>
+                    <button className='btn btn-secondary rounded-pill me-2' onClick={() => setModalDeleteSub(false)}>Cancelar</button>
+                    <button className='btn btn-danger rounded-pill' onClick={handleDeleteSubtarea}>Borrar</button>
+                </div>
+                {errorDel && <p>{errorDel}</p>}
+                </Modal.Footer>
+            </Modal>
             {loadingSub ? (
                 <div className='loading__subtareas d-flex flex-row align-items-center'>
                     <div className='me-2'>
@@ -58,7 +117,7 @@ function Subtareas() {
                             {subtareas.length === 0 ? (
                                 <div className='table__custom__row'>
                                     <div className='table__custom__cell cell__dropdown'>
-                                    <button className='btn btn-primary rounded-pill px-4'>Crea una subtarea</button>
+                                        <button onClick={handleNewSubtarea} className='btn btn-outline-primary btn-sm rounded-pill px-4'>Crea una subtarea</button>
                                     </div>
                                 </div>
                             ) : (
@@ -95,6 +154,11 @@ function Subtareas() {
                                             {/* <div className="table__custom__cell cell__date">{s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
                                         </div>
                                     })}
+                                    <div className='table__custom__row'>
+                                        <div className='table__custom__cell cell__dropdown'>
+                                            <button onClick={handleNewSubtarea} className='btn btn-outline-primary btn-sm rounded-pill px-4'>Crea una subtarea</button>
+                                        </div>
+                                    </div>
                                 </>
                             )}
                         </>
