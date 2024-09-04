@@ -61,7 +61,6 @@ function Ciclo() {
                     setError(res.errorDetalle)
                 } else {
                     setLoading(false)
-                    console.log(res)
                     setCiclos(res.objeto)
                 }
             })

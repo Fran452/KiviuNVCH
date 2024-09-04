@@ -59,7 +59,7 @@ function ModalPlanes(props) {
         nombre: formData.nombre,
         estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
-        fechaInicio: formData.fechaInicio,
+        fechaInicial: formData.fechaInicio,
         fechaFinal: formData.fechaFinal,
         notas: formData.notas,
         // progreso: parseInt(formData.progreso),
