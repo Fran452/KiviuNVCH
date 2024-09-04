@@ -84,25 +84,25 @@ const controlador = {
 
             let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo Préstamos","Ciclo de prestamos primera revicion",fechaInicial,fechaFin,1);
             
-            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Préstamos Consumo y Comercial 1° revisión",1,1,"notas",0,0);
+            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Préstamos Consumo y Comercial 1° revisión",1,1,"notas",0,fechaInicial,fechaFin,0);
             let subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Relevamiento",usuario.id,20,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Matriz de Riesgos y Controles",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
 
 
 
-            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Normativa",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Normativa",1,1,"notas",0,fechaInicial,fechaFin,0);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Normativa Consumo ",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Normativa Comercial",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Organigrama",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
 
 
-            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Cruces Contables con RI e Inventario",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Cruces Contables con RI e Inventario",1,1,"notas",0,fechaInicial,fechaFin,0);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Tarea realizada - Cruces RI, Invetarios y Contabilidad",usuario.id,1,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Cruce RI con Saldos Contables",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Cruce RI con Inventarios",usuario.id,6,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
 
 
-            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Procedimientos Cartera Consumo",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Procedimientos Cartera Consumo",1,1,"notas",0,fechaInicial,fechaFin,0);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"TR Consumo",usuario.id,1,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Muestra Consumo",usuario.id,3,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Análisis Consumo",usuario.id,160,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
@@ -110,29 +110,29 @@ const controlador = {
 
             ciclo   =   await funcionesDeTest.crearCiclo(usuario.area,"Procedimientos Cartera Comercial","Procedimientos Cartera Comercial",fechaInicial,fechaFin,1);
             
-            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Cartera Comercial Clasificación y Previsionamiento",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Cartera Comercial Clasificación y Previsionamiento",1,1,"notas",0,fechaInicial,fechaFin,0);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"TR Consumo",usuario.id,1,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Muestra Consumo",usuario.id,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Análisis Consumo",usuario.id,248,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
 
-            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Cartera Comercial y Asimilable",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Cartera Comercial y Asimilable",1,1,"notas",0,fechaInicial,fechaFin,0);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"TR Cartera Comercial y Asimilable",usuario.id,1,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Muestra Altas Líneas Comerciales",usuario.id,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Alta de Líneas Nuevas",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Análisis Altas Líneas Comerciales",usuario.id,164,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             
-            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Comité de Crédito",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Comité de Crédito",1,1,"notas",0,fechaInicial,fechaFin,0);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"TR Comité de Crédito",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Análisis Comité de Crédito",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Resumen Comité de Crédito",usuario.id,6,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
 
 
-            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Regimen Informativo",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Regimen Informativo",1,1,"notas",0,fechaInicial,fechaFin,0);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"TR Verificación de Régimen Informativo",usuario.id,1,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Validaciones RI Deudores por NOP y BCRA",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Controles Entidad sobre RI Deudores",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
 
-            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Evidencia de Monitoreo",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Evidencia de Monitoreo",1,1,"notas",0,fechaInicial,fechaFin,0);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"TR Monitoreo",usuario.id,1,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Monitoreo por Planeamiento",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Monitoreo por Gestión de Riesgos",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
@@ -154,7 +154,7 @@ const controlador = {
             
         }
     },
-    crearBaseDeDatos: async (req,res) => {
+    crearBaseDeDatosNew: async (req,res) => {
         try{
             let ahora = new Date()
 
@@ -350,12 +350,71 @@ const controlador = {
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"DEPÓSITOS","DEPÓSITOS",fechaInicial,fechaFin,1);
             ciclos.push(ciclo);
             
-            tarea     = await funcionesDeTest.crearTarea(SV.id_empleado,area.id_area,ciclo.id_ciclo,"Ciclo Depósitos - Caja de Ahorros",1,1,"notas",0,0);
+            tarea     = await funcionesDeTest.crearTarea(DM.id_empleado,area.id_area,ciclo.id_ciclo,"Ciclo Depósitos - Caja de Ahorros",1,1,"notas",0,0);
             tareas.push(tarea);
-            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Apert y Cierre de cuentas",SV.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"RELEVAMIENTO",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subTareas.push(subtarea);
-            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Comis y Gtos",SV.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"NORMATIVA",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
             subTareas.push(subtarea);
+
+            tarea     = await funcionesDeTest.crearTarea(DM.id_empleado,area.id_area,ciclo.id_ciclo,"CONCILIACION CONTABLE",1,1,"notas",0,0);
+            tareas.push(tarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Conciliación Contable",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Movimientos automáicos pendientes de Impaacto",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+
+            tarea     = await funcionesDeTest.crearTarea(DM.id_empleado,area.id_area,ciclo.id_ciclo,"ALTAS",1,1,"notas",0,0);
+            tareas.push(tarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Altas Caja de Ahorros",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+
+            tarea     = await funcionesDeTest.crearTarea(DM.id_empleado,area.id_area,ciclo.id_ciclo,"INTERESES, GASTOS Y COMISIONES",1,1,"notas",0,0);
+            tareas.push(tarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Intereses sobre saldos",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Gastos Mantenimiento Pesos",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Gasto Mantenimiento Dolares",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+
+            tarea     = await funcionesDeTest.crearTarea(DM.id_empleado,area.id_area,ciclo.id_ciclo,"BAJAS",1,1,"notas",0,0);
+            tareas.push(tarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Bajas Masivas de Cuentas",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Bajas no presenciales",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+
+            tarea     = await funcionesDeTest.crearTarea(DM.id_empleado,area.id_area,ciclo.id_ciclo,"CUENTAS JUDICIALES",1,1,"notas",0,0);
+            tareas.push(tarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Movimientos Impropios",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Depósitos Judiciales en Dolares",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"CONTROL DE MONITOREO",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"RI PAGO REMUNERACIONES",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+
+            tarea     = await funcionesDeTest.crearTarea(DM.id_empleado,area.id_area,ciclo.id_ciclo,"TARJETA DE DEBITOS",1,1,"notas",0,0);
+            tareas.push(tarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"STOCK DE TARJETAS VIRGENES",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"CONTRATOS ",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+
+            tarea     = await funcionesDeTest.crearTarea(DM.id_empleado,area.id_area,ciclo.id_ciclo,"RESUMEN DE CUENTAS",1,1,"notas",0,0);
+            tareas.push(tarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Resumenes de Cuenta",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"MATRIZ",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+            subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"INFORME",DM.id_empleado,4,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
+            subTareas.push(subtarea);
+
+
+
+
         }catch(error){
             console.log(error);
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
