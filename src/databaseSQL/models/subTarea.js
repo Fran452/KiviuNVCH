@@ -72,7 +72,6 @@ module.exports = (sequelize,DataTypes) => {
 
         "fecha_final":{
             type: DataTypes.DATE(255),
-            allowNull: false
         },
         
         "ver":{
