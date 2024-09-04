@@ -208,8 +208,8 @@ function ModalSubtarea(props) {
             <input
               onChange={handleChange}
               type="text" 
-              id="nombre" 
-              name="nombre" 
+              id="titulo" 
+              name="titulo" 
               autoFocus
               className="form-control form-control-sm col-12"
               value={formData.titulo}

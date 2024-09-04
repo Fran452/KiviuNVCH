@@ -483,7 +483,7 @@ const controlador = {
             let subtarea = await dataBaseSQL.subtareas.update({
                 titulo          : req.body.titulo,    
                 asignacion      : empleadoAsignado.id_empleado,        
-                horasAprox      : req.body.horasAprox,        
+                // horasAprox      : req.body.horasAprox,        
                 avance          : req.body.avance,    
                 estado          : req.body.estado,    
                 prioridad       : req.body.prioridad,        

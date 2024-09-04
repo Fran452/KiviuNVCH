@@ -147,6 +147,20 @@
     }
 }
 
+.loading__subtareas {
+    padding: 20px;
+
+    div {
+        svg g g circle[stroke] {
+            stroke: $blue-500;
+        }
+    }
+
+    p {
+        color: $blue-500
+    }
+}
+
 .tareas {
     height: 100%;
 

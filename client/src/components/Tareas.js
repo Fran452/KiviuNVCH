@@ -81,6 +81,9 @@ function Tareas() {
 
   const [expandedRow, setExpandedRow] = useState(null);
 
+  const [loadingSub, setLoadingSub] = useState(true)
+  const [errorSub, setErrorSub] = useState(null)
+
   // const [subtareas, setSubtareas] = useState([])
   // const [errorSubtarea, setErrorSubtarea] = useState(null)
 
@@ -199,6 +202,7 @@ function Tareas() {
   }
 
   const fetchSubtareasById = async(id) => {
+    // setLoadingSub(true)
     setExpandedRow(expandedRow === id ? null : id);
     try {
       const res = await fetch("http://localhost:3030/apis/plan-accion/viewSubTask", {
@@ -212,8 +216,10 @@ function Tareas() {
       })
       const data = await res.json()
       if(data.error !== 0){
-        console.log(data.errorDetalle)
+        setLoadingSub(false)
+        setErrorSub(data.errorDetalle)
       } else {
+        setLoadingSub(false)
         setSubtareas(data.objeto)
       }
     } catch (error) {
@@ -225,7 +231,7 @@ function Tareas() {
 
   return (
     <>
-      <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas}}>
+      <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub}}>
         <ModalEditCiclo show={modalEditCiclo} onHide={()=>setModalEditCiclo(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
       {/* Modal Eliminar Proyecto */}
