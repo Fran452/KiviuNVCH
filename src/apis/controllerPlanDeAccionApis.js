@@ -305,6 +305,7 @@ const controlador = {
                     nombre                  : req.body.nombre,
                     estado                  : req.body.estado,
                     prioridad               : req.body.prioridad,
+                    fecha_inicio            : req.body.fechaInicial,
                     fecha_final             : req.body.fechaFinal,
                     notas                   : req.body.notas,
                     //progreso                : req.body.progreso,
@@ -343,17 +344,17 @@ const controlador = {
             }
 
             let tareaModificada = await dataBaseSQL.tareas.update({
-                fk_empleado_asignado :  empleadoAsignado.id_empleado,
-                fk_area :               req.body.user.area,
-                nombre :                req.body.nombre,
-                estado :                req.body.estado,
-                prioridad :             req.body.prioridad,
-                fecha_inicio :          req.body.fechaInicio,
-                fecha_final :           req.body.fechaFinal,
-                notas :                 req.body.notas, 
-                // progreso:               req.body.progreso,
-                //horas_Necesarias:       req.body.horas,
-                fk_ciclo:               req.body.idCiclo
+                fk_empleado_asignado    : empleadoAsignado.id_empleado,
+                fk_area                 : req.body.user.area,
+                nombre                  : req.body.nombre,
+                estado                  : req.body.estado,
+                prioridad               : req.body.prioridad,
+                fecha_inicio            : req.body.fechaInicio,
+                fecha_final             : req.body.fechaFinal,
+                notas                   : req.body.notas, 
+                // progreso                : req.body.progreso,
+                //horas_Necesarias      : req.body.horas,
+                fk_ciclo                : req.body.idCiclo
             },{
                 where:{
                     id_tarea : req.body.tarea.id_tarea
@@ -396,8 +397,8 @@ const controlador = {
     addSubTarea: async (req,res) => {
         try{
             let hoy = new Date();
-            let fehcaIngresadaFinal = new Date(req.body.fechaFinal); 
-            //let fehcaIngresadaInicial = new Date(req.body.fechaInicial);
+            //let fechaIngresadaFinal = new Date(req.body.fechaFinal); 
+            let fehcaIngresadaInicial = new Date(req.body.fechaInicial);
             let titulo      = req.body.titulo || null;
             let horasAprox  = req.body.horasAprox || null;
             let avance      = req.body.avance 
@@ -405,10 +406,6 @@ const controlador = {
             let prioridad   = req.body.prioridad;
             let notas       = req.body.notas || null;
             
-            if(fehcaIngresadaFinal < hoy){
-                res.json({error : 10, errorDetalle: "Fecha final menor a fecha de hoy"});
-                return 1;
-            };
 
             if(req.body.asignacion != undefined){
                 let empleadoAsignado = await dataBaseSQL.empleados.findOne(
@@ -437,7 +434,7 @@ const controlador = {
                         estado          : estado,
                         prioridad       : prioridad,
                         notas           : notas,
-                        fecha_inicio    : fehcaIngresadaFinal,
+                        fecha_inicio    : fehcaIngresadaInicial,
                         fecha_final     : null,
                         ver:        1
                     });
@@ -477,6 +474,12 @@ const controlador = {
                 empleadoAsignado =  req.body.subtarea.Empleados;
             }
 
+            if(req.body.avance == 100){
+                let fechaFinal = new Date();
+            }else{
+                let fechaFinal = null
+            }
+
             let subtarea = await dataBaseSQL.subtareas.update({
                 titulo          : req.body.titulo,    
                 asignacion      : empleadoAsignado.id_empleado,        
@@ -484,7 +487,9 @@ const controlador = {
                 avance          : req.body.avance,    
                 estado          : req.body.estado,    
                 prioridad       : req.body.prioridad,        
-                notas           : req.body.notas,    
+                notas           : req.body.notas,
+                fecha_inicio    : req.body.fechaInicio,
+                fecha_final     : fechaFinal
             },{
                 where:{
                     id_sub_tarea : req.body.subtarea.id_sub_tarea
@@ -506,7 +511,7 @@ const controlador = {
                     ver : 1,
                     fk_tareas : req.body.idTarea
                 },
-                attributes: ['id_sub_tarea','titulo','horasAprox','avance','estado','prioridad','notas'],
+                attributes: ['id_sub_tarea','titulo','horasAprox','avance','fecha_inicio','fecha_final','estado','prioridad','notas'],
                 include: [
                     {association : "Empleados",attributes: ['nombre','mail']},
                 ]
