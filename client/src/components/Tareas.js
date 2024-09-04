@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { ProgressBar, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Oval } from 'react-loader-spinner'
 import illustrationPlanes from "../assets/img/planes.png"
@@ -27,7 +27,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 export const tareasContext = React.createContext()
 
 function Tareas() {
-
+  
   const arr1 = [57, 71]
   const data = {
     labels: ['Realizadas', 'No realizadas'],
@@ -221,12 +221,13 @@ function Tareas() {
     }
   }
 
+  const nodeRef = useRef()
+
   return (
     <>
-      <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj}}>
+      <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas}}>
         <ModalEditCiclo show={modalEditCiclo} onHide={()=>setModalEditCiclo(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
-      </tareasContext.Provider>
       {/* Modal Eliminar Proyecto */}
       <Modal className='modal__delete__proyecto' show={modalDeleteCiclo} onHide={() => setModalDeleteCiclo(false)} backdrop="static" centered>
         <Modal.Header closeButton>
@@ -401,18 +402,11 @@ function Tareas() {
                                     timeout={300}
                                     classNames="details"
                                     unmountOnExit
+                                    nodeRef={nodeRef}
                                 >
-                                <div>
-                                  {subtareas.length === 0 ? (
-                                    <div className='table__custom__row'>
-                                      <div className='table__custom__cell cell__dropdown'>
-                                        <button className='btn btn-primary rounded-pill px-4'>Crea una subtarea</button>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <Subtareas subtareas={subtareas}/>
-                                  )}
-                                </div>
+                                  <div ref={nodeRef}>
+                                    <Subtareas />
+                                  </div>
                                 </CSSTransition>
                               </React.Fragment>
                             })}
@@ -428,6 +422,7 @@ function Tareas() {
           
         </>
       )}
+      </tareasContext.Provider>
     </>
     
   )
