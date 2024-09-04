@@ -6,6 +6,7 @@ import IllustrationAccess from "../assets/img/access.png"
 import "./Tareas.scss"
 import ModalEditCiclo from './Modales/ModalEditCiclo';
 import ModalPlanes from './Modales/ModalPlanes';
+import Subtareas from './Subtareas';
 import { newContext } from '../pages/PlanesAccion/Ciclo'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
@@ -392,8 +393,7 @@ function Tareas() {
                                   <div className='table__custom__cell cell__horas'>{e.horas_totales}</div>
                                   <div className="table__custom__cell cell__notas">{e.notas}</div>
                                   <div className="table__custom__cell cell__mail">{e.Empleado.nombre}</div>
-                                  <div className='table__custom__cell cell__date'>Inicio</div>
-                                  {/* <div className="table__custom__cell">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
+                                  <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
                                   <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
                                 </div>
                                 <CSSTransition
@@ -410,41 +410,7 @@ function Tareas() {
                                       </div>
                                     </div>
                                   ) : (
-                                    <>
-                                      {subtareas.map(s => {
-                                        return <div className='table__custom__row'>
-                                        <div className='table__custom__cell cell__dropdown'></div>
-                                        <div className='table__custom__cell cell__buttons'>
-                                          <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
-                                          <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
-                                        </div>
-                                        <div className='table__custom__cell cell__nombre'>{s.titulo}</div>
-                                        <div className='table__custom__cell cell__prioridad'>
-                                          {s.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
-                                          {s.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
-                                          {s.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
-                                        </div>
-                                        <div className='table__custom__cell cell__estado'>
-                                          {s.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
-                                          {s.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
-                                          {s.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
-                                          {s.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
-                                          {s.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
-                                          {s.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
-                                        </div>
-                                        <div className='table__custom__cell cell__progreso'>
-                                          <ProgressBar className='table__tbody__progreso__bar' now={s.avance} label={`${s.avance}%`} max={100}/>
-                                        </div>
-                                        <div className='table__custom__cell cell__horas'>{s.horasAprox}</div>
-                                        <div className="table__custom__cell cell__notas">{s.notas}</div>
-                                        <div className="table__custom__cell cell__mail">{s.Empleados.nombre}</div>
-                                        <div className="table__custom__cell cell__date">Inicio</div>
-                                        <div className="table__custom__cell cell__date">Final</div>
-                                        {/* <div className="table__custom__cell">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
-                                        {/* <div className="table__custom__cell">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
-                                      </div>
-                                      })}
-                                    </>
+                                    <Subtareas subtareas={subtareas}/>
                                   )}
                                 </div>
                                 </CSSTransition>

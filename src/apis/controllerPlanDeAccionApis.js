@@ -121,7 +121,7 @@ const controlador = {
     viewProceso: async (req,res) => {
         try{
             let procesos = await dataBaseSQL.sequelize.query(
-                "SELECT procesos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM procesos LEFT JOIN tareas ON procesos.id_procesos = tareas.fk_procesos LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE procesos.fk_ciclo = :fkCiclo and procesos.ver = 1 GROUP BY procesos.id_procesos;"
+                "SELECT procesos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM procesos LEFT JOIN tareas ON procesos.id_procesos = tareas.fk_procesos LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE procesos.fk_ciclo = :fkCiclo GROUP BY procesos.id_procesos;"
                 ,{
                 replacements: { fkCiclo: req.body.ciclo },
                 type: Sequelize.QueryTypes.SELECT
@@ -157,8 +157,6 @@ const controlador = {
                 nombre  :   req.body.nombre,
                 detalles:   req.body.detalles,
                 fk_ciclo:   req.body.ciclo,
-                fecha_inicio:   req.body.fecha_inicio,     
-                fecha_final:   req.body.fecha_final,
                 ver     :   1
             });
             res.json({error :0, errorDetalle: "", objeto:procesos});
@@ -176,8 +174,6 @@ const controlador = {
             let procesos = await dataBaseSQL.procesos.update({
                 nombre      : req.body.nombre,
                 detalles    : req.body.detalles,
-                fecha_inicio:   req.body.fecha_inicio,     
-                fecha_final:   req.body.fecha_final,
             },{
                 where:{
                     id_procesos: req.body.idProceso
@@ -221,7 +217,7 @@ const controlador = {
                         ver : 1,
                         fk_ciclo: req.body.idCiclo
                     },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_final","notas","progreso","horas_totales"],
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio", "fecha_final","notas","progreso","horas_totales"],
                     include: [
                         {association : "Areas",attributes: ['id_area','nombre_del_Area']},
                         {association : "Empleado",attributes: ['nombre','mail']},
@@ -236,7 +232,7 @@ const controlador = {
                         ver : 1,
                         fk_ciclo : req.body.idCiclo
                     },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_final","notas"],
+                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio", "fecha_final","notas"],
                     include: [
                             {association : "Areas",attributes: ['id_area','nombre_del_Area']},
                             {association : "Empleado",attributes: ['nombre','mail']},
@@ -352,12 +348,12 @@ const controlador = {
                 nombre :                req.body.nombre,
                 estado :                req.body.estado,
                 prioridad :             req.body.prioridad,
-                //fecha_inicio :          req.body.fechaInicio,
+                fecha_inicio :          req.body.fechaInicio,
                 fecha_final :           req.body.fechaFinal,
                 notas :                 req.body.notas, 
-                progreso:               req.body.progreso,
+                // progreso:               req.body.progreso,
                 //horas_Necesarias:       req.body.horas,
-                fk_proceso:             req.body.idCiclo
+                fk_ciclo:               req.body.idCiclo
             },{
                 where:{
                     id_tarea : req.body.tarea.id_tarea
@@ -479,10 +475,6 @@ const controlador = {
                 }
             }else{
                 empleadoAsignado =  req.body.subtarea.Empleados;
-            }
-
-            if(){
-
             }
 
             let subtarea = await dataBaseSQL.subtareas.update({

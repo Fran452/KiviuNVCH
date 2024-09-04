@@ -61,6 +61,7 @@ function Ciclo() {
                     setError(res.errorDetalle)
                 } else {
                     setLoading(false)
+                    console.log(res)
                     setCiclos(res.objeto)
                 }
             })
@@ -112,6 +113,7 @@ function Ciclo() {
         setLoadingTar(true)
         fetchTareasById(id)
         .then(res => {
+            console.log(res)
             if(res.error !== 0){
                 setLoadingTar(false)
                 setErrorTar(res.errorDetalle)

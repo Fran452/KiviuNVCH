@@ -11,7 +11,7 @@ function ModalPlanes(props) {
   // State
   const [formData, setFormData] = useState({
     nombre: "",
-    // fechaInicio: "",
+    fechaInicio: "",
     fechaFinal: "",
     responsable: "",
     estado: "",
@@ -27,7 +27,7 @@ function ModalPlanes(props) {
       const obj = JSON.parse(tareaObj)
       setFormData({
         nombre: obj.nombre,
-        // fechaInicio: obj.fecha_inicio,
+        fechaInicio: obj.fecha_inicio,
         fechaFinal: obj.fecha_final,
         responsable: obj.Empleado.mail,
         estado: obj.estado.toString(),
@@ -59,11 +59,11 @@ function ModalPlanes(props) {
         nombre: formData.nombre,
         estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
-        // fechaInicio: formData.fechaInicio,
+        fechaInicio: formData.fechaInicio,
         fechaFinal: formData.fechaFinal,
         notas: formData.notas,
         // progreso: parseInt(formData.progreso),
-        progreso: 0,
+        // progreso: 0,
         idCiclo: pro.id_ciclo
       }
       try {
@@ -80,7 +80,7 @@ function ModalPlanes(props) {
         } else {
           setFormData({
             nombre: "",
-            // fechaInicio: "",
+            fechaInicio: "",
             fechaFinal: "",
             responsable: "",
             estado: "",
@@ -119,9 +119,9 @@ function ModalPlanes(props) {
     if(!data.nombre.trim()) {
       errors.nombre = "Escoja un nombre."
     }
-    // if(!data.fechaInicio.trim()) {
-    //   errors.fechaInicio = "Escoja una fecha de inicio."
-    // }
+    if(!data.fechaInicio.trim()) {
+      errors.fechaInicio = "Escoja una fecha de inicio."
+    }
     if(!data.fechaFinal.trim()) {
       errors.fechaFinal = "Escoja una fecha de término."
     }
@@ -149,7 +149,7 @@ function ModalPlanes(props) {
     setErrors({})
     setFormData({
       nombre: "",
-      // fechaInicio: "",
+      fechaInicio: "",
       fechaFinal: "",
       responsable: "",
       estado: "",
@@ -176,12 +176,12 @@ function ModalPlanes(props) {
         nombre: formData.nombre,
         estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
-        // fechaInicio: formData.fechaInicio,
+        fechaInicio: formData.fechaInicio,
         fechaFinal: formData.fechaFinal,
         notas: formData.notas,
         tarea: task,
         // progreso: parseInt(formData.progreso),
-        progreso: 0,
+        // progreso: 0,
         idCiclo: pro.id_ciclo
       }
       try {
@@ -198,7 +198,7 @@ function ModalPlanes(props) {
         } else {
           setFormData({
             nombre: "",
-            // fechaInicio: "",
+            fechaInicio: "",
             fechaFinal: "",
             responsable: "",
             estado: "",
@@ -292,7 +292,7 @@ function ModalPlanes(props) {
             {errors.nombre && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
           </div>
           <div className='row mb-2'>
-            {/* <div className='col-6'>
+            <div className='col-6'>
               <label className='mb-1'>Fecha de inicio</label>
               <input
                 onChange={handleChange}
@@ -303,19 +303,6 @@ function ModalPlanes(props) {
                 value={formData.fechaInicio}
               />
               {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
-            </div> */}
-            <div className="col-6">
-              <label className='mb-1'>Correo del responsable</label>
-              <input
-                onChange={handleChange}
-                type="email" 
-                id="responsable" 
-                name="responsable" 
-                placeholder="usuario@correo.com.ar" 
-                className="form-control form-control-sm col-12"
-                value={formData.responsable}
-              />
-              {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
             </div>
             <div className='col-6'>
               <label className='mb-1'>Fecha de término</label>
@@ -330,21 +317,19 @@ function ModalPlanes(props) {
               {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
             </div>
           </div>
-          {/* <div className="row mb-2">
-            <div className="col-6">
-              <label className='mb-1'>Correo del responsable</label>
-              <input
-                onChange={handleChange}
-                type="email" 
-                id="responsable" 
-                name="responsable" 
-                placeholder="usuario@correo.com.ar" 
-                className="form-control form-control-sm col-12"
-                value={formData.responsable}
-              />
-              {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
-            </div>
-          </div> */}
+          <div className="mb-2">
+            <label className='mb-1'>Correo del responsable</label>
+            <input
+              onChange={handleChange}
+              type="email" 
+              id="responsable" 
+              name="responsable" 
+              placeholder="usuario@correo.com.ar" 
+              className="form-control form-control-sm col-12"
+              value={formData.responsable}
+            />
+            {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
+          </div>
           <div className='row mb-2'>
             <div className='col-12 col-md-6'>
                 <label className='mb-1'>Prioridad</label>
@@ -443,7 +428,7 @@ function ModalPlanes(props) {
               {errors.nombre && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
             </div>
             <div className='row mb-2'>
-              {/* <div className='col-6'>
+              <div className='col-6'>
                 <label className='mb-1'>Fecha de inicio</label>
                 <input
                   onChange={handleChange}
@@ -454,19 +439,6 @@ function ModalPlanes(props) {
                   value={formData.fechaInicio}
                 />
                 {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
-              </div> */}
-              <div className="col-6">
-                <label className='mb-1'>Correo del responsable</label>
-                <input
-                  onChange={handleChange}
-                  type="email" 
-                  id="responsable" 
-                  name="responsable" 
-                  placeholder="usuario@correo.com.ar" 
-                  className="form-control form-control-sm col-12"
-                  value={formData.responsable}
-                />
-                {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
               </div>
               <div className='col-6'>
                 <label className='mb-1'>Fecha de término</label>
@@ -481,8 +453,7 @@ function ModalPlanes(props) {
                 {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
               </div>
             </div>
-            {/* <div className="row mb-2">
-              <div className="col-6">
+            <div className="mb-2">
                 <label className='mb-1'>Correo del responsable</label>
                 <input
                   onChange={handleChange}
@@ -494,8 +465,7 @@ function ModalPlanes(props) {
                   value={formData.responsable}
                 />
                 {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
-              </div>
-            </div> */}
+            </div>
             <div className='row mb-2'>
               <div className='col-12 col-md-6'>
                     <label className='mb-1'>Prioridad</label>
