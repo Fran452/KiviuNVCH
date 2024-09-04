@@ -168,12 +168,6 @@ const controlador = {
 
     crearBaseDeDatosNew: async (req,res) => {
         try{
-            let usuarioYaCreado  = await funcionesDeTest.buscarUsuarioPorMail('maria.dorrego@nbch.com.ar');
-            /*
-            if(usuarioYaCreado == undefined){
-                res.json('Base de datos ya subida');
-            }*/
-
             let ahora = new Date();
 
             let fechaInicial = ahora.toISOString().split('T')[0];
@@ -182,15 +176,38 @@ const controlador = {
 
             console.log(fechaInicial);
             console.log(fechaFin);
+            $2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq
 
-            let area = await funcionesDeTest.crearArea("Area de analisis","no tiene");
+            let area = await funcionesDeTest.crearArea("Analisis","no tiene");
+
+            let usuarios = []
+            let usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Alejandro Camnasio','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','AC','alejandro.camnasio@nbch.com.ar');
+            usuarios.push(usuario);
+            usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Favio Benzaquen','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','FB','favio.benzaquen@nbch.com.ar');
+            usuarios.push(usuario);
+            usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Gustavo Rodriguez','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','GR','gustavo.rodriguez@nbch.com.ar');
+            usuarios.push(usuario);
+            usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Yanina Monoff','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','YM','yanina.monoff@nbch.com.ar');
+            usuarios.push(usuario);
+            usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Gustavo Rodas','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','GR','gustavo.rodas@nbch.com.ar');
+            usuarios.push(usuario);
+            usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Francisco Lema','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','FR','francisco.lema@nbch.com.ar');
+            usuarios.push(usuario);
+            usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Hernan Martel','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','HM','hernandariomartel@gmail.com');
+            usuarios.push(usuario);
+            usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Alice Ramírez','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','AR','alicemarcelaramirez@gmail.com');
+            usuarios.push(usuario);
             let TD = await funcionesDeTest.crearUsuario(area.id_area,1,"Maria Teresa Dorrego","1234","TD","maria.dorrego@nbch.com.ar");
+            usuarios.push(TD);
             let DM = await funcionesDeTest.crearUsuario(area.id_area,1,"Daniela Silvana	Molina","1234","DM","daniela.molina@nbch.com.ar");
+            usuarios.push(DM);
             let SV = await funcionesDeTest.crearUsuario(area.id_area,1,"Silvana	Vecchi","1234","SV","silvana.vecchi@nbch.com.ar");
-            
+            usuarios.push(SV);
+
+
             let baseDeDatos = {
                 area:area,
-                usuario : [TD, DM, SV],
+                usuario : usuarios,
             }
             let ciclo;
             let tarea;
