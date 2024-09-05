@@ -225,7 +225,7 @@ const controlador = {
                 FROM Tareas 
                 LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
-                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = 4
+                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
                 GROUP BY Tareas.id_tarea;   
                 `        
                 ,{
@@ -241,7 +241,7 @@ const controlador = {
                     FROM Tareas 
                     LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
                     LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
-                    WHERE Tareas.ver = 1 and Tareas.fk_ciclo = 4
+                    WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
                     GROUP BY Tareas.id_tarea;
                     `        
                     ,{
