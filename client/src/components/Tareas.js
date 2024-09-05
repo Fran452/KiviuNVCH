@@ -9,6 +9,7 @@ import ModalPlanes from './Modales/ModalPlanes';
 import Subtareas from './Subtareas';
 import { newContext } from '../pages/PlanesAccion/Ciclo'
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import ModalVer from './Modales/ModalVer';
 
 // import { 
 //   Chart as ChartJS,
@@ -83,6 +84,8 @@ function Tareas() {
 
   const [loadingSub, setLoadingSub] = useState(true)
   const [errorSub, setErrorSub] = useState(null)
+
+  const [modalVer, setModalVer] = useState(false)
 
   // const [subtareas, setSubtareas] = useState([])
   // const [errorSubtarea, setErrorSubtarea] = useState(null)
@@ -234,6 +237,12 @@ function Tareas() {
     setIdTask(id)
   }
 
+  const handleShowInfo = (id) => {
+    const obj = tareasByCiclo.find((e) => e.id_tarea === id)
+    setTareaObj(JSON.stringify(obj))
+    setModalVer(true)
+  }
+
   const nodeRef = useRef()
 
   return (
@@ -241,6 +250,7 @@ function Tareas() {
       <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask }}>
         <ModalEditCiclo show={modalEditCiclo} onHide={()=>setModalEditCiclo(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
+        <ModalVer show={modalVer} onHide={()=>setModalVer(false)} />
       {/* Modal Eliminar Proyecto */}
       <Modal className='modal__delete__proyecto' show={modalDeleteCiclo} onHide={() => setModalDeleteCiclo(false)} backdrop="static" centered>
         <Modal.Header closeButton>
@@ -384,6 +394,7 @@ function Tareas() {
                                     <button className='btn' onClick={()=>handleSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
                                   </div>
                                   <div className='table__custom__cell cell__buttons'>
+                                    <button onClick={()=> handleShowInfo(e.id_tarea)} className='btn me-2'><i className="bi bi-eye"></i></button>
                                     <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
                                     <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
                                   </div>
@@ -402,7 +413,7 @@ function Tareas() {
                                     {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
                                   </div>
                                   <div className='table__custom__cell cell__progreso'>
-                                    <ProgressBar className='table__tbody__progreso__bar' now={e.progreso} label={`${e.progreso}%`} max={100}/>
+                                    <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso)} label={`${Math.round(e.progreso)}%`} max={100}/>
                                   </div>
                                   <div className='table__custom__cell cell__horas'>{e.horas_totales}</div>
                                   <div className="table__custom__cell cell__notas">{e.notas}</div>

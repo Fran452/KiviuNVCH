@@ -476,7 +476,7 @@ const controlador = {
 
             let fechaFinal;
             if(req.body.avance == 100){
-                fechaFinal = new Date();
+                fechaFinal = new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0') + "-" + (new Date().getDate()).toString().padStart(2, '0')
             }else{
                 fechaFinal = null
             }
@@ -548,14 +548,16 @@ const controlador = {
     terminarSubTarea: async (req,res) => {
         try{
             let ahora = new Date()
-            let fechaFinal = ahora.toISOString().split('T')[0];
+            // let fechaFinal = ahora.toISOString().split('T')[0];
+            let fechaFinal = ahora.getFullYear() + "-" + (ahora.getMonth() + 1).toString().padStart(2, '0') + "-" + (ahora.getDate()).toString().padStart(2, '0')
             
             let subtarea = await dataBaseSQL.subtareas.update({
+                estado: 3,
                 avance : 100,
                 fecha_final: fechaFinal  
             },{
                 where:{
-                    id_sub_tarea : req.body.tarea.id_subtarea
+                    id_sub_tarea : req.body.subtarea.id_sub_tarea
                 }
             });
             res.json({error: 0, errorDetalle:"",objeto:subtarea});

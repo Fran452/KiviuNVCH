@@ -3,6 +3,7 @@ import { ProgressBar, Modal } from 'react-bootstrap';
 import ModalSubtarea from './Modales/ModalSubtarea'
 import { tareasContext } from './Tareas'
 import { Oval } from 'react-loader-spinner'
+import ModalVerSub from './Modales/ModalVerSub';
 
 export const subtareasContext = React.createContext()
 
@@ -17,11 +18,14 @@ function Subtareas() {
     const [modalDeleteSub, setModalDeleteSub] = useState(false)
     const [errorDel, setErrorDel] = useState(null)
 
+    const [modalFinalizar, setModalFinalizar] = useState(false)
+
+    const [modalVerSub, setModalVerSub] = useState(false)
+
     useEffect(()=> {
     },[])
     
     const handleEditSubtarea = (id) => {
-        console.log(id)
         const obj = subtareas.find((e) => e.id_sub_tarea === id)
         setSubtareaObj(JSON.stringify(obj))
         // const pro = ciclos.find(e => e.id_ciclo === idCiclo)
@@ -74,12 +78,62 @@ function Subtareas() {
         }
     }
 
+    // Finalizar tarea
+    const handleModalFinalizar = (id) => {
+        setIdSubtask(id)
+        setModalFinalizar(true)
+    }
+
+    const handleFinalizarSubtarea = async () => {
+        const obj = subtareas.find((e) => e.id_sub_tarea === idSubtask)
+        console.log(obj)
+        try {
+            const res = await fetch("http://localhost:3030/apis/plan-accion/subTareaok", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    subtarea: obj
+                })
+              })
+              const data = await res.json()
+              if(data.error !== 0){
+                console.log(data.errorDetalle)
+              } else {
+                setModalFinalizar(false)
+                // actualiza subtareas
+                setLoadingSub(true)
+                fetchSubtareasById(idTask)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingSub(false)
+                        setErrorSub(res.errorDetalle)
+                    } else {
+                        setLoadingSub(false)
+                        setSubtareas(res.objeto)
+                    }
+                })
+              }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // Ver subtarea
+    const handleShowInfo = (id) => {
+        const obj = subtareas.find((e) => e.id_sub_tarea === id)
+        setSubtareaObj(JSON.stringify(obj))
+        setModalVerSub(true)
+      }
+
     return (
         <>  
             <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask }}>
                 <ModalSubtarea show={modalSubtarea} onHide={()=>setModalSubtarea(false)} />
+                <ModalVerSub show={modalVerSub} onHide={()=>setModalVerSub(false)} />
             </subtareasContext.Provider>
-            {/* Modal Eliminar Tarea */}
+            {/* Modal Eliminar subtarea */}
             <Modal className='modal__delete' show={modalDeleteSub} onHide={() => setModalDeleteSub(false)} backdrop="static" centered>
                 <Modal.Header closeButton>
                 <Modal.Title><h3>Eliminar subtarea</h3></Modal.Title>
@@ -89,6 +143,20 @@ function Subtareas() {
                 <div className='d-flex flex-row align-items-center align-self-end'>
                     <button className='btn btn-secondary rounded-pill me-2' onClick={() => setModalDeleteSub(false)}>Cancelar</button>
                     <button className='btn btn-danger rounded-pill' onClick={handleDeleteSubtarea}>Borrar</button>
+                </div>
+                {errorDel && <p>{errorDel}</p>}
+                </Modal.Footer>
+            </Modal>
+            {/* Modal finalizar subtarea */}
+            <Modal className='modal__delete' show={modalFinalizar} onHide={() => setModalFinalizar(false)} backdrop="static" centered>
+                <Modal.Header closeButton>
+                <Modal.Title><h3>Finalizar subtarea</h3></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>¿Está seguro que desea finalizar esta subtarea?</Modal.Body>
+                <Modal.Footer className='d-flex flex-column'>
+                <div className='d-flex flex-row align-items-center align-self-end'>
+                    <button className='btn btn-secondary rounded-pill me-2' onClick={() => setModalFinalizar(false)}>Cancelar</button>
+                    <button className='btn btn-danger rounded-pill' onClick={handleFinalizarSubtarea}>Finalizar</button>
                 </div>
                 {errorDel && <p>{errorDel}</p>}
                 </Modal.Footer>
@@ -126,8 +194,22 @@ function Subtareas() {
                                         return <div className='table__custom__row' key={s.id_sub_tarea}>
                                             <div className='table__custom__cell cell__dropdown'></div>
                                             <div className='table__custom__cell cell__buttons'>
-                                                <button onClick={()=> handleEditSubtarea(s.id_sub_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
-                                                <button onClick={()=> handleModalDelete(s.id_sub_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
+                                                {s.avance === 100 ? (
+                                                    <>
+                                                        <button onClick={()=> handleShowInfo(s.id_sub_tarea)} className='btn me-2'><i className="bi bi-eye"></i></button>
+                                                        <button className='disabled btn me-2'><i className="bi bi-check-square"></i></button>
+                                                        <button className='disabled btn me-2'><i className="bi bi-pencil"></i></button>
+                                                        <button className='disabled btn'><i className="bi bi-trash3"></i></button>
+                                                    </>
+                                                ): (
+                                                    <>
+                                                        <button onClick={()=> handleShowInfo(s.id_sub_tarea)} className='btn me-2'><i className="bi bi-eye"></i></button>
+                                                        <button onClick={()=> handleModalFinalizar(s.id_sub_tarea)} className='btn me-2'><i className="bi bi-square"></i></button>
+                                                        <button onClick={()=> handleEditSubtarea(s.id_sub_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
+                                                        <button onClick={()=> handleModalDelete(s.id_sub_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
+                                                    </>
+                                                )}
+                                                
                                             </div>
                                             <div className='table__custom__cell cell__nombre'>{s.titulo}</div>
                                             <div className='table__custom__cell cell__prioridad'>
@@ -150,7 +232,9 @@ function Subtareas() {
                                             <div className="table__custom__cell cell__notas">{s.notas}</div>
                                             <div className="table__custom__cell cell__mail">{s.Empleados.nombre}</div>
                                             <div className="table__custom__cell cell__date">{s.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                            <div className="table__custom__cell cell__date"></div>
+                                            <div className="table__custom__cell cell__date">
+                                                {s.avance === 100 ? `${s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}` : ""}
+                                            </div>
                                             {/* <div className="table__custom__cell cell__date">{s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
                                         </div>
                                     })}
