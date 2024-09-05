@@ -52,7 +52,7 @@ module.exports = (sequelize,DataTypes) => {
         },
 
         "estado":{
-            type: DataTypes.STRING(255),
+            type:DataTypes.INTEGER(),
         },
 
         "prioridad": {

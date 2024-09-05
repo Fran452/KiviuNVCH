@@ -581,6 +581,7 @@ const controlador = {
             let subtarea4  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,0,1,1,fechaInicio,fechaFin,"esto son notas",1);
             let subtarea5  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,fechaInicio,fechaFin,"esto son notas",1);
             let subtarea6  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,fechaInicio,fechaFin,"esto son notas",0);
+            
             let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/viewTask`,{
                 method:'POST',
                 headers: {
@@ -606,30 +607,30 @@ const controlador = {
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar primer elemento',undefined,tarea1BD,4);
             
             // Mostrar horas de las 3 subtareas
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 1)',15,tarea1BD.horas_totales,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 1)',15,tarea1BD.horas_tarea,1);
 
             // Mostar porsentaje de avance
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 1)',100,tarea1BD.progreso,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 1)',100,tarea1BD.progreso_tarea,1);
             
             // Mostrar segundo elemento
             let tarea2BD = apis.objeto.find(tarea => tarea.id_tarea == tarea2.id_tarea);
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar segundo elemento',undefined,tarea2BD,4);
 
             // Mostrar horas de las 2 subtareas
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 2)',10,tarea2BD.horas_totales,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 2)',10,tarea2BD.horas_tarea,1);
 
             // Mostar porsentaje de avance
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 2)',50,tarea2BD.progreso,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 2)',50,tarea2BD.progreso_tarea,1);
 
             // Mostrar tercer elemento
             let tarea3BD = apis.objeto.find(tarea => tarea.id_tarea == tarea3.id_tarea);
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar tercero elemento',undefined,tarea3BD,4);
 
             // Mostrar horas sin subtareas 
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 3)',0,tarea3BD.horas_totales,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 3)',0,tarea3BD.horas_tarea,1);
 
             // Mostar porsentaje de avance
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 3)',0,tarea3BD.progreso,1);
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 3)',0,tarea3BD.progreso_tarea,1);
 
 
 
@@ -639,6 +640,7 @@ const controlador = {
             await funcionesDeTest.eliminarSubTareas(subtarea3.id_sub_tarea);
             await funcionesDeTest.eliminarSubTareas(subtarea4.id_sub_tarea);
             await funcionesDeTest.eliminarSubTareas(subtarea5.id_sub_tarea);
+            await funcionesDeTest.eliminarSubTareas(subtarea6.id_sub_tarea);
             
             
             await funcionesDeTest.eliminarTarea(tarea1BD.id_tarea);
@@ -1170,14 +1172,28 @@ const controlador = {
 
     pruebasPreImplementacion: async (req,res) => {
         try{
+            let area = 4;
+
+            let ciclos = await dataBaseSQL.sequelize.query(
+                `SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso
+                FROM Ciclos 
+                LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo 
+                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 
+                GROUP BY Ciclos.id_ciclo;`
+                ,{
+                replacements: { fkArea: area },
+                type: Sequelize.QueryTypes.SELECT
+            });
+            /*
             let tareas = await dataBaseSQL.sequelize.query(
                 "SELECT tareas.id_tarea, tareas.nombre, tareas.estado, tareas.prioridad, tareas.fecha_inicio, tareas.fecha_final, tareas.notas, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas.ver = 1 and tareas.fk_ciclo = :idCiclo GROUP BY tareas.id_tarea;"
                 ,{
                 replacements: { idCiclo: 1   },
                 type: Sequelize.QueryTypes.SELECT
-            });
+            });*/
 
-            res.json(tareas);
+            res.json(ciclos);
         }
         catch(error){
             console.log(error);

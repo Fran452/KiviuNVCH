@@ -27,7 +27,12 @@ const controlador = {
     viewCiclos: async (req,res) => {
         try{
             let ciclos = await dataBaseSQL.sequelize.query(
-                "SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso FROM Ciclos LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 and Subtareas.ver = 1 GROUP BY Ciclos.id_ciclo;"
+                `SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso
+                FROM Ciclos 
+                LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo 
+                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 
+                GROUP BY Ciclos.id_ciclo;`
                 ,{
                 replacements: { fkArea: req.body.user.area },
                 type: Sequelize.QueryTypes.SELECT
@@ -214,59 +219,34 @@ const controlador = {
             /*SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas = 1 GROUP BY tareas.id_tarea;*/
             let tareas;
             if(req.body.user.puesto < 1){
-                /*
-                let tareas = await dataBaseSQL.sequelize.query(
-                    "SELECT Tareas.id_tarea, Tareas.nombre, Tareas.estado, Tareas.prioridad, Tareas.fecha_inicio, Tareas.fecha_final, Tareas.notas, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM Tareas LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas WHERE Tareas.ver = 1 and Subtareas.ver = 1 and Tareas.fk_ciclo = :idCiclo GROUP BY Tareas.id_tarea;"
-                    ,{
+                tareas = await dataBaseSQL.sequelize.query(
+                `
+                SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea 
+                FROM tareas 
+                LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas and subtareas.ver = 1 
+                WHERE tareas.ver = 1 and tareas.fk_ciclo = :idCiclo
+                GROUP BY tareas.id_tarea;
+                `        
+                ,{
                     replacements: { idCiclo: req.body.idCiclo },
                     type: Sequelize.QueryTypes.SELECT
-                });*/
-
-                tareas = await dataBaseSQL.tareas.findAll({
-                    where: {
-                        ver : 1,
-                        fk_ciclo: req.body.idCiclo
-                    },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio", "fecha_final","notas","progreso","horas_totales"],
-                    include: [
-                        {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                        {association : "Empleado",attributes: ['nombre','mail']},
-                        {association : "Subtareas",attributes: ['id_sub_tarea', 'avance', 'horasAprox']},
-                    ]
                 });
 
             }else{
-                tareas = await dataBaseSQL.tareas.findAll({
-                    where: {
-                        fk_area: req.body.user.area,
-                        ver : 1,
-                        fk_ciclo : req.body.idCiclo
-                    },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio", "fecha_final","notas"],
-                    include: [
-                            {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                            {association : "Empleado",attributes: ['nombre','mail']},
-                            {association : "Subtareas",attributes: ['id_sub_tarea', 'avance', 'horasAprox']}
-                        ]
-                });
+                tareas = await dataBaseSQL.sequelize.query(
+                    `
+                    SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea 
+                    FROM tareas 
+                    LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas and subtareas.ver = 1 
+                    WHERE tareas.ver = 1 and tareas.fk_ciclo = :idCiclo
+                    GROUP BY tareas.id_tarea;
+                    `        
+                    ,{
+                        replacements: { idCiclo: req.body.idCiclo },
+                        type: Sequelize.QueryTypes.SELECT
+                    });
             };
-            let horas_Finalizadas;
-            tareas.forEach(tarea => {
-                if(tarea.Subtareas.length > 0){
-                    let tareasActuales = tarea.Subtareas.filter(subtareas => subtareas.ver == 1);
-                    horas_Finalizadas = tareasActuales.reduce(function(acumulador,elemento){return acumulador += (elemento.avance * elemento.horasAprox / 100)},0);
-                    let total_horas_subTareas = tarea.Subtareas.reduce(function(acumulador,elemento){  
-                        acumulador += elemento.horasAprox;
-                        return acumulador;
-                    },0);
-                    tarea.dataValues.horas_totales = total_horas_subTareas;
-                    tarea.dataValues.progreso = horas_Finalizadas * 100 / total_horas_subTareas;
-
-                }else{
-                    tarea.dataValues.horas_totales   = 0;
-                    tarea.dataValues.progreso        = 0;
-                } 
-            });            
+           
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
