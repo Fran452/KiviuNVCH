@@ -224,7 +224,7 @@ const controlador = {
                 SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
                 FROM Tareas 
                 LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
-                LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = empleados.id_empleado
+                LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                 WHERE Tareas.ver = 1 and Tareas.fk_ciclo = 4
                 GROUP BY Tareas.id_tarea;   
                 `        
@@ -240,7 +240,7 @@ const controlador = {
                     SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
                     FROM Tareas 
                     LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
-                    LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = empleados.id_empleado
+                    LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                     WHERE Tareas.ver = 1 and Tareas.fk_ciclo = 4
                     GROUP BY Tareas.id_tarea;
                     `        
