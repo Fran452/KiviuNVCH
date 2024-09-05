@@ -8,27 +8,27 @@ const controlador = {
     
     testGenerico: async (req,res) => {
         let links = {
-            ArmarBaseDeDatos:   `${process.env.HOST}/test/armado-SQL`,
-            ArmarBaseDeDatosNew:`${process.env.HOST}/test/armado-SQL-NEW`,
+            ArmarBaseDeDatos:   `${process.env.WEB}/test/armado-SQL`,
+            ArmarBaseDeDatosNew:`${process.env.WEB}/test/armado-SQL-NEW`,
             planesAcción:{
-                testGenericos:  `${process.env.HOST}/test/plan-accion`,
+                testGenericos:  `${process.env.WEB}/test/plan-accion`,
                 ciclos:{
-                    add:    `${process.env.HOST}/test/plan-accion/addCiclos`,
-                    view:   `${process.env.HOST}/test/plan-accion/viewCiclos`,
-                    mod:    `${process.env.HOST}/test/plan-accion/modCiclos`,
-                    delete: `${process.env.HOST}/test/plan-accion/deleteCiclos`
+                    add:    `${process.env.WEB}/test/plan-accion/addCiclos`,
+                    view:   `${process.env.WEB}/test/plan-accion/viewCiclos`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modCiclos`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteCiclos`
                 },
                 tareas:{
-                    add:    `${process.env.HOST}/test/plan-accion/addTask`,
-                    view:   `${process.env.HOST}/test/plan-accion/viewTareas`,
-                    mod:    `${process.env.HOST}/test/plan-accion/modTask`,
-                    delete: `${process.env.HOST}/test/plan-accion/deleteTask`
+                    add:    `${process.env.WEB}/test/plan-accion/addTask`,
+                    view:   `${process.env.WEB}/test/plan-accion/viewTareas`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modTask`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteTask`
                 },
                 subTarea:{
-                    add:    `${process.env.HOST}/test/plan-accion/addSubTask`,    
-                    view:   `${process.env.HOST}/test/plan-accion/viewSubTask`,
-                    mod:    `${process.env.HOST}/test/plan-accion/modSubTask`,
-                    delete: `${process.env.HOST}/test/plan-accion/deleteSubTask`
+                    add:    `${process.env.WEB}/test/plan-accion/addSubTask`,    
+                    view:   `${process.env.WEB}/test/plan-accion/viewSubTask`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modSubTask`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteSubTask`
                 },
             },
         }
@@ -543,7 +543,7 @@ module.exports = controlador;
 
 /*
 
-let apisJSON = await fetch('${process.env.HOST}/apis/dateIn/newIndicador',{
+let apisJSON = await fetch('${process.env.WEB}/apis/dateIn/newIndicador',{
     method:'POST',
     headers: {
         "Content-Type": "application/json"

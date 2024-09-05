@@ -44,6 +44,7 @@ const controlador = {
 
         }
         catch(error){
+            console.log(error);
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({error : codeError, errorDetalle: error.message, errorExpand : error});   
             return 1;

@@ -10,7 +10,7 @@ const controlador = {
     
     testGenerico: async (req,res) => {
         
-        let testViewIndicadoresJSON = await fetch(`${HOST}/test/dateIn/viewIndicador`,{
+        let testViewIndicadoresJSON = await fetch(`${process.env.WEB}/test/dateIn/viewIndicador`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
@@ -18,7 +18,7 @@ const controlador = {
             });
         let testViewIndicadores = await testViewIndicadoresJSON.json();
         
-        let testNewIndicadoresJSON = await fetch(`${HOST}/test/dateIn/newIndicador`,{
+        let testNewIndicadoresJSON = await fetch(`${process.env.WEB}/test/dateIn/newIndicador`,{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -27,7 +27,7 @@ const controlador = {
         let testNewIndicadores = await testNewIndicadoresJSON.json();
         
 
-        let testEditIndicadoresJSON      = await fetch(`${HOST}/test/dateIn/editIndicador`,{
+        let testEditIndicadoresJSON      = await fetch(`${process.env.WEB}/test/dateIn/editIndicador`,{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -35,7 +35,7 @@ const controlador = {
         });
         let testEditIndicadores = await testEditIndicadoresJSON.json();
 
-        let testDeleteIndicadoresJSON = await fetch(`${HOST}/test/dateIn/deleteIndicador`,{
+        let testDeleteIndicadoresJSON = await fetch(`${process.env.WEB}/test/dateIn/deleteIndicador`,{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -43,7 +43,7 @@ const controlador = {
         });    
         let testDeleteIndicadores = await testDeleteIndicadoresJSON.json();
         
-        let testNewMetricaJSON = await fetch(`${HOST}/test/dateIn/newMetrica`,{
+        let testNewMetricaJSON = await fetch(`${process.env.WEB}/test/dateIn/newMetrica`,{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -51,7 +51,7 @@ const controlador = {
         });    
         let testNewMetrica = await testNewMetricaJSON.json(); 
         
-        let testEditMetricaJSON = await fetch(`${HOST}/test/dateIn/editMegrica`,{
+        let testEditMetricaJSON = await fetch(`${process.env.WEB}/test/dateIn/editMegrica`,{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -59,7 +59,7 @@ const controlador = {
         });    
         let testEditMetrica = await testEditMetricaJSON.json();
 
-        let testView3MetricaJSON = await fetch(`${HOST}/test/dateIn/ultimasTresMetricas`,{
+        let testView3MetricaJSON = await fetch(`${process.env.WEB}/test/dateIn/ultimasTresMetricas`,{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -100,7 +100,7 @@ const controlador = {
     let indicador2 = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba2','indicador de prueba para prueba de metricas color azul',1,fechaBlue);
     let indicador3 = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba3','indicador de prueba para prueba de metricas color verde',1,fechaGrean);
 
-    fetch(`${HOST}/apis/dateIn`,{
+    fetch(`${process.env.WEB}/apis/dateIn`,{
         method:'POST',
         headers: {
             "Content-Type": "application/json"
@@ -151,7 +151,7 @@ const controlador = {
 
     newindicador: async (req,res) => {
         let resultadoTest = {};
-        fetch(`${HOST}/apis/dateIn/newIndicador`,{
+        fetch(`${process.env.WEB}/apis/dateIn/newIndicador`,{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -221,7 +221,7 @@ const controlador = {
         let indicadorDePrueba = await funcionesDeTest.buscarIndicadorEjemplo(indicadorEjemplo.id_indicador);
 
         // Modifico indicador de prueba
-        let modificacionApisJSON = await fetch(`${HOST}/apis/dateIn/editIndicador`,{
+        let modificacionApisJSON = await fetch(`${process.env.WEB}/apis/dateIn/editIndicador`,{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -281,7 +281,7 @@ const controlador = {
         let indicadorDePrueba = await funcionesDeTest.buscarIndicadorEjemplo(IdindicadorDePrueba);
 
         // eliminio el indicador de prueba
-        let apisEliminadoJSON = await fetch(`${HOST}/apis/dateIn/deleteIndicador`,{
+        let apisEliminadoJSON = await fetch(`${process.env.WEB}/apis/dateIn/deleteIndicador`,{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -321,7 +321,7 @@ const controlador = {
         let indicador = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
 
         console.log(indicador);
-        let apisJSON = await fetch(`${HOST}/apis/dateIn/newMetrica`,{
+        let apisJSON = await fetch(`${process.env.WEB}/apis/dateIn/newMetrica`,{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -393,7 +393,7 @@ const controlador = {
         let metricaCreada = await funcionesDeTest.buscarMetricaEjemplo(metrica.id_metrica);
 
         // edicion metrica test
-        let apisEditMetricaJSON = await fetch(`${HOST}/apis/dateIn/editMegrica`,{
+        let apisEditMetricaJSON = await fetch(`${process.env.WEB}/apis/dateIn/editMegrica`,{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -451,7 +451,7 @@ const controlador = {
         };
 
         // correr api
-        let apisEnvio3MetricasJSON = await fetch(`${HOST}/apis/dateIn/ultimas3Metricas`,{
+        let apisEnvio3MetricasJSON = await fetch(`${process.env.WEB}/apis/dateIn/ultimas3Metricas`,{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -493,7 +493,7 @@ module.exports = controlador;
 
 /*
 
-let apisJSON = await fetch(`${HOST}/apis/dateIn/newIndicador`,{
+let apisJSON = await fetch(`${process.env.WEB}/apis/dateIn/newIndicador`,{
     method:'POST',
     headers: {
         "Content-Type": "application/json"
