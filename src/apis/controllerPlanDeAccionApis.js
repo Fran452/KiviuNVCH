@@ -328,13 +328,15 @@ const controlador = {
                 if(empleadoAsignado === null){
                     res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                     return 1;
+                }else{
+                    empleadoAsignado = empleadoAsignado.id_empleado;
                 }
             }else{
-                empleadoAsignado =      req.body.tarea.Empleado;
+                empleadoAsignado =      req.body.tarea.fk_empleado_asignado;
             }
 
             let tareaModificada = await dataBaseSQL.tareas.update({
-                fk_empleado_asignado    : empleadoAsignado.id_empleado,
+                fk_empleado_asignado    : empleadoAsignado,
                 fk_area                 : req.body.user.area,
                 nombre                  : req.body.nombre,
                 estado                  : req.body.estado,
