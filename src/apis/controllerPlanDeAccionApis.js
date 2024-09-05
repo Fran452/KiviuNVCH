@@ -221,11 +221,11 @@ const controlador = {
             if(req.body.user.puesto < 1){
                 tareas = await dataBaseSQL.sequelize.query(
                 `
-                SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea 
-                FROM tareas 
-                LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas and subtareas.ver = 1 
-                WHERE tareas.ver = 1 and tareas.fk_ciclo = :idCiclo
-                GROUP BY tareas.id_tarea;
+                SELECT Tareas.*, COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
+                FROM Tareas 
+                LEFT JOIN Subtareas ON tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
+                GROUP BY Tareas.id_tarea;
                 `        
                 ,{
                     replacements: { idCiclo: req.body.idCiclo },
@@ -233,13 +233,14 @@ const controlador = {
                 });
 
             }else{
+                /* COALESCE(SUM(tu_columna), 0)*/
                 tareas = await dataBaseSQL.sequelize.query(
                     `
-                    SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea 
-                    FROM tareas 
-                    LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas and subtareas.ver = 1 
-                    WHERE tareas.ver = 1 and tareas.fk_ciclo = :idCiclo
-                    GROUP BY tareas.id_tarea;
+                    SELECT Tareas.*, COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
+                    FROM Tareas 
+                    LEFT JOIN Subtareas ON tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                    WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
+                    GROUP BY Tareas.id_tarea;
                     `        
                     ,{
                         replacements: { idCiclo: req.body.idCiclo },
