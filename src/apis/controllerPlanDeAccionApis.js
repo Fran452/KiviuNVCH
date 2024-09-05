@@ -223,7 +223,7 @@ const controlador = {
                 `
                 SELECT Tareas.*, COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
                 FROM Tareas 
-                LEFT JOIN Subtareas ON tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
                 WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
                 GROUP BY Tareas.id_tarea;
                 `        
@@ -238,7 +238,7 @@ const controlador = {
                     `
                     SELECT Tareas.*, COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
                     FROM Tareas 
-                    LEFT JOIN Subtareas ON tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                    LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
                     WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
                     GROUP BY Tareas.id_tarea;
                     `        
