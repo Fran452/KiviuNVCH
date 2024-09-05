@@ -550,6 +550,7 @@ const controlador = {
 
 
         }catch(error){
+            console.log("entrando a la generacion de base de datos");
             console.log(error);
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   
