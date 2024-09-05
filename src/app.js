@@ -14,7 +14,7 @@ const rutasApis = require("./routes/apis");
 const rutasTest = require("./routes/test");
 
 /******** Diferentes funcionamientos ****************/
-const PORT = process.env.PORT || 3030;
+const PORT = process.env.PORT || 3040;
 const app = express();
 const publicPath = path.join(__dirname,"../");
 
