@@ -173,7 +173,7 @@ const controlador = {
 
             let fechaInicial = ahora;
             ahora.setDate(ahora.getDate() + 7);
-            let fechaFin = ahora;z
+            let fechaFin = ahora;
 
             console.log(fechaInicial);
             console.log(fechaFin);
