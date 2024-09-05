@@ -1,7 +1,7 @@
-CREATE DATABASE kiviuTest;
+CREATE DATABASE kiviuBanco;
 
 
-USE kiviuTest;
+USE kiviuBanco;
 
 
 CREATE TABLE Areas (
@@ -38,21 +38,6 @@ CREATE TABLE Ciclos (
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 
---! Sin utilizacion eliminacion
-/*
-CREATE TABLE Procesos ( 
-    id_procesos                             INT PRIMARY KEY AUTO_INCREMENT,
-    fk_area                                 INT NOT NULL,
-    fk_ciclo                                INT NOT NULL,
-    nombre                                  VARCHAR(255) NOT NULL,
-    detalles                                VARCHAR(255) NOT NULL,
-    fecha_inicio                            DATE NOT NULL,  
-    fecha_final                             DATE NOT NULL,                      
-    ver                                     INT NOT NULL,
-    FOREIGN KEY (fk_ciclo)                  REFERENCES Ciclos(id_ciclo),
-    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
-);
-*/
 
 CREATE TABLE Tareas (
     id_tarea                                INT PRIMARY KEY AUTO_INCREMENT,

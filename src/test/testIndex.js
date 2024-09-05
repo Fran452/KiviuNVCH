@@ -168,6 +168,7 @@ const controlador = {
 
     crearBaseDeDatosNew: async (req,res) => {
         try{
+            console.log("entrando a la generacion de base de datos");
             let ahora = new Date();
 
             let fechaInicial = ahora.toISOString().split('T')[0];
