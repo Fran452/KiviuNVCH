@@ -27,7 +27,12 @@ const controlador = {
     viewCiclos: async (req,res) => {
         try{
             let ciclos = await dataBaseSQL.sequelize.query(
-                "SELECT ciclos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM ciclos LEFT JOIN tareas ON ciclos.id_ciclo = tareas.fk_ciclo LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE ciclos.fk_area = :fkArea and ciclos.ver = 1 GROUP BY ciclos.id_ciclo;"
+                `SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso
+                FROM Ciclos 
+                LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo 
+                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 
+                GROUP BY Ciclos.id_ciclo;`
                 ,{
                 replacements: { fkArea: req.body.user.area },
                 type: Sequelize.QueryTypes.SELECT
@@ -44,8 +49,9 @@ const controlador = {
 
         }
         catch(error){
+            console.log(error);
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
+            res.json({error : codeError, errorDetalle: error.message, errorExpand : error});   
             return 1;
         }
     },
@@ -210,52 +216,40 @@ const controlador = {
     // Ver tareas
     viewTareas: async (req,res) => {
         try{
+            /*SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas = 1 GROUP BY tareas.id_tarea;*/
             let tareas;
             if(req.body.user.puesto < 1){
-                tareas = await dataBaseSQL.tareas.findAll({
-                    where: {
-                        ver : 1,
-                        fk_ciclo: req.body.idCiclo
-                    },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio", "fecha_final","notas","progreso","horas_totales"],
-                    include: [
-                        {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                        {association : "Empleado",attributes: ['nombre','mail']},
-                        {association : "Subtareas",attributes: ['id_sub_tarea', 'avance', 'horasAprox']},
-                    ]
+                tareas = await dataBaseSQL.sequelize.query(
+                `
+                SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
+                FROM Tareas 
+                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
+                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
+                GROUP BY Tareas.id_tarea;   
+                `        
+                ,{
+                    replacements: { idCiclo: req.body.idCiclo },
+                    type: Sequelize.QueryTypes.SELECT
                 });
 
             }else{
-                tareas = await dataBaseSQL.tareas.findAll({
-                    where: {
-                        fk_area: req.body.user.area,
-                        ver : 1,
-                        fk_ciclo : req.body.idCiclo
-                    },
-                    attributes: ["id_tarea","nombre","estado","prioridad","fecha_inicio", "fecha_final","notas"],
-                    include: [
-                            {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-                            {association : "Empleado",attributes: ['nombre','mail']},
-                            {association : "Subtareas",attributes: ['id_sub_tarea', 'avance', 'horasAprox']}
-                        ]
-                });
+                /* COALESCE(SUM(tu_columna), 0)*/
+                tareas = await dataBaseSQL.sequelize.query(
+                    `
+                    SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
+                    FROM Tareas 
+                    LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                    LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
+                    WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
+                    GROUP BY Tareas.id_tarea;
+                    `        
+                    ,{
+                        replacements: { idCiclo: req.body.idCiclo },
+                        type: Sequelize.QueryTypes.SELECT
+                    });
             };
-            let horas_Finalizadas;
-            tareas.forEach(tarea => {
-                if(tarea.Subtareas.length > 0){
-                    horas_Finalizadas = tarea.Subtareas.reduce(function(acumulador,elemento){return acumulador += (elemento.avance * elemento.horasAprox / 100)},0);
-                    let total_horas_subTareas = tarea.Subtareas.reduce(function(acumulador,elemento){  
-                        acumulador += elemento.horasAprox;
-                        return acumulador;
-                    },0);
-                    tarea.dataValues.horas_totales = total_horas_subTareas;
-                    tarea.dataValues.progreso = horas_Finalizadas * 100 / total_horas_subTareas;
-
-                }else{
-                    tarea.dataValues.horas_totales   = 0;
-                    tarea.dataValues.progreso        = 0;
-                } 
-            });            
+           
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
@@ -280,7 +274,6 @@ const controlador = {
     addTarea:  async (req,res) => { 
         try{
             let fechaActua = new Date() ;
-            let fechaDeLaFinal = new Date(req.body.fechaFinal);
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
@@ -294,9 +287,6 @@ const controlador = {
             }else if(empleadoAsignado.fk_area != req.body.user.area){
                 res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area"});
                 return 1;
-            }else if(fechaDeLaFinal < fechaActua){
-                res.json({error : 99, errorDetalle: "fecha_final is greater than the current"});
-                return 1;
             }else{
                 let tarea = await dataBaseSQL.tareas.create({
                     fk_empleado_asignado    : empleadoAsignado.id_empleado,
@@ -306,7 +296,7 @@ const controlador = {
                     estado                  : req.body.estado,
                     prioridad               : req.body.prioridad,
                     fecha_inicio            : req.body.fechaInicial,
-                    fecha_final             : req.body.fechaFinal,
+                    fecha_final             : null,
                     notas                   : req.body.notas,
                     //progreso                : req.body.progreso,
                     //horas_Necesarias        : 0,
@@ -327,7 +317,7 @@ const controlador = {
     modTarea: async (req,res) => { 
         try{
             let empleadoAsignado;
-            if(req.body.empleado_asignado != req.body.tarea.Empleado.mail){
+            if(req.body.empleado_asignado != req.body.tarea.mailUser){
                 empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
@@ -338,13 +328,15 @@ const controlador = {
                 if(empleadoAsignado === null){
                     res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                     return 1;
+                }else{
+                    empleadoAsignado = empleadoAsignado.id_empleado;
                 }
             }else{
-                empleadoAsignado =      req.body.tarea.Empleado;
+                empleadoAsignado =      req.body.tarea.fk_empleado_asignado;
             }
 
             let tareaModificada = await dataBaseSQL.tareas.update({
-                fk_empleado_asignado    : empleadoAsignado.id_empleado,
+                fk_empleado_asignado    : empleadoAsignado,
                 fk_area                 : req.body.user.area,
                 nombre                  : req.body.nombre,
                 estado                  : req.body.estado,

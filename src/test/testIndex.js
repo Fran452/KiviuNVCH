@@ -1,55 +1,35 @@
+require('dotenv').config();
 const dataBaseSQL = require("../databaseSQL/models");
 const funcionesDeTest = require('./funcionesTestGenericas')
-
-const path = require("path");
-
-const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
-const { planesAcción } = require("../controllers/controller");
-const { json } = require("sequelize");
 
 
 const controlador = {
     
     testGenerico: async (req,res) => {
         let links = {
-            ArmarBaseDeDatos:'http://164.92.77.143:3040/test/armado-SQL',
-            ArmarBaseDeDatosNew:'http://164.92.77.143:3040/test/armado-SQL-NEW',
+            ArmarBaseDeDatos:   `${process.env.WEB}/test/armado-SQL`,
+            ArmarBaseDeDatosNew:`${process.env.WEB}/test/armado-SQL-NEW`,
             planesAcción:{
-                testGenericos: 'http://164.92.77.143:3040/test/plan-accion',
+                testGenericos:  `${process.env.WEB}/test/plan-accion`,
                 ciclos:{
-                    add:    'http://164.92.77.143:3040/test/plan-accion/addCiclos',
-                    view:   'http://164.92.77.143:3040/test/plan-accion/viewCiclos',
-                    mod:    'http://164.92.77.143:3040/test/plan-accion/modCiclos',
-                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteCiclos'
+                    add:    `${process.env.WEB}/test/plan-accion/addCiclos`,
+                    view:   `${process.env.WEB}/test/plan-accion/viewCiclos`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modCiclos`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteCiclos`
                 },
                 tareas:{
-                    add:    'http://164.92.77.143:3040/test/plan-accion/addTask',
-                    view:   'http://164.92.77.143:3040/test/plan-accion/viewTareas',
-                    mod:    'http://164.92.77.143:3040/test/plan-accion/modTask',
-                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteTask'
+                    add:    `${process.env.WEB}/test/plan-accion/addTask`,
+                    view:   `${process.env.WEB}/test/plan-accion/viewTareas`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modTask`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteTask`
                 },
                 subTarea:{
-                    add:    'http://164.92.77.143:3040/test/plan-accion/addSubTask',    
-                    view:   'http://164.92.77.143:3040/test/plan-accion/viewSubTask',
-                    mod:    'http://164.92.77.143:3040/test/plan-accion/modSubTask',
-                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteSubTask'
+                    add:    `${process.env.WEB}/test/plan-accion/addSubTask`,    
+                    view:   `${process.env.WEB}/test/plan-accion/viewSubTask`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modSubTask`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteSubTask`
                 },
-            },
-            
-            dateIn : {
-                testGenericos: 'http://164.92.77.143:3040/test/dateIn',
-                indicadores:{
-                    add:    'http://164.92.77.143:3040/test/dateIn/newIndicador',
-                    view:   'http://164.92.77.143:3040/test/dateIn/viewIndicador',
-                    mod:    'http://164.92.77.143:3040/test/dateIn/editIndicador',
-                    delete: 'http://164.92.77.143:3040/test/dateIn/deleteIndicador'
-                },
-                metricas:{
-                    add:    'http://164.92.77.143:3040/test/dateIn/newMetrica',
-                    view:   'http://164.92.77.143:3040/test/dateIn/ultimasTresMetricas',
-                    mod:    'http://164.92.77.143:3040/test/dateIn/editMegrica',
-                }
             },
         }
 
@@ -169,6 +149,15 @@ const controlador = {
     crearBaseDeDatosNew: async (req,res) => {
         try{
             console.log("entrando a la generacion de base de datos");
+
+
+            let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('francisco.lema@nbch.com.ar');
+
+            if(empleadoYaSubido != undefined){
+                res.json("base de datos ya subida anteriormente");
+                return 0;
+            };
+
             let ahora = new Date();
 
             let fechaInicial = ahora;
@@ -214,7 +203,9 @@ const controlador = {
             let subtarea;
 
             let ciclos = [];
-            
+
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-09-31');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"TARJETA DE CREDITO","TARJETA DE CREDITO",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -327,6 +318,8 @@ const controlador = {
             ciclos.push(ciclo);
 
 
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-08-30');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"COMEX","COMEX",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -374,6 +367,8 @@ const controlador = {
 
             ciclos.push(ciclo);
 
+            fechaInicial = new Date('2024-09-01');
+            fechaFin = new Date('2024-09-31');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"PUSF","PUSF",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -451,7 +446,8 @@ const controlador = {
             
             ciclos.push(ciclo);
 
-
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-10-30');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"DEPÓSITOS","DEPÓSITOS",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -563,7 +559,7 @@ module.exports = controlador;
 
 /*
 
-let apisJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/newIndicador',{
+let apisJSON = await fetch('${process.env.WEB}/apis/dateIn/newIndicador',{
     method:'POST',
     headers: {
         "Content-Type": "application/json"
