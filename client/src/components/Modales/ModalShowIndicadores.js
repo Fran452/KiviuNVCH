@@ -74,6 +74,7 @@ function ModalShowIndicadores(props) {
     arrLabel.reverse()
     setArrMetrica(arrMet)
     setArrLabels(arrLabel)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[arrTresMetricas, loadingMet])
 
   const handleClose = () => {

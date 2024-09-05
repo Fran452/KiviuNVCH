@@ -8,7 +8,8 @@ import ModalEditCiclo from './Modales/ModalEditCiclo';
 import ModalPlanes from './Modales/ModalPlanes';
 import Subtareas from './Subtareas';
 import { newContext } from '../pages/PlanesAccion/Ciclo'
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+// import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 import ModalVer from './Modales/ModalVer';
 
 // import { 
@@ -29,45 +30,45 @@ export const tareasContext = React.createContext()
 
 function Tareas() {
   
-  const arr1 = [57, 71]
-  const data = {
-    labels: ['Realizadas', 'No realizadas'],
-    datasets: [{
-        label: '',
-        data: arr1,
-        backgroundColor: ['#0d6efd', '#9ec5fe'],
-        borderColor: '#fff',
-        hoverOffset: 4,
-        tooltip: {
-            callbacks: {
-                label: function(context) {
-                    let label = context.label;
-                    let value = context.formattedValue;
+  // const arr1 = [57, 71]
+  // const data = {
+  //   labels: ['Realizadas', 'No realizadas'],
+  //   datasets: [{
+  //       label: '',
+  //       data: arr1,
+  //       backgroundColor: ['#0d6efd', '#9ec5fe'],
+  //       borderColor: '#fff',
+  //       hoverOffset: 4,
+  //       tooltip: {
+  //           callbacks: {
+  //               label: function(context) {
+  //                   let label = context.label;
+  //                   let value = context.formattedValue;
     
-                    if (!label)
-                        label = 'Unknown'
+  //                   if (!label)
+  //                       label = 'Unknown'
     
-                    let sum = 0;
-                    let dataArr = context.chart.data.datasets[0].data;
-                    dataArr.map(data => {
-                        sum += Number(data);
-                    });
+  //                   let sum = 0;
+  //                   let dataArr = context.chart.data.datasets[0].data;
+  //                   dataArr.map(data => {
+  //                       sum += Number(data);
+  //                   });
     
-                    let percentage = (value * 100 / sum).toFixed(2) + '%';
-                    return percentage.slice(0,4) + '%';
-                }
-            }
-        }
-    }]
-  }
-  const options = {
-    plugins: {
-        legend: {
-            display: false
-        },
-    },
-    cutout: 40
-  }
+  //                   let percentage = (value * 100 / sum).toFixed(2) + '%';
+  //                   return percentage.slice(0,4) + '%';
+  //               }
+  //           }
+  //       }
+  //   }]
+  // }
+  // const options = {
+  //   plugins: {
+  //       legend: {
+  //           display: false
+  //       },
+  //   },
+  //   cutout: 40
+  // }
   
   const { subtareas, setSubtareas, loadingTar, setLoadingTar, setErrorTar, errorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, idCiclo, setIdCiclo, yearSelec, titleCiclo, descripcionCiclo, expandedRow, setExpandedRow } = useContext(newContext)
   

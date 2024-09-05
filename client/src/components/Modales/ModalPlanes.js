@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Modal, ProgressBar } from 'react-bootstrap';
+// import { Modal, ProgressBar } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import "./ModalPlanes.scss"
 import { tareasContext } from '../Tareas';
 import { newContext } from '../../pages/PlanesAccion/Ciclo'
@@ -232,34 +233,34 @@ function ModalPlanes(props) {
     }
   }
 
-  const handleDecrease = (e) => {
-    e.preventDefault()
-    if(formData.progreso === 0){
-      setFormData({
-        ...formData,
-        progreso: 0
-      })
-    } else {
-      setFormData({
-        ...formData,
-        progreso: formData.progreso - 10
-      })
-    }
-  }
-  const handleIncrese = (e) => {
-    e.preventDefault()
-    if(formData.progreso === 100){
-      setFormData({
-        ...formData,
-        progreso: 100
-      })
-    } else {
-      setFormData({
-        ...formData,
-        progreso: formData.progreso + 10
-      })
-    }
-  }
+  // const handleDecrease = (e) => {
+  //   e.preventDefault()
+  //   if(formData.progreso === 0){
+  //     setFormData({
+  //       ...formData,
+  //       progreso: 0
+  //     })
+  //   } else {
+  //     setFormData({
+  //       ...formData,
+  //       progreso: formData.progreso - 10
+  //     })
+  //   }
+  // }
+  // const handleIncrese = (e) => {
+  //   e.preventDefault()
+  //   if(formData.progreso === 100){
+  //     setFormData({
+  //       ...formData,
+  //       progreso: 100
+  //     })
+  //   } else {
+  //     setFormData({
+  //       ...formData,
+  //       progreso: formData.progreso + 10
+  //     })
+  //   }
+  // }
 
   return (
     <Modal
