@@ -186,7 +186,7 @@ function Year() {
     // Actualizar el listado de proyectos
     const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://localhost:3030/apis/plan-accion/viewCiclos", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -444,9 +444,9 @@ function Year() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className='auditoria__year__main__aside'>
+                                <div className='auditoria__year__main__aside'></div>
+                                {/* <div className='auditoria__year__main__aside'>
                                     <div className='auditoria__year__main__aside__graficas'>
-                                        {/* Gráfica 1 */}
                                         <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                                             <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
                                                 <div className='doughnut__grafica__info__textos'>
@@ -462,7 +462,6 @@ function Year() {
                                                 </div>
                                             </div>
                                         </div>
-                                        {/* Gráfica 2 */}
                                         <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                                             <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
                                                 <div className='doughnut__grafica__info__textos'>
@@ -492,7 +491,7 @@ function Year() {
                                             })}
                                         </ul>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         )}
                     </>

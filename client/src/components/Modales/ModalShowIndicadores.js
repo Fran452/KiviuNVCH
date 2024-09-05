@@ -139,7 +139,7 @@ function ModalShowIndicadores(props) {
         user: USER
       }
       try {
-        const res = await fetch("http://localhost:3030/apis/dateIn/newMetrica", {
+        const res = await fetch("http://164.92.77.143:3040/apis/dateIn/newMetrica", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -202,7 +202,7 @@ function ModalShowIndicadores(props) {
         user: USER
       }
       try {
-        const res = await fetch("http://localhost:3030/apis/dateIn/editMetrica", {
+        const res = await fetch("http://164.92.77.143:3040/apis/dateIn/editMetrica", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
