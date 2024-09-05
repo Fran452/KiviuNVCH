@@ -13,42 +13,42 @@ const controlador = {
     
     testGenerico: async (req,res) => {
         let links = {
-            ArmarBaseDeDatos:'http://localhost:3030/test/armado-SQL',
-            ArmarBaseDeDatosNew:'http://localhost:3030/test/armado-SQL-NEW',
+            ArmarBaseDeDatos:'http://164.92.77.143:3040/test/armado-SQL',
+            ArmarBaseDeDatosNew:'http://164.92.77.143:3040/test/armado-SQL-NEW',
             planesAcción:{
-                testGenericos: 'http://localhost:3030/test/plan-accion',
+                testGenericos: 'http://164.92.77.143:3040/test/plan-accion',
                 ciclos:{
-                    add:    'http://localhost:3030/test/plan-accion/addCiclos',
-                    view:   'http://localhost:3030/test/plan-accion/viewCiclos',
-                    mod:    'http://localhost:3030/test/plan-accion/modCiclos',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteCiclos'
+                    add:    'http://164.92.77.143:3040/test/plan-accion/addCiclos',
+                    view:   'http://164.92.77.143:3040/test/plan-accion/viewCiclos',
+                    mod:    'http://164.92.77.143:3040/test/plan-accion/modCiclos',
+                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteCiclos'
                 },
                 tareas:{
-                    add:    'http://localhost:3030/test/plan-accion/addTask',
-                    view:   'http://localhost:3030/test/plan-accion/viewTareas',
-                    mod:    'http://localhost:3030/test/plan-accion/modTask',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteTask'
+                    add:    'http://164.92.77.143:3040/test/plan-accion/addTask',
+                    view:   'http://164.92.77.143:3040/test/plan-accion/viewTareas',
+                    mod:    'http://164.92.77.143:3040/test/plan-accion/modTask',
+                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteTask'
                 },
                 subTarea:{
-                    add:    'http://localhost:3030/test/plan-accion/addSubTask',    
-                    view:   'http://localhost:3030/test/plan-accion/viewSubTask',
-                    mod:    'http://localhost:3030/test/plan-accion/modSubTask',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteSubTask'
+                    add:    'http://164.92.77.143:3040/test/plan-accion/addSubTask',    
+                    view:   'http://164.92.77.143:3040/test/plan-accion/viewSubTask',
+                    mod:    'http://164.92.77.143:3040/test/plan-accion/modSubTask',
+                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteSubTask'
                 },
             },
             
             dateIn : {
-                testGenericos: 'http://localhost:3030/test/dateIn',
+                testGenericos: 'http://164.92.77.143:3040/test/dateIn',
                 indicadores:{
-                    add:    'http://localhost:3030/test/dateIn/newIndicador',
-                    view:   'http://localhost:3030/test/dateIn/viewIndicador',
-                    mod:    'http://localhost:3030/test/dateIn/editIndicador',
-                    delete: 'http://localhost:3030/test/dateIn/deleteIndicador'
+                    add:    'http://164.92.77.143:3040/test/dateIn/newIndicador',
+                    view:   'http://164.92.77.143:3040/test/dateIn/viewIndicador',
+                    mod:    'http://164.92.77.143:3040/test/dateIn/editIndicador',
+                    delete: 'http://164.92.77.143:3040/test/dateIn/deleteIndicador'
                 },
                 metricas:{
-                    add:    'http://localhost:3030/test/dateIn/newMetrica',
-                    view:   'http://localhost:3030/test/dateIn/ultimasTresMetricas',
-                    mod:    'http://localhost:3030/test/dateIn/editMegrica',
+                    add:    'http://164.92.77.143:3040/test/dateIn/newMetrica',
+                    view:   'http://164.92.77.143:3040/test/dateIn/ultimasTresMetricas',
+                    mod:    'http://164.92.77.143:3040/test/dateIn/editMegrica',
                 }
             },
         }
@@ -564,7 +564,7 @@ module.exports = controlador;
 
 /*
 
-let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newIndicador',{
+let apisJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/newIndicador',{
     method:'POST',
     headers: {
         "Content-Type": "application/json"

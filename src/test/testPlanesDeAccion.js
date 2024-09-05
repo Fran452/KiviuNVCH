@@ -10,28 +10,28 @@ const controlador = {
     
     testGenerico: async (req,res) => {
         try{
-            let addCicloJSON    = await fetch('http://localhost:3030/test/plan-accion/viewCiclos',{
+            let addCicloJSON    = await fetch('http://164.92.77.143:3040/test/plan-accion/viewCiclos',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let viewCiclosJSON  = await fetch('http://localhost:3030/test/plan-accion/addCiclos',{
+            let viewCiclosJSON  = await fetch('http://164.92.77.143:3040/test/plan-accion/addCiclos',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let editCicoJSON    = await fetch('http://localhost:3030/test/plan-accion/modCiclos',{
+            let editCicoJSON    = await fetch('http://164.92.77.143:3040/test/plan-accion/modCiclos',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let deleteCicloJSON = await fetch('http://localhost:3030/test/plan-accion/deleteCiclos',{
+            let deleteCicloJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/deleteCiclos',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
@@ -39,56 +39,56 @@ const controlador = {
             })
 
             // Tareas
-            let addTareasJSON = await fetch('http://localhost:3030/test/plan-accion/addTask',{
+            let addTareasJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/addTask',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let viewTareasJSON = await fetch('http://localhost:3030/test/plan-accion/viewTareas',{
+            let viewTareasJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/viewTareas',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let ediTareasJSON = await fetch('http://localhost:3030/test/plan-accion/modTask',{
+            let ediTareasJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/modTask',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let deleteTareasJSON = await fetch('http://localhost:3030/test/plan-accion/deleteTask',{
+            let deleteTareasJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/deleteTask',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let addSubTareasJSON = await fetch('http://localhost:3030/test/plan-accion/addSubTask',{
+            let addSubTareasJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/addSubTask',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let viewSubTareasJSON = await fetch('http://localhost:3030/test/plan-accion/viewSubTask',{
+            let viewSubTareasJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/viewSubTask',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let ediSubTareasJSON = await fetch('http://localhost:3030/test/plan-accion/modSubTask',{
+            let ediSubTareasJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/modSubTask',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
             })
 
-            let deleteSubTareasJSON = await fetch('http://localhost:3030/test/plan-accion/deleteSubTask',{
+            let deleteSubTareasJSON = await fetch('http://164.92.77.143:3040/test/plan-accion/deleteSubTask',{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
@@ -163,7 +163,7 @@ const controlador = {
             mail:baseDeDatos[0].empleados[1].mail  
         };
 
-        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addCiclos',{
+        let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/addCiclos',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -233,7 +233,7 @@ const controlador = {
         let cicloSubicos = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",fechaInicio,fechaFin,1);
         let cicloSubicosNoVer = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo No mostrar","ciclo de ejemplo detalle",fechaInicio,fechaFin,0);
 
-        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewCiclos',{
+        let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/viewCiclos',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -261,7 +261,7 @@ const controlador = {
         resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Objeto de test que no se tiene que mostrar',undefined,noMostrarCiclo,1);
 
 
-        let apis2JSON = await fetch('http://localhost:3030/apis/plan-accion/viewCiclos',{
+        let apis2JSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/viewCiclos',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -307,7 +307,7 @@ const controlador = {
 
         let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",fechaInicio,fechaFin,1);
         
-        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modCiclos',{
+        let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/modCiclos',{
             method:'PUT',
             headers: {
                 "Content-Type": "application/json"
@@ -366,7 +366,7 @@ const controlador = {
 
         let cicloSubidosAntes = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo de ejemplo","ciclo de ejemplo detalle",fechaInicio,fechaFin,1);
 
-        let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/deleteCiclos',{
+        let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/deleteCiclos',{
             method:'PUT',
             headers: {
                 "Content-Type": "application/json"
@@ -434,7 +434,7 @@ const controlador = {
 
 
             // Inicio del test
-            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
+            let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/addTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -476,7 +476,7 @@ const controlador = {
 
 
             // Error de usuario no existente
-            let apisErrorJSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
+            let apisErrorJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/addTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -507,7 +507,7 @@ const controlador = {
 
             let fechaDeFinalError = ahora.toISOString().split('T')[0];
 
-            let apisError2JSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
+            let apisError2JSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/addTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -532,7 +532,7 @@ const controlador = {
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal','fecha_final is greater than the current',apisError2.errorDetalle,1);
             
             // Error de usuario no existente
-            let apisError3JSON = await fetch('http://localhost:3030/apis/plan-accion/addTask',{
+            let apisError3JSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/addTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -614,7 +614,7 @@ const controlador = {
             let subtarea4  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,0,1,1,"esto son notas",1);
             let subtarea5  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
 
-            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewTask',{
+            let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/viewTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -723,7 +723,7 @@ const controlador = {
             let tareaCreada = await funcionesDeTest.crearTarea(usuario.id,area,crearCiclo.id_ciclo,`tarea de prueba`,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas');
             let tareaAntes = await funcionesDeTest.buscarTarea(tareaCreada.id_tarea);
             
-            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modTask',{
+            let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/modTask',{
                 method:'PUT',
                 headers: {
                     "Content-Type": "application/json"
@@ -812,7 +812,7 @@ const controlador = {
             let tareaCreada = await funcionesDeTest.crearTarea(usuario.id,area,crearCiclo.id_ciclo,`tarea de prueba`,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas');
             let tareaAntes = await funcionesDeTest.buscarTarea(tareaCreada.id_tarea);
 
-            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/deleteTask',{
+            let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/deleteTask',{
                 method:'PUT',
                 headers: {
                     "Content-Type": "application/json"
@@ -839,7 +839,7 @@ const controlador = {
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de ver',0,tareaDespues.ver,1);
 
 
-            let apisReadJSON = await fetch('http://localhost:3030/apis/plan-accion/viewTask',{
+            let apisReadJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/viewTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -900,7 +900,7 @@ const controlador = {
             let crearCiclo = await funcionesDeTest.crearCiclo(usuario.area,"ciclo de test","ciclo de test Detalle",fechaInicio,fechaFin,1);
             let tareaCreadaAntigua = await funcionesDeTest.crearTarea(usuario.id,usuario.area,crearCiclo.id_ciclo,`tarea de prueba`,1,1,fechaFin,'texto de pruebas para tareas');
 
-            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/addSubTask',{
+            let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/addSubTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -982,7 +982,7 @@ const controlador = {
             let subtareaAntes   = await funcionesDeTest.buscarSubTarea(crearSubtarea.id_sub_tarea);
             
             
-            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/modSubTask',{
+            let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/modSubTask',{
                 method:'PUT',
                 headers: {
                     "Content-Type": "application/json"
@@ -1066,7 +1066,7 @@ const controlador = {
             let subtarea2  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub2 tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
             let subtarea3  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub2 tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
 
-            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/viewSubTask',{
+            let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/viewSubTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -1141,7 +1141,7 @@ const controlador = {
             let subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub1 tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
             let preSubtarea = await funcionesDeTest.buscarSubTarea(subtarea.id_sub_tarea);
         
-            let apisJSON = await fetch('http://localhost:3030/apis/plan-accion/deleteSubTask',{
+            let apisJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/deleteSubTask',{
                 method:'PUT',
                 headers: {
                     "Content-Type": "application/json"
@@ -1166,7 +1166,7 @@ const controlador = {
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificaicon de ver Sub Tarea',0,posSubtarea.ver,1);
 
 
-            let apisViewJSON = await fetch('http://localhost:3030/apis/plan-accion/viewSubTask',{
+            let apisViewJSON = await fetch('http://164.92.77.143:3040/apis/plan-accion/viewSubTask',{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
@@ -1218,7 +1218,7 @@ module.exports = controlador;
 
 /*
 
-let apisJSON = await fetch('http://localhost:3030/apis/',{
+let apisJSON = await fetch('http://164.92.77.143:3040/apis/',{
     method:'POST',
     headers: {
         "Content-Type": "application/json"
