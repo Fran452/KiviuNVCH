@@ -30,7 +30,7 @@ function ModalPlanes(props) {
         nombre: obj.nombre,
         fechaInicio: obj.fecha_inicio,
         fechaFinal: obj.fecha_final,
-        responsable: obj.Empleado.mail,
+        responsable: obj.mailUser,
         estado: obj.estado.toString(),
         prioridad: obj.prioridad.toString(),
         notas: obj.notas,
