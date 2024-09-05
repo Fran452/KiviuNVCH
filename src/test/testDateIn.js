@@ -11,7 +11,7 @@ const controlador = {
     
     testGenerico: async (req,res) => {
         
-        let testViewIndicadoresJSON = await fetch("http://localhost:3030/test/dateIn/viewIndicador",{
+        let testViewIndicadoresJSON = await fetch("http://164.92.77.143:3040/test/dateIn/viewIndicador",{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
@@ -19,7 +19,7 @@ const controlador = {
             });
         let testViewIndicadores = await testViewIndicadoresJSON.json();
         
-        let testNewIndicadoresJSON = await fetch("http://localhost:3030/test/dateIn/newIndicador",{
+        let testNewIndicadoresJSON = await fetch("http://164.92.77.143:3040/test/dateIn/newIndicador",{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -28,7 +28,7 @@ const controlador = {
         let testNewIndicadores = await testNewIndicadoresJSON.json();
         
 
-        let testEditIndicadoresJSON      = await fetch("http://localhost:3030/test/dateIn/editIndicador",{
+        let testEditIndicadoresJSON      = await fetch("http://164.92.77.143:3040/test/dateIn/editIndicador",{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -36,7 +36,7 @@ const controlador = {
         });
         let testEditIndicadores = await testEditIndicadoresJSON.json();
 
-        let testDeleteIndicadoresJSON = await fetch("http://localhost:3030/test/dateIn/deleteIndicador",{
+        let testDeleteIndicadoresJSON = await fetch("http://164.92.77.143:3040/test/dateIn/deleteIndicador",{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -44,7 +44,7 @@ const controlador = {
         });    
         let testDeleteIndicadores = await testDeleteIndicadoresJSON.json();
         
-        let testNewMetricaJSON = await fetch("http://localhost:3030/test/dateIn/newMetrica",{
+        let testNewMetricaJSON = await fetch("http://164.92.77.143:3040/test/dateIn/newMetrica",{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -52,7 +52,7 @@ const controlador = {
         });    
         let testNewMetrica = await testNewMetricaJSON.json(); 
         
-        let testEditMetricaJSON = await fetch("http://localhost:3030/test/dateIn/editMegrica",{
+        let testEditMetricaJSON = await fetch("http://164.92.77.143:3040/test/dateIn/editMegrica",{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -60,7 +60,7 @@ const controlador = {
         });    
         let testEditMetrica = await testEditMetricaJSON.json();
 
-        let testView3MetricaJSON = await fetch("http://localhost:3030/test/dateIn/ultimasTresMetricas",{
+        let testView3MetricaJSON = await fetch("http://164.92.77.143:3040/test/dateIn/ultimasTresMetricas",{
             method:'GET',
             headers: {
                 "Content-Type": "application/json"
@@ -101,7 +101,7 @@ const controlador = {
     let indicador2 = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba2','indicador de prueba para prueba de metricas color azul',1,fechaBlue);
     let indicador3 = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba3','indicador de prueba para prueba de metricas color verde',1,fechaGrean);
 
-    fetch('http://localhost:3030/apis/dateIn',{
+    fetch('http://164.92.77.143:3040/apis/dateIn',{
         method:'POST',
         headers: {
             "Content-Type": "application/json"
@@ -152,7 +152,7 @@ const controlador = {
 
     newindicador: async (req,res) => {
         let resultadoTest = {};
-        fetch('http://localhost:3030/apis/dateIn/newIndicador',{
+        fetch('http://164.92.77.143:3040/apis/dateIn/newIndicador',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -222,7 +222,7 @@ const controlador = {
         let indicadorDePrueba = await funcionesDeTest.buscarIndicadorEjemplo(indicadorEjemplo.id_indicador);
 
         // Modifico indicador de prueba
-        let modificacionApisJSON = await fetch('http://localhost:3030/apis/dateIn/editIndicador',{
+        let modificacionApisJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/editIndicador',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -282,7 +282,7 @@ const controlador = {
         let indicadorDePrueba = await funcionesDeTest.buscarIndicadorEjemplo(IdindicadorDePrueba);
 
         // eliminio el indicador de prueba
-        let apisEliminadoJSON = await fetch('http://localhost:3030/apis/dateIn/deleteIndicador',{
+        let apisEliminadoJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/deleteIndicador',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -322,7 +322,7 @@ const controlador = {
         let indicador = await funcionesDeTest.crearIndicador(1,1,2,'indicador de prueba','indicador de prueba para prueba de metricas',1,ahora);
 
         console.log(indicador);
-        let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newMetrica',{
+        let apisJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/newMetrica',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -394,7 +394,7 @@ const controlador = {
         let metricaCreada = await funcionesDeTest.buscarMetricaEjemplo(metrica.id_metrica);
 
         // edicion metrica test
-        let apisEditMetricaJSON = await fetch('http://localhost:3030/apis/dateIn/editMegrica',{
+        let apisEditMetricaJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/editMegrica',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -452,7 +452,7 @@ const controlador = {
         };
 
         // correr api
-        let apisEnvio3MetricasJSON = await fetch('http://localhost:3030/apis/dateIn/ultimas3Metricas',{
+        let apisEnvio3MetricasJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/ultimas3Metricas',{
             method:'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -494,7 +494,7 @@ module.exports = controlador;
 
 /*
 
-let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newIndicador',{
+let apisJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/newIndicador',{
     method:'POST',
     headers: {
         "Content-Type": "application/json"
