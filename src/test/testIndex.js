@@ -177,7 +177,6 @@ const controlador = {
 
             console.log(fechaInicial);
             console.log(fechaFin);
-            $2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq
 
             let area = await funcionesDeTest.crearArea("Analisis","no tiene");
 
