@@ -1,55 +1,35 @@
+require('dotenv').config();
 const dataBaseSQL = require("../databaseSQL/models");
 const funcionesDeTest = require('./funcionesTestGenericas')
-
-const path = require("path");
-
-const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
-const { planesAcción } = require("../controllers/controller");
-const { json } = require("sequelize");
 
 
 const controlador = {
     
     testGenerico: async (req,res) => {
         let links = {
-            ArmarBaseDeDatos:'http://164.92.77.143:3040/test/armado-SQL',
-            ArmarBaseDeDatosNew:'http://164.92.77.143:3040/test/armado-SQL-NEW',
+            ArmarBaseDeDatos:   `${process.env.HOST}/test/armado-SQL`,
+            ArmarBaseDeDatosNew:`${process.env.HOST}/test/armado-SQL-NEW`,
             planesAcción:{
-                testGenericos: 'http://164.92.77.143:3040/test/plan-accion',
+                testGenericos:  `${process.env.HOST}/test/plan-accion`,
                 ciclos:{
-                    add:    'http://164.92.77.143:3040/test/plan-accion/addCiclos',
-                    view:   'http://164.92.77.143:3040/test/plan-accion/viewCiclos',
-                    mod:    'http://164.92.77.143:3040/test/plan-accion/modCiclos',
-                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteCiclos'
+                    add:    `${process.env.HOST}/test/plan-accion/addCiclos`,
+                    view:   `${process.env.HOST}/test/plan-accion/viewCiclos`,
+                    mod:    `${process.env.HOST}/test/plan-accion/modCiclos`,
+                    delete: `${process.env.HOST}/test/plan-accion/deleteCiclos`
                 },
                 tareas:{
-                    add:    'http://164.92.77.143:3040/test/plan-accion/addTask',
-                    view:   'http://164.92.77.143:3040/test/plan-accion/viewTareas',
-                    mod:    'http://164.92.77.143:3040/test/plan-accion/modTask',
-                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteTask'
+                    add:    `${process.env.HOST}/test/plan-accion/addTask`,
+                    view:   `${process.env.HOST}/test/plan-accion/viewTareas`,
+                    mod:    `${process.env.HOST}/test/plan-accion/modTask`,
+                    delete: `${process.env.HOST}/test/plan-accion/deleteTask`
                 },
                 subTarea:{
-                    add:    'http://164.92.77.143:3040/test/plan-accion/addSubTask',    
-                    view:   'http://164.92.77.143:3040/test/plan-accion/viewSubTask',
-                    mod:    'http://164.92.77.143:3040/test/plan-accion/modSubTask',
-                    delete: 'http://164.92.77.143:3040/test/plan-accion/deleteSubTask'
+                    add:    `${process.env.HOST}/test/plan-accion/addSubTask`,    
+                    view:   `${process.env.HOST}/test/plan-accion/viewSubTask`,
+                    mod:    `${process.env.HOST}/test/plan-accion/modSubTask`,
+                    delete: `${process.env.HOST}/test/plan-accion/deleteSubTask`
                 },
-            },
-            
-            dateIn : {
-                testGenericos: 'http://164.92.77.143:3040/test/dateIn',
-                indicadores:{
-                    add:    'http://164.92.77.143:3040/test/dateIn/newIndicador',
-                    view:   'http://164.92.77.143:3040/test/dateIn/viewIndicador',
-                    mod:    'http://164.92.77.143:3040/test/dateIn/editIndicador',
-                    delete: 'http://164.92.77.143:3040/test/dateIn/deleteIndicador'
-                },
-                metricas:{
-                    add:    'http://164.92.77.143:3040/test/dateIn/newMetrica',
-                    view:   'http://164.92.77.143:3040/test/dateIn/ultimasTresMetricas',
-                    mod:    'http://164.92.77.143:3040/test/dateIn/editMegrica',
-                }
             },
         }
 
@@ -563,7 +543,7 @@ module.exports = controlador;
 
 /*
 
-let apisJSON = await fetch('http://164.92.77.143:3040/apis/dateIn/newIndicador',{
+let apisJSON = await fetch('${process.env.HOST}/apis/dateIn/newIndicador',{
     method:'POST',
     headers: {
         "Content-Type": "application/json"

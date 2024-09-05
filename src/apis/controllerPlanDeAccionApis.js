@@ -27,7 +27,7 @@ const controlador = {
     viewCiclos: async (req,res) => {
         try{
             let ciclos = await dataBaseSQL.sequelize.query(
-                "SELECT ciclos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM ciclos LEFT JOIN tareas ON ciclos.id_ciclo = tareas.fk_ciclo LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE ciclos.fk_area = :fkArea and ciclos.ver = 1 GROUP BY ciclos.id_ciclo;"
+                "SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso FROM Ciclos LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 GROUP BY Ciclos.id_ciclo;"
                 ,{
                 replacements: { fkArea: req.body.user.area },
                 type: Sequelize.QueryTypes.SELECT
@@ -210,8 +210,17 @@ const controlador = {
     // Ver tareas
     viewTareas: async (req,res) => {
         try{
+            /*SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas = 1 GROUP BY tareas.id_tarea;*/
             let tareas;
             if(req.body.user.puesto < 1){
+
+                let tareas = await dataBaseSQL.sequelize.query(
+                    "SELECT Tareas.id_tarea, Tareas.nombre, Tareas.estado, Tareas.prioridad, Tareas.fecha_inicio, Tareas.fecha_final, Tareas.notas, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM Tareas LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas WHERE Tareas.ver = 1 and Subtareas.ver = 1 and Tareas.fk_ciclo = :idCiclo GROUP BY Tareas.id_tarea;"
+                    ,{
+                    replacements: { idCiclo: req.body.idCiclo },
+                    type: Sequelize.QueryTypes.SELECT
+                });
+
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
                         ver : 1,
@@ -243,7 +252,8 @@ const controlador = {
             let horas_Finalizadas;
             tareas.forEach(tarea => {
                 if(tarea.Subtareas.length > 0){
-                    horas_Finalizadas = tarea.Subtareas.reduce(function(acumulador,elemento){return acumulador += (elemento.avance * elemento.horasAprox / 100)},0);
+                    let tareasActuales = tarea.Subtareas.filter(subtareas => subtareas.ver == 1);
+                    horas_Finalizadas = tareasActuales.reduce(function(acumulador,elemento){return acumulador += (elemento.avance * elemento.horasAprox / 100)},0);
                     let total_horas_subTareas = tarea.Subtareas.reduce(function(acumulador,elemento){  
                         acumulador += elemento.horasAprox;
                         return acumulador;
