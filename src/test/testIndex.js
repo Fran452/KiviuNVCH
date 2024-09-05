@@ -149,6 +149,15 @@ const controlador = {
     crearBaseDeDatosNew: async (req,res) => {
         try{
             console.log("entrando a la generacion de base de datos");
+
+
+            let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('francisco.lema@nbch.com.ar');
+
+            if(empleadoYaSubido != undefined){
+                res.json("base de datos ya subida anteriormente");
+                return 0;
+            };
+
             let ahora = new Date();
 
             let fechaInicial = ahora;
@@ -194,7 +203,9 @@ const controlador = {
             let subtarea;
 
             let ciclos = [];
-            
+
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-09-31');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"TARJETA DE CREDITO","TARJETA DE CREDITO",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -307,6 +318,8 @@ const controlador = {
             ciclos.push(ciclo);
 
 
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-08-30');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"COMEX","COMEX",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -354,6 +367,8 @@ const controlador = {
 
             ciclos.push(ciclo);
 
+            fechaInicial = new Date('2024-09-01');
+            fechaFin = new Date('2024-09-31');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"PUSF","PUSF",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -431,7 +446,8 @@ const controlador = {
             
             ciclos.push(ciclo);
 
-
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-10-30');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"DEPÓSITOS","DEPÓSITOS",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 

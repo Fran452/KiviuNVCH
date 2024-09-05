@@ -407,7 +407,7 @@ const controlador = {
             let resultadoTest = {}
 
             // Base de datos
-            let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico();
+            let baseDeDatos = await funcionesDeTest.crarAmbienteGenerico(); 
             let ahora = new Date()
             let fechaInicio = new Date(ahora.toISOString().split('T')[0]);
             ahora.setDate(ahora.getDate() + 7);
@@ -442,11 +442,11 @@ const controlador = {
                 },
                 body: JSON.stringify({
                     empleado_asignado   : usuario.mail,  
-                    idCiclo            : crearCiclo.id_ciclo,
+                    idCiclo             : crearCiclo.id_ciclo,
                     nombre              : 'Tarea de prueba',
                     estado              : 1,
                     prioridad           : 1,    
-                    fechaFinal          : fechaDelFinal,
+                    fechaInicial        : fechaInicio,
                     notas               : 'Tarea de prueba para hacer los test',
                     user                : usuario
                 })
@@ -484,53 +484,21 @@ const controlador = {
                 },
                 body: JSON.stringify({
                     empleado_asignado   : 'noExiste@gmail.com',
-                    fechaFinal          : fechaDelFinal,
+                    fechaInicial        : fechaInicio,
                     nombre              : 'Tarea de prueba',
                     estado              : 1,
                     prioridad           : 1,    
                     notas               : 'Tarea de prueba para hacer los test',
-                    progreso            : 0,    
-                    idCiclo            : crearCiclo.id_ciclo,     
-                    horas_Necesarias    : 5,  
+                    idCiclo             : crearCiclo.id_ciclo,     
                     user                : usuario
                 })
             });
 
             let apisError = await apisErrorJSON.json();
-
     
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de mail',10,apisError.error,1);
 
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de mail detalle','El correo del responsable no existe.',apisError.errorDetalle,1);
-            
-            // Error de fechas mal subidas
-            ahora.setDate(ahora.getDate() - 30);
-
-            let fechaDeFinalError = ahora.toISOString().split('T')[0];
-
-            let apisError2JSON = await fetch(`${process.env.WEB}/apis/plan-accion/addTask`,{
-                method:'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    empleado_asignado   : usuario.mail,
-                    fechaFinal          : fechaDeFinalError,
-                    nombre              : 'Tarea de prueba',
-                    estado              : 1,
-                    prioridad           : 1,    
-                    notas               : 'Tarea de prueba para hacer los test',
-                    progreso            : 0,    
-                    idCiclo            : crearCiclo.id_ciclo,
-                    horas_Necesarias    : 5,       
-                    user                : usuario
-                })
-            });
-
-            let apisError2 = await apisError2JSON.json();
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal',99,apisError2.error,1);
-
-            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Error de inexistencia de fecha mal','fecha_final is greater than the current',apisError2.errorDetalle,1);
             
             // Error de usuario no existente
             let apisError3JSON = await fetch(`${process.env.WEB}/apis/plan-accion/addTask`,{
@@ -539,16 +507,14 @@ const controlador = {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    empleado_asignado:  usuario2.mail,
-                    fechaFinal:         fechaDelFinal,
-                    nombre:             'Tarea de prueba',
-                    estado:             1,
-                    prioridad:          1,    
-                    notas:              'Tarea de prueba para hacer los test',
-                    progreso:           0,    
+                    empleado_asignado   : usuario2.mail,
+                    fechaInicial        : fechaInicio,
+                    nombre              : 'Tarea de prueba',
+                    estado              : 1,
+                    prioridad           : 1,    
+                    notas               : 'Tarea de prueba para hacer los test',
                     fk_ciclo            : crearCiclo.id_ciclo,   
-                    horas_Necesarias    : 5,    
-                    user:               usuario
+                    user                : usuario
                 })
             });
 
@@ -608,13 +574,13 @@ const controlador = {
             let tarea3 = await funcionesDeTest.crearTarea(usuario.id,area,creaCiclo.id_ciclo,`proyecto de prueba n3`,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas');
 
 
-            let subtarea1  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
-            let subtarea2  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
-            let subtarea3  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
+            let subtarea1  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,fechaInicio,fechaFin,"esto son notas",1);
+            let subtarea2  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,fechaInicio,fechaFin,"esto son notas",1);
+            let subtarea3  = await funcionesDeTest.crearSubTarea(tarea1.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,fechaInicio,fechaFin,"esto son notas",1);
 
-            let subtarea4  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,0,1,1,"esto son notas",1);
-            let subtarea5  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,"esto son notas",1);
-
+            let subtarea4  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,0,1,1,fechaInicio,fechaFin,"esto son notas",1);
+            let subtarea5  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,fechaInicio,fechaFin,"esto son notas",1);
+            let subtarea6  = await funcionesDeTest.crearSubTarea(tarea2.id_tarea,"sub tarea ejemplo",usuario.id,5,100,1,1,fechaInicio,fechaFin,"esto son notas",0);
             let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/viewTask`,{
                 method:'POST',
                 headers: {
@@ -718,11 +684,11 @@ const controlador = {
             let fechaFin = ahora.toISOString().split('T')[0];
 
             // proyecto para las tareas 
-            let crearCiclo = await funcionesDeTest.crearCiclo(area,"ciclo de test","ciclo de test Detalle",fechaInicio,fechaFin,1)
+            let crearCiclo  = await funcionesDeTest.crearCiclo(area,"ciclo de test","ciclo de test Detalle",fechaInicio,fechaFin,1)
 
             // tareas de ejemplo
             let tareaCreada = await funcionesDeTest.crearTarea(usuario.id,area,crearCiclo.id_ciclo,`tarea de prueba`,1,1,fechaInicio,fechaFin,'texto de pruebas para tareas');
-            let tareaAntes = await funcionesDeTest.buscarTarea(tareaCreada.id_tarea);
+            let tareaAntes  = await funcionesDeTest.buscarTarea(tareaCreada.id_tarea);
             
             let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/modTask`,{
                 method:'PUT',
@@ -979,7 +945,7 @@ const controlador = {
             let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo ejemplo","Ciclo ejemplo",fechaInicio,fechaFin,1);
             
             let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,fechaFin,"notas");
-            let crearSubtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
+            let crearSubtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
             let subtareaAntes   = await funcionesDeTest.buscarSubTarea(crearSubtarea.id_sub_tarea);
             
             
@@ -1063,9 +1029,9 @@ const controlador = {
             
             let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,fechaFin,"notas");
             
-            let subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub1 tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
-            let subtarea2  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub2 tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
-            let subtarea3  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub2 tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
+            let subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub1 tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
+            let subtarea2  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub2 tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
+            let subtarea3  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub2 tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
 
             let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/viewSubTask`,{
                 method:'POST',
@@ -1139,7 +1105,7 @@ const controlador = {
             
             let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,fechaFin,"notas");
             
-            let subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub1 tarea ejemplo",usuario.id,4,5,1,1,"esto son notas",1);
+            let subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub1 tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
             let preSubtarea = await funcionesDeTest.buscarSubTarea(subtarea.id_sub_tarea);
         
             let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/deleteSubTask`,{
@@ -1207,7 +1173,7 @@ const controlador = {
             let tareas = await dataBaseSQL.sequelize.query(
                 "SELECT tareas.id_tarea, tareas.nombre, tareas.estado, tareas.prioridad, tareas.fecha_inicio, tareas.fecha_final, tareas.notas, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas.ver = 1 and tareas.fk_ciclo = :idCiclo GROUP BY tareas.id_tarea;"
                 ,{
-                replacements: { idCiclo: 1 },
+                replacements: { idCiclo: 1   },
                 type: Sequelize.QueryTypes.SELECT
             });
 

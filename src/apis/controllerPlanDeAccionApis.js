@@ -27,7 +27,7 @@ const controlador = {
     viewCiclos: async (req,res) => {
         try{
             let ciclos = await dataBaseSQL.sequelize.query(
-                "SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso FROM Ciclos LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 GROUP BY Ciclos.id_ciclo;"
+                "SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso FROM Ciclos LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 and Subtareas.ver = 1 GROUP BY Ciclos.id_ciclo;"
                 ,{
                 replacements: { fkArea: req.body.user.area },
                 type: Sequelize.QueryTypes.SELECT
@@ -214,13 +214,13 @@ const controlador = {
             /*SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas = 1 GROUP BY tareas.id_tarea;*/
             let tareas;
             if(req.body.user.puesto < 1){
-
+                /*
                 let tareas = await dataBaseSQL.sequelize.query(
                     "SELECT Tareas.id_tarea, Tareas.nombre, Tareas.estado, Tareas.prioridad, Tareas.fecha_inicio, Tareas.fecha_final, Tareas.notas, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM Tareas LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas WHERE Tareas.ver = 1 and Subtareas.ver = 1 and Tareas.fk_ciclo = :idCiclo GROUP BY Tareas.id_tarea;"
                     ,{
                     replacements: { idCiclo: req.body.idCiclo },
                     type: Sequelize.QueryTypes.SELECT
-                });
+                });*/
 
                 tareas = await dataBaseSQL.tareas.findAll({
                     where: {
@@ -291,7 +291,6 @@ const controlador = {
     addTarea:  async (req,res) => { 
         try{
             let fechaActua = new Date() ;
-            let fechaDeLaFinal = new Date(req.body.fechaFinal);
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
@@ -305,9 +304,6 @@ const controlador = {
             }else if(empleadoAsignado.fk_area != req.body.user.area){
                 res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area"});
                 return 1;
-            }else if(fechaDeLaFinal < fechaActua){
-                res.json({error : 99, errorDetalle: "fecha_final is greater than the current"});
-                return 1;
             }else{
                 let tarea = await dataBaseSQL.tareas.create({
                     fk_empleado_asignado    : empleadoAsignado.id_empleado,
@@ -317,7 +313,7 @@ const controlador = {
                     estado                  : req.body.estado,
                     prioridad               : req.body.prioridad,
                     fecha_inicio            : req.body.fechaInicial,
-                    fecha_final             : req.body.fechaFinal,
+                    fecha_final             : null,
                     notas                   : req.body.notas,
                     //progreso                : req.body.progreso,
                     //horas_Necesarias        : 0,
