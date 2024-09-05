@@ -173,7 +173,7 @@ const controlador = {
 
             let fechaInicial = ahora;
             ahora.setDate(ahora.getDate() + 7);
-            let fechaFin = ahora;
+            let fechaFin = ahora;z
 
             console.log(fechaInicial);
             console.log(fechaFin);
@@ -296,7 +296,7 @@ const controlador = {
 
                 ciclo.tareas.push(tarea);
 
-                tarea     = await funcionesDeTest.crearTarea(TD.id_empleado,area.id_area,ciclo.id_ciclo,"Análisis Tarjetas Recargables",1,1,"notas",0,fechaInicial,fechaFin,fechaInicial,fechaFin,0);
+                tarea     = await funcionesDeTest.crearTarea(TD.id_empleado,area.id_area,ciclo.id_ciclo,"Análisis Tarjetas Recargables",1,1,fechaInicial,fechaFin,"notas");
                 tarea.subTarea = [];
 
                     subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Análisis Tarjetas Recargables",TD.id_empleado,4,0,1,1,fechaInicial,null,"esto son notas",1);
