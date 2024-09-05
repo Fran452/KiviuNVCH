@@ -221,11 +221,12 @@ const controlador = {
             if(req.body.user.puesto < 1){
                 tareas = await dataBaseSQL.sequelize.query(
                 `
-                SELECT Tareas.*, COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
+                SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
                 FROM Tareas 
                 LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
-                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea;
+                LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = empleados.id_empleado
+                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = 4
+                GROUP BY Tareas.id_tarea;   
                 `        
                 ,{
                     replacements: { idCiclo: req.body.idCiclo },
@@ -236,10 +237,11 @@ const controlador = {
                 /* COALESCE(SUM(tu_columna), 0)*/
                 tareas = await dataBaseSQL.sequelize.query(
                     `
-                    SELECT Tareas.*, COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
+                    SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
                     FROM Tareas 
                     LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
-                    WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
+                    LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = empleados.id_empleado
+                    WHERE Tareas.ver = 1 and Tareas.fk_ciclo = 4
                     GROUP BY Tareas.id_tarea;
                     `        
                     ,{
