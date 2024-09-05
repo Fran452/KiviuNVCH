@@ -84,13 +84,11 @@ const controlador = {
 
         res.json(retorno);
     },
-
-    
+  
     // Test de view dateIn
     viewIndicadores: async (req,res) => {
 
     let resultadoTest = {}
-    /* agregar test para colores */ 
     let ahora = new Date();
     let fechaBlue = new Date();
 
@@ -221,7 +219,7 @@ const controlador = {
 
 
         // Busco indicador de prueba
-        let indicadorDePrueba = await buscarIndicadorEjemplo(indicadorEjemplo.id_indicador);
+        let indicadorDePrueba = await funcionesDeTest.buscarIndicadorEjemplo(indicadorEjemplo.id_indicador);
 
         // Modifico indicador de prueba
         let modificacionApisJSON = await fetch('http://localhost:3030/apis/dateIn/editIndicador',{
@@ -242,7 +240,7 @@ const controlador = {
 
         let modificacionApis = await modificacionApisJSON.json();
 
-        let indicadorDePruebaModificado = await buscarIndicadorEjemplo(indicadorEjemplo.id_indicador);
+        let indicadorDePruebaModificado = await funcionesDeTest.buscarIndicadorEjemplo(indicadorEjemplo.id_indicador);
 
         modificacionApis.objeto = indicadorDePruebaModificado;
 
@@ -281,7 +279,7 @@ const controlador = {
         let IdindicadorDePrueba = indicadorEjemplo.id_indicador;
 
         // Busco indicador de prueba
-        let indicadorDePrueba = await buscarIndicadorEjemplo(IdindicadorDePrueba);
+        let indicadorDePrueba = await funcionesDeTest.buscarIndicadorEjemplo(IdindicadorDePrueba);
 
         // eliminio el indicador de prueba
         let apisEliminadoJSON = await fetch('http://localhost:3030/apis/dateIn/deleteIndicador',{
@@ -296,7 +294,7 @@ const controlador = {
         })
         let apisEliminado = await apisEliminadoJSON.json();
 
-        let indicadorDePruebaEliminado = await buscarIndicadorEjemplo(IdindicadorDePrueba);
+        let indicadorDePruebaEliminado = await funcionesDeTest.buscarIndicadorEjemplo(IdindicadorDePrueba);
 
 
         // test de restorno de apis
@@ -347,7 +345,7 @@ const controlador = {
         }
 
         // Subida base de datos 
-        let metricaEjemplo = await buscarMetricaEjemplo(apis.objeto.id_metrica);
+        let metricaEjemplo = await funcionesDeTest.buscarMetricaEjemplo(apis.objeto.id_metrica);
 
         resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Subida a base de datos",undefined,metricaEjemplo,4);
 
@@ -364,10 +362,10 @@ const controlador = {
 
 
             // Fecha del recordatorrio modificada
-            let indicadorEditado = await buscarIndicadorEjemplo(indicador.id_indicador);
+            let indicadorEditado = await funcionesDeTest.buscarIndicadorEjemplo(indicador.id_indicador);
             ahora.setDate(ahora.getDate() + 7);
             let fechaBuscadaISO = ahora.toISOString().split('T')[0];
-            let fechaBD = indicadorEditado.dataValues.fecha_del_recodatorio.split('T')[0]
+            let fechaBD = indicadorEditado.fecha_del_recodatorio.split('T')[0]
 
             resultadoTest = funcionesDeTest.crearTest(resultadoTest,"Fecha del recordatorrio modificada",fechaBuscadaISO,fechaBD,1);
 
@@ -494,69 +492,6 @@ const controlador = {
 
 module.exports = controlador;
 
-async function crearIndicador(fk_area,fk_responsable,fk_responsable_suplente,nombre_indicador,detalles_metrica,tipo_recordartorio,fecha_del_recodatorio){
-    let indicador = await dataBaseSQL.indicadores.create({
-        fk_area : fk_area,
-        fk_responsable : fk_responsable,
-        fk_responsable_suplente : fk_responsable_suplente,
-        nombre_indicador : nombre_indicador,
-        detalles_metrica : detalles_metrica,
-        tipo_recordartorio : tipo_recordartorio,
-        fecha_del_recodatorio : fecha_del_recodatorio,
-        mostrar:1
-    });
-    return indicador.dataValues;
-}
-
-async function eliminarIndicadorEjemplo(id) {
-    await dataBaseSQL.indicadores.destroy({
-        where : {id_indicador: id}
-    });
-}
-
-async function buscarIndicadorEjemplo(id) {
-    let indicadores = await dataBaseSQL.indicadores.findAll({
-        where: {
-            id_indicador : id
-        },
-        attributes: ['id_indicador','nombre_indicador','detalles_metrica','tipo_recordartorio',"mostrar",'fecha_del_recodatorio'],
-        include: [
-            {association : "Areas",attributes: ['id_area','nombre_del_Area']},
-            {association : "Empleados",attributes: ['nombre','mail']},
-            {association : "ResponsableSuplente",attributes: ['nombre','mail']}
-        ]
-    });
-    let busqueda = indicadores.find(indicador => indicador.id_indicador == id);
-    return busqueda;
-}
-
-async function eliminarMetricaEjemplo(id) {
-    await dataBaseSQL.metricas.destroy({
-        where : {id_metrica: id}
-    });
-
-}
-
-async function buscarMetricaEjemplo(id) {
-    let metrica = await dataBaseSQL.metricas.findAll({
-        where: {
-            id_metrica : id
-        },
-        include: [{association : "Empleados",attributes: ['nombre','mail']}]
-    });
-    let busqueda = metrica.find(metrica => metrica.id_metrica == id);
-    return busqueda;
-}
-
-async function crearMetrica(fk_indicador,dato_metrica,fecha_Metrica,log_de_usuario) {
-    let metrica = await dataBaseSQL.metricas.create({
-        fk_indicador:   fk_indicador,
-        dato_metrica:   dato_metrica,
-        fecha_Metrica:  fecha_Metrica,
-        log_de_usuario: log_de_usuario
-    });
-    return metrica.dataValues;
-}
 /*
 
 let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newIndicador',{

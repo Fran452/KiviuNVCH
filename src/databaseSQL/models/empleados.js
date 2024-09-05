@@ -1,16 +1,17 @@
 /*
 CREATE TABLE Empleados (           
-    id_empleado                            INT PRIMARY KEY IDENTITY(1,1),
+    id_empleado                            INT PRIMARY KEY AUTO_INCREMENT,
     fk_area                                INT NOT NULL,
     fk_puesto                              INT NOT NULL,
-    nombre                                 NVARCHAR(255),
-    contraseña                             NVARCHAR(255) NOT NULL,
-    mail                                   NVARCHAR(255) NOT NULL,
-    sucursal                               NVARCHAR(255),
+    nombre                                 VARCHAR(255),
+    password                               VARCHAR(255) NOT NULL,
+    abreviatura                            VARCHAR(255) NOT NULL,
+    mail                                   VARCHAR(255) NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
     FOREIGN KEY (fk_Puesto)                REFERENCES Puestos(id_puesto)
 );
 */
+
 module.exports = (sequelize,DataTypes) => {
 
     let nombre = "empleados";
@@ -40,14 +41,14 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.STRING(255),
             allowNull: false
         },
+        
+        "abreviatura":{
+            type: DataTypes.STRING(255),
+        },
 
         "mail":{
             type: DataTypes.STRING(255),
             allowNull: false
-        },
-
-        "sucursal":{
-            type: DataTypes.STRING(255),
         },
 
     };
@@ -71,7 +72,6 @@ module.exports = (sequelize,DataTypes) => {
             as : 'Puestos'
         });
 
-        
         empleados.hasMany(models.indicadores,{
             foreignKey : 'fk_responsable',
             as : 'Indicadores'
@@ -87,6 +87,16 @@ module.exports = (sequelize,DataTypes) => {
             as : 'Empleados'
         });
 
+        empleados.hasMany(models.tareas,{
+            foreignKey : 'fk_empleado_asignado',
+            as : 'Tareas'
+        });
+
+        empleados.hasMany(models.subtareas,{
+            foreignKey : 'asignacion',
+            as : 'SubTareas'
+        });
+        
     }
 
     return empleados;

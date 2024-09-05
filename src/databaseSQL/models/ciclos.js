@@ -1,20 +1,18 @@
 /*
-CREATE TABLE Proyecto ( 
-    id_preyecto                             INT PRIMARY KEY AUTO_INCREMENT,
-    fk_area                                 INT NOT NULL,
+CREATE TABLE Ciclos ( 
+    id_ciclo                                INT PRIMARY KEY AUTO_INCREMENT,
     nombre                                  VARCHAR(255) NOT NULL,
     detalles                                VARCHAR(255) NOT NULL,
-    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area),
+    ver                                     INT NOT NULL,
 );
-
 */
 module.exports = (sequelize,DataTypes) => {
 
-    let nombre = "proyectos";
+    let nombre = "ciclos";
     
     let columnas = {
 
-        "id_proyecto": {
+        "id_ciclo": {
             type:DataTypes.INTEGER(),
             primaryKey: true,
             autoIncrement: true,
@@ -28,41 +26,51 @@ module.exports = (sequelize,DataTypes) => {
         "nombre":{
             type: DataTypes.STRING(255),
         },
-
+        
         "detalles":{
             type: DataTypes.STRING(255),
         },
 
-        "ver": {
-            type:DataTypes.INTEGER(),
+        "fecha_inicio":{
+            type: DataTypes.DATE(255),
             allowNull: false
         },
+
+        "fecha_final":{
+            type: DataTypes.DATE(255),
+            allowNull: false
+        },
+
+        "ver":{
+            type: DataTypes.INTEGER(),
+        },
+
     };
 
     let config =  {
         timestamps: false,
-        tableName : "Proyectos"
+        tableName : "Ciclos"
     };
 
-    const proyectos = sequelize.define(nombre,columnas,config);
+    const cilcos = sequelize.define(nombre,columnas,config);
     
     
-    proyectos.associate = (models) => {
+    cilcos.associate = (models) => {
 
+        // Union con Empleados
+        cilcos.hasMany(models.tareas,{
+            foreignKey : 'fk_ciclo',
+            as : 'Tareas'
+        });
+        
         // Union con Areas
-        proyectos.belongsTo(models.areas,{
+        cilcos.belongsTo(models.areas,{
             foreignKey : 'fk_area',
             as : 'Areas'
         });
 
-        // Union con Tareas
-        proyectos.hasMany(models.tareas,{
-            foreignKey : 'fk_proyecto',
-            as : 'Tareas'
-        });
-
     }
 
-    return proyectos;
+    return cilcos;
 
 };

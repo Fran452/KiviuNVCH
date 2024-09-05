@@ -2,29 +2,33 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Modal } from 'react-bootstrap';
 import { jwtDecode } from "jwt-decode"
 import "./ModalProyecto.scss"
-import { newContext } from '../../pages/PlanesAccion/PlanesAccion';
+import { newContext } from '../../pages/PlanesAccion/Ciclo';
 
-function ModalNewProyecto(props) {
-    const { proyectos, setProyectos, fetchProyectos } = useContext(newContext)
+function ModalNewCiclo(props) {
+    const { ciclos, setCiclos, fetchCiclos } = useContext(newContext)
     const auth = localStorage.getItem("token")
     const jwtParse = jwtDecode(auth)
 
-    const [formProyecto, setFormProyecto] = useState({
+    const [formCiclo, setFormCiclo] = useState({
         nombre: "",
-        detalles: ""
+        detalles: "",
+        fechaInicio: "",
+        fechaFinal: "",
     })
     const [errors, setErrors] = useState({})
     const [errorFetch, setErrorFetch] = useState(null)
 
     useEffect(() => {
 
-    },[proyectos])
+    },[ciclos])
 
     const handleClose = () => {
         setErrors({})
-        setFormProyecto({
+        setFormCiclo({
             nombre: "",
-            detalles: ""
+            detalles: "",
+            fechaInicio: "",
+            fechaFinal: "",
         })
         setErrorFetch(null)
         props.onHide()
@@ -32,8 +36,8 @@ function ModalNewProyecto(props) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormProyecto({
-        ...formProyecto,
+        setFormCiclo({
+        ...formCiclo,
         [name]: value,
         })
     }
@@ -46,34 +50,44 @@ function ModalNewProyecto(props) {
         if(!data.detalles.trim()) {
             errors.detalles = "Escoja una descripción"
         }
+        if(!data.fechaInicio.trim()) {
+            errors.fechaInicio = "Escoja una fecha de inicio."
+        }
+        if(!data.fechaFinal.trim()) {
+        errors.fechaFinal = "Escoja una fecha de término."
+        }
         return errors;
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const newErrors = validateForm(formProyecto)
+        const newErrors = validateForm(formCiclo)
         setErrors(newErrors)
         if (Object.keys(newErrors).length === 0){
             try {
-                const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/addProyect", {
+                const res = await fetch("http://localhost:3030/apis/plan-accion/addCiclos", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         user: jwtParse.apirest.objeto,
-                        nombre: formProyecto.nombre,
-                        detalles: formProyecto.detalles
+                        nombre: formCiclo.nombre,
+                        detalles: formCiclo.detalles,
+                        fechaInicio: formCiclo.fechaInicio,
+                        fechaFinal: formCiclo.fechaFinal,
                     })
                 })
                 const data = await res.json()
                 if(data.error !== 0){
                     setErrorFetch(data.errorDetalle)
                 } else {
-                    fetchProyectos().then(res => setProyectos(res.objeto))
-                    setFormProyecto({
+                    fetchCiclos().then(res => setCiclos(res.objeto))
+                    setFormCiclo({
                         nombre: "",
-                        detalles: ""
+                        detalles: "",
+                        fechaInicio: "",
+                        fechaFinal: "",
                     })
                     setErrorFetch(null)
                     props.onHide()
@@ -94,14 +108,14 @@ function ModalNewProyecto(props) {
         >
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter" className='d-flex flex-row'>
-                    <h3 className='m-0'>Crear Proyecto</h3>
+                    <h3 className='m-0'>Crear Ciclo</h3>
                     <button className='btn' onClick={handleClose}><i className="bi bi-x-lg fw-bold"></i></button>
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <form className='form__proyectos d-flex flex-column align-items-center' onSubmit={handleSubmit}>
+                <form className='form__proyectos d-flex flex-column' onSubmit={handleSubmit}>
                     <div className='mb-2 col-12'>
-                        <label className='mb-1'>Nombre del Proyecto</label>
+                        <label className='mb-1'>Nombre del Ciclo</label>
                         <input 
                             onChange={handleChange}
                             type="text" 
@@ -109,25 +123,52 @@ function ModalNewProyecto(props) {
                             name='nombre'
                             autoFocus
                             className="form-control form-control-sm"
-                            value={formProyecto.nombre}
+                            value={formCiclo.nombre}
                         />
                         {errors.nombre && <span className='form__proyectos__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
                     </div>
                     <div className='mb-2 col-12'>
-                        <label className='mb-1'>Descripción del Proyecto</label>
+                        <label className='mb-1'>Descripción del Ciclo</label>
                         <input 
                             onChange={handleChange}
                             type="text" 
                             id="detalles"
                             name='detalles'
                             className="form-control form-control-sm"
-                            value={formProyecto.detalles}
+                            value={formCiclo.detalles}
                         />
                         {errors.detalles && <span className='form__proyectos__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.detalles}</span>}
                     </div>
+                    {/* Agregar fecha inicio y final */}
+                    <div className='row mb-4'>
+                        <div className='col-6'>
+                            <label className='mb-1'>Fecha de inicio</label>
+                            <input
+                                onChange={handleChange}
+                                type="date" 
+                                id="fechaInicio" 
+                                name="fechaInicio" 
+                                className="form-control form-control-sm"
+                                value={formCiclo.fechaInicio}
+                            />
+                            {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
+                        </div>
+                        <div className='col-6'>
+                            <label className='mb-1'>Fecha de término</label>
+                            <input
+                                onChange={handleChange}
+                                type="date" 
+                                id="fechaFinal" 
+                                name="fechaFinal" 
+                                className="form-control form-control-sm"
+                                value={formCiclo.fechaFinal}
+                            />
+                            {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
+                        </div>
+                    </div>
                     {errorFetch !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{errorFetch}</span>}
-                    <button type='submit' className='btn btn-primary rounded-pill form__proyectos__btn'>
-                        Agregar proyecto
+                    <button type='submit' className='btn btn-primary rounded-pill form__proyectos__btn align-self-center'>
+                        Agregar ciclo
                     </button>
                 </form>
             </Modal.Body>
@@ -135,4 +176,4 @@ function ModalNewProyecto(props) {
     )
     }
 
-export default ModalNewProyecto
+export default ModalNewCiclo

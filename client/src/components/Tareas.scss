@@ -1,6 +1,136 @@
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap/scss/_variables.scss';
 
+// CSS de la tabla
+.details-enter {
+    opacity: 0;
+}
+.details-enter-active {
+    opacity: 1;
+    transition: opacity 300ms;
+}
+.details-exit {
+    opacity: 1;
+}
+.details-exit-active {
+    opacity: 0;
+    transition: opacity 300ms;
+}
+// .details-enter {
+//     height: 0;
+//     overflow: hidden;
+// }
+
+// .details-enter-active {
+//     height: 100px; /* Ajusta según el contenido esperado */
+//     transition: height 0.3s ease;
+// }
+
+// .details-exit {
+//     height: 100px; /* Ajusta según el contenido esperado */
+//     overflow: hidden;
+// }
+
+// .details-exit-active {
+//     height: 0;
+//     transition: height 0.3s ease;
+// }
+
+// Custom table
+.table__custom {
+    width: 1694px;
+    display: flex;
+    flex-direction: column;
+    // width: max-content;
+
+    &__header {
+        display: flex;
+        flex-direction: row;
+        border-bottom: 1px solid $gray-300;
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-bottom: 1px solid $gray-300;
+    }
+
+    .light {
+        background-color: $light;
+    }
+
+    &__cell {
+        white-space: nowrap;
+        padding: 10px;
+
+        &--title {
+            color: $blue-500;
+        }
+
+        .btn__edit--icon {
+            color: $success
+        }
+
+        .btn__delete--icon {
+            color: $danger
+        }
+    }
+
+    // Cell sizes
+    .cell__dropdown {
+        flex: 1 0 64px;
+    }
+
+    .cell__buttons {
+        flex: 1 0 220px; 
+    }
+
+    .cell__nombre {
+        flex: 1 0 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cell__prioridad {
+        flex: 1 0 90px;
+    }
+
+    .cell__estado {
+        flex: 1 0 120px;
+    }
+
+    .cell__progreso {
+        flex: 1 0 140px;
+    }
+
+    .cell__horas {
+        flex: 1 0 120px;
+    }
+
+    .cell__notas {
+        flex: 1 0 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cell__mail {
+        flex: 1 0 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .cell__date {
+        flex: 1 0 120px;
+    }
+
+}
+
 .loading__tareas {
     width: 100%;
     height: 100%;
@@ -17,8 +147,36 @@
     }
 }
 
+.loading__subtareas {
+    padding: 20px;
+
+    div {
+        svg g g circle[stroke] {
+            stroke: $blue-500;
+        }
+    }
+
+    p {
+        color: $blue-500
+    }
+}
+
 .tareas {
     height: 100%;
+
+    &__error {
+        width: 100%;
+        // height: calc(100% - 48px);
+
+        img {
+            width: 200px;
+            max-width: 100%;
+        }
+
+        h2 {
+            color: $blue-500
+        }
+    }
 
     &__inicio {
         width: 100%;
@@ -81,6 +239,45 @@
             font-size: 12px;
         }
 
+        &__graficas {
+            display: flex;
+            gap: 20px;
+
+            &__doughnut {
+                width: 100%;
+                padding: 20px;
+                margin-bottom: 20px;
+
+                &__info {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    
+                    &__textos {
+                        h4 {
+                            color: $blue-500;
+                        }
+
+                        p {
+                            font-size: 14px;
+                        }
+
+                        p:first-child {
+                            color: $blue-500;
+                        }
+                    }
+
+                    &__chart {
+                        width: 120px;
+                        height: 120px;
+                    }
+                }
+            }
+            &__doughnut:last-child {
+                margin-bottom: 0;
+            }
+        }
+
         &__tabla {
             overflow-x: scroll;
             width: calc(100vw - 40px);
@@ -101,18 +298,34 @@
                 }
 
                 &__tbody {
+                    // position: relative;
+
+                    // .btn__showsub {
+                    //     position: absolute;
+                    //     height: 32px;
+                    //     border-radius: 0 0 16px 16px;
+                    // }
+
+                    // tr {
+                    //     position: relative;
+                    // }
 
                     &__tarea {
                         cursor: pointer;
                     }
 
-                    &__tarea:hover .active{
-                        display: flex;
-                    }
+                    // &__tarea:hover .active{
+                    //     display: flex;
+                    // }
 
                     td {
                         padding: 5px 20px;
                         height: 50px;
+                    }
+
+                    &__nombre {
+                        max-width: 300px;
+                        text-overflow: ellipsis;
                     }
 
                     &__nombre, &__fechaInicial, &__fechaFinal, &__equipo, &__notas {
@@ -180,23 +393,37 @@
                     }
 
                     &__buttons {
-                        display: none;
+                        // display: none;
+                        display: flex;
                         flex-direction: row;
-                        position: absolute;
-                        right: 0;
+                        align-items: center;
+                        // position: absolute;
+                        // left: 0;
                         height: 50px;
 
                         button {
-                            width: 36px;
-                            height: 36px;
+                            width: 32px;
+                            height: 32px;
                             padding: 0;
                         }
                     } 
+
+                    .btn__subtarea {
+                        background-color: $blue-500;
+                        color: #fff;
+                        margin: 10px 20px 20px 20px;
+                        width: 180px;
+                    }
+
+                    .btn__subtarea:hover {
+                        background-color: #0b5ed7;
+                    }
                 }
             }
         }
 
         &__tabla::-webkit-scrollbar {
+            width: 10px;
             height: 10px;
         }
 
@@ -225,6 +452,26 @@
 
             img {
                 width: 200px;
+            }
+        }
+
+        &__main {
+            height: calc(100% - 48px);
+
+            &__graficas {
+                display: flex;
+                gap: 20px;
+    
+                &__doughnut {
+                    width: 50%;
+                    padding: 30px;
+                    margin-bottom: 0;
+                }
+            }
+
+            &__tabla {
+                width: 100%;
+                height: 100%;
             }
         }
     }

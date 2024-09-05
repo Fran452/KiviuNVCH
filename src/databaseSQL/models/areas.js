@@ -42,7 +42,19 @@ module.exports = (sequelize,DataTypes) => {
             foreignKey : 'fk_area',
             as : 'Empleados'
         });
-        
+
+        // Union con Ciclos   
+        areas.hasMany(models.ciclos,{
+            foreignKey : 'fk_area',
+            as : 'Ciclos'
+        });
+
+        // Union con Procesos   
+        areas.hasMany(models.procesos,{
+            foreignKey : 'fk_area',
+            as : 'Procesos'
+        });
+
         // Union con Tareas   
         areas.hasMany(models.tareas,{
             foreignKey : 'fk_area',

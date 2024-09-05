@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode"
 import Tareas from '../../components/Tareas';
 import { Oval } from 'react-loader-spinner'
 import "./PlanesAccion.scss"
-import ModalNewProyecto from '../../components/Modales/ModalNewProyecto';
+import ModalNewProyecto from '../../components/Modales/ModalNewProceso';
 import IllustrationAccess from "../../assets/img/access.png"
 
 export const newContext = React.createContext()
@@ -31,7 +31,7 @@ function PlanesAccion() {
 
         const fetchAreas = async () => {
             try {
-            const res = await fetch("http://164.92.77.143:3030/apis/index",{
+            const res = await fetch("http://localhost:3030/apis/index",{
                 method: "GET"
             })
             const data = await res.json()
@@ -62,7 +62,7 @@ function PlanesAccion() {
     // Actualizar el listado de proyectos
     const fetchProyectos = async () => {
         try {
-            const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/viewProyect", {
+            const res = await fetch("http://localhost:3030/apis/plan-accion/viewProyect", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -80,7 +80,7 @@ function PlanesAccion() {
 
     const fetchTareasById = async(id) => {
         try {
-            const res = await fetch("http://164.92.77.143:3030/apis/plan-accion/viewTask", {
+            const res = await fetch("http://localhost:3030/apis/plan-accion/viewTask", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json"
@@ -128,7 +128,7 @@ function PlanesAccion() {
                 <div className='planes__accion section'>
                     <div className='section__header d-flex flex-row align-items-end mb-4'>
                         <i className='bi bi-bar-chart-steps me-2'></i>
-                        <h4 className='m-0'>Planes de Acción</h4>
+                        <h4 className='m-0'>Ciclos de auditoría</h4>
                     </div>
                     {loading ? (
                         <div className='loading__proyectos d-flex flex-column align-items-center justify-content-center'>

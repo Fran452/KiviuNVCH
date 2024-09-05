@@ -7,7 +7,7 @@ import { jwtDecode } from "jwt-decode"
 
 const lista = [
   { label: "Dashboard", icon: "bi-house-door-fill", to: "/home" },
-  { label: "Planes de Acción", icon: "bi-bar-chart-steps", to: "/planes-de-accion" },
+  { label: "Ciclos de auditoría", icon: "bi-bar-chart-steps", to: "/ciclos-de-auditoria" },
   { label: "DatIN", icon: "bi-bar-chart-fill", to: "/dat-in" },
   { label: "Asistente IA", icon: "bi-lightning-charge-fill", to: "/asistente-ia" },
   { label: "OKR", icon: "bi-list-check", to: "/okr" }

@@ -11,16 +11,29 @@ router.get('/index',apisHome.index);
 
 router.post('/bi',apisHome.bi);
 
+router.post('/plan-accion/viewCiclos',apisPlanDeAccion.viewCiclos);
+router.post('/plan-accion/addCiclos',apisPlanDeAccion.addCiclos);
+router.put('/plan-accion/modCiclos',apisPlanDeAccion.modCiclos);
+router.put('/plan-accion/deleteCiclos',apisPlanDeAccion.deleteCiclos);
+
+router.post('/plan-accion/viewProceso',apisPlanDeAccion.viewProceso);
+router.post('/plan-accion/addProceso',apisPlanDeAccion.addProceso);
+router.put('/plan-accion/modProceso',apisPlanDeAccion.modProceso);
+router.put('/plan-accion/deleteProceso',apisPlanDeAccion.deleteProceso);
 
 router.post('/plan-accion/viewTask',apisPlanDeAccion.viewTareas);
 router.post('/plan-accion/addTask',apisPlanDeAccion.addTarea);
 router.put('/plan-accion/modTask',apisPlanDeAccion.modTarea);
 router.put('/plan-accion/deleteTask',apisPlanDeAccion.deleteTarea);
 
-router.post('/plan-accion/viewProyect',apisPlanDeAccion.viewProyecto);
-router.post('/plan-accion/addProyect',apisPlanDeAccion.addProyecto);
-router.put('/plan-accion/modProyect',apisPlanDeAccion.modProyecto);
-router.put('/plan-accion/deleteProyect',apisPlanDeAccion.deleteProyecto);
+
+router.post('/plan-accion/viewSubTask',apisPlanDeAccion.viewSubTarea);
+router.post('/plan-accion/addSubTask',apisPlanDeAccion.addSubTarea);
+router.put('/plan-accion/modSubTask',apisPlanDeAccion.modSubTarea);
+router.put('/plan-accion/deleteSubTask',apisPlanDeAccion.deleteSubTarea);
+router.put('/plan-accion/subTareaok',apisPlanDeAccion.terminarSubTarea);
+
+
 
 router.post('/login',apisUser.loginFuction);
 

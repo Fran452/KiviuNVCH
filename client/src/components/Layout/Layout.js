@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Sidebar from './Sidebar'
 import Navbar from "./Navbar"
-// import Footer from "./Footer"
+import Footer from "./Footer"
 import { Outlet } from 'react-router-dom'
 import "./Layout.scss"
 
@@ -17,6 +17,7 @@ function Layout() {
                 <div className='main__outlet__container bg-white'>
                     <Outlet />
                 </div>
+                <Footer />
             </div>
         </div>
     )
