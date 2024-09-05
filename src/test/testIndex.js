@@ -171,9 +171,9 @@ const controlador = {
             console.log("entrando a la generacion de base de datos");
             let ahora = new Date();
 
-            let fechaInicial = ahora.toISOString().split('T')[0];
+            let fechaInicial = ahora;
             ahora.setDate(ahora.getDate() + 7);
-            let fechaFin = ahora.toISOString().split('T')[0];
+            let fechaFin = ahora;
 
             console.log(fechaInicial);
             console.log(fechaFin);
