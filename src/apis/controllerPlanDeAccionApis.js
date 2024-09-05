@@ -317,7 +317,7 @@ const controlador = {
     modTarea: async (req,res) => { 
         try{
             let empleadoAsignado;
-            if(req.body.empleado_asignado != req.body.tarea.Empleado.mail){
+            if(req.body.empleado_asignado != req.body.tarea.mailUser){
                 empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
