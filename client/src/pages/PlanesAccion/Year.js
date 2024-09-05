@@ -447,7 +447,7 @@ function Year() {
                                 <div className='auditoria__year__main__aside'>
                                     <div className='auditoria__year__main__aside__graficas'>
                                         {/* Gráfica 1 */}
-                                        <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                                        {/* <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                                             <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
                                                 <div className='doughnut__grafica__info__textos'>
                                                     <h4 className='mb-2'>Total de tareas</h4>
@@ -461,9 +461,9 @@ function Year() {
                                                     />
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
                                         {/* Gráfica 2 */}
-                                        <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                                        {/* <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                                             <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
                                                 <div className='doughnut__grafica__info__textos'>
                                                     <h4 className='mb-2'>Avance por auditores</h4>
@@ -477,9 +477,9 @@ function Year() {
                                                     />
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
-                                    <div className='auditoria__year__main__aside__actividad scroll--y shadow-sm rounded-3 border border-light-subtle'>
+                                    {/* <div className='auditoria__year__main__aside__actividad scroll--y shadow-sm rounded-3 border border-light-subtle'>
                                         <h3 className='mb-4'>Última actividad:</h3>
                                         <ul className='list-group'>
                                             {list.map((e,i) => {
@@ -491,7 +491,7 @@ function Year() {
                                                 </li>
                                             })}
                                         </ul>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         )}
