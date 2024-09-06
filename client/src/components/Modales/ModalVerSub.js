@@ -63,7 +63,7 @@ function ModalVerSub(props) {
         >
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter" className='d-flex flex-row'>
-                <h3 className='m-0'>Detalles de la tarea</h3>
+                <h3 className='m-0'>Detalles de la subtarea</h3>
                 <button className='btn' onClick={handleClose}><i className="bi bi-x-lg fw-bold"></i></button>
                 </Modal.Title>
             </Modal.Header>

@@ -8,7 +8,8 @@ import ModalEditCiclo from './Modales/ModalEditCiclo';
 import ModalPlanes from './Modales/ModalPlanes';
 import Subtareas from './Subtareas';
 import { newContext } from '../pages/PlanesAccion/Ciclo'
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+// import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 import ModalVer from './Modales/ModalVer';
 
 // import { 
@@ -29,45 +30,45 @@ export const tareasContext = React.createContext()
 
 function Tareas() {
   
-  const arr1 = [57, 71]
-  const data = {
-    labels: ['Realizadas', 'No realizadas'],
-    datasets: [{
-        label: '',
-        data: arr1,
-        backgroundColor: ['#0d6efd', '#9ec5fe'],
-        borderColor: '#fff',
-        hoverOffset: 4,
-        tooltip: {
-            callbacks: {
-                label: function(context) {
-                    let label = context.label;
-                    let value = context.formattedValue;
+  // const arr1 = [57, 71]
+  // const data = {
+  //   labels: ['Realizadas', 'No realizadas'],
+  //   datasets: [{
+  //       label: '',
+  //       data: arr1,
+  //       backgroundColor: ['#0d6efd', '#9ec5fe'],
+  //       borderColor: '#fff',
+  //       hoverOffset: 4,
+  //       tooltip: {
+  //           callbacks: {
+  //               label: function(context) {
+  //                   let label = context.label;
+  //                   let value = context.formattedValue;
     
-                    if (!label)
-                        label = 'Unknown'
+  //                   if (!label)
+  //                       label = 'Unknown'
     
-                    let sum = 0;
-                    let dataArr = context.chart.data.datasets[0].data;
-                    dataArr.map(data => {
-                        sum += Number(data);
-                    });
+  //                   let sum = 0;
+  //                   let dataArr = context.chart.data.datasets[0].data;
+  //                   dataArr.map(data => {
+  //                       sum += Number(data);
+  //                   });
     
-                    let percentage = (value * 100 / sum).toFixed(2) + '%';
-                    return percentage.slice(0,4) + '%';
-                }
-            }
-        }
-    }]
-  }
-  const options = {
-    plugins: {
-        legend: {
-            display: false
-        },
-    },
-    cutout: 40
-  }
+  //                   let percentage = (value * 100 / sum).toFixed(2) + '%';
+  //                   return percentage.slice(0,4) + '%';
+  //               }
+  //           }
+  //       }
+  //   }]
+  // }
+  // const options = {
+  //   plugins: {
+  //       legend: {
+  //           display: false
+  //       },
+  //   },
+  //   cutout: 40
+  // }
   
   const { subtareas, setSubtareas, loadingTar, setLoadingTar, setErrorTar, errorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, idCiclo, setIdCiclo, yearSelec, titleCiclo, descripcionCiclo, expandedRow, setExpandedRow } = useContext(newContext)
   
@@ -125,7 +126,7 @@ function Tareas() {
 
   const handleDeleteCiclo = async () => {
     try {
-      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteCiclos", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteCiclos", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -173,7 +174,7 @@ function Tareas() {
       idTarea: parseInt(idTask)
     }
     try {
-      const res = await fetch("http://localhost:3030/apis/plan-accion/deleteTask", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteTask", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -206,7 +207,7 @@ function Tareas() {
 
   const fetchSubtareasById = async(id) => {
     try {
-      const res = await fetch("http://localhost:3030/apis/plan-accion/viewSubTask", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewSubTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -413,13 +414,19 @@ function Tareas() {
                                     {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
                                   </div>
                                   <div className='table__custom__cell cell__progreso'>
-                                    <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso)} label={`${Math.round(e.progreso)}%`} max={100}/>
+                                    <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso_tarea)} label={`${Math.round(e.progreso_tarea)}%`} max={100}/>
                                   </div>
-                                  <div className='table__custom__cell cell__horas'>{e.horas_totales}</div>
+                                  <div className='table__custom__cell cell__horas'>{e.horas_tarea}</div>
                                   <div className="table__custom__cell cell__notas">{e.notas}</div>
-                                  <div className="table__custom__cell cell__mail">{e.Empleado.nombre}</div>
+                                  <div className="table__custom__cell cell__mail">{e.nombreUser}</div>
                                   <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                  <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                  {e.fecha_final === null ? (
+                                    <div className="table__custom__cell cell__date"></div>
+                                  ): (
+                                    <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                  )}
+                                  {/* <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                  <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
                                 </div>
                                 <CSSTransition
                                     in={expandedRow === e.id_tarea}

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useParams, Link, useNavigate } from "react-router-dom"
+// import { useParams, Link, useNavigate } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 // Prueba table collapse
-import { Table, Collapse, Button, ListGroup } from 'react-bootstrap';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+// import { Table, Collapse, Button, ListGroup } from 'react-bootstrap';
+// import { CSSTransition, TransitionGroup } from 'react-transition-group';
 //
 import './Year.scss'
-import Avatar from "../../assets/img/avatar-3.jpg"
+// import Avatar from "../../assets/img/avatar-3.jpg"
 import { jwtDecode } from "jwt-decode"
 import { Oval } from 'react-loader-spinner'
 import { 
@@ -18,7 +19,8 @@ import {
     LinearScale,
     TimeScale
 } from "chart.js";
-import { Doughnut, Bar, getElementAtEvent } from 'react-chartjs-2'
+import { Bar, getElementAtEvent } from 'react-chartjs-2'
+// import { Doughnut, Bar, getElementAtEvent } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns';
 import {es} from 'date-fns/locale';
 import IllustrationAccess from "../../assets/img/access.png"
@@ -27,7 +29,8 @@ import IllustrationAccess from "../../assets/img/access.png"
 const todayLine = {
     id: 'todayLine',
     afterDatasetsDraw(chart, args, pluginOptions) {
-        const { ctx, data, chartArea: {top, bottom, left, right}, scales: { x, y } } = chart;
+        // const { ctx, data, chartArea: {top, bottom, left, right}, scales: { x, y } } = chart;
+        const { ctx, chartArea: {top, bottom}, scales: { x } } = chart;
         ctx.save();
         ctx.beginPath();
         ctx.lineWidth = 2;
@@ -42,7 +45,8 @@ const todayLine = {
 const viewPercentage = {
     id: 'viewPercentage',
     afterDatasetsDraw(chart, args, pluginOptions) {
-        const { ctx, data, chartArea: {top, bottom, left, right}, scales: { x, y } } = chart;
+        // const { ctx, data, chartArea: {top, bottom, left, right}, scales: { x, y } } = chart;
+        const { ctx, data, scales: { y } } = chart;
         ctx.save();
         ctx.font = 'bolder 12px sans-serif';
         ctx.fillStyle = 'white';
@@ -68,48 +72,48 @@ ChartJS.register(
     TimeScale,
 )
 
-const list = [
-    {
-        nombre: "Francisco Lema",
-        task: "Análisis de requerimientos del sistema de gestión",
-        proceso: "Desarrollo de Sistema de Gestión"
-    },
-    {
-        nombre: "Richard Dawson",
-        task: "Pruebas de integración del sistema de gestión",
-        proceso: "Desarrollo de Sistema de Gestión"
-    },
-    {
-        nombre: "Margaret Cole",
-        task: "Desarrollo del módulo de informes",
-        proceso: "Automatización de Reportes"
-    },
-    {
-        nombre: "Joseph Li",
-        task: "Desarrollar encuesta de Clima",
-        proceso: "Plan de mejora de Clima Laboral"
-    },
-    {
-        nombre: "Francisco Lema",
-        task: "Análisis de requerimientos del sistema de gestión",
-        proceso: "Desarrollo de Sistema de Gestión"
-    },
-    {
-        nombre: "Richard Dawson",
-        task: "Pruebas de integración del sistema de gestión",
-        proceso: "Desarrollo de Sistema de Gestión"
-    },
-    {
-        nombre: "Margaret Cole",
-        task: "Desarrollo del módulo de informes",
-        proceso: "Automatización de Reportes"
-    },
-    {
-        nombre: "Joseph Li",
-        task: "Desarrollar encuesta de Clima",
-        proceso: "Plan de mejora de Clima Laboral"
-    }
-]
+// const list = [
+//     {
+//         nombre: "Francisco Lema",
+//         task: "Análisis de requerimientos del sistema de gestión",
+//         proceso: "Desarrollo de Sistema de Gestión"
+//     },
+//     {
+//         nombre: "Richard Dawson",
+//         task: "Pruebas de integración del sistema de gestión",
+//         proceso: "Desarrollo de Sistema de Gestión"
+//     },
+//     {
+//         nombre: "Margaret Cole",
+//         task: "Desarrollo del módulo de informes",
+//         proceso: "Automatización de Reportes"
+//     },
+//     {
+//         nombre: "Joseph Li",
+//         task: "Desarrollar encuesta de Clima",
+//         proceso: "Plan de mejora de Clima Laboral"
+//     },
+//     {
+//         nombre: "Francisco Lema",
+//         task: "Análisis de requerimientos del sistema de gestión",
+//         proceso: "Desarrollo de Sistema de Gestión"
+//     },
+//     {
+//         nombre: "Richard Dawson",
+//         task: "Pruebas de integración del sistema de gestión",
+//         proceso: "Desarrollo de Sistema de Gestión"
+//     },
+//     {
+//         nombre: "Margaret Cole",
+//         task: "Desarrollo del módulo de informes",
+//         proceso: "Automatización de Reportes"
+//     },
+//     {
+//         nombre: "Joseph Li",
+//         task: "Desarrollar encuesta de Clima",
+//         proceso: "Plan de mejora de Clima Laboral"
+//     }
+// ]
 
 function Year() {
     const { year } = useParams()
@@ -186,7 +190,7 @@ function Year() {
     // Actualizar el listado de proyectos
     const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://localhost:3030/apis/plan-accion/viewCiclos", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -202,79 +206,79 @@ function Year() {
         }
     }
 
-    const arr1 = [57, 71]
-    const arr2 = [7, 9]
+    // const arr1 = [57, 71]
+    // const arr2 = [7, 9]
 
-    const data = {
-        labels: ['Realizadas', 'No realizadas'],
-        datasets: [{
-            label: '',
-            data: arr1,
-            backgroundColor: ['#0d6efd', '#9ec5fe'],
-            borderColor: '#fff',
-            hoverOffset: 4,
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        let label = context.label;
-                        let value = context.formattedValue;
+    // const data = {
+    //     labels: ['Realizadas', 'No realizadas'],
+    //     datasets: [{
+    //         label: '',
+    //         data: arr1,
+    //         backgroundColor: ['#0d6efd', '#9ec5fe'],
+    //         borderColor: '#fff',
+    //         hoverOffset: 4,
+    //         tooltip: {
+    //             callbacks: {
+    //                 label: function(context) {
+    //                     let label = context.label;
+    //                     let value = context.formattedValue;
         
-                        if (!label)
-                            label = 'Unknown'
+    //                     if (!label)
+    //                         label = 'Unknown'
         
-                        let sum = 0;
-                        let dataArr = context.chart.data.datasets[0].data;
-                        dataArr.map(data => {
-                            sum += Number(data);
-                        });
+    //                     let sum = 0;
+    //                     let dataArr = context.chart.data.datasets[0].data;
+    //                     dataArr.map(data => {
+    //                         sum += Number(data);
+    //                     });
         
-                        let percentage = (value * 100 / sum).toFixed(2) + '%';
-                        return percentage.slice(0,4) + '%';
-                    }
-                }
-            }
-        }]
-    }
+    //                     let percentage = (value * 100 / sum).toFixed(2) + '%';
+    //                     return percentage.slice(0,4) + '%';
+    //                 }
+    //             }
+    //         }
+    //     }]
+    // }
 
-    const data2 = {
-        labels: ['Cumplieron', 'No cumplieron'],
-        datasets: [{
-            label: '',
-            data: arr2,
-            backgroundColor: ['#0d6efd', '#9ec5fe'],
-            borderColor: '#fff',
-            hoverOffset: 4,
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        let label = context.label;
-                        let value = context.formattedValue;
+    // const data2 = {
+    //     labels: ['Cumplieron', 'No cumplieron'],
+    //     datasets: [{
+    //         label: '',
+    //         data: arr2,
+    //         backgroundColor: ['#0d6efd', '#9ec5fe'],
+    //         borderColor: '#fff',
+    //         hoverOffset: 4,
+    //         tooltip: {
+    //             callbacks: {
+    //                 label: function(context) {
+    //                     let label = context.label;
+    //                     let value = context.formattedValue;
         
-                        if (!label)
-                            label = 'Unknown'
+    //                     if (!label)
+    //                         label = 'Unknown'
         
-                        let sum = 0;
-                        let dataArr = context.chart.data.datasets[0].data;
-                        dataArr.map(data => {
-                            sum += Number(data);
-                        });
+    //                     let sum = 0;
+    //                     let dataArr = context.chart.data.datasets[0].data;
+    //                     dataArr.map(data => {
+    //                         sum += Number(data);
+    //                     });
         
-                        let percentage = (value * 100 / sum).toFixed(2) + '%';
-                        return percentage.slice(0,4) + '%';
-                    }
-                }
-            }
-        }]
-    }
+    //                     let percentage = (value * 100 / sum).toFixed(2) + '%';
+    //                     return percentage.slice(0,4) + '%';
+    //                 }
+    //             }
+    //         }
+    //     }]
+    // }
 
-    const options = {
-        plugins: {
-            legend: {
-                display: false
-            },
-        },
-        cutout: 40
-    }
+    // const options = {
+    //     plugins: {
+    //         legend: {
+    //             display: false
+    //         },
+    //     },
+    //     cutout: 40
+    // }
 
     const arrGantt = []
     ciclos.map((e) => {
@@ -444,10 +448,10 @@ function Year() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className='auditoria__year__main__aside'>
+                                <div className='auditoria__year__main__aside'></div>
+                                {/* <div className='auditoria__year__main__aside'>
                                     <div className='auditoria__year__main__aside__graficas'>
-                                        {/* Gráfica 1 */}
-                                        {/* <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                                        <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                                             <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
                                                 <div className='doughnut__grafica__info__textos'>
                                                     <h4 className='mb-2'>Total de tareas</h4>
@@ -461,9 +465,8 @@ function Year() {
                                                     />
                                                 </div>
                                             </div>
-                                        </div> */}
-                                        {/* Gráfica 2 */}
-                                        {/* <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                                        </div>
+                                        <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                                             <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
                                                 <div className='doughnut__grafica__info__textos'>
                                                     <h4 className='mb-2'>Avance por auditores</h4>
@@ -477,9 +480,9 @@ function Year() {
                                                     />
                                                 </div>
                                             </div>
-                                        </div> */}
+                                        </div>
                                     </div>
-                                    {/* <div className='auditoria__year__main__aside__actividad scroll--y shadow-sm rounded-3 border border-light-subtle'>
+                                    <div className='auditoria__year__main__aside__actividad scroll--y shadow-sm rounded-3 border border-light-subtle'>
                                         <h3 className='mb-4'>Última actividad:</h3>
                                         <ul className='list-group'>
                                             {list.map((e,i) => {
@@ -491,8 +494,8 @@ function Year() {
                                                 </li>
                                             })}
                                         </ul>
-                                    </div> */}
-                                </div>
+                                    </div>
+                                </div> */}
                             </div>
                         )}
                     </>

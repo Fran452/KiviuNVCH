@@ -1,7 +1,7 @@
-CREATE DATABASE kiviuTest;
+CREATE DATABASE kiviuBanco;
 
 
-USE kiviuTest;
+USE kiviuBanco;
 
 
 CREATE TABLE Areas (
@@ -38,21 +38,6 @@ CREATE TABLE Ciclos (
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 
---! Sin utilizacion eliminacion
-/*
-CREATE TABLE Procesos ( 
-    id_procesos                             INT PRIMARY KEY AUTO_INCREMENT,
-    fk_area                                 INT NOT NULL,
-    fk_ciclo                                INT NOT NULL,
-    nombre                                  VARCHAR(255) NOT NULL,
-    detalles                                VARCHAR(255) NOT NULL,
-    fecha_inicio                            DATE NOT NULL,  
-    fecha_final                             DATE NOT NULL,                      
-    ver                                     INT NOT NULL,
-    FOREIGN KEY (fk_ciclo)                  REFERENCES Ciclos(id_ciclo),
-    FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
-);
-*/
 
 CREATE TABLE Tareas (
     id_tarea                                INT PRIMARY KEY AUTO_INCREMENT,
@@ -64,7 +49,7 @@ CREATE TABLE Tareas (
     estado	                                INT, -- de no ser agregado se le asigna 1
     prioridad					            INT NOT NULL,  -- default 2
     fecha_inicio                            DATE NOT NULL,
-    fecha_final                             DATE NOT NULL, -- 31/12/ actual año
+    fecha_final                             DATE, -- 31/12/ actual año
     notas                                   VARCHAR(255),
 --    progreso					            INT,            -- 0
 --    horas_totales                         INT NOT NULL,  -- 0
@@ -82,8 +67,8 @@ CREATE TABLE Subtareas (
     asignacion                              INT NOT NULL,   -- persona de la tarea
     horasAprox                              INT NOT NULL, -- Defoult 4hr
     avance                                  INT NOT NULL, -- Defoult "0"
-    estado                                  VARCHAR(255) NOT NULL, -- 0 (pendiente) 1 (En progreso) 2 (Completada) 3 (En espera) 4 (Bloqueada) 5 (Eliminada) /  Defoult "1"
-    prioridad                               VARCHAR(255), -- 0 (normal) 1 (prioritario) 2 (muy Prioritario) / Defoult "1"
+    estado                                  INT NOT NULL, -- 0 (pendiente) 1 (En progreso) 2 (Completada) 3 (En espera) 4 (Bloqueada) 5 (Eliminada) /  Defoult "1"
+    prioridad                               INT, -- 0 (normal) 1 (prioritario) 2 (muy Prioritario) / Defoult "1"
     notas                                   VARCHAR(255), -- Defoult "notas"
     fecha_inicio                            DATE NOT NULL,
     fecha_final                             DATE,

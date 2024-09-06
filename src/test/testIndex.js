@@ -1,55 +1,35 @@
+require('dotenv').config();
 const dataBaseSQL = require("../databaseSQL/models");
 const funcionesDeTest = require('./funcionesTestGenericas')
-
-const path = require("path");
-
-const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
-const { planesAcción } = require("../controllers/controller");
-const { json } = require("sequelize");
 
 
 const controlador = {
     
     testGenerico: async (req,res) => {
         let links = {
-            ArmarBaseDeDatos:'http://localhost:3030/test/armado-SQL',
-            ArmarBaseDeDatosNew:'http://localhost:3030/test/armado-SQL-NEW',
+            ArmarBaseDeDatos:   `${process.env.WEB}/test/armado-SQL`,
+            ArmarBaseDeDatosNew:`${process.env.WEB}/test/armado-SQL-NEW`,
             planesAcción:{
-                testGenericos: 'http://localhost:3030/test/plan-accion',
+                testGenericos:  `${process.env.WEB}/test/plan-accion`,
                 ciclos:{
-                    add:    'http://localhost:3030/test/plan-accion/addCiclos',
-                    view:   'http://localhost:3030/test/plan-accion/viewCiclos',
-                    mod:    'http://localhost:3030/test/plan-accion/modCiclos',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteCiclos'
+                    add:    `${process.env.WEB}/test/plan-accion/addCiclos`,
+                    view:   `${process.env.WEB}/test/plan-accion/viewCiclos`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modCiclos`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteCiclos`
                 },
                 tareas:{
-                    add:    'http://localhost:3030/test/plan-accion/addTask',
-                    view:   'http://localhost:3030/test/plan-accion/viewTareas',
-                    mod:    'http://localhost:3030/test/plan-accion/modTask',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteTask'
+                    add:    `${process.env.WEB}/test/plan-accion/addTask`,
+                    view:   `${process.env.WEB}/test/plan-accion/viewTareas`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modTask`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteTask`
                 },
                 subTarea:{
-                    add:    'http://localhost:3030/test/plan-accion/addSubTask',    
-                    view:   'http://localhost:3030/test/plan-accion/viewSubTask',
-                    mod:    'http://localhost:3030/test/plan-accion/modSubTask',
-                    delete: 'http://localhost:3030/test/plan-accion/deleteSubTask'
+                    add:    `${process.env.WEB}/test/plan-accion/addSubTask`,    
+                    view:   `${process.env.WEB}/test/plan-accion/viewSubTask`,
+                    mod:    `${process.env.WEB}/test/plan-accion/modSubTask`,
+                    delete: `${process.env.WEB}/test/plan-accion/deleteSubTask`
                 },
-            },
-            
-            dateIn : {
-                testGenericos: 'http://localhost:3030/test/dateIn',
-                indicadores:{
-                    add:    'http://localhost:3030/test/dateIn/newIndicador',
-                    view:   'http://localhost:3030/test/dateIn/viewIndicador',
-                    mod:    'http://localhost:3030/test/dateIn/editIndicador',
-                    delete: 'http://localhost:3030/test/dateIn/deleteIndicador'
-                },
-                metricas:{
-                    add:    'http://localhost:3030/test/dateIn/newMetrica',
-                    view:   'http://localhost:3030/test/dateIn/ultimasTresMetricas',
-                    mod:    'http://localhost:3030/test/dateIn/editMegrica',
-                }
             },
         }
 
@@ -168,15 +148,24 @@ const controlador = {
 
     crearBaseDeDatosNew: async (req,res) => {
         try{
+            console.log("entrando a la generacion de base de datos");
+
+
+            let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('francisco.lema@nbch.com.ar');
+
+            if(empleadoYaSubido != undefined){
+                res.json("base de datos ya subida anteriormente");
+                return 0;
+            };
+
             let ahora = new Date();
 
-            let fechaInicial = ahora.toISOString().split('T')[0];
+            let fechaInicial = ahora;
             ahora.setDate(ahora.getDate() + 7);
-            let fechaFin = ahora.toISOString().split('T')[0];
+            let fechaFin = ahora;
 
             console.log(fechaInicial);
             console.log(fechaFin);
-            $2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq
 
             let area = await funcionesDeTest.crearArea("Analisis","no tiene");
 
@@ -214,7 +203,9 @@ const controlador = {
             let subtarea;
 
             let ciclos = [];
-            
+
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-09-31');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"TARJETA DE CREDITO","TARJETA DE CREDITO",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -296,7 +287,7 @@ const controlador = {
 
                 ciclo.tareas.push(tarea);
 
-                tarea     = await funcionesDeTest.crearTarea(TD.id_empleado,area.id_area,ciclo.id_ciclo,"Análisis Tarjetas Recargables",1,1,"notas",0,fechaInicial,fechaFin,fechaInicial,fechaFin,0);
+                tarea     = await funcionesDeTest.crearTarea(TD.id_empleado,area.id_area,ciclo.id_ciclo,"Análisis Tarjetas Recargables",1,1,fechaInicial,fechaFin,"notas");
                 tarea.subTarea = [];
 
                     subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Análisis Tarjetas Recargables",TD.id_empleado,4,0,1,1,fechaInicial,null,"esto son notas",1);
@@ -327,6 +318,8 @@ const controlador = {
             ciclos.push(ciclo);
 
 
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-08-30');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"COMEX","COMEX",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -374,6 +367,8 @@ const controlador = {
 
             ciclos.push(ciclo);
 
+            fechaInicial = new Date('2024-09-01');
+            fechaFin = new Date('2024-09-31');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"PUSF","PUSF",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -451,7 +446,8 @@ const controlador = {
             
             ciclos.push(ciclo);
 
-
+            fechaInicial = new Date('2024-08-01');
+            fechaFin = new Date('2024-10-30');
             ciclo     = await funcionesDeTest.crearCiclo(area.id_area,"DEPÓSITOS","DEPÓSITOS",fechaInicial,fechaFin,1);
             ciclo.tareas = [];
 
@@ -549,6 +545,7 @@ const controlador = {
 
 
         }catch(error){
+            console.log("entrando a la generacion de base de datos");
             console.log(error);
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   
@@ -562,7 +559,7 @@ module.exports = controlador;
 
 /*
 
-let apisJSON = await fetch('http://localhost:3030/apis/dateIn/newIndicador',{
+let apisJSON = await fetch('${process.env.WEB}/apis/dateIn/newIndicador',{
     method:'POST',
     headers: {
         "Content-Type": "application/json"

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Modal, ProgressBar } from 'react-bootstrap';
+// import { Modal, ProgressBar } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import "./ModalPlanes.scss"
 import { tareasContext } from '../Tareas';
 import { newContext } from '../../pages/PlanesAccion/Ciclo'
@@ -29,7 +30,7 @@ function ModalPlanes(props) {
         nombre: obj.nombre,
         fechaInicio: obj.fecha_inicio,
         fechaFinal: obj.fecha_final,
-        responsable: obj.Empleado.mail,
+        responsable: obj.mailUser,
         estado: obj.estado.toString(),
         prioridad: obj.prioridad.toString(),
         notas: obj.notas,
@@ -67,7 +68,7 @@ function ModalPlanes(props) {
         idCiclo: pro.id_ciclo
       }
       try {
-        const res = await fetch("http://localhost:3030/apis/plan-accion/addTask", {
+        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/addTask", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
@@ -185,7 +186,7 @@ function ModalPlanes(props) {
         idCiclo: pro.id_ciclo
       }
       try {
-        const res = await fetch("http://localhost:3030/apis/plan-accion/modTask", {
+        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/modTask", {
           method: "PUT",
           headers: {
               "Content-Type": "application/json"
@@ -232,34 +233,34 @@ function ModalPlanes(props) {
     }
   }
 
-  const handleDecrease = (e) => {
-    e.preventDefault()
-    if(formData.progreso === 0){
-      setFormData({
-        ...formData,
-        progreso: 0
-      })
-    } else {
-      setFormData({
-        ...formData,
-        progreso: formData.progreso - 10
-      })
-    }
-  }
-  const handleIncrese = (e) => {
-    e.preventDefault()
-    if(formData.progreso === 100){
-      setFormData({
-        ...formData,
-        progreso: 100
-      })
-    } else {
-      setFormData({
-        ...formData,
-        progreso: formData.progreso + 10
-      })
-    }
-  }
+  // const handleDecrease = (e) => {
+  //   e.preventDefault()
+  //   if(formData.progreso === 0){
+  //     setFormData({
+  //       ...formData,
+  //       progreso: 0
+  //     })
+  //   } else {
+  //     setFormData({
+  //       ...formData,
+  //       progreso: formData.progreso - 10
+  //     })
+  //   }
+  // }
+  // const handleIncrese = (e) => {
+  //   e.preventDefault()
+  //   if(formData.progreso === 100){
+  //     setFormData({
+  //       ...formData,
+  //       progreso: 100
+  //     })
+  //   } else {
+  //     setFormData({
+  //       ...formData,
+  //       progreso: formData.progreso + 10
+  //     })
+  //   }
+  // }
 
   return (
     <Modal

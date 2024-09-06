@@ -27,10 +27,10 @@ function ModalVer(props) {
                 nombre: obj.nombre,
                 prioridad: obj.prioridad,
                 estado: obj.estado,
-                progreso: obj.progreso,
-                horas: obj.horas_totales,
+                progreso: obj.progreso_tarea,
+                horas: obj.horas_tarea,
                 notas: obj.notas,
-                responsable: obj.Empleado.nombre,
+                responsable: obj.nombreUser,
                 fechaInicio: obj.fecha_inicio,
                 fechaFinal: obj.fecha_final
             })
@@ -84,7 +84,11 @@ function ModalVer(props) {
                 ) : (
                     <div className='modal__ver d-flex flex-column'>
                         <h3 className='modal__ver__nombre'>{objSelec.nombre}</h3>
-                        <p className='text-muted'>Del {objSelec.fechaInicio.replace(/-/g, '/').split("/").reverse().join("/")} al {objSelec.fechaFinal.replace(/-/g, '/').split("/").reverse().join("/")}</p>
+                        {objSelec.fechaFinal !== null ? (
+                            <p className='text-muted'>Del {objSelec.fechaInicio.replace(/-/g, '/').split("/").reverse().join("/")} al {objSelec.fechaFinal.replace(/-/g, '/').split("/").reverse().join("/")}</p>
+                        ) : (
+                            <p className='text-muted'>Desde el {objSelec.fechaInicio.replace(/-/g, '/').split("/").reverse().join("/")}</p>
+                        )}
                         <div className='modal__ver__info'>
                             <div className='d-flex flex-column'>
                                 <p className='modal__ver__prioridad'>Prioridad: 
