@@ -414,13 +414,19 @@ function Tareas() {
                                     {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
                                   </div>
                                   <div className='table__custom__cell cell__progreso'>
-                                    <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso)} label={`${Math.round(e.progreso)}%`} max={100}/>
+                                    <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso_tarea)} label={`${Math.round(e.progreso_tarea)}%`} max={100}/>
                                   </div>
-                                  <div className='table__custom__cell cell__horas'>{e.horas_totales}</div>
+                                  <div className='table__custom__cell cell__horas'>{e.horas_tarea}</div>
                                   <div className="table__custom__cell cell__notas">{e.notas}</div>
-                                  <div className="table__custom__cell cell__mail">{e.Empleado.nombre}</div>
+                                  <div className="table__custom__cell cell__mail">{e.nombreUser}</div>
                                   <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                  <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                  {e.fecha_final === null ? (
+                                    <div className="table__custom__cell cell__date"></div>
+                                  ): (
+                                    <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                  )}
+                                  {/* <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                  <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
                                 </div>
                                 <CSSTransition
                                     in={expandedRow === e.id_tarea}
