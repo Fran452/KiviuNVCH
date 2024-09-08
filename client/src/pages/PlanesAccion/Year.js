@@ -44,22 +44,38 @@ const todayLine = {
 // Muestra info en las barras del gantt
 const viewPercentage = {
     id: 'viewPercentage',
-    afterDatasetsDraw(chart, args, pluginOptions) {
-        // const { ctx, data, chartArea: {top, bottom, left, right}, scales: { x, y } } = chart;
-        const { ctx, data, scales: { y } } = chart;
-        ctx.save();
-        ctx.font = 'bolder 12px sans-serif';
-        ctx.fillStyle = 'white';
-        ctx.textBaseline = 'middle';
-        data.datasets.forEach((dataset, datasetIndex) => {
-            dataset.data.forEach((datapoint, index) => {
-                const meta = chart.getDatasetMeta(datasetIndex);
-                const bar = meta.data[index]
-                const xPos = bar.base
-                ctx.fillText(datapoint.percentage, xPos + 10, y.getPixelForValue(index));
-            })
-        })
-    }
+    afterDatasetsDraw(chart) {
+        const ctx = chart.ctx;
+        chart.data.datasets.forEach(function(dataset, datasetIndex) {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            meta.data.forEach(function(bar, index) {
+                const data = dataset.data[index];
+                ctx.fillStyle = '#fff'; // Color del texto
+                ctx.font = 'bold 12px sans-serif';
+                ctx.textBaseline = 'middle';
+                const xPos = meta.data[index].base
+                const position = bar.tooltipPosition();
+                ctx.fillText(data.percentage, xPos + 10, position.y);
+            });
+        });
+    },
+    // afterDatasetsDraw(chart, args, pluginOptions) {
+    //     // const { ctx, data, chartArea: {top, bottom, left, right}, scales: { x, y } } = chart;
+    //     const { ctx, data, scales: { y } } = chart;
+    //     ctx.save();
+    //     ctx.font = 'bolder 12px sans-serif';
+    //     ctx.fillStyle = 'white';
+    //     ctx.textBaseline = 'middle';
+    //     data.datasets.forEach((dataset, datasetIndex) => {
+    //         dataset.data.forEach((datapoint, index) => {
+    //             const meta = chart.getDatasetMeta(datasetIndex);
+    //             const bar = meta.data[index]
+    //             console.log(bar)
+    //             const xPos = bar.base
+    //             ctx.fillText(datapoint.percentage, xPos + 10, y.getPixelForValue(index));
+    //         })
+    //     })
+    // }
 }
 
 ChartJS.register(
@@ -297,28 +313,72 @@ function Year() {
         // labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'],
         datasets : [
           {
-            label: '',
-            data: arrGantt,
-            // data: [
-            //     {x: ['2024-11-01', '2024-11-30'], y: 'Planeamiento', idCiclo: 0, percentage: '50%'},
-            //     {x: ['2024-03-01', '2024-05-31'], y: 'Préstamos 1ra revisión', idCiclo: 1, percentage: '40%'},
-            //     {x: ['2024-11-01', '2024-12-31'], y: 'Préstamos 2da revisión', idCiclo: 2, percentage: '40%'},
-            //     {x: ['2024-08-01', '2024-09-30'], y: 'Tarjetas de crédito', idCiclo: 3, percentage: '30%'},
-            //     {x: ['2024-12-01', '2024-12-31'], y: 'TI - sección 2', idCiclo: 4, percentage: '70%'},
-            //     {x: ['2024-12-01', '2024-12-31'], y: 'TI - sección 4', idCiclo: 5, percentage: '40%'},
-            //     {x: ['2024-08-01', '2024-08-31'], y: 'TI - sección 6', idCiclo: 6, percentage: '20%'},
-            //     {x: ['2024-10-01', '2024-10-31'], y: 'TI - sección 7', idCiclo: 7, percentage: '80%'},
-            //     {x: ['2024-11-01', '2024-11-30'], y: 'TI - sección 8', idCiclo: 8, percentage: '10%'},
-            //     {x: ['2024-12-01', '2024-12-31'], y: 'Tecnología Informática', idCiclo: 9, percentage: '90%'},
-            //     {x: ['2024-08-01', '2024-10-31'], y: 'Depósitos', idCiclo: 10, percentage: '40%'},
-            //     {x: ['2024-12-01', '2024-12-31'], y: 'Tesorería', idCiclo: 11, percentage: '20%'},
-            //     {x: ['2024-11-01', '2024-12-31'], y: 'Contabilidad General', idCiclo: 12, percentage: '70%'},
-            //     {x: ['2024-08-01', '2024-08-31'], y: 'Comercio Exterior', idCiclo: 13, percentage: '60%'},
-            //     {x: ['2024-08-01', '2024-08-31'], y: 'Transferencia Electrónica de Fondos', idCiclo: 14, percentage: '30%'},
-            //     {x: ['2024-09-01', '2024-09-30'], y: 'Protección de usuarios de S.F.', idCiclo: 15, percentage: '50%'}
-            // ],
+            label: 'Fechas establecidas',
+            // data: arrGantt,
+            data: [
+                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 1', idCiclo: 0, percentage: '50%'},
+                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 2', idCiclo: 1, percentage: '40%'},
+                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 3', idCiclo: 2, percentage: '40%'},
+                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 4', idCiclo: 3, percentage: '30%'},
+                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 5', idCiclo: 4, percentage: '50%'},
+                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 6', idCiclo: 5, percentage: '40%'},
+                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 7', idCiclo: 6, percentage: '40%'},
+                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 8', idCiclo: 7, percentage: '30%'},
+                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 9', idCiclo: 8, percentage: '50%'},
+                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 10', idCiclo: 9, percentage: '40%'},
+                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 11', idCiclo: 10, percentage: '40%'},
+                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 12', idCiclo: 11, percentage: '30%'},
+                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 13', idCiclo: 0, percentage: '50%'},
+                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 14', idCiclo: 1, percentage: '40%'},
+                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 15', idCiclo: 2, percentage: '40%'},
+                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 16', idCiclo: 3, percentage: '30%'},
+                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 17', idCiclo: 4, percentage: '50%'},
+                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 18', idCiclo: 5, percentage: '40%'},
+                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 19', idCiclo: 6, percentage: '40%'},
+                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 20', idCiclo: 7, percentage: '30%'},
+                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 21', idCiclo: 8, percentage: '50%'},
+                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 22', idCiclo: 9, percentage: '40%'},
+                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 23', idCiclo: 10, percentage: '40%'},
+                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 24', idCiclo: 11, percentage: '30%'},
+            ],
             // data: [65, 59, 80, 81, 56, 55, 40, 55, 36, 49, 52, 43],
             backgroundColor: '#0d6efd',
+            borderWidth: 0,
+            borderSkipped: false,
+            borderRadius: 10,
+            barThickness: 20
+          },
+          {
+            label: 'Fechas reales',
+            // data: arrGantt,
+            data: [
+                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 1', idCiclo: 0, percentage: '50%'},
+                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 2', idCiclo: 1, percentage: '40%'},
+                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 3', idCiclo: 2, percentage: '40%'},
+                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 4', idCiclo: 3, percentage: '30%'},
+                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 5', idCiclo: 4, percentage: '50%'},
+                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 6', idCiclo: 5, percentage: '40%'},
+                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 7', idCiclo: 6, percentage: '40%'},
+                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 8', idCiclo: 7, percentage: '30%'},
+                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 9', idCiclo: 8, percentage: '50%'},
+                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 10', idCiclo: 9, percentage: '40%'},
+                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 11', idCiclo: 10, percentage: '40%'},
+                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 12', idCiclo: 11, percentage: '30%'},
+                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 13', idCiclo: 0, percentage: '50%'},
+                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 14', idCiclo: 1, percentage: '40%'},
+                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 15', idCiclo: 2, percentage: '40%'},
+                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 16', idCiclo: 3, percentage: '30%'},
+                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 17', idCiclo: 4, percentage: '50%'},
+                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 18', idCiclo: 5, percentage: '40%'},
+                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 19', idCiclo: 6, percentage: '40%'},
+                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 20', idCiclo: 7, percentage: '30%'},
+                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 21', idCiclo: 8, percentage: '50%'},
+                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 22', idCiclo: 9, percentage: '40%'},
+                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 23', idCiclo: 10, percentage: '40%'},
+                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 24', idCiclo: 11, percentage: '30%'},
+            ],
+            // data: [65, 59, 80, 81, 56, 55, 40, 55, 36, 49, 52, 43],
+            backgroundColor: '#6ea8fe',
             borderWidth: 0,
             borderSkipped: false,
             borderRadius: 10,
@@ -330,7 +390,12 @@ function Year() {
     const optionsBar = {
         plugins: {
             legend: {
-                display: false
+                display: true,
+                labels: {
+                    font: {
+                        family: 'sans-serif'
+                    }
+                }
             },
             tooltip: {
                 callbacks : {
@@ -342,8 +407,7 @@ function Year() {
                 }
             }
         },
-        layout: {
-        },
+        layout: {},
         indexAxis: 'y',
         onHover: (event, chartElement) => {
             event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default'
@@ -363,6 +427,9 @@ function Year() {
                             month: 'short',
                         }).format(date)
                     },
+                    font: {
+                        family: 'sans-serif'
+                    }
                 },
                 min: '2024-01-01',
                 max: '2024-12-31'
@@ -379,7 +446,9 @@ function Year() {
             date: {
                 locale: es
             }
-        }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
     }
 
     const chartRef = useRef()
