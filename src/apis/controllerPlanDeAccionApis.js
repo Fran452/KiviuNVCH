@@ -284,7 +284,6 @@ const controlador = {
     // Agregar tareas
     addTarea:  async (req,res) => { 
         try{
-            let fechaActua = new Date() ;
             let empleadoAsignado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
@@ -399,7 +398,6 @@ const controlador = {
      */
     addSubTarea: async (req,res) => {
         try{
-            let hoy = new Date();
             //let fechaIngresadaFinal = new Date(req.body.fechaFinal); 
             let fehcaIngresadaInicial = new Date(req.body.fechaInicial);
             let titulo      = req.body.titulo || null;
@@ -479,7 +477,14 @@ const controlador = {
 
             let fechaFinal;
             if(req.body.avance == 100){
-                fechaFinal = new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0') + "-" + (new Date().getDate()).toString().padStart(2, '0')
+                let ahora = new Date();
+                const opciones = {
+                    timeZone: 'America/Argentina/Buenos_Aires',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                };
+                fechaFinal = new Intl.DateTimeFormat('es-AR', opciones).format(ahora);
             }else{
                 fechaFinal = null
             }
@@ -550,10 +555,16 @@ const controlador = {
 
     terminarSubTarea: async (req,res) => {
         try{
-            let ahora = new Date()
+            let ahora = new Date();
+            const opciones = {
+                timeZone: 'America/Argentina/Buenos_Aires',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            };
             // let fechaFinal = ahora.toISOString().split('T')[0];
-            let fechaFinal = ahora.getFullYear() + "-" + (ahora.getMonth() + 1).toString().padStart(2, '0') + "-" + (ahora.getDate()).toString().padStart(2, '0')
-            
+            let fechaFinal = new Intl.DateTimeFormat('es-AR', opciones).format(ahora);
+
             let subtarea = await dataBaseSQL.subtareas.update({
                 estado: 3,
                 avance : 100,

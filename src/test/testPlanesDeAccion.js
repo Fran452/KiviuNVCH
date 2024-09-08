@@ -16,28 +16,32 @@ const controlador = {
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test addCiclo");
 
             let viewCiclosJSON  = await fetch(`${process.env.WEB}/test/plan-accion/addCiclos`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test viewCiclos");
 
             let editCicoJSON    = await fetch(`${process.env.WEB}/test/plan-accion/modCiclos`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test editCico");
 
             let deleteCicloJSON = await fetch(`${process.env.WEB}/test/plan-accion/deleteCiclos`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test deleteCiclo");
 
             // Tareas
             let addTareasJSON = await fetch(`${process.env.WEB}/test/plan-accion/addTask`,{
@@ -45,57 +49,73 @@ const controlador = {
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test addTareas");
 
             let viewTareasJSON = await fetch(`${process.env.WEB}/test/plan-accion/viewTareas`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test viewTareas");
 
             let ediTareasJSON = await fetch(`${process.env.WEB}/test/plan-accion/modTask`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test ediTareas");
 
             let deleteTareasJSON = await fetch(`${process.env.WEB}/test/plan-accion/deleteTask`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test deleteTareas");
 
             let addSubTareasJSON = await fetch(`${process.env.WEB}/test/plan-accion/addSubTask`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test addSubTareas");
 
             let viewSubTareasJSON = await fetch(`${process.env.WEB}/test/plan-accion/viewSubTask`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test viewSubTareas");
 
             let ediSubTareasJSON = await fetch(`${process.env.WEB}/test/plan-accion/modSubTask`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test ediSubTareas");
 
+            
             let deleteSubTareasJSON = await fetch(`${process.env.WEB}/test/plan-accion/deleteSubTask`,{
                 method:'GET',
                 headers: {
                     "Content-Type": "application/json"
                 },
-            })
+            });
+            console.log("Fin de test deleteSubTareas");
 
+
+            let testPositivos = 0;
+            let testNegativos = {
+                contador : 0,
+                resultado : []
+            };
+            let retornos = [];
 
             let addCiclo = await addCicloJSON.json();
             let viewCiclos = await viewCiclosJSON.json();
@@ -107,13 +127,30 @@ const controlador = {
             let ediTarea = await ediTareasJSON.json();
             let deleteTarea = await deleteTareasJSON.json();
 
-
             let addSubTarea = await addSubTareasJSON.json();
             let viewSubTarea = await viewSubTareasJSON.json();
             let ediSubTarea = await ediSubTareasJSON.json();
             let deleteSubTarea = await deleteSubTareasJSON.json();
 
+            retornos = [addCiclo,viewCiclos,editCico,deleteCiclo,addTarea,viewTarea,ediTarea,deleteTarea,addSubTarea,viewSubTarea,ediSubTarea,deleteSubTarea];
+            for(let i = 0; i < retornos.length; i++){
+
+                testPositivos += retornos[i].contadores.testCorrecto;
+                if(retornos[i].contadores.testIncorrecto != 0){
+                    testNegativos.contador += retornos[i].contadores.testIncorrecto;
+                    testNegativos.resultado.push(retornos[i].contadores.testIncorrecto.resultado);
+                }
+            }
+            if(testNegativos.contador == 0){
+                testNegativos = 0;
+            }
+
+
             let retorn = {
+                contadores:{
+                    testPositivos,
+                    testNegativos
+                },
                 ciclos: {
                     add     : addCiclo,
                     view    : viewCiclos,
@@ -133,6 +170,7 @@ const controlador = {
                     delete  : deleteSubTarea
                 }
             }
+            console.log("Fin de test");
             res.json(retorn);  
         }
         catch(error){
@@ -201,7 +239,9 @@ const controlador = {
         await funcionesDeTest.eliminarCiclo(cicloEncontrado.id_ciclo);
 
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
-        res.json({resultadoTest,resultadoApi:apis});
+
+        let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+        res.json({contadores,resultadoTest,resultadoApi:apis});
         return 0;
     },
     // Ver
@@ -284,7 +324,9 @@ const controlador = {
         await funcionesDeTest.eliminarCiclo(cicloSubicosNoVer.id_ciclo);
 
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
-        res.json({resultadoTest,resultadoApi:{apisMismaArea:apis,apisDiferenteArea:apis2}});
+
+        let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+        res.json({contadores,resultadoTest,resultadoApi:{apisMismaArea:apis,apisDiferenteArea:apis2}});
         return 0;
     },
     // Editar
@@ -343,7 +385,8 @@ const controlador = {
 
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
 
-        res.json({resultadoTest,resultadoApi:apis});
+        let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+        res.json({contadores,resultadoTest,resultadoApi:apis});
         return 0;
     },
     // Eliminar
@@ -396,7 +439,8 @@ const controlador = {
 
         await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
 
-        res.json({resultadoTest,resultadoApi:apis});
+        let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+        res.json({contadores,resultadoTest,resultadoApi:apis});
         return 0;
     },
 
@@ -530,7 +574,8 @@ const controlador = {
             await funcionesDeTest.eliminarCiclo(crearCiclo.id_ciclo);
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
 
-            res.json({resultadoTest,resultadoApi:apis});
+            let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+            res.json({contadores,resultadoTest,resultadoApi:apis});
 
         }
         catch(error){
@@ -591,7 +636,7 @@ const controlador = {
                     idCiclo: creaCiclo.id_ciclo,
                     user:       usuario
                 })
-            })
+            });
             
             let apis = await apisJSON.json();
 
@@ -657,7 +702,8 @@ const controlador = {
             await funcionesDeTest.eliminarCiclo(creaCiclo.id_ciclo);
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
 
-            res.json({resultadoTest,resultadoApi:apis});
+            let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+            res.json({contadores,resultadoTest,resultadoApi:apis});
         }
         catch(error){
             console.log(error);
@@ -747,7 +793,8 @@ const controlador = {
             await funcionesDeTest.eliminarCiclo(crearCiclo.id_ciclo);
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);    
 
-            res.json({resultadoTest,resultadoApi:apis});
+            let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+            res.json({contadores,resultadoTest,resultadoApi:apis});
         }
         catch(error){
             console.log(error);
@@ -840,7 +887,8 @@ const controlador = {
             await funcionesDeTest.eliminarCiclo(crearCiclo.id_ciclo);
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);    
 
-            res.json({resultadoTest,resultadoApi:apis});
+            let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+            res.json({contadores,resultadoTest,resultadoApi:apis});
         }
         catch(error){
             console.log(error);
@@ -924,7 +972,9 @@ const controlador = {
             await funcionesDeTest.eliminarCiclo(crearCiclo.id_ciclo);
 
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);    
-            res.json({resultadoTest,resultadoApi:apis});
+
+            let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+            res.json({contadores,resultadoTest,resultadoApi:apis});
         }
         catch(error){
             console.log(error);
@@ -937,8 +987,16 @@ const controlador = {
     editSubTarea: async (req,res) => {
         try{
             let resultadoTest = {};
-
+            
+            const opciones = {
+                timeZone: 'America/Argentina/Buenos_Aires',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+            };
             let ahora = new Date();
+            let fechaArgentina  = new Intl.DateTimeFormat('es-AR', opciones).format(new Date());
+            ahora = new Date(fechaArgentina);
             let fechaInicio = ahora.toISOString().split('T')[0];
             ahora.setDate(ahora.getDate() + 7);
             let fechaFin = ahora.toISOString().split('T')[0];
@@ -951,10 +1009,11 @@ const controlador = {
                 puesto:baseDeDatos[0].empleados[1].fk_puesto,
                 mail:baseDeDatos[0].empleados[1].mail  
             };
+
             let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo ejemplo","Ciclo ejemplo",fechaInicio,fechaFin,1);
             
             let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,"notas");
-            let crearSubtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
+            let crearSubtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,null,"esto son notas",1);
             let subtareaAntes   = await funcionesDeTest.buscarSubTarea(crearSubtarea.id_sub_tarea);
             
             
@@ -974,7 +1033,7 @@ const controlador = {
                     notas           : 'Notas editadas',
                     user            : usuario  
                 })
-            })
+            });
             
             let apis = await apisJSON.json();
             
@@ -986,7 +1045,7 @@ const controlador = {
             };
 
             let subtareaMod  = await funcionesDeTest.buscarSubTarea(subtareaAntes.id_sub_tarea);
-
+            console.log(subtareaMod);
             // Modificacion de titulo
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de titulo','cambio de titulo',subtareaMod.titulo,1);
 
@@ -999,15 +1058,58 @@ const controlador = {
             // Modificacion de estado
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Modificacion de estado',2,subtareaMod.estado,1);
 
+
+            await fetch(`${process.env.WEB}/apis/plan-accion/modSubTask`,{
+                method:'PUT',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    subtarea        : subtareaAntes,
+                    titulo          : 'cambio de titulo',
+                    asignacion      : usuario.mail,    
+                    horasAprox      : 5,    
+                    avance          : 100,
+                    estado          : 2,
+                    prioridad       : 2,    
+                    notas           : 'Notas editadas',
+                    user            : usuario  
+                })
+            });
             
-            
+            subtareaMod  = await funcionesDeTest.buscarSubTarea(subtareaAntes.id_sub_tarea);
+            console.log(subtareaMod);
+
+            // Agregar fecha al momento de modificar al 100% el avance
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Agregar fecha al momento de modificar al 100% el avance',fechaInicio,subtareaMod.fecha_final,1);
+
+            let apisTareasJSON = await fetch(`${process.env.WEB}/apis/plan-accion/viewTask`,{
+                method:'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idCiclo: ciclo.id_ciclo,
+                    user:       usuario
+                })
+            });
+
+            let tareas = await apisTareasJSON.json(); 
+            let tareaView = tareas.objeto[0];
+
+            // Agregar fecha de la tarea
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Ver fecha final en la Tarea',fechaInicio,tareaView.fecha_final,1);
+
+
             // Eliminar ejemplos
             await funcionesDeTest.eliminarSubTareas(subtareaMod.id_sub_tarea);
             await funcionesDeTest.eliminarTarea(tarea.id_tarea);
             await funcionesDeTest.eliminarCiclo(ciclo.id_ciclo);
             
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
-            res.json({resultadoTest,resultadoApi:apis});
+            
+            let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+            res.json({contadores,resultadoTest,resultadoApi:apis});
         }
         catch(error){
             console.log(error);
@@ -1083,7 +1185,9 @@ const controlador = {
             await funcionesDeTest.eliminarCiclo(ciclo.id_ciclo);
             
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
-            res.json({resultadoTest,resultadoApi:apis});
+           
+            let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+            res.json({contadores,resultadoTest,resultadoApi:apis});
         }
         catch(error){
             console.log(error);
@@ -1167,7 +1271,9 @@ const controlador = {
             await funcionesDeTest.eliminarCiclo(ciclo.id_ciclo);
             
             await funcionesDeTest.eliminarAmbienteGenerico(baseDeDatos);
-            res.json({resultadoTest,resultadoApi:apis});
+            
+            let contadores = funcionesDeTest.contadorDeTest(resultadoTest);
+            res.json({contadores,resultadoTest,resultadoApi:apis});
         }
         catch(error){
             console.log(error);
