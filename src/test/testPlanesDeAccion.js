@@ -610,8 +610,12 @@ const controlador = {
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar horas de las subTareas (Tarea 1)',15,tarea1BD.horas_tarea,1);
 
             // Mostar porsentaje de avance
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 1)',fechaFin,tarea1BD.fecha_final,1);
+            
+            // Mostar Fecha final
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 1)',100,tarea1BD.progreso_tarea,1);
             
+
             // Mostrar segundo elemento
             let tarea2BD = apis.objeto.find(tarea => tarea.id_tarea == tarea2.id_tarea);
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar segundo elemento',undefined,tarea2BD,4);
@@ -621,6 +625,9 @@ const controlador = {
 
             // Mostar porsentaje de avance
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 2)',50,tarea2BD.progreso_tarea,1);
+
+            // Mostar Fecha final
+            resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Mostrar progreso de las subTareas (Tarea 2)',null,tarea2BD.fecha_final,1);
 
             // Mostrar tercer elemento
             let tarea3BD = apis.objeto.find(tarea => tarea.id_tarea == tarea3.id_tarea);
@@ -946,7 +953,7 @@ const controlador = {
             };
             let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo ejemplo","Ciclo ejemplo",fechaInicio,fechaFin,1);
             
-            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,fechaFin,"notas");
+            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,"notas");
             let crearSubtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
             let subtareaAntes   = await funcionesDeTest.buscarSubTarea(crearSubtarea.id_sub_tarea);
             
@@ -1029,7 +1036,7 @@ const controlador = {
             };
             let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo ejemplo","Ciclo ejemplo",fechaInicio,fechaFin,1);
             
-            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,fechaFin,"notas");
+            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,"notas");
             
             let subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub1 tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
             let subtarea2  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub2 tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
@@ -1105,7 +1112,7 @@ const controlador = {
             };
             let ciclo     = await funcionesDeTest.crearCiclo(usuario.area,"Ciclo ejemplo","Ciclo ejemplo",fechaInicio,fechaFin,1);
             
-            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,fechaFin,"notas");
+            let tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area,ciclo.id_ciclo,"Tarea de ejemplo",1,1,"notas");
             
             let subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"sub1 tarea ejemplo",usuario.id,4,5,1,1,fechaInicio,fechaFin,"esto son notas",1);
             let preSubtarea = await funcionesDeTest.buscarSubTarea(subtarea.id_sub_tarea);
