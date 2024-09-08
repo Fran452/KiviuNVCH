@@ -221,33 +221,44 @@ const controlador = {
             if(req.body.user.puesto < 1){
                 tareas = await dataBaseSQL.sequelize.query(
                 `
-                SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
+                SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea,
+                    CASE
+                        WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
+                        THEN MAX(Subtareas.fecha_final)
+                        ELSE NULL
+                    END AS fecha_final
                 FROM Tareas 
                 LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                 WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea;   
+                GROUP BY Tareas.id_tarea  
                 `        
                 ,{
                     replacements: { idCiclo: req.body.idCiclo },
                     type: Sequelize.QueryTypes.SELECT
                 });
 
+                
+
             }else{
-                /* COALESCE(SUM(tu_columna), 0)*/
                 tareas = await dataBaseSQL.sequelize.query(
-                    `
-                    SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea 
-                    FROM Tareas 
-                    LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
-                    LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
-                    WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
-                    GROUP BY Tareas.id_tarea;
-                    `        
-                    ,{
-                        replacements: { idCiclo: req.body.idCiclo },
-                        type: Sequelize.QueryTypes.SELECT
-                    });
+                `
+                SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea,
+                    CASE
+                        WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
+                        THEN MAX(Subtareas.fecha_final)
+                        ELSE NULL
+                    END AS fecha_final
+                FROM Tareas 
+                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
+                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
+                GROUP BY Tareas.id_tarea 
+                `        
+                ,{
+                    replacements: { idCiclo: req.body.idCiclo },
+                    type: Sequelize.QueryTypes.SELECT
+                });
             };
            
             res.json({error :0, errorDetalle: "", objeto:tareas});            
@@ -296,7 +307,7 @@ const controlador = {
                     estado                  : req.body.estado,
                     prioridad               : req.body.prioridad,
                     fecha_inicio            : req.body.fechaInicial,
-                    fecha_final             : null,
+                    //fecha_final             : null,
                     notas                   : req.body.notas,
                     //progreso                : req.body.progreso,
                     //horas_Necesarias        : 0,
@@ -342,7 +353,7 @@ const controlador = {
                 estado                  : req.body.estado,
                 prioridad               : req.body.prioridad,
                 fecha_inicio            : req.body.fechaInicio,
-                fecha_final             : req.body.fechaFinal,
+                //fecha_final             : req.body.fechaFinal,
                 notas                   : req.body.notas, 
                 // progreso                : req.body.progreso,
                 //horas_Necesarias      : req.body.horas,

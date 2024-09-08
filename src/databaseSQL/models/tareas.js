@@ -80,10 +80,11 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
+/*
         "fecha_final":{
             type: DataTypes.DATE(255),
         },
-
+*/
       
         "notas":{
             type: DataTypes.STRING(255),
