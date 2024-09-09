@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 // import { useLocation, Link } from "react-router-dom"
-import { useLocation } from "react-router-dom"
+import { useLocation, Link } from "react-router-dom"
 import './Ciclo.scss'
 import { Accordion } from 'react-bootstrap';
 import { jwtDecode } from "jwt-decode"
@@ -200,7 +200,11 @@ function Ciclo() {
                         ) : (
                             <>
                                 {state === null ? (
-                                    <h1>Year equals null</h1>
+                                    <div className='ciclo__error d-flex flex-column align-items-center justify-content-center'>
+                                        <img className='mb-4' src={IllustrationAccess} alt="" />
+                                        <h2 className='mb-4'>Ha ocurrido un error :(</h2>
+                                        <Link className='btn btn-primary shadow-sm fw-medium rounded-pill px-4' to={"/ciclos-de-auditoria"}>Regresar a ciclos de auditoría</Link>   
+                                    </div>
                                 ) : (
                                     <div className='ciclo__main d-flex flex-column flex-md-row'>
                                         <div className='ciclo__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
