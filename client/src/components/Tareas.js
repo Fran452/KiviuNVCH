@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { ProgressBar, Modal, OverlayTrigger } from 'react-bootstrap';
+// import { ProgressBar, Modal, OverlayTrigger } from 'react-bootstrap';
+import { ProgressBar, Modal } from 'react-bootstrap';
 import { Oval } from 'react-loader-spinner'
 import illustrationPlanes from "../assets/img/planes.png"
 import IllustrationAccess from "../assets/img/access.png"
@@ -47,7 +48,7 @@ function Tareas() {
     setIdCiclo, 
     yearSelec, 
     titleCiclo, 
-    descripcionCiclo, 
+    // descripcionCiclo, 
     expandedRow, 
     setExpandedRow,
     tareasRealporCiclo,
@@ -90,11 +91,11 @@ function Tareas() {
 
   },[])
 
-  const renderTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      {descripcionCiclo}
-    </Tooltip>
-  );
+  // const renderTooltip = (props) => (
+  //   <Tooltip id="button-tooltip" {...props}>
+  //     {descripcionCiclo}
+  //   </Tooltip>
+  // );
 
   const handleEditCiclo = () => {
     const pro = ciclos.find(e => e.id_ciclo === idCiclo)
@@ -248,6 +249,7 @@ function Tareas() {
     
                     let sum = 0;
                     let dataArr = context.chart.data.datasets[0].data;
+                    // eslint-disable-next-line array-callback-return
                     dataArr.map(data => {
                         sum += Number(data);
                     });

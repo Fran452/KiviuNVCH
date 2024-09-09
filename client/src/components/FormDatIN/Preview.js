@@ -50,6 +50,7 @@ function Preview() {
     arrLabel.push(actualDay)
     setArrMetrica(arrMet)
     setArrLabels(arrLabel)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   
 

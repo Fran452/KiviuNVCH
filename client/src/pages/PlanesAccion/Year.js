@@ -122,6 +122,7 @@ function Year() {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    // eslint-disable-next-line no-unused-vars
     const [totalTareas, setTotalTareas] = useState(null)
     const [tareasRealiz, setTareasRealiz] = useState(null)
     const [tareasNorealiz, setTareasNorealiz] = useState(null)
@@ -264,6 +265,7 @@ function Year() {
         
                         let sum = 0;
                         let dataArr = context.chart.data.datasets[0].data;
+                        // eslint-disable-next-line array-callback-return
                         dataArr.map(data => {
                             sum += Number(data);
                         });

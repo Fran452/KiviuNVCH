@@ -316,32 +316,7 @@ function ModalSubtarea(props) {
               />
               {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
             </div>
-            {/* <div className='col-6'>
-              <label className='mb-1'>Fecha de término</label>
-              <input
-                onChange={handleChange}
-                type="date" 
-                id="fechaFinal" 
-                name="fechaFinal" 
-                className="form-control form-control-sm"
-                value={formData.fechaFinal}
-              />
-              {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
-            </div> */}
           </div>
-          {/* <div className="mb-2">
-            <label className='mb-1'>Correo del responsable</label>
-            <input
-              onChange={handleChange}
-              type="email" 
-              id="responsable" 
-              name="responsable" 
-              placeholder="usuario@correo.com.ar" 
-              className="form-control form-control-sm col-12"
-              value={formData.responsable}
-            />
-            {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
-          </div> */}
           <div className='row mb-2'>
             <div className='col-12 col-md-6'>
                 <label className='mb-1'>Prioridad</label>
