@@ -24,7 +24,6 @@ function ModalSubtarea(props) {
   useEffect(() => {
     if(subtareaObj){
       const obj = JSON.parse(subtareaObj)
-      console.log(obj)
       setFormData({
         titulo: obj.titulo,
         fechaInicio: obj.fecha_inicio,
@@ -118,7 +117,7 @@ function ModalSubtarea(props) {
         horasAprox: parseInt(formData.horas)
       }
       try {
-        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/addSubTask", {
+        const res = await fetch("http://localhost:3040/apis/plan-accion/addSubTask", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
@@ -185,7 +184,7 @@ function ModalSubtarea(props) {
         horas: parseInt(formData.horas)
       }
       try {
-        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/modSubTask", {
+        const res = await fetch("http://localhost:3040/apis/plan-accion/modSubTask", {
           method: "PUT",
           headers: {
               "Content-Type": "application/json"

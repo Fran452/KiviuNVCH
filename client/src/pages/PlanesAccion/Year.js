@@ -19,8 +19,7 @@ import {
     LinearScale,
     TimeScale
 } from "chart.js";
-import { Bar, getElementAtEvent } from 'react-chartjs-2'
-// import { Doughnut, Bar, getElementAtEvent } from 'react-chartjs-2'
+import { Doughnut, Bar, getElementAtEvent } from 'react-chartjs-2'
 import 'chartjs-adapter-date-fns';
 import {es} from 'date-fns/locale';
 import IllustrationAccess from "../../assets/img/access.png"
@@ -123,6 +122,10 @@ function Year() {
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    const [totalTareas, setTotalTareas] = useState(null)
+    const [tareasRealiz, setTareasRealiz] = useState(null)
+    const [tareasNorealiz, setTareasNorealiz] = useState(null)
+
     const [isFullscreen, setIsFullscreen] = useState(false)
     const containerRef = useRef(null)
 
@@ -144,7 +147,30 @@ function Year() {
             })
         }
 
+        const firstMetrica = () => {
+            fetchMetrica()
+            .then(res => {
+                if(res.error !== 0){
+                    console.log(res.errorDetalle)
+                } else {
+                    let sum = 0;
+                    let tareasRealizadas = 0;
+                    let tareasNorealizadas = 0;
+                    const arr = res.objeto;
+                    arr.forEach(e => {
+                        sum += e.tareas_totales
+                        tareasRealizadas += e.tareas_realizadas
+                    })
+                    setTotalTareas(sum)
+                    setTareasRealiz(tareasRealizadas)
+                    tareasNorealizadas = sum - tareasRealizadas;
+                    setTareasNorealiz(tareasNorealizadas)
+                }
+            })
+        }
+
         firstFetch()
+        firstMetrica()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
@@ -189,7 +215,7 @@ function Year() {
     // Actualizar el listado de proyectos
     const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewCiclos", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -205,79 +231,58 @@ function Year() {
         }
     }
 
-    // const arr1 = [57, 71]
-    // const arr2 = [7, 9]
+    // fetch métrica
+    const fetchMetrica = async () => {
+        try {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/metricas", {
+                method: "GET"
+            });
+            const data = await res.json();
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
-    // const data = {
-    //     labels: ['Realizadas', 'No realizadas'],
-    //     datasets: [{
-    //         label: '',
-    //         data: arr1,
-    //         backgroundColor: ['#0d6efd', '#9ec5fe'],
-    //         borderColor: '#fff',
-    //         hoverOffset: 4,
-    //         tooltip: {
-    //             callbacks: {
-    //                 label: function(context) {
-    //                     let label = context.label;
-    //                     let value = context.formattedValue;
+    const data = {
+        labels: ['Realizadas', 'No realizadas'],
+        datasets: [{
+            label: '',
+            data: [tareasRealiz, tareasNorealiz],
+            backgroundColor: ['#0d6efd', '#9ec5fe'],
+            borderColor: '#fff',
+            hoverOffset: 4,
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.label;
+                        let value = context.formattedValue;
         
-    //                     if (!label)
-    //                         label = 'Unknown'
+                        if (!label)
+                            label = 'Unknown'
         
-    //                     let sum = 0;
-    //                     let dataArr = context.chart.data.datasets[0].data;
-    //                     dataArr.map(data => {
-    //                         sum += Number(data);
-    //                     });
+                        let sum = 0;
+                        let dataArr = context.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += Number(data);
+                        });
         
-    //                     let percentage = (value * 100 / sum).toFixed(2) + '%';
-    //                     return percentage.slice(0,4) + '%';
-    //                 }
-    //             }
-    //         }
-    //     }]
-    // }
+                        let percentage = (value * 100 / sum).toFixed(2) + '%';
+                        return percentage.slice(0,4) + '%';
+                    }
+                }
+            }
+        }]
+    }
 
-    // const data2 = {
-    //     labels: ['Cumplieron', 'No cumplieron'],
-    //     datasets: [{
-    //         label: '',
-    //         data: arr2,
-    //         backgroundColor: ['#0d6efd', '#9ec5fe'],
-    //         borderColor: '#fff',
-    //         hoverOffset: 4,
-    //         tooltip: {
-    //             callbacks: {
-    //                 label: function(context) {
-    //                     let label = context.label;
-    //                     let value = context.formattedValue;
-        
-    //                     if (!label)
-    //                         label = 'Unknown'
-        
-    //                     let sum = 0;
-    //                     let dataArr = context.chart.data.datasets[0].data;
-    //                     dataArr.map(data => {
-    //                         sum += Number(data);
-    //                     });
-        
-    //                     let percentage = (value * 100 / sum).toFixed(2) + '%';
-    //                     return percentage.slice(0,4) + '%';
-    //                 }
-    //             }
-    //         }
-    //     }]
-    // }
-
-    // const options = {
-    //     plugins: {
-    //         legend: {
-    //             display: false
-    //         },
-    //     },
-    //     cutout: 40
-    // }
+    const options = {
+        plugins: {
+            legend: {
+                display: false
+            },
+        },
+        cutout: 40
+    }
 
     const arrGantt = []
     ciclos.map((e) => {
@@ -293,81 +298,36 @@ function Year() {
 
     // Bar Chart
     const dataBar = {
-        // labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Dic'],
         datasets : [
           {
             label: 'Fechas establecidas',
             data: arrGantt,
-            // data: [
-            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 1', idCiclo: 0, percentage: '50%'},
-            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 2', idCiclo: 1, percentage: '40%'},
-            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 3', idCiclo: 2, percentage: '40%'},
-            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 4', idCiclo: 3, percentage: '30%'},
-            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 5', idCiclo: 4, percentage: '50%'},
-            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 6', idCiclo: 5, percentage: '40%'},
-            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 7', idCiclo: 6, percentage: '40%'},
-            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 8', idCiclo: 7, percentage: '30%'},
-            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 9', idCiclo: 8, percentage: '50%'},
-            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 10', idCiclo: 9, percentage: '40%'},
-            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 11', idCiclo: 10, percentage: '40%'},
-            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 12', idCiclo: 11, percentage: '30%'},
-            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 13', idCiclo: 0, percentage: '50%'},
-            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 14', idCiclo: 1, percentage: '40%'},
-            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 15', idCiclo: 2, percentage: '40%'},
-            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 16', idCiclo: 3, percentage: '30%'},
-            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 17', idCiclo: 4, percentage: '50%'},
-            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 18', idCiclo: 5, percentage: '40%'},
-            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 19', idCiclo: 6, percentage: '40%'},
-            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 20', idCiclo: 7, percentage: '30%'},
-            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 21', idCiclo: 8, percentage: '50%'},
-            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 22', idCiclo: 9, percentage: '40%'},
-            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 23', idCiclo: 10, percentage: '40%'},
-            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 24', idCiclo: 11, percentage: '30%'},
-            // ],
-            // data: [65, 59, 80, 81, 56, 55, 40, 55, 36, 49, 52, 43],
             backgroundColor: '#0d6efd',
             borderWidth: 0,
             borderSkipped: false,
             borderRadius: 10,
             barThickness: 20
           },
-        //   {
-        //     label: 'Fechas reales',
-        //     data: arrGanttReal,
-        //     data: [
-        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 1', idCiclo: 0, percentage: '50%'},
-        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 2', idCiclo: 1, percentage: '40%'},
-        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 3', idCiclo: 2, percentage: '40%'},
-        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 4', idCiclo: 3, percentage: '30%'},
-        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 5', idCiclo: 4, percentage: '50%'},
-        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 6', idCiclo: 5, percentage: '40%'},
-        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 7', idCiclo: 6, percentage: '40%'},
-        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 8', idCiclo: 7, percentage: '30%'},
-        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 9', idCiclo: 8, percentage: '50%'},
-        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 10', idCiclo: 9, percentage: '40%'},
-        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 11', idCiclo: 10, percentage: '40%'},
-        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 12', idCiclo: 11, percentage: '30%'},
-        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 13', idCiclo: 0, percentage: '50%'},
-        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 14', idCiclo: 1, percentage: '40%'},
-        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 15', idCiclo: 2, percentage: '40%'},
-        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 16', idCiclo: 3, percentage: '30%'},
-        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 17', idCiclo: 4, percentage: '50%'},
-        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 18', idCiclo: 5, percentage: '40%'},
-        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 19', idCiclo: 6, percentage: '40%'},
-        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 20', idCiclo: 7, percentage: '30%'},
-        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 21', idCiclo: 8, percentage: '50%'},
-        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 22', idCiclo: 9, percentage: '40%'},
-        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 23', idCiclo: 10, percentage: '40%'},
-        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 24', idCiclo: 11, percentage: '30%'},
-        //     ],
-        //     backgroundColor: '#6ea8fe',
-        //     borderWidth: 0,
-        //     borderSkipped: false,
-        //     borderRadius: 10,
-        //     barThickness: 20
-        //   }
+          {
+            label: 'Fechas reales',
+            // fake data
+            data: [
+                {x: ['2024-08-09', '2024-10-05'], y: 'TARJETA DE CREDITO', idCiclo: 0, percentage: '50%'},
+                {x: ['2024-08-07', '2024-09-10'], y: 'COMEX', idCiclo: 1, percentage: '40%'},
+                {x: ['2024-09-09', '2024-10-08'], y: 'PUSF', idCiclo: 2, percentage: '40%'},
+                {x: ['2024-08-07', '2024-11-11'], y: 'DEPÓSITOS', idCiclo: 3, percentage: '30%'},
+            ],
+            backgroundColor: '#6ea8fe',
+            borderWidth: 0,
+            borderSkipped: false,
+            borderRadius: 10,
+            barThickness: 20
+          }
         ]
     }
+
+    const numBars = dataBar.datasets[0].data.length;
+    const containerHeight = 80 * numBars;
 
     const optionsBar = {
         plugins: {
@@ -429,16 +389,14 @@ function Year() {
                 locale: es
             }
         },
-        // responsive: true,
-        // maintainAspectRatio: false,
+        responsive: true,
+        maintainAspectRatio: false,
     }
 
     const chartRef = useRef()
     const onClick = (e) => {
         if(getElementAtEvent(chartRef.current, e).length > 0){
-            // console.log(getElementAtEvent(chartRef.current, e)[0])
             const dataPoint = getElementAtEvent(chartRef.current, e)[0].index
-            // console.log(dataBar.datasets[0].data[dataPoint])
             const data = {
                 title: dataBar.datasets[0].data[dataPoint].y,
                 year: year,
@@ -486,7 +444,7 @@ function Year() {
                                         <p className='text-white mb-0'>Aquí encontrarás las estadísticas de los ciclos del año {year}.</p>
                                     </div>
 
-                                    <div ref={containerRef} className='auditoria__year__main__content__grafica'>
+                                    <div ref={containerRef} className='auditoria__year__main__content__grafica' style={{ height: `${containerHeight}px`}}>
                                         <Bar 
                                             data={dataBar}
                                             options={optionsBar}
@@ -500,15 +458,14 @@ function Year() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className='auditoria__year__main__aside'></div>
-                                {/* <div className='auditoria__year__main__aside'>
+                                <div className='auditoria__year__main__aside'>
                                     <div className='auditoria__year__main__aside__graficas'>
                                         <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
                                             <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
                                                 <div className='doughnut__grafica__info__textos'>
                                                     <h4 className='mb-2'>Total de tareas</h4>
-                                                    <p className='mb-1 fw-medium'>Tareas realizadas: <span>{arr1[0]}</span></p>
-                                                    <p className='mb-0'>Tareas no realizadas: <span>{arr1[1]}</span></p>
+                                                    <p className='mb-1 fw-medium'>Tareas realizadas: <span>{tareasRealiz}</span></p>
+                                                    <p className='mb-0'>Tareas no realizadas: <span>{tareasNorealiz}</span></p>
                                                 </div>
                                                 <div className='doughnut__grafica__info__chart'>
                                                     <Doughnut 
@@ -518,23 +475,8 @@ function Year() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className='doughnut__grafica d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
-                                            <div className='doughnut__grafica__info d-flex flex-row align-items-center'>
-                                                <div className='doughnut__grafica__info__textos'>
-                                                    <h4 className='mb-2'>Avance por auditores</h4>
-                                                    <p className='mb-1 fw-medium'>Cumplieron sus tareas: <span>{arr2[0]}</span></p>
-                                                    <p className='mb-0'>No cumplieron sus tareas: <span>{arr2[1]}</span></p>
-                                                </div>
-                                                <div className='doughnut__grafica__info__chart'>
-                                                    <Doughnut 
-                                                        data = {data2}
-                                                        options={options}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
-                                    <div className='auditoria__year__main__aside__actividad scroll--y shadow-sm rounded-3 border border-light-subtle'>
+                                    {/* <div className='auditoria__year__main__aside__actividad scroll--y shadow-sm rounded-3 border border-light-subtle'>
                                         <h3 className='mb-4'>Última actividad:</h3>
                                         <ul className='list-group'>
                                             {list.map((e,i) => {
@@ -546,8 +488,8 @@ function Year() {
                                                 </li>
                                             })}
                                         </ul>
-                                    </div>
-                                </div> */}
+                                    </div> */}
+                                </div>
                             </div>
                         )}
                     </>
