@@ -121,6 +121,29 @@ let controlador = {
         return objetoTest;
     },
 
+    contadorDeTest: function (resultadoTest){
+        let testCorrecto = 0
+        let testIncorrecto = {
+            contador : 0,
+            resultado : []
+        }
+        let claves = Object.keys(resultadoTest); 
+        for(let i=0; i< claves.length; i++){
+            let clave = claves[i];
+            if(resultadoTest[clave].estado == 'Correcto'){
+                testCorrecto++;
+            }else{
+                testIncorrecto.contador++;
+                testIncorrecto.resultado.push(resultadoTest[clave].descripcion);
+            }
+            
+        }
+
+        if(testIncorrecto.contador == 0){
+            testIncorrecto = 0;
+        }
+        return {testCorrecto,testIncorrecto};
+    },
     /**
      * 
      * @returns array
