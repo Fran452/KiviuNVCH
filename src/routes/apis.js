@@ -33,6 +33,7 @@ router.put('/plan-accion/modSubTask',apisPlanDeAccion.modSubTarea);
 router.put('/plan-accion/deleteSubTask',apisPlanDeAccion.deleteSubTarea);
 router.put('/plan-accion/subTareaok',apisPlanDeAccion.terminarSubTarea);
 
+router.get('/plan-accion/metricas',apisPlanDeAccion.metricas);
 
 
 router.post('/login',apisUser.loginFuction);
