@@ -167,8 +167,12 @@ const controlador = {
             console.log(fechaInicial);
             console.log(fechaFin);
 
-            let area = await funcionesDeTest.crearArea("Analisis","no tiene");
-
+            let area1 = await funcionesDeTest.crearArea("Operaciones de Caja","https://powerbi.nbch.com.ar/reports/browse/Auditoria%20Interna");
+            let area2 = await funcionesDeTest.crearArea("Alerta UIF","https://powerbi.nbch.com.ar/reports/browse/Auditoria%20Interna");
+            let area3 = await funcionesDeTest.crearArea("Seguimiento de Observaciones","https://powerbi.nbch.com.ar/reports/browse/Auditoria%20Interna");
+            let area4 = await funcionesDeTest.crearArea("Matriz del Cliente","https://powerbi.nbch.com.ar/reports/browse/Auditoria%20Interna");
+            let areas = [area1,area2,area3,area4];
+            
             let usuarios = []
             let usuario  = await funcionesDeTest.crearUsuario(area.id_area,1,'Alejandro Camnasio','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','AC','alejandro.camnasio@nbch.com.ar');
             usuarios.push(usuario);
@@ -195,9 +199,10 @@ const controlador = {
 
 
             let baseDeDatos = {
-                area:area,
+                areas:areas,
                 usuario : usuarios,
             }
+            
             let ciclo;
             let tarea;
             let subtarea;
