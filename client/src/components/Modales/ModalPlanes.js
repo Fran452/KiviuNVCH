@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-// import { Modal, ProgressBar } from 'react-bootstrap';
 import { Modal } from 'react-bootstrap';
 import "./ModalPlanes.scss"
 import { tareasContext } from '../Tareas';
@@ -12,13 +11,11 @@ function ModalPlanes(props) {
   // State
   const [formData, setFormData] = useState({
     nombre: "",
-    fechaInicio: "",
-    fechaFinal: "",
+    fechaInicio: new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0') + "-" + (new Date().getDate()).toString().padStart(2, '0'),
     responsable: "",
     estado: "",
     prioridad: "",
     notas: "",
-    // progreso: 0
   })
   const [errors, setErrors] = useState({})
   const [modalErr, setModalErr] = useState(null)
@@ -29,12 +26,10 @@ function ModalPlanes(props) {
       setFormData({
         nombre: obj.nombre,
         fechaInicio: obj.fecha_inicio,
-        fechaFinal: obj.fecha_final,
         responsable: obj.mailUser,
         estado: obj.estado.toString(),
         prioridad: obj.prioridad.toString(),
         notas: obj.notas,
-        // progreso: obj.progreso,
       })
     }
   }, [tareaObj])
@@ -61,10 +56,7 @@ function ModalPlanes(props) {
         estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
         fechaInicial: formData.fechaInicio,
-        fechaFinal: formData.fechaFinal,
         notas: formData.notas,
-        // progreso: parseInt(formData.progreso),
-        // progreso: 0,
         idCiclo: pro.id_ciclo
       }
       try {
@@ -82,12 +74,10 @@ function ModalPlanes(props) {
           setFormData({
             nombre: "",
             fechaInicio: "",
-            fechaFinal: "",
             responsable: "",
             estado: "",
             prioridad: "",
             notas:"",
-            // progreso: 0
           })
           setModalErr(null)
           setCicloSelec(null)
@@ -123,9 +113,6 @@ function ModalPlanes(props) {
     if(!data.fechaInicio.trim()) {
       errors.fechaInicio = "Escoja una fecha de inicio."
     }
-    if(!data.fechaFinal.trim()) {
-      errors.fechaFinal = "Escoja una fecha de término."
-    }
     if(!data.responsable.trim()) {
       errors.responsable = "Escriba el mail."
     } else if (!/\S+@\S+\.\S+/.test(data.responsable)){
@@ -137,9 +124,6 @@ function ModalPlanes(props) {
     if(!data.prioridad.trim()) {
       errors.prioridad = "Marca una opción."
     }
-    // if(isNaN(data.progreso) === true || data.progreso === 0) {
-    //   errors.progreso = "Escoge un valor."
-    // }
     if(!data.notas.trim()) {
       errors.notas = "Escribe una nota."
     }
@@ -150,13 +134,11 @@ function ModalPlanes(props) {
     setErrors({})
     setFormData({
       nombre: "",
-      fechaInicio: "",
-      fechaFinal: "",
+      fechaInicio: new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0') + "-" + (new Date().getDate()).toString().padStart(2, '0'),
       responsable: "",
       estado: "",
       prioridad: "",
       notas: "",
-      // progreso: 0
     })
     props.onHide()
     setCicloSelec(null)
@@ -178,11 +160,8 @@ function ModalPlanes(props) {
         estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
         fechaInicio: formData.fechaInicio,
-        fechaFinal: formData.fechaFinal,
         notas: formData.notas,
         tarea: task,
-        // progreso: parseInt(formData.progreso),
-        // progreso: 0,
         idCiclo: pro.id_ciclo
       }
       try {
@@ -199,13 +178,11 @@ function ModalPlanes(props) {
         } else {
           setFormData({
             nombre: "",
-            fechaInicio: "",
-            fechaFinal: "",
+            fechaInicio: new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0') + "-" + (new Date().getDate()).toString().padStart(2, '0'),
             responsable: "",
             estado: "",
             prioridad: "",
             notas:"",
-            // progreso: 0
           })
           setModalErr(null)
           setTareaObj(null)
@@ -232,35 +209,6 @@ function ModalPlanes(props) {
       setModalErr("Completar los campos mencionados.")
     }
   }
-
-  // const handleDecrease = (e) => {
-  //   e.preventDefault()
-  //   if(formData.progreso === 0){
-  //     setFormData({
-  //       ...formData,
-  //       progreso: 0
-  //     })
-  //   } else {
-  //     setFormData({
-  //       ...formData,
-  //       progreso: formData.progreso - 10
-  //     })
-  //   }
-  // }
-  // const handleIncrese = (e) => {
-  //   e.preventDefault()
-  //   if(formData.progreso === 100){
-  //     setFormData({
-  //       ...formData,
-  //       progreso: 100
-  //     })
-  //   } else {
-  //     setFormData({
-  //       ...formData,
-  //       progreso: formData.progreso + 10
-  //     })
-  //   }
-  // }
 
   return (
     <Modal
@@ -293,6 +241,19 @@ function ModalPlanes(props) {
             {errors.nombre && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
           </div>
           <div className='row mb-2'>
+            <div className="col-6">
+              <label className='mb-1'>Correo del responsable</label>
+              <input
+                onChange={handleChange}
+                type="email" 
+                id="responsable" 
+                name="responsable" 
+                placeholder="usuario@correo.com.ar" 
+                className="form-control form-control-sm col-12"
+                value={formData.responsable}
+              />
+              {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
+            </div>
             <div className='col-6'>
               <label className='mb-1'>Fecha de inicio</label>
               <input
@@ -305,31 +266,6 @@ function ModalPlanes(props) {
               />
               {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
             </div>
-            <div className='col-6'>
-              <label className='mb-1'>Fecha de término</label>
-              <input
-                onChange={handleChange}
-                type="date" 
-                id="fechaFinal" 
-                name="fechaFinal" 
-                className="form-control form-control-sm"
-                value={formData.fechaFinal}
-              />
-              {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
-            </div>
-          </div>
-          <div className="mb-2">
-            <label className='mb-1'>Correo del responsable</label>
-            <input
-              onChange={handleChange}
-              type="email" 
-              id="responsable" 
-              name="responsable" 
-              placeholder="usuario@correo.com.ar" 
-              className="form-control form-control-sm col-12"
-              value={formData.responsable}
-            />
-            {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
           </div>
           <div className='row mb-2'>
             <div className='col-12 col-md-6'>
@@ -385,15 +321,6 @@ function ModalPlanes(props) {
               {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
             </div>
           </div>
-          {/* <div className='col-12 col-md-6 mb-2'>
-            <label className='mb-1'>Progreso de la tarea</label>
-            <div className="formPA__progressBar d-flex flex-row align-items-center justify-content-between">
-              <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleDecrease}><i className="bi bi-dash"></i></button>
-              <ProgressBar className='formPA__progressBar__bar' now={formData.progreso} label={`${formData.progreso}%`} max={100}/>
-              <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleIncrese}><i className="bi bi-plus"></i></button>
-            </div>
-            {errors.progreso && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.progreso}</span>}
-          </div> */}
           <div className='mb-2'>
             <label className='mb-1'>Notas</label>
             <textarea 
@@ -429,6 +356,19 @@ function ModalPlanes(props) {
               {errors.nombre && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.nombre}</span>}
             </div>
             <div className='row mb-2'>
+              <div className="col-6">
+                  <label className='mb-1'>Correo del responsable</label>
+                  <input
+                    onChange={handleChange}
+                    type="email" 
+                    id="responsable" 
+                    name="responsable" 
+                    placeholder="usuario@correo.com.ar" 
+                    className="form-control form-control-sm col-12"
+                    value={formData.responsable}
+                  />
+                  {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
+              </div>
               <div className='col-6'>
                 <label className='mb-1'>Fecha de inicio</label>
                 <input
@@ -441,31 +381,6 @@ function ModalPlanes(props) {
                 />
                 {errors.fechaInicio && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaInicio}</span>}
               </div>
-              <div className='col-6'>
-                <label className='mb-1'>Fecha de término</label>
-                <input
-                  onChange={handleChange}
-                  type="date" 
-                  id="fechaFinal" 
-                  name="fechaFinal" 
-                  className="form-control form-control-sm"
-                  value={formData.fechaFinal}
-                />
-                {errors.fechaFinal && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.fechaFinal}</span>}
-              </div>
-            </div>
-            <div className="mb-2">
-                <label className='mb-1'>Correo del responsable</label>
-                <input
-                  onChange={handleChange}
-                  type="email" 
-                  id="responsable" 
-                  name="responsable" 
-                  placeholder="usuario@correo.com.ar" 
-                  className="form-control form-control-sm col-12"
-                  value={formData.responsable}
-                />
-                {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
             </div>
             <div className='row mb-2'>
               <div className='col-12 col-md-6'>
@@ -521,15 +436,6 @@ function ModalPlanes(props) {
                 {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
               </div>
             </div>
-            {/* <div className='col-12 col-md-6 mb-2'>
-              <label className='mb-1'>Progreso de la tarea</label>
-              <div className="formPA__progressBar d-flex flex-row align-items-center justify-content-between">
-                <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleDecrease}><i className="bi bi-dash"></i></button>
-                <ProgressBar className='formPA__progressBar__bar' now={formData.progreso} label={`${formData.progreso}%`} max={100}/>
-                <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleIncrese}><i className="bi bi-plus"></i></button>
-              </div>
-              {errors.progreso && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.progreso}</span>}
-            </div> */}
             <div className='mb-2'>
               <label className='mb-1'>Notas</label>
               <textarea 

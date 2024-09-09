@@ -42,41 +42,24 @@ const todayLine = {
 }
 
 // Muestra info en las barras del gantt
-const viewPercentage = {
-    id: 'viewPercentage',
-    afterDatasetsDraw(chart) {
-        const ctx = chart.ctx;
-        chart.data.datasets.forEach(function(dataset, datasetIndex) {
-            const meta = chart.getDatasetMeta(datasetIndex);
-            meta.data.forEach(function(bar, index) {
-                const data = dataset.data[index];
-                ctx.fillStyle = '#fff'; // Color del texto
-                ctx.font = 'bold 12px sans-serif';
-                ctx.textBaseline = 'middle';
-                const xPos = meta.data[index].base
-                const position = bar.tooltipPosition();
-                ctx.fillText(data.percentage, xPos + 10, position.y);
-            });
-        });
-    },
-    // afterDatasetsDraw(chart, args, pluginOptions) {
-    //     // const { ctx, data, chartArea: {top, bottom, left, right}, scales: { x, y } } = chart;
-    //     const { ctx, data, scales: { y } } = chart;
-    //     ctx.save();
-    //     ctx.font = 'bolder 12px sans-serif';
-    //     ctx.fillStyle = 'white';
-    //     ctx.textBaseline = 'middle';
-    //     data.datasets.forEach((dataset, datasetIndex) => {
-    //         dataset.data.forEach((datapoint, index) => {
-    //             const meta = chart.getDatasetMeta(datasetIndex);
-    //             const bar = meta.data[index]
-    //             console.log(bar)
-    //             const xPos = bar.base
-    //             ctx.fillText(datapoint.percentage, xPos + 10, y.getPixelForValue(index));
-    //         })
-    //     })
-    // }
-}
+// const viewPercentage = {
+//     id: 'viewPercentage',
+//     afterDatasetsDraw(chart) {
+//         const ctx = chart.ctx;
+//         chart.data.datasets.forEach(function(dataset, datasetIndex) {
+//             const meta = chart.getDatasetMeta(datasetIndex);
+//             meta.data.forEach(function(bar, index) {
+//                 const data = dataset.data[index];
+//                 ctx.fillStyle = '#fff'; // Color del texto
+//                 ctx.font = 'bold 12px sans-serif';
+//                 ctx.textBaseline = 'middle';
+//                 const xPos = meta.data[index].base
+//                 const position = bar.tooltipPosition();
+//                 ctx.fillText(data.percentage, xPos + 10, position.y);
+//             });
+//         });
+//     }
+// }
 
 ChartJS.register(
     ArcElement,
@@ -314,33 +297,33 @@ function Year() {
         datasets : [
           {
             label: 'Fechas establecidas',
-            // data: arrGantt,
-            data: [
-                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 1', idCiclo: 0, percentage: '50%'},
-                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 2', idCiclo: 1, percentage: '40%'},
-                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 3', idCiclo: 2, percentage: '40%'},
-                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 4', idCiclo: 3, percentage: '30%'},
-                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 5', idCiclo: 4, percentage: '50%'},
-                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 6', idCiclo: 5, percentage: '40%'},
-                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 7', idCiclo: 6, percentage: '40%'},
-                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 8', idCiclo: 7, percentage: '30%'},
-                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 9', idCiclo: 8, percentage: '50%'},
-                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 10', idCiclo: 9, percentage: '40%'},
-                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 11', idCiclo: 10, percentage: '40%'},
-                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 12', idCiclo: 11, percentage: '30%'},
-                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 13', idCiclo: 0, percentage: '50%'},
-                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 14', idCiclo: 1, percentage: '40%'},
-                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 15', idCiclo: 2, percentage: '40%'},
-                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 16', idCiclo: 3, percentage: '30%'},
-                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 17', idCiclo: 4, percentage: '50%'},
-                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 18', idCiclo: 5, percentage: '40%'},
-                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 19', idCiclo: 6, percentage: '40%'},
-                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 20', idCiclo: 7, percentage: '30%'},
-                {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 21', idCiclo: 8, percentage: '50%'},
-                {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 22', idCiclo: 9, percentage: '40%'},
-                {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 23', idCiclo: 10, percentage: '40%'},
-                {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 24', idCiclo: 11, percentage: '30%'},
-            ],
+            data: arrGantt,
+            // data: [
+            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 1', idCiclo: 0, percentage: '50%'},
+            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 2', idCiclo: 1, percentage: '40%'},
+            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 3', idCiclo: 2, percentage: '40%'},
+            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 4', idCiclo: 3, percentage: '30%'},
+            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 5', idCiclo: 4, percentage: '50%'},
+            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 6', idCiclo: 5, percentage: '40%'},
+            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 7', idCiclo: 6, percentage: '40%'},
+            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 8', idCiclo: 7, percentage: '30%'},
+            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 9', idCiclo: 8, percentage: '50%'},
+            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 10', idCiclo: 9, percentage: '40%'},
+            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 11', idCiclo: 10, percentage: '40%'},
+            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 12', idCiclo: 11, percentage: '30%'},
+            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 13', idCiclo: 0, percentage: '50%'},
+            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 14', idCiclo: 1, percentage: '40%'},
+            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 15', idCiclo: 2, percentage: '40%'},
+            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 16', idCiclo: 3, percentage: '30%'},
+            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 17', idCiclo: 4, percentage: '50%'},
+            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 18', idCiclo: 5, percentage: '40%'},
+            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 19', idCiclo: 6, percentage: '40%'},
+            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 20', idCiclo: 7, percentage: '30%'},
+            //     {x: ['2024-11-01', '2024-11-30'], y: 'Ciclo 21', idCiclo: 8, percentage: '50%'},
+            //     {x: ['2024-03-01', '2024-05-31'], y: 'Ciclo 22', idCiclo: 9, percentage: '40%'},
+            //     {x: ['2024-11-01', '2024-12-31'], y: 'Ciclo 23', idCiclo: 10, percentage: '40%'},
+            //     {x: ['2024-08-01', '2024-09-30'], y: 'Ciclo 24', idCiclo: 11, percentage: '30%'},
+            // ],
             // data: [65, 59, 80, 81, 56, 55, 40, 55, 36, 49, 52, 43],
             backgroundColor: '#0d6efd',
             borderWidth: 0,
@@ -348,42 +331,41 @@ function Year() {
             borderRadius: 10,
             barThickness: 20
           },
-          {
-            label: 'Fechas reales',
-            // data: arrGantt,
-            data: [
-                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 1', idCiclo: 0, percentage: '50%'},
-                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 2', idCiclo: 1, percentage: '40%'},
-                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 3', idCiclo: 2, percentage: '40%'},
-                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 4', idCiclo: 3, percentage: '30%'},
-                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 5', idCiclo: 4, percentage: '50%'},
-                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 6', idCiclo: 5, percentage: '40%'},
-                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 7', idCiclo: 6, percentage: '40%'},
-                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 8', idCiclo: 7, percentage: '30%'},
-                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 9', idCiclo: 8, percentage: '50%'},
-                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 10', idCiclo: 9, percentage: '40%'},
-                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 11', idCiclo: 10, percentage: '40%'},
-                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 12', idCiclo: 11, percentage: '30%'},
-                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 13', idCiclo: 0, percentage: '50%'},
-                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 14', idCiclo: 1, percentage: '40%'},
-                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 15', idCiclo: 2, percentage: '40%'},
-                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 16', idCiclo: 3, percentage: '30%'},
-                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 17', idCiclo: 4, percentage: '50%'},
-                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 18', idCiclo: 5, percentage: '40%'},
-                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 19', idCiclo: 6, percentage: '40%'},
-                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 20', idCiclo: 7, percentage: '30%'},
-                {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 21', idCiclo: 8, percentage: '50%'},
-                {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 22', idCiclo: 9, percentage: '40%'},
-                {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 23', idCiclo: 10, percentage: '40%'},
-                {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 24', idCiclo: 11, percentage: '30%'},
-            ],
-            // data: [65, 59, 80, 81, 56, 55, 40, 55, 36, 49, 52, 43],
-            backgroundColor: '#6ea8fe',
-            borderWidth: 0,
-            borderSkipped: false,
-            borderRadius: 10,
-            barThickness: 20
-          }
+        //   {
+        //     label: 'Fechas reales',
+        //     data: arrGanttReal,
+        //     data: [
+        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 1', idCiclo: 0, percentage: '50%'},
+        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 2', idCiclo: 1, percentage: '40%'},
+        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 3', idCiclo: 2, percentage: '40%'},
+        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 4', idCiclo: 3, percentage: '30%'},
+        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 5', idCiclo: 4, percentage: '50%'},
+        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 6', idCiclo: 5, percentage: '40%'},
+        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 7', idCiclo: 6, percentage: '40%'},
+        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 8', idCiclo: 7, percentage: '30%'},
+        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 9', idCiclo: 8, percentage: '50%'},
+        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 10', idCiclo: 9, percentage: '40%'},
+        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 11', idCiclo: 10, percentage: '40%'},
+        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 12', idCiclo: 11, percentage: '30%'},
+        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 13', idCiclo: 0, percentage: '50%'},
+        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 14', idCiclo: 1, percentage: '40%'},
+        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 15', idCiclo: 2, percentage: '40%'},
+        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 16', idCiclo: 3, percentage: '30%'},
+        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 17', idCiclo: 4, percentage: '50%'},
+        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 18', idCiclo: 5, percentage: '40%'},
+        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 19', idCiclo: 6, percentage: '40%'},
+        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 20', idCiclo: 7, percentage: '30%'},
+        //         {x: ['2024-11-09', '2024-12-07'], y: 'Ciclo 21', idCiclo: 8, percentage: '50%'},
+        //         {x: ['2024-03-12', '2024-06-07'], y: 'Ciclo 22', idCiclo: 9, percentage: '40%'},
+        //         {x: ['2024-11-05', '2024-12-27'], y: 'Ciclo 23', idCiclo: 10, percentage: '40%'},
+        //         {x: ['2024-08-07', '2024-10-05'], y: 'Ciclo 24', idCiclo: 11, percentage: '30%'},
+        //     ],
+        //     backgroundColor: '#6ea8fe',
+        //     borderWidth: 0,
+        //     borderSkipped: false,
+        //     borderRadius: 10,
+        //     barThickness: 20
+        //   }
         ]
     }
 
@@ -447,8 +429,8 @@ function Year() {
                 locale: es
             }
         },
-        responsive: true,
-        maintainAspectRatio: false,
+        // responsive: true,
+        // maintainAspectRatio: false,
     }
 
     const chartRef = useRef()
@@ -508,7 +490,8 @@ function Year() {
                                         <Bar 
                                             data={dataBar}
                                             options={optionsBar}
-                                            plugins={[todayLine, viewPercentage]}
+                                            // plugins={[todayLine, viewPercentage]}
+                                            plugins={[todayLine]}
                                             onClick={onClick}
                                             ref={chartRef}
                                         />
