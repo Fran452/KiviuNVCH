@@ -67,7 +67,7 @@
 
     &__cell {
         white-space: nowrap;
-        padding: 5px 10px;
+        padding: 8px 10px;
 
         &--title {
             color: $blue-500;
@@ -193,9 +193,9 @@
     }
 
     &__header {
-        &__title {
-            cursor: pointer;
-        }
+        // &__title {
+        //     cursor: pointer;
+        // }
         
         h3 {
             i {
@@ -234,6 +234,7 @@
     &__main {
         height: 100%;
         position: relative;
+        overflow-x: scroll;
         
         .btn__area {
             font-size: 12px;
@@ -268,8 +269,8 @@
                     }
 
                     &__chart {
-                        width: 120px;
-                        height: 120px;
+                        width: 100px;
+                        height: 100px;
                     }
                 }
             }
@@ -279,7 +280,7 @@
         }
 
         &__tabla {
-            overflow-x: scroll;
+            // overflow-x: scroll;
             width: calc(100vw - 40px);
 
             .table {
@@ -421,20 +422,20 @@
                 }
             }
         }
+    }
 
-        &__tabla::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
+    &__main::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
 
-        &__tabla::-webkit-scrollbar-track {
-            background-color: rgba($color: $gray-300, $alpha: 0);
-        }
+    &__main::-webkit-scrollbar-track {
+        background-color: rgba($color: $gray-300, $alpha: 0);
+    }
 
-        &__tabla::-webkit-scrollbar-thumb {
-            background-color: $gray-500;
-            border-radius: 5px;
-        }
+    &__main::-webkit-scrollbar-thumb {
+        background-color: $gray-500;
+        border-radius: 5px;
     }
 }
 
@@ -463,8 +464,8 @@
                 gap: 20px;
     
                 &__doughnut {
-                    width: 50%;
-                    padding: 30px;
+                    width: 33.3%;
+                    padding: 24px;
                     margin-bottom: 0;
                 }
             }

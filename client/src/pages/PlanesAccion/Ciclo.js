@@ -29,6 +29,9 @@ function Ciclo() {
     const [descripcionCiclo, setDescripcionCiclo] = useState(null)
     const [modalCiclo, setModalCiclo] = useState(false)
 
+    const [tareasRealporCiclo, setTareasRealporCiclo] = useState(null)
+    const [tareasNorealporCiclo, setTareasNorealporCiclo] = useState(null)
+
     const [expandedRow, setExpandedRow] = useState(null);
 
     // Anterior areas > subciclos
@@ -73,6 +76,18 @@ function Ciclo() {
         firstFetch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
+
+    const fetchMetrica = async () => {
+        try {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/metricas", {
+                method: "GET"
+            });
+            const data = await res.json();
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const fetchCiclos = async () => {
         try {
@@ -123,6 +138,19 @@ function Ciclo() {
                 setTareasByCiclo(res.objeto)
             }
         })
+        fetchMetrica()
+        .then(res => {
+            if(res.error !== 0){
+                console.log(res.errorDetalle)
+            } else {
+                let tareasNorealizadas = 0;
+                const arr = res.objeto
+                const selec = arr.find(e => e.id_ciclo === id)
+                tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                setTareasNorealporCiclo(tareasNorealizadas)
+                setTareasRealporCiclo(selec.tareas_realizadas)
+            }
+        })
         setIdCiclo(id)
         setYearSelec(year)
         setTitleCiclo(titleProyecto)
@@ -138,7 +166,7 @@ function Ciclo() {
 
     return (
         <newContext.Provider 
-            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER, expandedRow, setExpandedRow}}>
+            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER, expandedRow, setExpandedRow, tareasRealporCiclo, tareasNorealporCiclo}}>
             <ModalNewCiclo show={modalCiclo} onHide={()=>setModalCiclo(false)}/>
             <div className='ciclo section'>
                 {/* {cicloSelec === null ? "" : (
