@@ -25,7 +25,7 @@ function CiclosAuditoria() {
             <div className='ciclos__auditoria section'>
                 <div className='section__header d-flex flex-row align-items-end mb-4'>
                     <i className='bi bi-bar-chart-steps me-2'></i>
-                    <h4 className='m-0'>Ciclos de auditoría</h4>
+                    <h4 className='m-0'>Plan de auditoría</h4>
                 </div>
                 {loading ? (
                     <div className='loading__auditoria d-flex flex-column align-items-center justify-content-center'>
@@ -44,7 +44,7 @@ function CiclosAuditoria() {
                     <div className='ciclos__auditoria__main'>
                         <div className='ciclos__auditoria__main__info rounded-3'>
                             <div className='ciclos__auditoria__main__info__textos mb-3 mb-xl-0'>
-                                <h2 className='text-white'>Tus ciclos de auditoría están aquí</h2>
+                                <h2 className='text-white'>Tus planes de auditoría están aquí</h2>
                                 <p className='text-white m-0'>Aquí podrás editar las tareas y subtareas de tus ciclos por año.</p>
                             </div>
                             <img className='' src={Auditoria} alt="" />

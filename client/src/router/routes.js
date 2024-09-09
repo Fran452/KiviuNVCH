@@ -5,7 +5,8 @@ import Home from '../pages/Home/Home'
 // import PlanesAccion from '../pages/PlanesAccion/PlanesAccion'
 import Okr from '../pages/Okr/Okr'
 import AsistenteIA from '../pages/AsistenteIA/AsistenteIA'
-import DatIN from '../pages/DatIN/DatIN'
+// import DatIN from '../pages/DatIN/DatIN'
+import DatINEmpty from '../pages/DatIN/DatINempty'
 
 import ProtectedRoutes from '../Services/ProtectedRoutes'
 import Layout from '../components/Layout/Layout'
@@ -34,7 +35,7 @@ function MyRoutes() {
                   </Route>
                   <Route path="/okr" element={<Okr />}/>
                   <Route path="/asistente-ia" element={<AsistenteIA />}/>
-                  <Route path="/dat-in" element={<DatIN />}/>
+                  <Route path="/dat-in" element={<DatINEmpty />}/>
                   <Route path="bi/:area" element={<PowerBI />}></Route>
                   <Route path="*" element={<NotFound />} />
               </Route>
