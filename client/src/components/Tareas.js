@@ -108,7 +108,7 @@ function Tareas() {
 
   const handleDeleteCiclo = async () => {
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/deleteCiclos", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteCiclos", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -156,7 +156,7 @@ function Tareas() {
       idTarea: parseInt(idTask)
     }
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/deleteTask", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteTask", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -189,7 +189,7 @@ function Tareas() {
 
   const fetchSubtareasById = async(id) => {
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/viewSubTask", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewSubTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
