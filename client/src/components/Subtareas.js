@@ -60,6 +60,38 @@ function Subtareas() {
                 setErrorDel(data.errorDetalle)
             } else {
                 setModalDeleteSub(false)
+                // Actualizar métricas
+                fetchMetrica()
+                .then(res => {
+                    if(res.error !== 0){
+                        console.log(res.errorDetalle)
+                    } else {
+                        let tareasNorealizadas = 0;
+                        const arr = res.objeto
+                        const selec = arr.find(e => e.id_ciclo === idCiclo)
+                        if(selec === undefined) {
+                            setTareasRealporCiclo(0)
+                            setTareasNorealporCiclo(0)
+                        } else {
+                            tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                            setTareasNorealporCiclo(tareasNorealizadas)
+                            setTareasRealporCiclo(selec.tareas_realizadas)
+                        } 
+                    }
+                })
+                // actualiza tareas
+                setLoadingTar(true)
+                fetchTareasById(idCiclo)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingTar(false)
+                        setErrorTar(res.errorDetalle)
+                    } else {
+                        setLoadingTar(false)
+                        setTareasByCiclo(res.objeto)
+                    }
+                })
+                // fin de actualiza tareas
                 // actualiza subtareas
                 setLoadingSub(true)
                 fetchSubtareasById(idTask)
@@ -111,6 +143,7 @@ function Subtareas() {
                         let tareasNorealizadas = 0;
                         const arr = res.objeto
                         const selec = arr.find(e => e.id_ciclo === idCiclo)
+                        console.log(selec)
                         if(selec === undefined) {
                             setTareasRealporCiclo(0)
                             setTareasNorealporCiclo(0)
