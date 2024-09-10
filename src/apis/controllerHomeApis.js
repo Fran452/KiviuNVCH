@@ -26,8 +26,7 @@ const controlador = {
     index: async (req,res) => {
         try{
             let area = await dataBaseSQL.areas.findAll();
-            area = area.map(area => {return {id_area: area.id_area,nombre_del_Area: area.nombre_del_Area}});
-            let api = {status: 0, codeError:"", objeto:{areas:area,usuario:req.body.user} };
+            let api = {status: 0, codeError:"", objeto: area };
             res.json(api);
         }
         catch(error){
