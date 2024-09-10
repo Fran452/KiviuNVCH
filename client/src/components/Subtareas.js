@@ -48,7 +48,7 @@ function Subtareas() {
             id_subtarea: parseInt(idSubtask)
         }
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/deleteSubTask", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteSubTask", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -120,7 +120,7 @@ function Subtareas() {
         const obj = subtareas.find((e) => e.id_sub_tarea === idSubtask)
         console.log(obj)
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/subTareaok", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/subTareaok", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"

@@ -217,7 +217,7 @@ function Year() {
     // Actualizar el listado de proyectos
     const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/viewCiclos", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -236,7 +236,7 @@ function Year() {
     // fetch métrica
     const fetchMetrica = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/metricas", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/metricas", {
                 method: "GET"
             });
             const data = await res.json();
