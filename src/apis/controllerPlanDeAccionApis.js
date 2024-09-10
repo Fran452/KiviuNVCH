@@ -33,7 +33,7 @@ const controlador = {
                         THEN MAX(tar.fecha_final)
                         ELSE NULL
                     END AS fecha_final_tareas
-                FROM (
+                 FROM (
                     SELECT Tareas.*, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea,
                         CASE
                             WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
@@ -44,9 +44,10 @@ const controlador = {
                     LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas AND Subtareas.ver = 1
                     WHERE Tareas.ver = 1
                     GROUP BY Tareas.id_tarea
-                ) tar
-                    LEFT JOIN Ciclos ON tar.fk_ciclo = Ciclos.id_ciclo AND Ciclos.ver = 1
-                    GROUP BY Ciclos.id_ciclo;`
+                 ) tar
+                RIGHT JOIN Ciclos ON tar.fk_ciclo = Ciclos.id_ciclo
+                GROUP BY Ciclos.id_ciclo
+                HAVING Ciclos.ver = 1;`
                 ,{
                 replacements: { fkArea: req.body.user.area },
                 type: Sequelize.QueryTypes.SELECT
