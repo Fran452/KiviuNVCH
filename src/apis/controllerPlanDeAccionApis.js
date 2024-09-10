@@ -45,7 +45,7 @@ const controlador = {
                     WHERE Tareas.ver = 1
                     GROUP BY Tareas.id_tarea
                 ) tar
-                    LEFT JOIN Ciclos ON tar.fk_ciclo = Ciclos.id_ciclo AND Ciclos.ver = 1
+                    RIGHT JOIN Ciclos ON tar.fk_ciclo = Ciclos.id_ciclo AND Ciclos.ver = 1
                     GROUP BY Ciclos.id_ciclo;`
                 ,{
                 replacements: { fkArea: req.body.user.area },

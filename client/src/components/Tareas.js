@@ -52,7 +52,10 @@ function Tareas() {
     expandedRow, 
     setExpandedRow,
     tareasRealporCiclo,
-    tareasNorealporCiclo
+    tareasNorealporCiclo,
+    setTareasRealporCiclo,
+    setTareasNorealporCiclo,
+    fetchMetrica,
   } = useContext(newContext)
   
   const [modalDeleteCiclo, setModalDeleteCiclo] = useState(false)
@@ -109,7 +112,7 @@ function Tareas() {
 
   const handleDeleteCiclo = async () => {
     try {
-      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteCiclos", {
+      const res = await fetch("http://localhost:3040/apis/plan-accion/deleteCiclos", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -157,7 +160,7 @@ function Tareas() {
       idTarea: parseInt(idTask)
     }
     try {
-      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteTask", {
+      const res = await fetch("http://localhost:3040/apis/plan-accion/deleteTask", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -169,6 +172,25 @@ function Tareas() {
         setErrorDel(data.errorDetalle)
       } else {
         setModalDeleteTarea(false)
+        // Actualizar métricas
+        fetchMetrica()
+        .then(res => {
+            if(res.error !== 0){
+                console.log(res.errorDetalle)
+            } else {
+                let tareasNorealizadas = 0;
+                const arr = res.objeto
+                const selec = arr.find(e => e.id_ciclo === idCiclo)
+                if(selec === undefined) {
+                    setTareasRealporCiclo(0)
+                    setTareasNorealporCiclo(0)
+                } else {
+                    tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                    setTareasNorealporCiclo(tareasNorealizadas)
+                    setTareasRealporCiclo(selec.tareas_realizadas)
+                } 
+            }
+        })
         // actualiza tareas
         setLoadingTar(true)
         fetchTareasById(idCiclo)
@@ -190,7 +212,7 @@ function Tareas() {
 
   const fetchSubtareasById = async(id) => {
     try {
-      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewSubTask", {
+      const res = await fetch("http://localhost:3040/apis/plan-accion/viewSubTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -273,7 +295,7 @@ function Tareas() {
 
   return (
     <>
-      <tareasContext.Provider value={{cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask }}>
+      <tareasContext.Provider value={{setLoadingTar, setErrorTar, setTareasByCiclo, cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, fetchTareasById, idCiclo, setSubtareas, idTask, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica }}>
         <ModalEditCiclo show={modalEditCiclo} onHide={()=>setModalEditCiclo(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
         <ModalVer show={modalVer} onHide={()=>setModalVer(false)} />

@@ -65,7 +65,7 @@ function ModalNewCiclo(props) {
         setErrors(newErrors)
         if (Object.keys(newErrors).length === 0){
             try {
-                const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/addCiclos", {
+                const res = await fetch("http://localhost:3040/apis/plan-accion/addCiclos", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"

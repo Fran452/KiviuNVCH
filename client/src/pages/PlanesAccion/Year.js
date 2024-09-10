@@ -154,7 +154,6 @@ function Year() {
                 if(res.error !== 0){
                     console.log(res.errorDetalle)
                 } else {
-                    console.log(res.objeto)
                     let sum = 0;
                     let tareasRealizadas = 0;
                     let tareasNorealizadas = 0;
@@ -217,7 +216,7 @@ function Year() {
     // Actualizar el listado de proyectos
     const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewCiclos", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -236,7 +235,7 @@ function Year() {
     // fetch métrica
     const fetchMetrica = async () => {
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/metricas", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/metricas", {
                 method: "GET"
             });
             const data = await res.json();
@@ -294,9 +293,23 @@ function Year() {
                 y: e.nombre,
                 x: [e.fecha_inicio, e.fecha_final],
                 idCiclo: e.id_ciclo,
-                percentage: '50%'
+                // percentage: '50%'
             }
         )
+    })
+
+    const arrGanttReal = []
+    ciclos.forEach((e) => {
+        if(e.fecha_final_tareas !== null){
+            arrGanttReal.push(
+                {
+                    y: e.nombre,
+                    x: [e.fecha_inicio_tareas, e.fecha_final_tareas]
+                }
+            )
+        } else {
+            arrGanttReal.push({})
+        }
     })
 
     // Bar Chart
@@ -313,13 +326,13 @@ function Year() {
           },
           {
             label: 'Fechas reales',
-            // fake data
-            data: [
-                {x: ['2024-08-09', '2024-10-05'], y: 'TARJETA DE CREDITO', idCiclo: 0, percentage: '50%'},
-                {x: ['2024-08-07', '2024-09-10'], y: 'COMEX', idCiclo: 1, percentage: '40%'},
-                {x: ['2024-09-09', '2024-10-08'], y: 'PUSF', idCiclo: 2, percentage: '40%'},
-                {x: ['2024-08-07', '2024-11-11'], y: 'DEPÓSITOS', idCiclo: 3, percentage: '30%'},
-            ],
+            data: arrGanttReal,
+            // data: [
+            //     {x: ['2024-08-09', '2024-10-05'], y: 'TARJETA DE CREDITO', idCiclo: 0, percentage: '50%'},
+            //     {x: ['2024-08-07', '2024-09-10'], y: 'COMEX', idCiclo: 1, percentage: '40%'},
+            //     {x: ['2024-09-09', '2024-10-08'], y: 'PUSF', idCiclo: 2, percentage: '40%'},
+            //     {x: ['2024-08-07', '2024-11-11'], y: 'DEPÓSITOS', idCiclo: 3, percentage: '30%'},
+            // ],
             backgroundColor: '#6ea8fe',
             borderWidth: 0,
             borderSkipped: false,

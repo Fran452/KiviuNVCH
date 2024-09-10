@@ -14,11 +14,11 @@ function Home() {
 
   const fetchAreas = async () => {
     try {
-      const res = await fetch("http://164.92.77.143:3040/apis/index",{
+      const res = await fetch("http://localhost:3040/apis/index",{
         method: "GET"
       })
       const data = await res.json()
-      setAreas(data.objeto.areas)
+      setAreas(data.objeto)
       setLoading(false)
     } catch (error) {
       console.log(error)
@@ -60,7 +60,7 @@ function Home() {
       ) : (
         <div className='home__areas'>
           {areas.map((e,i) => {
-            return <Link to={`/bi/${e.id_area}`} className="btn home__areas__area border border-light-subtle shadow-sm rounded-3 d-flex flex-row align-items-center" key={i}>
+            return <Link to={e.power_Bi} target='_blank' className="btn home__areas__area border border-light-subtle shadow-sm rounded-3 d-flex flex-row align-items-center" key={i}>
               <h4 className='p-0 m-0 text-start'>{e.nombre_del_Area}</h4>
               </Link>
           })}

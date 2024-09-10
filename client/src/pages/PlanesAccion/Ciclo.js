@@ -79,7 +79,7 @@ function Ciclo() {
 
     const fetchMetrica = async () => {
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/metricas", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/metricas", {
                 method: "GET"
             });
             const data = await res.json();
@@ -91,7 +91,7 @@ function Ciclo() {
 
     const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewCiclos", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -109,7 +109,7 @@ function Ciclo() {
 
     const fetchTareasById = async(id) => {
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewTask", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/viewTask", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json"
@@ -146,9 +146,14 @@ function Ciclo() {
                 let tareasNorealizadas = 0;
                 const arr = res.objeto
                 const selec = arr.find(e => e.id_ciclo === id)
-                tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
-                setTareasNorealporCiclo(tareasNorealizadas)
-                setTareasRealporCiclo(selec.tareas_realizadas)
+                if(selec === undefined) {
+                    setTareasRealporCiclo(0)
+                    setTareasNorealporCiclo(0)
+                } else {
+                    tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                    setTareasNorealporCiclo(tareasNorealizadas)
+                    setTareasRealporCiclo(selec.tareas_realizadas)
+                } 
             }
         })
         setIdCiclo(id)
@@ -166,7 +171,7 @@ function Ciclo() {
 
     return (
         <newContext.Provider 
-            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER, expandedRow, setExpandedRow, tareasRealporCiclo, tareasNorealporCiclo}}>
+            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER, expandedRow, setExpandedRow, tareasRealporCiclo, tareasNorealporCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica}}>
             <ModalNewCiclo show={modalCiclo} onHide={()=>setModalCiclo(false)}/>
             <div className='ciclo section'>
                 {/* {cicloSelec === null ? "" : (

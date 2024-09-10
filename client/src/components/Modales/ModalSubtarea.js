@@ -5,7 +5,7 @@ import { newContext } from '../../pages/PlanesAccion/Ciclo'
 
 function ModalSubtarea(props) {
   const { USER } = useContext(newContext)
-  const { subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask } = useContext(subtareasContext)
+  const { subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask, fetchMetrica, idCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, setLoadingTar, fetchTareasById, setErrorTar, setTareasByCiclo } = useContext(subtareasContext)
 
   const [formData, setFormData] = useState({
     titulo: "",
@@ -117,7 +117,7 @@ function ModalSubtarea(props) {
         horasAprox: parseInt(formData.horas)
       }
       try {
-        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/addSubTask", {
+        const res = await fetch("http://localhost:3040/apis/plan-accion/addSubTask", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
@@ -142,6 +142,38 @@ function ModalSubtarea(props) {
           setModalErr(null)
           setSubtareaObj(null)
           props.onHide()
+          // Actualizar métricas
+          fetchMetrica()
+          .then(res => {
+              if(res.error !== 0){
+                  console.log(res.errorDetalle)
+              } else {
+                  let tareasNorealizadas = 0;
+                  const arr = res.objeto
+                  const selec = arr.find(e => e.id_ciclo === idCiclo)
+                  if(selec === undefined) {
+                      setTareasRealporCiclo(0)
+                      setTareasNorealporCiclo(0)
+                  } else {
+                      tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                      setTareasNorealporCiclo(tareasNorealizadas)
+                      setTareasRealporCiclo(selec.tareas_realizadas)
+                  } 
+              }
+          })
+          // actualiza tareas
+          setLoadingTar(true)
+          fetchTareasById(idCiclo)
+          .then(res => {
+              if(res.error !== 0){
+                  setLoadingTar(false)
+                  setErrorTar(res.errorDetalle)
+              } else {
+                  setLoadingTar(false)
+                  setTareasByCiclo(res.objeto)
+              }
+          })
+          // fin de actualiza tareas
           // actualiza subtareas
           setLoadingSub(true)
           fetchSubtareasById(idTask)
@@ -154,7 +186,7 @@ function ModalSubtarea(props) {
                   setSubtareas(res.objeto)
               }
           })
-          // fin de actualiza tareas
+          // fin de actualiza subtareas
         }
       } catch (error) {
         setModalErr(error)
@@ -181,10 +213,10 @@ function ModalSubtarea(props) {
         notas: formData.notas,
         subtarea: subtask,
         avance: parseInt(formData.avance),
-        horas: parseInt(formData.horas)
+        horasAprox: parseInt(formData.horas)
       }
       try {
-        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/modSubTask", {
+        const res = await fetch("http://localhost:3040/apis/plan-accion/modSubTask", {
           method: "PUT",
           headers: {
               "Content-Type": "application/json"
@@ -209,6 +241,38 @@ function ModalSubtarea(props) {
           setModalErr(null)
           setSubtareaObj(null)
           props.onHide()
+          // Actualizar métricas
+          fetchMetrica()
+          .then(res => {
+              if(res.error !== 0){
+                  console.log(res.errorDetalle)
+              } else {
+                  let tareasNorealizadas = 0;
+                  const arr = res.objeto
+                  const selec = arr.find(e => e.id_ciclo === idCiclo)
+                  if(selec === undefined) {
+                      setTareasRealporCiclo(0)
+                      setTareasNorealporCiclo(0)
+                  } else {
+                      tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                      setTareasNorealporCiclo(tareasNorealizadas)
+                      setTareasRealporCiclo(selec.tareas_realizadas)
+                  } 
+              }
+          })
+          // actualiza tareas
+          setLoadingTar(true)
+          fetchTareasById(idCiclo)
+          .then(res => {
+              if(res.error !== 0){
+                  setLoadingTar(false)
+                  setErrorTar(res.errorDetalle)
+              } else {
+                  setLoadingTar(false)
+                  setTareasByCiclo(res.objeto)
+              }
+          })
+          // fin de actualiza tareas
           // actualiza subtareas
           setLoadingSub(true)
           fetchSubtareasById(idTask)

@@ -9,7 +9,7 @@ export const subtareasContext = React.createContext()
 
 function Subtareas() {
 
-    const { subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask } = useContext(tareasContext)
+    const { subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask, fetchMetrica, idCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, setLoadingTar, fetchTareasById, setErrorTar, setTareasByCiclo } = useContext(tareasContext)
 
     const [idSubtask, setIdSubtask] = useState(null)
     const [modalSubtarea, setModalSubtarea] = useState(false)
@@ -48,7 +48,7 @@ function Subtareas() {
             id_subtarea: parseInt(idSubtask)
         }
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteSubTask", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/deleteSubTask", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -88,7 +88,7 @@ function Subtareas() {
         const obj = subtareas.find((e) => e.id_sub_tarea === idSubtask)
         console.log(obj)
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/subTareaok", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/subTareaok", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -102,6 +102,38 @@ function Subtareas() {
                 console.log(data.errorDetalle)
               } else {
                 setModalFinalizar(false)
+                // Actualizar métricas
+                fetchMetrica()
+                .then(res => {
+                    if(res.error !== 0){
+                        console.log(res.errorDetalle)
+                    } else {
+                        let tareasNorealizadas = 0;
+                        const arr = res.objeto
+                        const selec = arr.find(e => e.id_ciclo === idCiclo)
+                        if(selec === undefined) {
+                            setTareasRealporCiclo(0)
+                            setTareasNorealporCiclo(0)
+                        } else {
+                            tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                            setTareasNorealporCiclo(tareasNorealizadas)
+                            setTareasRealporCiclo(selec.tareas_realizadas)
+                        } 
+                    }
+                })
+                // actualiza tareas
+                setLoadingTar(true)
+                fetchTareasById(idCiclo)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingTar(false)
+                        setErrorTar(res.errorDetalle)
+                    } else {
+                        setLoadingTar(false)
+                        setTareasByCiclo(res.objeto)
+                    }
+                })
+                // fin de actualiza tareas
                 // actualiza subtareas
                 setLoadingSub(true)
                 fetchSubtareasById(idTask)
@@ -129,7 +161,7 @@ function Subtareas() {
 
     return (
         <>  
-            <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask }}>
+            <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask, fetchMetrica, idCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, setLoadingTar, fetchTareasById, setErrorTar, setTareasByCiclo }}>
                 <ModalSubtarea show={modalSubtarea} onHide={()=>setModalSubtarea(false)} />
                 <ModalVerSub show={modalVerSub} onHide={()=>setModalVerSub(false)} />
             </subtareasContext.Provider>

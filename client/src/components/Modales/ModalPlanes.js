@@ -6,7 +6,7 @@ import { newContext } from '../../pages/PlanesAccion/Ciclo'
 
 function ModalPlanes(props) {
   const { USER, fetchTareasById, idCiclo, setLoadingTar, setErrorTar, setTareasByCiclo } = useContext(newContext)
-  const { tareaObj, setTareaObj, cicloSelec, setCicloSelec } = useContext(tareasContext)
+  const { tareaObj, setTareaObj, cicloSelec, setCicloSelec, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica } = useContext(tareasContext)
 
   // State
   const [formData, setFormData] = useState({
@@ -60,7 +60,7 @@ function ModalPlanes(props) {
         idCiclo: pro.id_ciclo
       }
       try {
-        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/addTask", {
+        const res = await fetch("http://localhost:3040/apis/plan-accion/addTask", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
@@ -92,6 +92,24 @@ function ModalPlanes(props) {
               } else {
                   setLoadingTar(false)
                   setTareasByCiclo(res.objeto)
+              }
+          })
+          fetchMetrica()
+          .then(res => {
+              if(res.error !== 0){
+                  console.log(res.errorDetalle)
+              } else {
+                  let tareasNorealizadas = 0;
+                  const arr = res.objeto
+                  const selec = arr.find(e => e.id_ciclo === idCiclo)
+                  if(selec === undefined) {
+                      setTareasRealporCiclo(0)
+                      setTareasNorealporCiclo(0)
+                  } else {
+                      tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                      setTareasNorealporCiclo(tareasNorealizadas)
+                      setTareasRealporCiclo(selec.tareas_realizadas)
+                  } 
               }
           })
           // fin de actualiza tareas
@@ -165,7 +183,7 @@ function ModalPlanes(props) {
         idCiclo: pro.id_ciclo
       }
       try {
-        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/modTask", {
+        const res = await fetch("http://localhost:3040/apis/plan-accion/modTask", {
           method: "PUT",
           headers: {
               "Content-Type": "application/json"

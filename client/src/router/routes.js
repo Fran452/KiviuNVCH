@@ -10,7 +10,7 @@ import DatINEmpty from '../pages/DatIN/DatINempty'
 
 import ProtectedRoutes from '../Services/ProtectedRoutes'
 import Layout from '../components/Layout/Layout'
-import PowerBI from '../components/PowerBI'
+// import PowerBI from '../components/PowerBI'
 import NotFound from '../pages/NotFound/NotFound'
 import CiclosAuditoria from '../pages/PlanesAccion/CiclosAuditoria'
 import Year from '../pages/PlanesAccion/Year'
@@ -36,7 +36,7 @@ function MyRoutes() {
                   <Route path="/okr" element={<Okr />}/>
                   <Route path="/asistente-ia" element={<AsistenteIA />}/>
                   <Route path="/dat-in" element={<DatINEmpty />}/>
-                  <Route path="bi/:area" element={<PowerBI />}></Route>
+                  {/* <Route path="bi/:area" element={<PowerBI />}></Route> */}
                   <Route path="*" element={<NotFound />} />
               </Route>
             </Route>
