@@ -499,7 +499,7 @@ const controlador = {
                     month: '2-digit',
                     day: '2-digit',
                 };
-                fechaFinal = new Intl.DateTimeFormat('es-AR', opciones).format(ahora);
+                fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', opciones).format(ahora));
             }else{
                 fechaFinal = null
             }
@@ -578,7 +578,7 @@ const controlador = {
                 day: '2-digit',
             };
             // let fechaFinal = ahora.toISOString().split('T')[0];
-            let fechaFinal = new Intl.DateTimeFormat('es-AR', opciones).format(ahora);
+            let fechaFinal = fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', opciones).format(ahora));
 
             let subtarea = await dataBaseSQL.subtareas.update({
                 estado: 3,
@@ -604,7 +604,7 @@ const controlador = {
                 `
                 SELECT 
                     Ciclos.*,
-                    COUNT(CASE WHEN tar.fecha_final < Ciclos.fecha_final AND tar.fecha_final IS NOT NULL THEN 1 END) AS tareas_realizadas,
+                    COUNT(CASE WHEN tar.fecha_final IS NOT NULL THEN 1 END) AS tareas_realizadas,
                     COUNT(tar.id_tarea) AS tareas_totales
                 FROM (
                     SELECT Tareas.*,
