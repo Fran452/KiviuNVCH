@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { ProgressBar, Modal, OverlayTrigger } from 'react-bootstrap';
+// import { ProgressBar, Modal, OverlayTrigger } from 'react-bootstrap';
+import { ProgressBar, Modal } from 'react-bootstrap';
 import { Oval } from 'react-loader-spinner'
 import illustrationPlanes from "../assets/img/planes.png"
 import IllustrationAccess from "../assets/img/access.png"
@@ -47,7 +48,7 @@ function Tareas() {
     setIdCiclo, 
     yearSelec, 
     titleCiclo, 
-    descripcionCiclo, 
+    // descripcionCiclo, 
     expandedRow, 
     setExpandedRow,
     tareasRealporCiclo,
@@ -90,11 +91,11 @@ function Tareas() {
 
   },[])
 
-  const renderTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      {descripcionCiclo}
-    </Tooltip>
-  );
+  // const renderTooltip = (props) => (
+  //   <Tooltip id="button-tooltip" {...props}>
+  //     {descripcionCiclo}
+  //   </Tooltip>
+  // );
 
   const handleEditCiclo = () => {
     const pro = ciclos.find(e => e.id_ciclo === idCiclo)
@@ -108,7 +109,7 @@ function Tareas() {
 
   const handleDeleteCiclo = async () => {
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/deleteCiclos", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteCiclos", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -156,7 +157,7 @@ function Tareas() {
       idTarea: parseInt(idTask)
     }
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/deleteTask", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteTask", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -189,7 +190,7 @@ function Tareas() {
 
   const fetchSubtareasById = async(id) => {
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/viewSubTask", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewSubTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -248,6 +249,7 @@ function Tareas() {
     
                     let sum = 0;
                     let dataArr = context.chart.data.datasets[0].data;
+                    // eslint-disable-next-line array-callback-return
                     dataArr.map(data => {
                         sum += Number(data);
                     });

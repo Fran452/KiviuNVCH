@@ -27,12 +27,26 @@ const controlador = {
     viewCiclos: async (req,res) => {
         try{
             let ciclos = await dataBaseSQL.sequelize.query(
-                `SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso
-                FROM Ciclos 
-                LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo 
-                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
-                WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 
-                GROUP BY Ciclos.id_ciclo;`
+                `SELECT Ciclos.*, MIN(tar.fecha_inicio) as fecha_inicio_tareas,
+                    CASE
+                        WHEN COUNT(tar.id_tarea) = COUNT(CASE WHEN tar.progreso_tarea = 100 THEN 1 END)
+                        THEN MAX(tar.fecha_final)
+                        ELSE NULL
+                    END AS fecha_final_tareas
+                FROM (
+                    SELECT Tareas.*, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea,
+                        CASE
+                            WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
+                            THEN MAX(Subtareas.fecha_final)
+                            ELSE NULL
+                        END AS fecha_final
+                    FROM Tareas
+                    LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas AND Subtareas.ver = 1
+                    WHERE Tareas.ver = 1
+                    GROUP BY Tareas.id_tarea
+                ) tar
+                    LEFT JOIN Ciclos ON tar.fk_ciclo = Ciclos.id_ciclo AND Ciclos.ver = 1
+                    GROUP BY Ciclos.id_ciclo;`
                 ,{
                 replacements: { fkArea: req.body.user.area },
                 type: Sequelize.QueryTypes.SELECT

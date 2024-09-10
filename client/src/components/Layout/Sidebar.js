@@ -17,6 +17,7 @@ function Sidebar({sidebarOpen, setSidebarOpen}) {
   const auth = localStorage.getItem("token")
   const jwtParse = jwtDecode(auth)
 
+  // eslint-disable-next-line no-unused-vars
   const [list, setList] = useState(lista)
   const [navbarMob, setNavbarMob] = useState(false)
   
