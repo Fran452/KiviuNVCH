@@ -493,13 +493,7 @@ const controlador = {
             let fechaFinal;
             if(req.body.avance == 100){
                 let ahora = new Date();
-                const opciones = {
-                    timeZone: 'America/Argentina/Buenos_Aires',
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                };
-                fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', opciones).format(ahora));
+                fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
             }else{
                 fechaFinal = null
             }
@@ -571,14 +565,8 @@ const controlador = {
     terminarSubTarea: async (req,res) => {
         try{
             let ahora = new Date();
-            const opciones = {
-                timeZone: 'America/Argentina/Buenos_Aires',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-            };
-            // let fechaFinal = ahora.toISOString().split('T')[0];
-            let fechaFinal = fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', opciones).format(ahora));
+            let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
+
 
             let subtarea = await dataBaseSQL.subtareas.update({
                 estado: 3,
