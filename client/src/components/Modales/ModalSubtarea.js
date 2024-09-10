@@ -574,7 +574,7 @@ function ModalSubtarea(props) {
             </div>
           </div>
           <div className='row mb-2'>
-            <div className='col-6'>
+            {/* <div className='col-6'>
               <label className='mb-1'>Progreso de la subtarea</label>
               <div className="formPA__progressBar d-flex flex-row align-items-center justify-content-between">
                 <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleDecrease}><i className="bi bi-dash"></i></button>
@@ -582,7 +582,7 @@ function ModalSubtarea(props) {
                 <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleIncrese}><i className="bi bi-plus"></i></button>
               </div>
               {errors.avance && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.avance}</span>}
-            </div>
+            </div> */}
             <div className='col-6'>
               <label className='mb-1'>Horas</label>
               <input
