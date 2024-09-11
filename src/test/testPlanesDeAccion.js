@@ -923,7 +923,6 @@ const controlador = {
 
             let crearCiclo = await funcionesDeTest.crearCiclo(usuario.area,"ciclo de test","ciclo de test Detalle",fechaInicio,fechaFin,1);
             let tareaCreadaAntigua = await funcionesDeTest.crearTarea(usuario.id,usuario.area,crearCiclo.id_ciclo,`tarea de prueba`,1,1,fechaFin,'texto de pruebas para tareas');
-
             let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/addSubTask`,{
                 method:'POST',
                 headers: {
@@ -934,17 +933,18 @@ const controlador = {
                     titulo          : "Sub tarea de ejemplo",      
                     asignacion      : usuario.mail,          
                     horasAprox      : 4,          
-                    avance           : 0,      
+                    avance          : 0,      
                     estado          : 0,      
                     prioridad       : 0,          
                     notas           : "Nota ",      
-                    user            : usuario  
+                    user            : usuario,
+                    fechaInicial    : ahora
                 })
             })
             
             let apis = await apisJSON.json();
             
-            // Sin error de apis
+            // Sin error de apis    
             resultadoTest = await funcionesDeTest.crearTest(resultadoTest,'Sin errores de apis',0,apis.error,1);
             if(resultadoTest.test0.estado == 'Error'){
                 res.json({resultadoTest,resultadoApi:apis});
