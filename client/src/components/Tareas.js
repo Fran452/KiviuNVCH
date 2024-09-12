@@ -76,6 +76,8 @@ function Tareas() {
 
   const [modalVer, setModalVer] = useState(false)
 
+  const [metricasClose, setMetricasClose] = useState(false)
+
   // const [subtareas, setSubtareas] = useState([])
   // const [errorSubtarea, setErrorSubtarea] = useState(null)
 
@@ -295,6 +297,10 @@ function Tareas() {
       cutout: 30
   }
 
+  const handleCloseMetricas = () => {
+    setMetricasClose(!metricasClose)
+  }
+
   return (
     <>
       <tareasContext.Provider value={{setLoadingTar, setErrorTar, setTareasByCiclo, cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, fetchTareasById, idCiclo, setSubtareas, idTask, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica }}>
@@ -364,7 +370,7 @@ function Tareas() {
                   </div>
                 ): (
                   <div className='tareas d-flex flex-column'>
-                    <div className='tareas__header d-flex flex-column flex-md-row justify-content-between align-items-center mb-4'>
+                    <div className='tareas__header d-flex flex-column flex-md-row justify-content-between align-items-center mb-3'>
                       <div className='w-100 d-flex flex-row justify-content-between justify-content-md-start flex-md-wrap align-items-center mb-2 mb-md-0'>
                           <h3 className='m-0 me-2'>{yearSelec}<i className="bi bi-chevron-right mx-2"></i>
                             <span className='tareas__header__title'>{titleCiclo}</span>
@@ -396,22 +402,36 @@ function Tareas() {
                       </div>
                     ) : (
                       <div className='tareas__main d-flex flex-column'>
-                        <div className='tareas__main__graficas mb-4'>
-                          <div className='tareas__main__graficas__doughnut d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
-                            <div className='tareas__main__graficas__doughnut__info d-flex flex-row align-items-center'>
-                                <div className='tareas__main__graficas__doughnut__info__textos'>
-                                    <h4 className='mb-2'>{titleCiclo}</h4>
-                                    <p className='mb-1 fw-medium'>Tareas realizadas: <span>{tareasRealporCiclo}</span></p>
-                                    <p className='mb-0'>Tareas no realizadas: <span>{tareasNorealporCiclo}</span></p>
-                                </div>
-                                <div className='tareas__main__graficas__doughnut__info__chart'>
-                                    <Doughnut 
-                                        data = {data}
-                                        options={options}
-                                    />
-                                </div>
+                        <div>
+                          <div className={`${metricasClose ? "invisible tareas__main__graficas--close mb-0" : "d-flex mb-2"} tareas__main__graficas`}>
+                            {/* Gráfica 1 */}
+                            <div className='tareas__main__graficas__doughnut d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                              <div className='tareas__main__graficas__doughnut__info d-flex flex-row align-items-center'>
+                                  <div className='tareas__main__graficas__doughnut__info__textos'>
+                                      <h4 className='mb-2'>{titleCiclo}</h4>
+                                      <p className='mb-1 fw-medium'>Tareas realizadas: <span>{tareasRealporCiclo}</span></p>
+                                      <p className='mb-0'>Tareas no realizadas: <span>{tareasNorealporCiclo}</span></p>
+                                  </div>
+                                  <div className='tareas__main__graficas__doughnut__info__chart'>
+                                      <Doughnut 
+                                          data = {data}
+                                          options={options}
+                                      />
+                                  </div>
+                              </div>
                             </div>
                           </div>
+                          {metricasClose ? (
+                            <div className='d-flex flex-row'>
+                              <div className='d-flex justify-content-center doughnut--empty shadow-sm rounded-pill border border-light-subtle'>
+                                <i className="bi bi-pie-chart text-muted"></i>
+                              </div>
+                            </div>
+                          ): ("")}
+                          <button className='ciclos__btn btn border-0 p-0 d-flex flex-row align-items-center' onClick={handleCloseMetricas}>
+                            {metricasClose ? <i className="bi bi-eye me-2"></i>: <i className="bi bi-eye-slash me-2"></i>}
+                            <span>{metricasClose ? "Mostrar métricas" : "Ocultar métricas"}</span>
+                          </button>
                         </div>
                         <div className='tareas__main__tabla'>
                           {/* Table custom */}
@@ -434,7 +454,9 @@ function Tareas() {
                                 return <React.Fragment key={e.id_tarea}>
                                   <div className='table__custom__row light'>
                                     <div className='table__custom__cell cell__dropdown'>
-                                      <button className='btn' onClick={()=>handleSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
+                                      <button className='btn' onClick={()=>handleSubtareasById(e.id_tarea)}>
+                                        {expandedRow ? <i className="bi bi-chevron-up"></i> : <i className="bi bi-chevron-down"></i>}
+                                      </button>
                                     </div>
                                     <div className='table__custom__cell cell__buttons'>
                                       <button onClick={()=> handleShowInfo(e.id_tarea)} className='btn me-2'><i className="bi bi-eye"></i></button>
