@@ -455,7 +455,7 @@ function Tareas() {
                                   <div className='table__custom__row light'>
                                     <div className='table__custom__cell cell__dropdown'>
                                       <button className='btn' onClick={()=>handleSubtareasById(e.id_tarea)}>
-                                        {expandedRow ? <i className="bi bi-chevron-up"></i> : <i className="bi bi-chevron-down"></i>}
+                                        {expandedRow === e.id_tarea ? <i className="bi bi-chevron-up"></i> : <i className="bi bi-chevron-down"></i>}
                                       </button>
                                     </div>
                                     <div className='table__custom__cell cell__buttons'>
