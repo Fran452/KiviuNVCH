@@ -56,12 +56,14 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.STRING(255),
             defaultValue: " "
         },
-        
+
+/*
         "estado": {
             type:DataTypes.INTEGER(),
             allowNull: false,
             defaultValue: 0
         },
+*/
 
         "prioridad": {
             type:DataTypes.INTEGER(),
