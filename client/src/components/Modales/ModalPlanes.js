@@ -13,7 +13,7 @@ function ModalPlanes(props) {
     nombre: "",
     fechaInicio: new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0') + "-" + (new Date().getDate()).toString().padStart(2, '0'),
     responsable: "",
-    estado: "",
+    // estado: "",
     prioridad: "",
     notas: "",
   })
@@ -27,7 +27,7 @@ function ModalPlanes(props) {
         nombre: obj.nombre,
         fechaInicio: obj.fecha_inicio,
         responsable: obj.mailUser,
-        estado: obj.estado.toString(),
+        // estado: obj.estado.toString(),
         prioridad: obj.prioridad.toString(),
         notas: obj.notas,
       })
@@ -53,7 +53,7 @@ function ModalPlanes(props) {
         empleado_asignado: formData.responsable,
         user: USER,
         nombre: formData.nombre,
-        estado: parseInt(formData.estado),
+        // estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
         fechaInicial: formData.fechaInicio,
         notas: formData.notas,
@@ -75,7 +75,7 @@ function ModalPlanes(props) {
             nombre: "",
             fechaInicio: "",
             responsable: "",
-            estado: "",
+            // estado: "",
             prioridad: "",
             notas:"",
           })
@@ -136,9 +136,9 @@ function ModalPlanes(props) {
     } else if (!/\S+@\S+\.\S+/.test(data.responsable)){
       errors.responsable = "El email no es válido."
     }
-    if(!data.estado.trim()) {
-      errors.estado = "Marca una opción."
-    }
+    // if(!data.estado.trim()) {
+    //   errors.estado = "Marca una opción."
+    // }
     if(!data.prioridad.trim()) {
       errors.prioridad = "Marca una opción."
     }
@@ -154,7 +154,7 @@ function ModalPlanes(props) {
       nombre: "",
       fechaInicio: new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0') + "-" + (new Date().getDate()).toString().padStart(2, '0'),
       responsable: "",
-      estado: "",
+      // estado: "",
       prioridad: "",
       notas: "",
     })
@@ -175,7 +175,7 @@ function ModalPlanes(props) {
         empleado_asignado: formData.responsable,
         user: USER,
         nombre: formData.nombre,
-        estado: parseInt(formData.estado),
+        // estado: parseInt(formData.estado),
         prioridad: parseInt(formData.prioridad),
         fechaInicio: formData.fechaInicio,
         notas: formData.notas,
@@ -198,7 +198,7 @@ function ModalPlanes(props) {
             nombre: "",
             fechaInicio: new Date().getFullYear() + "-" + (new Date().getMonth() + 1).toString().padStart(2, '0') + "-" + (new Date().getDate()).toString().padStart(2, '0'),
             responsable: "",
-            estado: "",
+            // estado: "",
             prioridad: "",
             notas:"",
           })
@@ -325,19 +325,6 @@ function ModalPlanes(props) {
                 </div>
               {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
             </div>
-            <div className="col-12 col-md-6">
-                <label className='mb-1'>Estado</label>
-                <select className="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
-                  <option value="">Elija el estado</option>
-                  <option value="1">Pendiente</option>
-                  <option value="2">En progreso</option>
-                  <option value="3">Completada</option>
-                  <option value="4">En espera</option>
-                  <option value="5">Cancelada</option>
-                  <option value="6">Bloqueada</option>
-                </select>
-              {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
-            </div>
           </div>
           <div className='mb-2'>
             <label className='mb-1'>Notas</label>
@@ -439,19 +426,6 @@ function ModalPlanes(props) {
                       </div>
                     </div>
                   {errors.prioridad && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.prioridad}</span>}
-              </div>
-              <div className="col-12 col-md-6">
-                  <label className='mb-1'>Estado</label>
-                  <select className="form-select form-select-sm" id="estado" name="estado" onChange={handleChange} value={formData.estado}>
-                    <option value="">Elija el estado</option>
-                    <option value="1">Pendiente</option>
-                    <option value="2">En progreso</option>
-                    <option value="3">Completada</option>
-                    <option value="4">En espera</option>
-                    <option value="5">Cancelada</option>
-                    <option value="6">Bloqueada</option>
-                  </select>
-                {errors.estado && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.estado}</span>}
               </div>
             </div>
             <div className='mb-2'>
