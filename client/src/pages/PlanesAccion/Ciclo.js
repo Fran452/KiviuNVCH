@@ -34,6 +34,8 @@ function Ciclo() {
 
     const [expandedRow, setExpandedRow] = useState(null);
 
+    const [ciclosClose, setCiclosClose] = useState(false)
+
     // Anterior areas > subciclos
     // const [areas, setAreas] = useState([]);
     // Anterior proyectos
@@ -169,9 +171,13 @@ function Ciclo() {
         setModalCiclo(true)
     }
 
+    const handleCloseCiclos = () => {
+        setCiclosClose(!ciclosClose)
+      }
+
     return (
         <newContext.Provider 
-            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER, expandedRow, setExpandedRow, tareasRealporCiclo, tareasNorealporCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica}}>
+            value={{subtareas, setSubtareas, loadingTar, setLoadingTar, errorTar, setErrorTar, ciclos, setCiclos, fetchCiclos, fetchTareasById, tareasByCiclo, setTareasByCiclo, yearSelec, setYearSelec, idCiclo, setIdCiclo, titleCiclo, descripcionCiclo, setTitleCiclo, setDescripcionCiclo, USER, expandedRow, setExpandedRow, tareasRealporCiclo, tareasNorealporCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica, handleCloseCiclos, ciclosClose}}>
             <ModalNewCiclo show={modalCiclo} onHide={()=>setModalCiclo(false)}/>
             <div className='ciclo section'>
                 {/* {cicloSelec === null ? "" : (
@@ -212,7 +218,7 @@ function Ciclo() {
                                     </div>
                                 ) : (
                                     <div className='ciclo__main d-flex flex-column flex-md-row'>
-                                        <div className='ciclo__main__menu mb-4 mb-md-0 d-flex flex-column align-items-start justify-content-between'>
+                                        <div className={`${ciclosClose ? "invisible ciclo__main__menu--close" : "d-flex"} ciclo__main__menu mb-4 mb-md-0 flex-column align-items-start justify-content-between`} >
                                             <div className='container__accordion'>
                                                 <Accordion className='mb-2 mb-md-0' defaultActiveKey="0">
                                                     <Accordion.Item eventKey='0'>

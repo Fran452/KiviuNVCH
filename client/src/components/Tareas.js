@@ -56,6 +56,8 @@ function Tareas() {
     setTareasRealporCiclo,
     setTareasNorealporCiclo,
     fetchMetrica,
+    handleCloseCiclos,
+    ciclosClose
   } = useContext(newContext)
   
   const [modalDeleteCiclo, setModalDeleteCiclo] = useState(false)
@@ -73,6 +75,8 @@ function Tareas() {
   const [errorSub, setErrorSub] = useState(null)
 
   const [modalVer, setModalVer] = useState(false)
+
+  const [metricasClose, setMetricasClose] = useState(false)
 
   // const [subtareas, setSubtareas] = useState([])
   // const [errorSubtarea, setErrorSubtarea] = useState(null)
@@ -293,6 +297,10 @@ function Tareas() {
       cutout: 30
   }
 
+  const handleCloseMetricas = () => {
+    setMetricasClose(!metricasClose)
+  }
+
   return (
     <>
       <tareasContext.Provider value={{setLoadingTar, setErrorTar, setTareasByCiclo, cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, fetchTareasById, idCiclo, setSubtareas, idTask, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica }}>
@@ -324,170 +332,191 @@ function Tareas() {
           {errorDel && <p>{errorDel}</p>}
         </Modal.Footer>
       </Modal>
-      {loadingTar ? (
-        <div className='loading__tareas d-flex flex-column align-items-center justify-content-center'>
-        <Oval
-            visible={true}
-            height="80"
-            width="80"
-            color="#0d6efd"
-            ariaLabel="oval-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-        />
-        <p className='fw-medium'>Loading...</p>
-      </div>
-      ) : (
-        <>
-          {errorTar ? (
-            <div className='tareas__error d-flex flex-column align-items-center justify-content-center'>
-              <img className='mb-4' src={IllustrationAccess} alt="" />
-              <h2>Mensaje de error:</h2>
-              <p>{errorTar}</p>
-          </div>
-          ) : (
-            <>
-              {tareasByCiclo === null ? (
-                <div className='tareas__inicio d-flex flex-column align-items-center justify-content-center'>
-                <img className='mb-4' src={illustrationPlanes} alt="" />
-                <h2 className='fw-semibold mb-2'>¡Bienvenido!</h2>
-                <p className='text-center w-75'>Aquí encontrarás los procesos por cada año. Cada proceso cuenta con sus propias tareas y subtareas, 
-                  aquellas que deberás realizar para alcanzar los objetivos establecidos.
-                </p>
-              </div>
-              ): (
-                <div className='tareas d-flex flex-column'>
-                  <div className='tareas__header d-flex flex-column flex-md-row justify-content-between align-items-center mb-4'>
-                    <div className='d-flex flex-row flex-md-wrap align-items-center mb-2 mb-md-0'>
-                        <h3 className='m-0 me-2'>{yearSelec}<i className="bi bi-chevron-right mx-2"></i>
-                          <span className='tareas__header__title'>{titleCiclo}</span>
-                        </h3>
-                        {/* <h3 className='m-0 me-2'>{yearSelec}<i className="bi bi-chevron-right mx-2"></i>
-                        <OverlayTrigger
-                          placement="top"
-                          delay={{ show: 100, hide: 100 }}
-                          overlay={renderTooltip}
-                        >
-                            <span className='tareas__header__title'>{titleCiclo}</span>
-                        </OverlayTrigger>
-                        </h3> */}
-                        <div className='d-flex flex-column flex-md-row'>
-                            <button className='btn__edit btn bg-success rounded-circle mb-2 mb-md-0 me-md-2 text-white' onClick={()=> handleEditCiclo(idCiclo)}><i className="bi bi-pencil"></i></button>
-                            <button className='btn__delete btn bg-danger rounded-circle text-white' onClick={handleModalDeleteCiclo}><i className="bi bi-trash3"></i></button>
-                        </div>
-                    </div>
-                    <button className='btn__addTarea btn btn-primary rounded-pill fw-medium' onClick={handleNewTarea}>Agregar tarea</button>
+      <div className={`${ciclosClose ? "tareas__container--close" : "tareas__container"} d-flex flex-column`}>
+        <button className='d-none ciclos__btn btn border-0 p-0 d-md-flex flex-row align-items-center' onClick={handleCloseCiclos}>
+          {ciclosClose ? <i class="bi bi-arrow-bar-right me-2"></i>: <i class="bi bi-arrow-bar-left me-2"></i>}
+          <span>{ciclosClose ? "Mostrar ciclos" : "Ocultar ciclos"}</span>
+        </button>
+        {loadingTar ? (
+          <div className='loading__tareas d-flex flex-column align-items-center justify-content-center'>
+          <Oval
+              visible={true}
+              height="80"
+              width="80"
+              color="#0d6efd"
+              ariaLabel="oval-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+          />
+          <p className='fw-medium'>Loading...</p>
+        </div>
+        ) : (
+          <>
+            {errorTar ? (
+              <div className='tareas__error d-flex flex-column align-items-center justify-content-center'>
+                <img className='mb-4' src={IllustrationAccess} alt="" />
+                <h2>Mensaje de error:</h2>
+                <p>{errorTar}</p>
+            </div>
+            ) : (
+              <>
+                {tareasByCiclo === null ? (
+                  <div className='tareas__inicio d-flex flex-column align-items-center justify-content-center'>
+                    <img className='mb-4' src={illustrationPlanes} alt="" />
+                    <h2 className='fw-semibold mb-2'>¡Bienvenido!</h2>
+                    <p className='text-center w-75'>Aquí encontrarás los procesos por cada año. Cada proceso cuenta con sus propias tareas y subtareas, 
+                      aquellas que deberás realizar para alcanzar los objetivos establecidos.
+                    </p>
                   </div>
-                  {tareasByCiclo.length === 0 ? (
-                    <div className='tareas--empty__main py-4 py-md-0 d-flex flex-column align-items-center justify-content-center rounded-3'>
-                      <h2 className='fw-semibold mb-1 text-center'>No tienes tareas aún.</h2>
-                      <p className='mb-3 text-center'>Para comenzar, crea tu primera tarea:</p>
-                      <button 
-                      onClick={handleNewTarea} 
-                      className='tareas--empty__main__btn btn rounded-pill shadow-sm fw-medium'>Agregar Tarea
-                      </button>
+                ): (
+                  <div className='tareas d-flex flex-column'>
+                    <div className='tareas__header d-flex flex-column flex-md-row justify-content-between align-items-center mb-3'>
+                      <div className='w-100 d-flex flex-row justify-content-between justify-content-md-start flex-md-wrap align-items-center mb-2 mb-md-0'>
+                          <h3 className='m-0 me-2'>{yearSelec}<i className="bi bi-chevron-right mx-2"></i>
+                            <span className='tareas__header__title'>{titleCiclo}</span>
+                          </h3>
+                          {/* <h3 className='m-0 me-2'>{yearSelec}<i className="bi bi-chevron-right mx-2"></i>
+                          <OverlayTrigger
+                            placement="top"
+                            delay={{ show: 100, hide: 100 }}
+                            overlay={renderTooltip}
+                          >
+                              <span className='tareas__header__title'>{titleCiclo}</span>
+                          </OverlayTrigger>
+                          </h3> */}
+                          <div className='d-flex flex-column flex-md-row'>
+                              <button className='btn__edit btn bg-success rounded-circle mb-2 mb-md-0 me-md-2 text-white' onClick={()=> handleEditCiclo(idCiclo)}><i className="bi bi-pencil"></i></button>
+                              <button className='btn__delete btn bg-danger rounded-circle text-white' onClick={handleModalDeleteCiclo}><i className="bi bi-trash3"></i></button>
+                          </div>
+                      </div>
+                      <button className='btn__addTarea btn btn-primary rounded-pill fw-medium' onClick={handleNewTarea}>Agregar tarea</button>
                     </div>
-                  ) : (
-                    <div className='tareas__main d-flex flex-column'>
-                      <div className='tareas__main__graficas mb-4'>
-                        <div className='tareas__main__graficas__doughnut d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
-                          <div className='tareas__main__graficas__doughnut__info d-flex flex-row align-items-center'>
-                              <div className='tareas__main__graficas__doughnut__info__textos'>
-                                  <h4 className='mb-2'>{titleCiclo}</h4>
-                                  <p className='mb-1 fw-medium'>Tareas realizadas: <span>{tareasRealporCiclo}</span></p>
-                                  <p className='mb-0'>Tareas no realizadas: <span>{tareasNorealporCiclo}</span></p>
+                    {tareasByCiclo.length === 0 ? (
+                      <div className='tareas--empty__main py-4 py-md-0 d-flex flex-column align-items-center justify-content-center rounded-3'>
+                        <h2 className='fw-semibold mb-1 text-center'>No tienes tareas aún.</h2>
+                        <p className='mb-3 text-center'>Para comenzar, crea tu primera tarea:</p>
+                        <button 
+                        onClick={handleNewTarea} 
+                        className='tareas--empty__main__btn btn rounded-pill shadow-sm fw-medium'>Agregar Tarea
+                        </button>
+                      </div>
+                    ) : (
+                      <div className='tareas__main d-flex flex-column'>
+                        <div>
+                          <div className={`${metricasClose ? "invisible tareas__main__graficas--close mb-0" : "d-flex mb-2"} tareas__main__graficas`}>
+                            {/* Gráfica 1 */}
+                            <div className='tareas__main__graficas__doughnut d-flex flex-column shadow-sm rounded-3 border border-light-subtle'>
+                              <div className='tareas__main__graficas__doughnut__info d-flex flex-row align-items-center'>
+                                  <div className='tareas__main__graficas__doughnut__info__textos'>
+                                      <h4 className='mb-2'>{titleCiclo}</h4>
+                                      <p className='mb-1 fw-medium'>Tareas realizadas: <span>{tareasRealporCiclo}</span></p>
+                                      <p className='mb-0'>Tareas no realizadas: <span>{tareasNorealporCiclo}</span></p>
+                                  </div>
+                                  <div className='tareas__main__graficas__doughnut__info__chart'>
+                                      <Doughnut 
+                                          data = {data}
+                                          options={options}
+                                      />
+                                  </div>
                               </div>
-                              <div className='tareas__main__graficas__doughnut__info__chart'>
-                                  <Doughnut 
-                                      data = {data}
-                                      options={options}
-                                  />
+                            </div>
+                          </div>
+                          {metricasClose ? (
+                            <div className='d-flex flex-row'>
+                              <div className='d-flex justify-content-center doughnut--empty shadow-sm rounded-pill border border-light-subtle'>
+                                <i className="bi bi-pie-chart text-muted"></i>
                               </div>
+                            </div>
+                          ): ("")}
+                          <button className='ciclos__btn btn border-0 p-0 d-flex flex-row align-items-center' onClick={handleCloseMetricas}>
+                            {metricasClose ? <i className="bi bi-eye me-2"></i>: <i className="bi bi-eye-slash me-2"></i>}
+                            <span>{metricasClose ? "Mostrar métricas" : "Ocultar métricas"}</span>
+                          </button>
+                        </div>
+                        <div className='tareas__main__tabla'>
+                          {/* Table custom */}
+                          <div className='table__custom'>
+                            <div className='table__custom__header'>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__dropdown'></div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__buttons'></div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__nombre'>Tareas</div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__prioridad'>Prioridad</div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__estado'>Estado</div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__progreso'>Progreso</div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__horas'>Horas totales</div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__notas'>Notas</div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__mail'>Responsable</div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha inicial</div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha final</div>
+                            </div>
+                            <div className='table__custom__body'>
+                              {tareasByCiclo.map((e,i) => {
+                                return <React.Fragment key={e.id_tarea}>
+                                  <div className='table__custom__row light'>
+                                    <div className='table__custom__cell cell__dropdown'>
+                                      <button className='btn' onClick={()=>handleSubtareasById(e.id_tarea)}>
+                                        {expandedRow ? <i className="bi bi-chevron-up"></i> : <i className="bi bi-chevron-down"></i>}
+                                      </button>
+                                    </div>
+                                    <div className='table__custom__cell cell__buttons'>
+                                      <button onClick={()=> handleShowInfo(e.id_tarea)} className='btn me-2'><i className="bi bi-eye"></i></button>
+                                      <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
+                                      <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
+                                    </div>
+                                    <div className='table__custom__cell cell__nombre'>{e.nombre}</div>
+                                    <div className='table__custom__cell cell__prioridad'>
+                                      {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                                      {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                                      {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
+                                    </div>
+                                    <div className='table__custom__cell cell__estado'>
+                                      {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                                      {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                                      {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                                      {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                                      {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                                      {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                                    </div>
+                                    <div className='table__custom__cell cell__progreso'>
+                                      <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso_tarea)} label={`${Math.round(e.progreso_tarea)}%`} max={100}/>
+                                    </div>
+                                    <div className='table__custom__cell cell__horas'>{e.horas_tarea}</div>
+                                    <div className="table__custom__cell cell__notas">{e.notas}</div>
+                                    <div className="table__custom__cell cell__mail">{e.nombreUser}</div>
+                                    <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                    {e.fecha_final === null ? (
+                                      <div className="table__custom__cell cell__date"></div>
+                                    ): (
+                                      <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                    )}
+                                    {/* <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                    <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
+                                  </div>
+                                  <CSSTransition
+                                      in={expandedRow === e.id_tarea}
+                                      timeout={300}
+                                      classNames="details"
+                                      unmountOnExit
+                                      nodeRef={nodeRef}
+                                  >
+                                    <div ref={nodeRef}>
+                                      <Subtareas />
+                                    </div>
+                                  </CSSTransition>
+                                </React.Fragment>
+                              })}
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div className='tareas__main__tabla'>
-                        {/* Table custom */}
-                        <div className='table__custom'>
-                          <div className='table__custom__header'>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__dropdown'></div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__buttons'></div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__nombre'>Tareas</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__prioridad'>Prioridad</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__estado'>Estado</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__progreso'>Progreso</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__horas'>Horas totales</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__notas'>Notas</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__mail'>Responsable</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha inicial</div>
-                            <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha final</div>
-                          </div>
-                          <div className='table__custom__body'>
-                            {tareasByCiclo.map((e,i) => {
-                              return <React.Fragment key={e.id_tarea}>
-                                <div className='table__custom__row light'>
-                                  <div className='table__custom__cell cell__dropdown'>
-                                    <button className='btn' onClick={()=>handleSubtareasById(e.id_tarea)}><i className="bi bi-chevron-down"></i></button>
-                                  </div>
-                                  <div className='table__custom__cell cell__buttons'>
-                                    <button onClick={()=> handleShowInfo(e.id_tarea)} className='btn me-2'><i className="bi bi-eye"></i></button>
-                                    <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
-                                    <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
-                                  </div>
-                                  <div className='table__custom__cell cell__nombre'>{e.nombre}</div>
-                                  <div className='table__custom__cell cell__prioridad'>
-                                    {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
-                                    {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
-                                    {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
-                                  </div>
-                                  <div className='table__custom__cell cell__estado'>
-                                    {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
-                                    {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
-                                    {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
-                                    {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
-                                    {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
-                                    {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
-                                  </div>
-                                  <div className='table__custom__cell cell__progreso'>
-                                    <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso_tarea)} label={`${Math.round(e.progreso_tarea)}%`} max={100}/>
-                                  </div>
-                                  <div className='table__custom__cell cell__horas'>{e.horas_tarea}</div>
-                                  <div className="table__custom__cell cell__notas">{e.notas}</div>
-                                  <div className="table__custom__cell cell__mail">{e.nombreUser}</div>
-                                  <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                  {e.fecha_final === null ? (
-                                    <div className="table__custom__cell cell__date"></div>
-                                  ): (
-                                    <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                  )}
-                                  {/* <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                  <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
-                                </div>
-                                <CSSTransition
-                                    in={expandedRow === e.id_tarea}
-                                    timeout={300}
-                                    classNames="details"
-                                    unmountOnExit
-                                    nodeRef={nodeRef}
-                                >
-                                  <div ref={nodeRef}>
-                                    <Subtareas />
-                                  </div>
-                                </CSSTransition>
-                              </React.Fragment>
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
-          )}
-          
-        </>
-      )}
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </>
+        )}
+      </div>
       </tareasContext.Provider>
     </>
     
