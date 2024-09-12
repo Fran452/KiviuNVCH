@@ -466,7 +466,7 @@ const controlador = {
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
+            res.json({errorGeneral: error, error : codeError, errorDetalle: error.message });   
             return 1;
         }
     },
@@ -491,8 +491,10 @@ const controlador = {
             }
 
             let fechaFinal;
+            let estado = req.body.estado;
             if(req.body.avance == 100){
                 let ahora = new Date();
+                estado = 3
                 fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
             }else{
                 fechaFinal = null
@@ -503,7 +505,7 @@ const controlador = {
                 asignacion      : empleadoAsignado.id_empleado,        
                 horasAprox      : req.body.horasAprox,        
                 avance          : req.body.avance,    
-                estado          : req.body.estado,    
+                estado          : estado,    
                 prioridad       : req.body.prioridad,        
                 notas           : req.body.notas,
                 fecha_inicio    : req.body.fechaInicio,
