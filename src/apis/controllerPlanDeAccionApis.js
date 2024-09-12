@@ -233,49 +233,30 @@ const controlador = {
         try{
             /*SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas = 1 GROUP BY tareas.id_tarea;*/
             let tareas;
-            if(req.body.user.puesto < 1){
-                tareas = await dataBaseSQL.sequelize.query(
-                `
+            tareas = await dataBaseSQL.sequelize.query(
+            `
                 SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea,
                     CASE
                         WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
                         THEN MAX(Subtareas.fecha_final)
                         ELSE NULL
-                    END AS fecha_final
-                FROM Tareas 
-                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
-                LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
-                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea  
-                `        
-                ,{
-                    replacements: { idCiclo: req.body.idCiclo },
-                    type: Sequelize.QueryTypes.SELECT
-                });
-
-                
-
-            }else{
-                tareas = await dataBaseSQL.sequelize.query(
-                `
-                SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea,
+                    END AS fecha_final,
                     CASE
                         WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
-                        THEN MAX(Subtareas.fecha_final)
-                        ELSE NULL
-                    END AS fecha_final
+                        THEN 2
+                        ELSE 1
+                    END AS Estado
                 FROM Tareas 
                 LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                 WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea 
-                `        
-                ,{
-                    replacements: { idCiclo: req.body.idCiclo },
-                    type: Sequelize.QueryTypes.SELECT
-                });
-            };
-           
+                GROUP BY Tareas.id_tarea
+            `        
+            ,{
+                replacements: { idCiclo: req.body.idCiclo },
+                type: Sequelize.QueryTypes.SELECT
+            });                
+
             res.json({error :0, errorDetalle: "", objeto:tareas});            
             return 0;
         }
@@ -318,7 +299,7 @@ const controlador = {
                     fk_area                 : req.body.user.area,
                     fk_ciclo                : req.body.idCiclo,
                     nombre                  : req.body.nombre,
-                    estado                  : req.body.estado,
+                    //estado                  : req.body.estado,
                     prioridad               : req.body.prioridad,
                     fecha_inicio            : req.body.fechaInicial,
                     //fecha_final             : null,
@@ -364,7 +345,7 @@ const controlador = {
                 fk_empleado_asignado    : empleadoAsignado,
                 fk_area                 : req.body.user.area,
                 nombre                  : req.body.nombre,
-                estado                  : req.body.estado,
+                //estado                  : req.body.estado,
                 prioridad               : req.body.prioridad,
                 fecha_inicio            : req.body.fechaInicio,
                 //fecha_final             : req.body.fechaFinal,
@@ -622,6 +603,7 @@ const controlador = {
             return 1;
         }
     },
+
 }
 
 
