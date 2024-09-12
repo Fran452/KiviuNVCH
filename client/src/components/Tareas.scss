@@ -41,6 +41,7 @@
     width: 1694px;
     display: flex;
     flex-direction: column;
+    font-size: 14px;
     // width: max-content;
 
     &__header {
@@ -67,7 +68,7 @@
 
     &__cell {
         white-space: nowrap;
-        padding: 8px 10px;
+        padding: 6px 10px;
 
         &--title {
             color: $blue-500;
@@ -235,18 +236,24 @@
         height: 100%;
         position: relative;
         overflow-x: scroll;
+
+        .doughnut--empty {
+            width: 60px;
+            // height: 20px;
+        }
         
         .btn__area {
             font-size: 12px;
         }
 
         &__graficas {
-            display: flex;
+            height: max-content;
             gap: 20px;
+            transition: height 0.1s;
 
             &__doughnut {
                 width: 100%;
-                padding: 20px;
+                padding: 16px 20px;
                 margin-bottom: 20px;
 
                 &__info {
@@ -277,6 +284,11 @@
             &__doughnut:last-child {
                 margin-bottom: 0;
             }
+        }
+
+        &__graficas--close {
+            height: 0px;
+            transition: height 0.1s;
         }
 
         &__tabla {
@@ -441,15 +453,43 @@
 
 @media screen and (min-width: 768px) {
     .loading__tareas {
+        height: calc(100% - 40px);
+    }
+
+    .ciclos__btn {
+        height: 40px;
+
+        i {
+            line-height: normal;
+            font-size: 24px;
+            color: $blue-500;
+        }
+
+        span {
+            font-size: 14px;
+            color: $blue-500;
+        }
+    }
+
+    .tareas__container {
         width: calc(100% - 230px);
     }
 
+    .tareas__container--close {
+        width: 100%;
+        transition: width 0.1s;
+    }
+
     .tareas {
-        width: calc(100% - 230px);
-        height: 100%;
+        width: 100%;
+        height: calc(100% - 40px);
+
+        &__error {
+            height: 100%;
+        }
 
         &__inicio {
-            width: calc(100% - 230px);
+            width: 100%;
 
             img {
                 width: 200px;
@@ -457,15 +497,13 @@
         }
 
         &__main {
-            height: calc(100% - 48px);
+            // height: calc(100% - 48px);
 
             &__graficas {
-                display: flex;
                 gap: 20px;
     
                 &__doughnut {
                     width: 33.3%;
-                    padding: 24px;
                     margin-bottom: 0;
                 }
             }
@@ -475,5 +513,5 @@
                 height: 100%;
             }
         }
-    }
+    } 
 }

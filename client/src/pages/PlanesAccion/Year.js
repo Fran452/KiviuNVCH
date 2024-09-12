@@ -151,7 +151,6 @@ function Year() {
         const firstMetrica = () => {
             fetchMetrica()
             .then(res => {
-                console.log(res)
                 if(res.error !== 0){
                     console.log(res.errorDetalle)
                 } else {
