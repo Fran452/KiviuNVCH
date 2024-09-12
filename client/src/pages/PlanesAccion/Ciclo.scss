@@ -166,6 +166,12 @@
                     height: 40px;
                 }
             }
+
+            &__menu--close {
+                width: 0px;
+                margin-right: 0px;
+                transition: width 0.1s;
+            }
         }
     }
 }

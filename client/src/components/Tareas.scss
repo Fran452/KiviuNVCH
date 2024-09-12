@@ -441,15 +441,42 @@
 
 @media screen and (min-width: 768px) {
     .loading__tareas {
+        height: calc(100% - 40px);
+    }
+
+    .ciclos__btn {
+        height: 40px;
+
+        i {
+            line-height: normal;
+            font-size: 28px;
+            color: $blue-500;
+        }
+
+        span {
+            color: $blue-500;
+        }
+    }
+
+    .tareas__container {
         width: calc(100% - 230px);
     }
 
+    .tareas__container--close {
+        width: 100%;
+        transition: width 0.1s;
+    }
+
     .tareas {
-        width: calc(100% - 230px);
-        height: 100%;
+        width: 100%;
+        height: calc(100% - 40px);
+
+        &__error {
+            height: 100%;
+        }
 
         &__inicio {
-            width: calc(100% - 230px);
+            width: 100%;
 
             img {
                 width: 200px;
@@ -457,7 +484,7 @@
         }
 
         &__main {
-            height: calc(100% - 48px);
+            // height: calc(100% - 48px);
 
             &__graficas {
                 display: flex;
@@ -475,5 +502,5 @@
                 height: 100%;
             }
         }
-    }
+    } 
 }
