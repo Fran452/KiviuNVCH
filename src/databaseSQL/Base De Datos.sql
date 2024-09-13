@@ -46,7 +46,7 @@ CREATE TABLE Tareas (
     fk_ciclo                                INT NOT NULL,
 --  fk_area_apoyo                           INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
-    estado	                                INT, -- de no ser agregado se le asigna 1
+--    estado	                                INT, -- de no ser agregado se le asigna 1
     prioridad					            INT NOT NULL,  -- default 2
     fecha_inicio                            DATE NOT NULL,
 --    fecha_final                             DATE, -- 31/12/ actual año
