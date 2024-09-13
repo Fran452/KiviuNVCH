@@ -106,3 +106,11 @@ INSERT INTO Puestos (nombre_puesto) VALUES
 ('Gerente'), 
 ('Analista'), 
 ('Asistente');
+
+--Estados de las subtareas:
+--  1 Pendiente
+--  2 En proceso
+--  3 Completada
+--  4 En espera
+--  5 Cancelada
+--  6 Bloqueada
