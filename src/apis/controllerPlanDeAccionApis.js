@@ -242,6 +242,7 @@ const controlador = {
                         ELSE NULL
                     END AS fecha_final,
                     CASE
+                        WHEN COUNT(Subtareas.id_sub_tarea) = 0 THEN 2
                         WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
                         THEN 3
                         ELSE 2
