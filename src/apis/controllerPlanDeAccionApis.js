@@ -242,10 +242,11 @@ const controlador = {
                         ELSE NULL
                     END AS fecha_final,
                     CASE
+                        WHEN COUNT(Subtareas.id_sub_tarea) = 0 THEN 2
                         WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
-                        THEN 2
-                        ELSE 1
-                    END AS Estado
+                        THEN 3
+                        ELSE 2
+                    END AS estado
                 FROM Tareas 
                 LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
