@@ -508,18 +508,46 @@ const controlador = {
 
     viewSubTarea: async (req,res) => {
         try{
-            let subtareas = await dataBaseSQL.subtareas.findAll({
-                where: {
-                    ver : 1,
-                    fk_tareas : req.body.idTarea
-                },
-                attributes: ['id_sub_tarea','titulo','horasAprox','avance','fecha_inicio','fecha_final','estado','prioridad','notas'],
-                include: [
-                    {association : "Empleados",attributes: ['nombre','mail']},
-                ]
-            });
+            let subTareas = await dataBaseSQL.sequelize.query(
+            `
+                SELECT Subtareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser,
+                            CASE
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) > 0
+                                THEN COALESCE(SUM(SubSubtareas.horasAprox),0)
+                                ELSE Subtareas.horasAprox
+                            END AS horas_tarea,
 
-            res.json({error: 0, errorDetalle:"",objeto:subtareas});
+                            CASE
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) > 0
+                                THEN COALESCE(AVG(SubSubtareas.avance),0)
+                                ELSE Subtareas.avance
+                            END AS progreso_tarea,
+
+                            CASE
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.fecha_final
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
+                                THEN MAX(SubSubtareas.fecha_final)
+                                ELSE NULL
+                            END AS fecha_final,
+                            CASE
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.estado
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
+                                THEN 3
+                                ELSE 2
+                            END AS estado
+                FROM Subtareas 
+                LEFT JOIN SubSubtareas ON Subtareas.id_sub_tarea = SubSubtareas.fk_sub_tareas and SubSubtareas.ver = 1 
+                LEFT JOIN Empleados ON Subtareas.asignacion = Empleados.id_empleado
+                WHERE Subtareas.ver = 1 and Subtareas.fk_tareas = :idtarea
+                GROUP BY Subtareas.id_sub_tarea
+            `        
+            ,{
+                replacements: { idtarea: req.body.idtarea },
+                type: Sequelize.QueryTypes.SELECT
+            });                
+
+            res.json({error :0, errorDetalle: "", objeto:subTareas});            
+            return 0;
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
@@ -570,6 +598,185 @@ const controlador = {
         }
     },
 
+    // CRUD de Sub Sub tareas
+    addSubSubTarea: async (req,res) => {
+        try{
+            //let fechaIngresadaFinal = new Date(req.body.fechaFinal); 
+            let fehcaIngresadaInicial = new Date(req.body.fechaInicial);
+            let titulo      = req.body.titulo || null;
+            let horasAprox  = req.body.horasAprox || null;
+            let avance      = req.body.avance 
+            let estado      = req.body.estado;
+            let prioridad   = req.body.prioridad;
+            let notas       = req.body.notas || null;
+            
+
+            if(req.body.asignacion != undefined){
+                let empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                    {
+                        where: {
+                            mail : req.body.asignacion
+                        },
+                    }
+                );   
+                if(empleadoAsignado === null){
+                    res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
+                    return 1;
+                }else if(empleadoAsignado.fk_area != req.body.user.area){
+                    res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area."});
+                    return 1;
+                }else if(req.body.id_tareas == undefined){
+                    res.json({error : 99, errorDetalle: "No se selecciono una tarea."});
+                    return 1;
+                }else{
+                    let subSubTarea = await dataBaseSQL.subsubtareas.create({
+                        fk_sub_tareas   : req.body.id_Subtareas,
+                        titulo          : titulo,
+                        asignacion      : empleadoAsignado.id_empleado,
+                        horasAprox      : horasAprox,
+                        avance          : avance,
+                        estado          : estado,
+                        prioridad       : prioridad,
+                        notas           : notas,
+                        fecha_inicio    : fehcaIngresadaInicial,
+                        fecha_final     : null,
+                        ver:        1
+                    });
+
+                    res.json({error :0, errorDetalle: "", objeto:subSubTarea});
+                    return 0;
+
+                }
+            }else{
+                res.json({error : 10, errorDetalle: "No se envio ningun empleado."});
+                return 1;
+            }
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({errorGeneral: error, error : codeError, errorDetalle: error.message });   
+            return 1;
+        }
+    },
+
+    modSubSubTarea: async (req,res) => {
+        try{
+            let empleadoAsignado;
+            if(req.body.asignacion != req.body.subtarea.Empleados.mail){
+                empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                    {
+                        where: {
+                            mail : req.body.empleado_asignado
+                        },
+                    }
+                );
+                if(empleadoAsignado === null){
+                    res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
+                    return 1;
+                }
+            }else{
+                empleadoAsignado =  req.body.subtarea.Empleados;
+            }
+
+            let fechaFinal;
+            let estado = req.body.estado;
+            if(req.body.avance == 100){
+                let ahora = new Date();
+                estado = 3
+                fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
+            }else{
+                fechaFinal = null
+            }
+
+            let subSubTarea = await dataBaseSQL.subsubtareas.update({
+                titulo          : req.body.titulo,    
+                asignacion      : empleadoAsignado.id_empleado,        
+                horasAprox      : req.body.horasAprox,        
+                avance          : req.body.avance,    
+                estado          : estado,    
+                prioridad       : req.body.prioridad,        
+                notas           : req.body.notas,
+                fecha_inicio    : req.body.fechaInicio,
+                fecha_final     : fechaFinal
+            },{
+                where:{
+                    id_sub_sub_tarea : req.body.subtarea.id_sub_sub_tarea
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:subSubTarea});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    viewSubSubTarea: async (req,res) => {
+        try{
+            let subSubTarea = await dataBaseSQL.subsubtareas.findAll({
+                where: {
+                    ver : 1,
+                    fk_sub_tareas : req.body.subTarea
+                },
+                attributes: ['id_sub_sub_tarea','titulo','horasAprox','avance','fecha_inicio','fecha_final','estado','prioridad','notas'],
+                include: [
+                    {association : "Empleados",attributes: ['nombre','mail']},
+                ]
+            });
+
+            res.json({error: 0, errorDetalle:"",objeto:subSubTarea});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    deleteSubSubTarea: async (req,res) => {
+        try{
+            let subSubTarea = await dataBaseSQL.subsubtareas.update({
+                ver : 0 
+            },{
+                where:{
+                    id_sub_sub_tarea : req.body.id_subsubtarea
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:subSubTarea});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    terminarSubSubTarea: async (req,res) => {
+        try{
+            let ahora = new Date();
+            let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
+
+
+            let subsubtarea = await dataBaseSQL.subtareas.update({
+                estado: 3,
+                avance : 100,
+                fecha_final: fechaFinal  
+            },{
+                where:{
+                    id_sub_sub_tarea : req.body.id_subsubtarea
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:subsubtarea});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    // Metricas
     metricas: async (req,res) => {
         try{
             let ciclos = await dataBaseSQL.sequelize.query(

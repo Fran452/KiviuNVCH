@@ -10,6 +10,7 @@ const controlador = {
         let links = {
             ArmarBaseDeDatos:   `${process.env.WEB}/test/armado-SQL`,
             ArmarBaseDeDatosNew:`${process.env.WEB}/test/armado-SQL-NEW`,
+            ArmarBaseDeDatosSubTareas:`${process.env.WEB}/test/armado-SQL-Sub`,
             planesAcción:{
                 testGenericos:  `${process.env.WEB}/test/plan-accion`,
                 ciclos:{
@@ -551,6 +552,26 @@ const controlador = {
 
         }catch(error){
             console.log("entrando a la generacion de base de datos");
+            console.log(error);
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   
+            return 1;
+            
+        }
+    },
+
+    crearBaseDeDatosSubtareas: async (req,res) => {
+        try{
+            let ahora = new Date();
+
+            let fechaInicial = ahora;
+            ahora.setDate(ahora.getDate() + 7);
+            let fechaFin = ahora;
+            let creacion = await funcionesDeTest.crearSubSubTarea(1,"subTarea Ejemplo",6,5,100,1,1,fechaInicial,fechaFin,"ejemplo",1);
+
+            res.json(creacion)
+        }
+        catch(error){
             console.log(error);
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   

@@ -1,33 +1,35 @@
 /*
-CREATE TABLE Subtareas (
-    id_sub_tarea                            INT PRIMARY KEY AUTO_INCREMENT,
-    fk_tareas                               INT NOT NULL,
+CREATE TABLE SubSubtareas (
+    id_sub_sub_tarea                        INT PRIMARY KEY AUTO_INCREMENT,
+    fk_sub_tareas                           INT NOT NULL,
     titulo                                  VARCHAR(255) NOT NULL,
-    asignacion                              INT NOT NULL,   -- persona de la tarea
-    horasAprox                              INT NOT NULL,
-    avance                                  VARCHAR(255) NOT NULL, --
-    estado                                  VARCHAR(255) NOT NULL, -- 
-    prioridad                               VARCHAR(255),
-    notas                                   VARCHAR(255),
+    asignacion                              INT NOT NULL, -- persona de la tarea
+    horasAprox                              INT NOT NULL, -- Defoult 4hr
+    avance                                  INT NOT NULL, -- Defoult "0"
+    estado                                  INT NOT NULL,
+    prioridad                               INT,
+    notas                                   VARCHAR(255), -- Defoult "notas"
+    fecha_inicio                            DATE NOT NULL,
+    fecha_final                             DATE,
     ver                                     INT NOT NULL,
     FOREIGN KEY (asignacion)                REFERENCES Empleados(id_empleado),
-    FOREIGN KEY (fk_tareas)                 REFERENCES Tareas(id_tarea)
-);                 
+    FOREIGN KEY (fk_sub_tareas)             REFERENCES Subtareas(id_sub_tarea)
+);             
  
 */
 module.exports = (sequelize,DataTypes) => {
 
-    let nombre = "subtareas";
+    let nombre = "subsubtareas";
     
     let columnas = {
         
-        "id_sub_tarea": {
+        "id_sub_sub_tarea": {
             type:DataTypes.INTEGER(),
             primaryKey: true,
             autoIncrement: true,
         },
 
-        "fk_tareas": {
+        "fk_sub_tareas": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -83,30 +85,25 @@ module.exports = (sequelize,DataTypes) => {
 
     let config =  {
         timestamps: false,
-        tableName : "Subtareas"
+        tableName : "SubSubtareas"
     };
 
-    const subtareas = sequelize.define(nombre,columnas,config);
+    const subsubtareas = sequelize.define(nombre,columnas,config);
 
-    subtareas.associate = (models) => {
+    subsubtareas.associate = (models) => {
 
-        subtareas.belongsTo(models.tareas,{
-            foreignKey : 'fk_tareas',
-            as: 'Tareas'
-        });
-
-        subtareas.hasMany(models.subsubtareas,{
+        subsubtareas.belongsTo(models.subtareas,{
             foreignKey : 'fk_sub_tareas',
-            as : 'SubSubtareas'
+            as: 'SubTareas'
         });
 
-        subtareas.belongsTo(models.empleados,{
+        subsubtareas.belongsTo(models.empleados,{
             foreignKey : 'asignacion',
             as: 'Empleados'
         });
 
     }
-
-    return subtareas;
+    
+    return subsubtareas;
 
 };

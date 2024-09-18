@@ -308,6 +308,44 @@ let controlador = {
         });
     },
 
+    //* Para sub tareas
+    crearSubSubTarea: async function(fk_sub_tareas, titulo, asignacion, horasAprox, avance, estado, prioridad, fecha_inicio, fecha_final,notas, ver){
+        let objetoCreado = await dataBaseSQL.subsubtareas.create({
+            fk_sub_tareas,
+            titulo,
+            asignacion,
+            horasAprox,
+            avance,
+            estado,
+            prioridad,
+            fecha_inicio,
+            fecha_final,
+            notas,
+            ver
+        });
+        return objetoCreado.dataValues;
+    },
+
+    buscarSubSubTarea: async function(id){
+        let busqueda = await dataBaseSQL.subtareas.findOne({
+            where: {
+                id_sub_tarea : id
+            },
+            include: [
+                {association : "Tareas",attributes: ['id_tarea','nombre']}, 
+                {association : "Empleados",attributes: ['id_empleado', 'nombre','mail']},          
+            ]
+        });
+        return busqueda.dataValues;
+    },
+
+    eliminarSubSubTareas: async function(id){
+        await dataBaseSQL.subtareas.destroy({
+            where : {id_sub_tarea: id},
+            
+        });
+    },
+
     // Para indicadores
     crearIndicador: async function(fk_area,fk_responsable,fk_responsable_suplente,nombre_indicador,detalles_metrica,tipo_recordartorio,fecha_del_recodatorio){
         let indicador = await dataBaseSQL.indicadores.create({
