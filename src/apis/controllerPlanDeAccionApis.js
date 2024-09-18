@@ -235,23 +235,50 @@ const controlador = {
             let tareas;
             tareas = await dataBaseSQL.sequelize.query(
             `
-                SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea,
-                    CASE
-                        WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
-                        THEN MAX(Subtareas.fecha_final)
-                        ELSE NULL
-                    END AS fecha_final,
-                    CASE
-                        WHEN COUNT(Subtareas.id_sub_tarea) = 0 THEN 2
-                        WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
-                        THEN 3
-                        ELSE 2
-                    END AS estado
+                SELECT Tareas.*, 
+                        Empleados.nombre AS nombreUser, 
+                        Empleados.mail AS mailUser, 
+                        COALESCE(SUM(Subtareas.horas_tarea), 0) AS horas_tarea, 
+                        COALESCE(AVG(Subtareas.progreso_tarea), 0) AS progreso_tarea,
+                        CASE
+                            WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.progreso_tarea = 100 THEN 1 END)
+                            THEN MAX(Subtareas.fecha_final_sub)
+                            ELSE NULL
+                        END AS fecha_final,
+                        CASE
+                            WHEN COUNT(Subtareas.id_sub_tarea) = 0 THEN 2
+                            WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.progreso_tarea = 100 THEN 1 END)
+                            THEN 3
+                            ELSE 2
+                        END AS estado
                 FROM Tareas 
-                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                LEFT JOIN (
+                    SELECT  Subtareas.id_sub_tarea, Subtareas.fk_tareas ,Subtareas.titulo,
+                            Subtareas.asignacion, Subtareas.estado, Subtareas.prioridad, 
+                            Subtareas.notas, Subtareas.fecha_inicio, Subtareas.ver, 
+                            COALESCE(SUM(SubSubtareas.horasAprox), Subtareas.horasAprox) AS horas_tarea,
+                            COALESCE(AVG(SubSubtareas.avance), Subtareas.avance) AS progreso_tarea,
+                            CASE
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.fecha_final
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
+                                THEN MAX(SubSubtareas.fecha_final)
+                                ELSE NULL
+                            END AS fecha_final_sub,
+                            CASE
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.estado
+                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
+                                THEN 3
+                                ELSE 2
+                            END AS estado_sub
+                    FROM Subtareas 
+                    LEFT JOIN SubSubtareas ON Subtareas.id_sub_tarea = SubSubtareas.fk_sub_tareas AND SubSubtareas.ver = 1 
+                    LEFT JOIN Empleados ON Subtareas.asignacion = Empleados.id_empleado
+                    WHERE Subtareas.ver = 1
+                    GROUP BY Subtareas.id_sub_tarea, Subtareas.horasAprox, Subtareas.avance, Subtareas.fecha_final, Subtareas.estado
+                ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
-                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea
+                WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = :idCiclo
+                GROUP BY Tareas.id_tarea;
             `        
             ,{
                 replacements: { idCiclo: req.body.idCiclo },
@@ -510,36 +537,38 @@ const controlador = {
         try{
             let subTareas = await dataBaseSQL.sequelize.query(
             `
-                SELECT Subtareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser,
-                            CASE
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) > 0
-                                THEN COALESCE(SUM(SubSubtareas.horasAprox),0)
-                                ELSE Subtareas.horasAprox
-                            END AS horas_tarea,
-
-                            CASE
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) > 0
-                                THEN COALESCE(AVG(SubSubtareas.avance),0)
-                                ELSE Subtareas.avance
-                            END AS progreso_tarea,
-
-                            CASE
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.fecha_final
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
-                                THEN MAX(SubSubtareas.fecha_final)
-                                ELSE NULL
-                            END AS fecha_final,
-                            CASE
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.estado
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
-                                THEN 3
-                                ELSE 2
-                            END AS estado
+                SELECT  Subtareas.titulo, Subtareas.asignacion, Subtareas.estado, 
+                        Subtareas.prioridad, Subtareas.notas, Subtareas.fecha_inicio, 
+                        Subtareas.ver, Empleados.nombre as nombreUser, 
+                        Empleados.mail as mailUser,
+                        CASE
+                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) > 0
+                            THEN COALESCE(SUM(SubSubtareas.horasAprox),0)
+                            ELSE Subtareas.horasAprox
+                        END AS horas_tarea,
+                        CASE
+                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) > 0
+                            THEN COALESCE(AVG(SubSubtareas.avance),0)
+                            ELSE Subtareas.avance
+                        END AS progreso_tarea,
+                        CASE
+                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.fecha_final
+                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
+                            THEN MAX(SubSubtareas.fecha_final)
+                            ELSE NULL
+                        END AS fecha_final,
+                        
+                        CASE
+                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.estado
+                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
+                            THEN 3
+                            ELSE 2
+                        END AS estado
                 FROM Subtareas 
                 LEFT JOIN SubSubtareas ON Subtareas.id_sub_tarea = SubSubtareas.fk_sub_tareas and SubSubtareas.ver = 1 
                 LEFT JOIN Empleados ON Subtareas.asignacion = Empleados.id_empleado
                 WHERE Subtareas.ver = 1 and Subtareas.fk_tareas = :idtarea
-                GROUP BY Subtareas.id_sub_tarea
+                GROUP BY Subtareas.id_sub_tarea;
             `        
             ,{
                 replacements: { idtarea: req.body.idtarea },
@@ -578,17 +607,41 @@ const controlador = {
         try{
             let ahora = new Date();
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
+            let subtarea
+            let cantidadDeSubSubTareas = await dataBaseSQL.sequelize.query(
+                `
+                    SELECT count(*) as total_SubSubTareas
+                    FROM Subsubtareas
+                    WHERE Subsubtareas.fk_sub_tareas = :idSubtarea;
+                `        
+                ,{
+                    replacements: { idSubtarea: req.body.subtarea.id_sub_tarea },
+                    type: Sequelize.QueryTypes.SELECT
+                });  
 
-
-            let subtarea = await dataBaseSQL.subtareas.update({
-                estado: 3,
-                avance : 100,
-                fecha_final: fechaFinal  
-            },{
-                where:{
-                    id_sub_tarea : req.body.subtarea.id_sub_tarea
-                }
-            });
+                
+            if (cantidadDeSubSubTareas[0].total_SubSubTareas > 0){
+                subtarea = await dataBaseSQL.subsubtareas.update({
+                    estado: 3,
+                    avance : 100,
+                    fecha_final: fechaFinal  
+                },{
+                    where:{
+                        fk_sub_tareas : req.body.subtarea.id_sub_tarea
+                    }
+                });
+            }else{
+                subtarea = await dataBaseSQL.subtareas.update({
+                    estado: 3,
+                    avance : 100,
+                    fecha_final: fechaFinal  
+                },{
+                    where:{
+                        id_sub_tarea : req.body.subtarea.id_sub_tarea
+                    }
+                });
+            }
+            
             res.json({error: 0, errorDetalle:"",objeto:subtarea});
         }
         catch(error){
@@ -758,7 +811,7 @@ const controlador = {
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
 
 
-            let subsubtarea = await dataBaseSQL.subtareas.update({
+            let subsubtarea = await dataBaseSQL.subsubtarea.update({
                 estado: 3,
                 avance : 100,
                 fecha_final: fechaFinal  
@@ -814,22 +867,5 @@ const controlador = {
 
 }
 
-
-
 module.exports = controlador;
 
-async function buscarTarea(id){
-    let busqueda = await dataBaseSQL.tareas.findOne({
-        where: {
-            id_tarea : id
-        },
-        attributes: ['id_tarea','nombre','estado','prioridad','fecha_inicio','fecha_final','notas','progreso'],
-        include: [
-            {association : "Empleados",attributes: ['nombre','fk_area','fk_puesto','mail']},
-            {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']},
-            {association : "Procesos",attributes: ['id_procesos','nombre']},
-            {association : "Areas",attributes: ['id_area','nombre_del_Area']},                
-        ]
-    });
-    return busqueda.dataValues;
-}
