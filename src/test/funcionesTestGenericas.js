@@ -309,25 +309,23 @@ let controlador = {
     },
 
     //* Para sub tareas
-    crearSubSubTarea: async function(fk_sub_tareas, titulo, asignacion, horasAprox, avance, estado, prioridad, fecha_inicio, fecha_final,notas, ver){
-        let objetoCreado = await dataBaseSQL.subsubtareas.create({
+    crearMuestras: async function(fk_sub_tareas,numero_de_orden,titulo,responsable,horasAprox,avance,notas,ver){
+        let objetoCreado = await dataBaseSQL.muestras.create({
             fk_sub_tareas,
+            numero_de_orden,
             titulo,
-            asignacion,
+            responsable,
             horasAprox,
             avance,
-            estado,
-            prioridad,
-            fecha_inicio,
-            fecha_final,
             notas,
             ver
         });
+        
         return objetoCreado.dataValues;
     },
 
-    buscarSubSubTarea: async function(id){
-        let busqueda = await dataBaseSQL.subtareas.findOne({
+    buscarMuestras: async function(id){
+        let busqueda = await dataBaseSQL.muestras.findOne({
             where: {
                 id_sub_tarea : id
             },
@@ -339,8 +337,8 @@ let controlador = {
         return busqueda.dataValues;
     },
 
-    eliminarSubSubTareas: async function(id){
-        await dataBaseSQL.subtareas.destroy({
+    eliminarMuestrass: async function(id){
+        await dataBaseSQL.muestras.destroy({
             where : {id_sub_tarea: id},
             
         });

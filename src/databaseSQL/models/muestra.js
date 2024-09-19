@@ -1,29 +1,25 @@
 /*
-CREATE TABLE SubSubtareas (
-    id_sub_sub_tarea                        INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE muestras (
+    id_muestras                           INT PRIMARY KEY AUTO_INCREMENT,
     fk_sub_tareas                           INT NOT NULL,
+    numero_de_orden                         INT NOT NULL,
     titulo                                  VARCHAR(255) NOT NULL,
-    asignacion                              INT NOT NULL, -- persona de la tarea
+    responsable                             INT NOT NULL, -- persona de la tarea
     horasAprox                              INT NOT NULL, -- Defoult 4hr
     avance                                  INT NOT NULL, -- Defoult "0"
-    estado                                  INT NOT NULL,
-    prioridad                               INT,
-    notas                                   VARCHAR(255), -- Defoult "notas"
-    fecha_inicio                            DATE NOT NULL,
-    fecha_final                             DATE,
+    notas                                   VARCHAR(255), -- Defoult " "
     ver                                     INT NOT NULL,
     FOREIGN KEY (asignacion)                REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_sub_tareas)             REFERENCES Subtareas(id_sub_tarea)
-);             
- 
+);         
 */
 module.exports = (sequelize,DataTypes) => {
 
-    let nombre = "subsubtareas";
+    let nombre = "muestras";
     
     let columnas = {
         
-        "id_sub_sub_tarea": {
+        "id_muestra": {
             type:DataTypes.INTEGER(),
             primaryKey: true,
             autoIncrement: true,
@@ -33,17 +29,17 @@ module.exports = (sequelize,DataTypes) => {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
-        
-        "titulo":{
-            type: DataTypes.STRING(255),
-        },
 
-        "avance": {
+        "numero_de_orden": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
 
-        "asignacion": {
+        "titulo":{
+            type: DataTypes.STRING(255),
+        },
+        
+        "responsable": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -53,11 +49,7 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
-        "estado":{
-            type:DataTypes.INTEGER(),
-        },
-
-        "prioridad": {
+        "avance": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -65,15 +57,6 @@ module.exports = (sequelize,DataTypes) => {
         "notas": {
             type: DataTypes.STRING(255),
             allowNull: false
-        },
-
-        "fecha_inicio":{
-            type: DataTypes.DATE(255),
-            allowNull: false
-        },
-
-        "fecha_final":{
-            type: DataTypes.DATE(255),
         },
         
         "ver":{
@@ -85,25 +68,25 @@ module.exports = (sequelize,DataTypes) => {
 
     let config =  {
         timestamps: false,
-        tableName : "SubSubtareas"
+        tableName : "Muestras"
     };
 
-    const subsubtareas = sequelize.define(nombre,columnas,config);
+    const muestras = sequelize.define(nombre,columnas,config);
 
-    subsubtareas.associate = (models) => {
+    muestras.associate = (models) => {
 
-        subsubtareas.belongsTo(models.subtareas,{
+        muestras.belongsTo(models.subtareas,{
             foreignKey : 'fk_sub_tareas',
             as: 'SubTareas'
         });
 
-        subsubtareas.belongsTo(models.empleados,{
+        muestras.belongsTo(models.empleados,{
             foreignKey : 'asignacion',
             as: 'Empleados'
         });
 
     }
     
-    return subsubtareas;
+    return muestras;
 
 };

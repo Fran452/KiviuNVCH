@@ -69,48 +69,20 @@ CREATE TABLE Subtareas (
     ver                                     INT NOT NULL,
     FOREIGN KEY (asignacion)                REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_tareas)                 REFERENCES Tareas(id_tarea)
-);   
+);  
 
-CREATE TABLE SubSubtareas (
-    id_sub_sub_tarea                        INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE Muestras (
+    id_muestra                              INT PRIMARY KEY AUTO_INCREMENT,
     fk_sub_tareas                           INT NOT NULL,
+    numero_de_orden                         INT NOT NULL,
     titulo                                  VARCHAR(255) NOT NULL,
-    asignacion                              INT NOT NULL, -- persona de la tarea
+    responsable                             INT NOT NULL, -- persona de la tarea
     horasAprox                              INT NOT NULL, -- Defoult 4hr
     avance                                  INT NOT NULL, -- Defoult "0"
-    estado                                  INT NOT NULL,
-    prioridad                               INT,
-    notas                                   VARCHAR(255), -- Defoult "notas"
-    fecha_inicio                            DATE NOT NULL,
-    fecha_final                             DATE,
+    notas                                   VARCHAR(255), -- Defoult " "
     ver                                     INT NOT NULL,
-    FOREIGN KEY (asignacion)                REFERENCES Empleados(id_empleado),
+    FOREIGN KEY (responsable)               REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_sub_tareas)             REFERENCES Subtareas(id_sub_tarea)
-);   
-
-CREATE TABLE Indicadores (
-    id_indicador                           INT PRIMARY KEY AUTO_INCREMENT,
-    fk_area                                INT NOT NULL,
-    fk_responsable                         INT NOT NULL,
-    fk_responsable_suplente                INT NOT NULL,
-    nombre_indicador                       VARCHAR(255),
-    detalles_metrica                       VARCHAR(255),
-    tipo_recordartorio                     INT NOT NULL,
-    fecha_del_recodatorio                  DATE,
-    mostrar                                INT NOT NULL,
-    FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
-    FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
-    FOREIGN KEY (fk_responsable_suplente)  REFERENCES Empleados(id_empleado)
-);
-
-CREATE TABLE Metricas (
-    id_metrica                              INT PRIMARY KEY AUTO_INCREMENT,
-    fk_indicador                            INT NOT NULL,
-    dato_metrica                            INT NOT NULL,
-    fecha_Metrica                           DATETIME NOT NULL,
-    log_de_usuario                          INT NOT NULL,
-    FOREIGN KEY (fk_indicador)              REFERENCES Indicadores(id_indicador),
-    FOREIGN KEY (log_de_usuario)            REFERENCES Empleados(id_empleado)
 );
 
 INSERT INTO Puestos (nombre_puesto) VALUES 

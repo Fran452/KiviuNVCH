@@ -235,16 +235,18 @@ const controlador = {
             let tareas;
             tareas = await dataBaseSQL.sequelize.query(
             `
-                SELECT Tareas.*, 
+                SELECT  Tareas.*, 
                         Empleados.nombre AS nombreUser, 
                         Empleados.mail AS mailUser, 
                         COALESCE(SUM(Subtareas.horas_tarea), 0) AS horas_tarea, 
                         COALESCE(AVG(Subtareas.progreso_tarea), 0) AS progreso_tarea,
+                        
                         CASE
                             WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.progreso_tarea = 100 THEN 1 END)
-                            THEN MAX(Subtareas.fecha_final_sub)
+                            THEN MAX(Subtareas.fecha_final)
                             ELSE NULL
                         END AS fecha_final,
+
                         CASE
                             WHEN COUNT(Subtareas.id_sub_tarea) = 0 THEN 2
                             WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.progreso_tarea = 100 THEN 1 END)
@@ -255,23 +257,23 @@ const controlador = {
                 LEFT JOIN (
                     SELECT  Subtareas.id_sub_tarea, Subtareas.fk_tareas ,Subtareas.titulo,
                             Subtareas.asignacion, Subtareas.estado, Subtareas.prioridad, 
-                            Subtareas.notas, Subtareas.fecha_inicio, Subtareas.ver, 
-                            COALESCE(SUM(SubSubtareas.horasAprox), Subtareas.horasAprox) AS horas_tarea,
-                            COALESCE(AVG(SubSubtareas.avance), Subtareas.avance) AS progreso_tarea,
+                            Subtareas.notas, Subtareas.fecha_inicio, Subtareas.fecha_final, Subtareas.ver, 
+                            COALESCE(SUM(Muestras.horasAprox), Subtareas.horasAprox) AS horas_tarea,
+                            CASE WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
+                                THEN CASE
+                                    WHEN AVG(Muestras.avance) = 100 THEN 99
+                                    ELSE COALESCE(AVG(Muestras.avance), 0)
+                                    END
+                                ELSE Subtareas.avance
+                            END AS progreso_tarea,
                             CASE
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.fecha_final
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
-                                THEN MAX(SubSubtareas.fecha_final)
-                                ELSE NULL
-                            END AS fecha_final_sub,
-                            CASE
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.estado
-                                WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
+                                WHEN COUNT(Muestras.id_muestra) = 0 THEN Subtareas.estado
+                                WHEN COUNT(Muestras.id_muestra) = COUNT(CASE WHEN Muestras.avance = 100 THEN 1 END)
                                 THEN 3
                                 ELSE 2
                             END AS estado_sub
                     FROM Subtareas 
-                    LEFT JOIN SubSubtareas ON Subtareas.id_sub_tarea = SubSubtareas.fk_sub_tareas AND SubSubtareas.ver = 1 
+                    LEFT JOIN Muestras ON Subtareas.id_sub_tarea = Muestras.fk_sub_tareas AND Muestras.ver = 1 
                     LEFT JOIN Empleados ON Subtareas.asignacion = Empleados.id_empleado
                     WHERE Subtareas.ver = 1
                     GROUP BY Subtareas.id_sub_tarea, Subtareas.horasAprox, Subtareas.avance, Subtareas.fecha_final, Subtareas.estado
@@ -539,38 +541,37 @@ const controlador = {
             `
                 SELECT  Subtareas.titulo, Subtareas.asignacion, Subtareas.estado, 
                         Subtareas.prioridad, Subtareas.notas, Subtareas.fecha_inicio, 
-                        Subtareas.ver, Empleados.nombre as nombreUser, 
+                        Subtareas.fecha_final, Subtareas.ver, Empleados.nombre as nombreUser, 
                         Empleados.mail as mailUser,
-                        CASE
-                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) > 0
-                            THEN COALESCE(SUM(SubSubtareas.horasAprox),0)
-                            ELSE Subtareas.horasAprox
-                        END AS horas_tarea,
-                        CASE
-                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) > 0
-                            THEN COALESCE(AVG(SubSubtareas.avance),0)
-                            ELSE Subtareas.avance
-                        END AS progreso_tarea,
-                        CASE
-                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.fecha_final
-                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
-                            THEN MAX(SubSubtareas.fecha_final)
-                            ELSE NULL
-                        END AS fecha_final,
                         
                         CASE
-                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = 0 THEN Subtareas.estado
-                            WHEN COUNT(SubSubtareas.id_sub_sub_tarea) = COUNT(CASE WHEN SubSubtareas.avance = 100 THEN 1 END)
+                            WHEN COUNT(Muestras.id_muestra) > 0
+                            THEN COALESCE(SUM(Muestras.horasAprox),0)
+                            ELSE Subtareas.horasAprox
+                        END AS horas_tarea,
+
+                        CASE WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
+                            THEN CASE
+                                WHEN AVG(Muestras.avance) = 100 THEN 99
+                                ELSE COALESCE(AVG(Muestras.avance), 0)
+                            END
+                            ELSE Subtareas.avance
+                        END AS progreso_tarea,      
+
+                        CASE
+                            WHEN COUNT(Muestras.id_muestra) = 0 THEN Subtareas.estado
+                            WHEN COUNT(Muestras.id_muestra) = COUNT(CASE WHEN Muestras.avance = 100 THEN 1 END)
                             THEN 3
                             ELSE 2
                         END AS estado
+
                 FROM Subtareas 
-                LEFT JOIN SubSubtareas ON Subtareas.id_sub_tarea = SubSubtareas.fk_sub_tareas and SubSubtareas.ver = 1 
+                LEFT JOIN Muestras ON Subtareas.id_sub_tarea = Muestras.fk_sub_tareas and Muestras.ver = 1 
                 LEFT JOIN Empleados ON Subtareas.asignacion = Empleados.id_empleado
                 WHERE Subtareas.ver = 1 and Subtareas.fk_tareas = :idtarea
                 GROUP BY Subtareas.id_sub_tarea;
-            `        
-            ,{
+            `,
+            {
                 replacements: { idtarea: req.body.idtarea },
                 type: Sequelize.QueryTypes.SELECT
             });                
@@ -608,9 +609,9 @@ const controlador = {
             let ahora = new Date();
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
             let subtarea
-            let cantidadDeSubSubTareas = await dataBaseSQL.sequelize.query(
+            let cantidadDeMuestrass = await dataBaseSQL.sequelize.query(
                 `
-                    SELECT count(*) as total_SubSubTareas
+                    SELECT count(*) as total_Muestrass
                     FROM Subsubtareas
                     WHERE Subsubtareas.fk_sub_tareas = :idSubtarea;
                 `        
@@ -620,8 +621,8 @@ const controlador = {
                 });  
 
                 
-            if (cantidadDeSubSubTareas[0].total_SubSubTareas > 0){
-                subtarea = await dataBaseSQL.subsubtareas.update({
+            if (cantidadDeMuestrass[0].total_Muestrass > 0){
+                subtarea = await dataBaseSQL.muestras.update({
                     estado: 3,
                     avance : 100,
                     fecha_final: fechaFinal  
@@ -652,51 +653,43 @@ const controlador = {
     },
 
     // CRUD de Sub Sub tareas
-    addSubSubTarea: async (req,res) => {
+    addMuestras: async (req,res) => {
         try{
-            //let fechaIngresadaFinal = new Date(req.body.fechaFinal); 
-            let fehcaIngresadaInicial = new Date(req.body.fechaInicial);
-            let titulo      = req.body.titulo || null;
-            let horasAprox  = req.body.horasAprox || null;
-            let avance      = req.body.avance 
-            let estado      = req.body.estado;
-            let prioridad   = req.body.prioridad;
-            let notas       = req.body.notas || null;
+            let numero_de_orden = req.body.numero_de_orden || null;                 
+            let titulo          = req.body.titulo          || null;     
+            let responsable     = req.body.responsable     || null;             
+            let horasAprox      = req.body.horasAprox      || null;         
+            let avance          = req.body.avance          || null;     
+            let notas           = req.body.notas           || null;
             
 
             if(req.body.asignacion != undefined){
-                let empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                responsable = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
-                            mail : req.body.asignacion
+                            mail : req.body.responsable
                         },
                     }
                 );   
-                if(empleadoAsignado === null){
+                if(responsable === null){
                     res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                     return 1;
-                }else if(empleadoAsignado.fk_area != req.body.user.area){
-                    res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area."});
-                    return 1;
-                }else if(req.body.id_tareas == undefined){
-                    res.json({error : 99, errorDetalle: "No se selecciono una tarea."});
+                }else if(req.body.id_Subtareas == undefined){
+                    res.json({error : 99, errorDetalle: "No se selecciono una sub tarea."});
                     return 1;
                 }else{
-                    let subSubTarea = await dataBaseSQL.subsubtareas.create({
+                    let muestras = await dataBaseSQL.muestras.create({
                         fk_sub_tareas   : req.body.id_Subtareas,
                         titulo          : titulo,
-                        asignacion      : empleadoAsignado.id_empleado,
+                        numero_de_orden : numero_de_orden,
+                        responsable     : responsable,
                         horasAprox      : horasAprox,
                         avance          : avance,
-                        estado          : estado,
-                        prioridad       : prioridad,
                         notas           : notas,
-                        fecha_inicio    : fehcaIngresadaInicial,
-                        fecha_final     : null,
-                        ver:        1
+                        ver             : 1
                     });
 
-                    res.json({error :0, errorDetalle: "", objeto:subSubTarea});
+                    res.json({error :0, errorDetalle: "", objeto:muestras});
                     return 0;
 
                 }
@@ -712,7 +705,7 @@ const controlador = {
         }
     },
 
-    modSubSubTarea: async (req,res) => {
+    modMuestras: async (req,res) => {
         try{
             let empleadoAsignado;
             if(req.body.asignacion != req.body.subtarea.Empleados.mail){
@@ -729,34 +722,21 @@ const controlador = {
                 }
             }else{
                 empleadoAsignado =  req.body.subtarea.Empleados;
-            }
-
-            let fechaFinal;
-            let estado = req.body.estado;
-            if(req.body.avance == 100){
-                let ahora = new Date();
-                estado = 3
-                fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
-            }else{
-                fechaFinal = null
-            }
-
-            let subSubTarea = await dataBaseSQL.subsubtareas.update({
-                titulo          : req.body.titulo,    
-                asignacion      : empleadoAsignado.id_empleado,        
-                horasAprox      : req.body.horasAprox,        
-                avance          : req.body.avance,    
-                estado          : estado,    
-                prioridad       : req.body.prioridad,        
+            };
+            let muestras = await dataBaseSQL.muestras.update({
+                fk_sub_tareas   : req.body.id_Subtareas,
+                titulo          : req.body.titulo,
+                numero_de_orden : req.body.numero_de_orden,
+                responsable     : empleadoAsignado.id_empleado,
+                horasAprox      : req.body.horasAprox,
+                avance          : req.body.avance,
                 notas           : req.body.notas,
-                fecha_inicio    : req.body.fechaInicio,
-                fecha_final     : fechaFinal
             },{
                 where:{
-                    id_sub_sub_tarea : req.body.subtarea.id_sub_sub_tarea
+                    id_muestras : req.body.subtarea.id_muestras
                 }
             });
-            res.json({error: 0, errorDetalle:"",objeto:subSubTarea});
+            res.json({error: 0, errorDetalle:"",objeto:muestras});
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
@@ -765,14 +745,14 @@ const controlador = {
         }
     },
 
-    viewSubSubTarea: async (req,res) => {
+    viewMuestras: async (req,res) => {
         try{
-            let subSubTarea = await dataBaseSQL.subsubtareas.findAll({
+            let subSubTarea = await dataBaseSQL.muestras.findAll({
                 where: {
                     ver : 1,
                     fk_sub_tareas : req.body.subTarea
                 },
-                attributes: ['id_sub_sub_tarea','titulo','horasAprox','avance','fecha_inicio','fecha_final','estado','prioridad','notas'],
+                attributes: ["id_muestras","fk_sub_tareas","numero_de_orden","titulo","responsable","horasAprox","avance","notas"],
                 include: [
                     {association : "Empleados",attributes: ['nombre','mail']},
                 ]
@@ -786,17 +766,17 @@ const controlador = {
             return 1;
         }
     },
-
-    deleteSubSubTarea: async (req,res) => {
+    
+    deleteMuestras: async (req,res) => {
         try{
-            let subSubTarea = await dataBaseSQL.subsubtareas.update({
+            let muestra = await dataBaseSQL.muestras.update({
                 ver : 0 
             },{
                 where:{
-                    id_sub_sub_tarea : req.body.id_subsubtarea
+                    id_muestra : req.body.id_muestra
                 }
             });
-            res.json({error: 0, errorDetalle:"",objeto:subSubTarea});
+            res.json({error: 0, errorDetalle:"",objeto:muestra});
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
@@ -805,16 +785,14 @@ const controlador = {
         }
     },
 
-    terminarSubSubTarea: async (req,res) => {
+    terminarMuestras: async (req,res) => {
         try{
             let ahora = new Date();
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
 
 
             let subsubtarea = await dataBaseSQL.subsubtarea.update({
-                estado: 3,
                 avance : 100,
-                fecha_final: fechaFinal  
             },{
                 where:{
                     id_sub_sub_tarea : req.body.id_subsubtarea
