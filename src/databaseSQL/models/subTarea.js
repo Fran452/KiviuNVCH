@@ -95,6 +95,11 @@ module.exports = (sequelize,DataTypes) => {
             as: 'Tareas'
         });
 
+        subtareas.hasMany(models.muestras,{
+            foreignKey : 'fk_sub_tareas',
+            as : 'Muestras'
+        });
+
         subtareas.belongsTo(models.empleados,{
             foreignKey : 'asignacion',
             as: 'Empleados'

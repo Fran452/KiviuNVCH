@@ -44,18 +44,12 @@ CREATE TABLE Tareas (
     fk_empleado_asignado                    INT NOT NULL,
     fk_area                                 INT NOT NULL,
     fk_ciclo                                INT NOT NULL,
---  fk_area_apoyo                           INT NOT NULL,
     nombre                                  VARCHAR(255) NOT NULL,
---    estado	                                INT, -- de no ser agregado se le asigna 1
     prioridad					            INT NOT NULL,  -- default 2
     fecha_inicio                            DATE NOT NULL,
---    fecha_final                             DATE, -- 31/12/ actual año
     notas                                   VARCHAR(255),
---    progreso					            INT,            -- 0
---    horas_totales                         INT NOT NULL,  -- 0
     ver                                     INT NOT NULL, 
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
---  FOREIGN KEY (fk_area_apoyo)             REFERENCES Areas(id_area),
     FOREIGN KEY (fk_ciclo)                 REFERENCES Ciclos(id_ciclo),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
@@ -64,42 +58,31 @@ CREATE TABLE Subtareas (
     id_sub_tarea                            INT PRIMARY KEY AUTO_INCREMENT,
     fk_tareas                               INT NOT NULL,
     titulo                                  VARCHAR(255) NOT NULL,
-    asignacion                              INT NOT NULL,   -- persona de la tarea
+    asignacion                              INT NOT NULL, -- persona de la tarea
     horasAprox                              INT NOT NULL, -- Defoult 4hr
     avance                                  INT NOT NULL, -- Defoult "0"
-    estado                                  INT NOT NULL, -- 0 (pendiente) 1 (En progreso) 2 (Completada) 3 (En espera) 4 (Bloqueada) 5 (Eliminada) /  Defoult "1"
-    prioridad                               INT, -- 0 (normal) 1 (prioritario) 2 (muy Prioritario) / Defoult "1"
+    estado                                  INT NOT NULL,
+    prioridad                               INT,
     notas                                   VARCHAR(255), -- Defoult "notas"
     fecha_inicio                            DATE NOT NULL,
     fecha_final                             DATE,
     ver                                     INT NOT NULL,
     FOREIGN KEY (asignacion)                REFERENCES Empleados(id_empleado),
     FOREIGN KEY (fk_tareas)                 REFERENCES Tareas(id_tarea)
-);                 
+);  
 
-CREATE TABLE Indicadores (
-    id_indicador                           INT PRIMARY KEY AUTO_INCREMENT,
-    fk_area                                INT NOT NULL,
-    fk_responsable                         INT NOT NULL,
-    fk_responsable_suplente                INT NOT NULL,
-    nombre_indicador                       VARCHAR(255),
-    detalles_metrica                       VARCHAR(255),
-    tipo_recordartorio                     INT NOT NULL,
-    fecha_del_recodatorio                  DATE,
-    mostrar                                INT NOT NULL,
-    FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
-    FOREIGN KEY (fk_responsable)           REFERENCES Empleados(id_empleado),
-    FOREIGN KEY (fk_responsable_suplente)  REFERENCES Empleados(id_empleado)
-);
-
-CREATE TABLE Metricas (
-    id_metrica                              INT PRIMARY KEY AUTO_INCREMENT,
-    fk_indicador                            INT NOT NULL,
-    dato_metrica                            INT NOT NULL,
-    fecha_Metrica                           DATETIME NOT NULL,
-    log_de_usuario                          INT NOT NULL,
-    FOREIGN KEY (fk_indicador)              REFERENCES Indicadores(id_indicador),
-    FOREIGN KEY (log_de_usuario)            REFERENCES Empleados(id_empleado)
+CREATE TABLE Muestras (
+    id_muestra                              INT PRIMARY KEY AUTO_INCREMENT,
+    fk_sub_tareas                           INT NOT NULL,
+    numero_de_orden                         INT NOT NULL,
+    titulo                                  VARCHAR(255) NOT NULL,
+    responsable                             INT NOT NULL, -- persona de la tarea
+    horasAprox                              INT NOT NULL, -- Defoult 4hr
+    avance                                  INT NOT NULL, -- Defoult "0"
+    notas                                   VARCHAR(255), -- Defoult " "
+    ver                                     INT NOT NULL,
+    FOREIGN KEY (responsable)               REFERENCES Empleados(id_empleado),
+    FOREIGN KEY (fk_sub_tareas)             REFERENCES Subtareas(id_sub_tarea)
 );
 
 INSERT INTO Puestos (nombre_puesto) VALUES 
@@ -107,10 +90,15 @@ INSERT INTO Puestos (nombre_puesto) VALUES
 ('Analista'), 
 ('Asistente');
 
---Estados de las subtareas:
---  1 Pendiente
+-- Estados de las subtareas:
+--  1 Pendiente (Default)
 --  2 En proceso
 --  3 Completada
 --  4 En espera
 --  5 Cancelada
 --  6 Bloqueada
+
+-- Prioridad de las subtareas:
+-- 1 Normal     (Default)
+-- 2 Prioritario 
+-- 3 Muy Prioritario 

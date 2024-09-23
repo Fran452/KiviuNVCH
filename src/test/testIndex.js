@@ -10,6 +10,7 @@ const controlador = {
         let links = {
             ArmarBaseDeDatos:   `${process.env.WEB}/test/armado-SQL`,
             ArmarBaseDeDatosNew:`${process.env.WEB}/test/armado-SQL-NEW`,
+            ArmarBaseDeDatosSubTareas:`${process.env.WEB}/test/armado-SQL-Sub`,
             planesAcción:{
                 testGenericos:  `${process.env.WEB}/test/plan-accion`,
                 ciclos:{
@@ -153,10 +154,10 @@ const controlador = {
 
             let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('francisco.lema@nbch.com.ar');
 
-            if(empleadoYaSubido != undefined){
+            /*if(empleadoYaSubido != undefined){
                 res.json("base de datos ya subida anteriormente");
                 return 0;
-            };
+            };*/
 
             let ahora = new Date();
 
@@ -192,9 +193,9 @@ const controlador = {
             usuarios.push(usuario);
             let TD = await funcionesDeTest.crearUsuario(area1.id_area,1,"Maria Teresa Dorrego","1234","TD","maria.dorrego@nbch.com.ar");
             usuarios.push(TD);
-            let DM = await funcionesDeTest.crearUsuario(area1.id_area,1,"Daniela Silvana	Molina","1234","DM","daniela.molina@nbch.com.ar");
+            let DM = await funcionesDeTest.crearUsuario(area1.id_area,1,"Daniela Silvana Molina","1234","DM","daniela.molina@nbch.com.ar");
             usuarios.push(DM);
-            let SV = await funcionesDeTest.crearUsuario(area1.id_area,1,"Silvana	Vecchi","1234","SV","silvana.vecchi@nbch.com.ar");
+            let SV = await funcionesDeTest.crearUsuario(area1.id_area,1,"Silvana Vecchi","1234","SV","silvana.vecchi@nbch.com.ar");
             usuarios.push(SV);
 
 
@@ -206,6 +207,7 @@ const controlador = {
             let ciclo;
             let tarea;
             let subtarea;
+            let muestra;
 
             let ciclos = [];
 
@@ -217,10 +219,21 @@ const controlador = {
 
                 tarea     = await funcionesDeTest.crearTarea(TD.id_empleado,area1.id_area,ciclo.id_ciclo,"TARJETA DE CREDITO",1,0,fechaInicial,"notas");
                 tarea.subTarea = [];
-                
+
                     subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Relevamiento",TD.id_empleado,4,0,1,1,fechaInicial,null,"esto son notas",1);
+                    subtarea.muestras = [];
+                        
+                        muestra = await funcionesDeTest.crearMuestras(subtarea.id_sub_tarea,1,"ejemplo 1",TD.id_empleado,4,0,'ejemplo 1 con 0%',1);
+
+                        muestra = await funcionesDeTest.crearMuestras(subtarea.id_sub_tarea,2,"ejemplo 2",TD.id_empleado,4,100,'ejemplo 1 con 0%',1);
+                        
                     tarea.subTarea.push(subtarea);
+                    
                     subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Normativa",TD.id_empleado,4,0,1,1,fechaInicial,null,"esto son notas",1);
+                        
+                        muestra = await funcionesDeTest.crearMuestras(subtarea.id_sub_tarea,1,"ejemplo 1",TD.id_empleado,4,100,'ejemplo 1 con 0%',1);
+                        muestra = await funcionesDeTest.crearMuestras(subtarea.id_sub_tarea,2,"ejemplo 2",TD.id_empleado,4,100,'ejemplo 1 con 0%',1);
+                        
                     tarea.subTarea.push(subtarea);
 
                 ciclo.tareas.push(tarea);
@@ -551,6 +564,19 @@ const controlador = {
 
         }catch(error){
             console.log("entrando a la generacion de base de datos");
+            console.log(error);
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   
+            return 1;
+            
+        }
+    },
+
+    crearBaseDeDatosSubtareas: async (req,res) => {
+        try{
+            
+        }
+        catch(error){
             console.log(error);
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   

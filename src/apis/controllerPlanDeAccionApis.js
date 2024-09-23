@@ -235,23 +235,52 @@ const controlador = {
             let tareas;
             tareas = await dataBaseSQL.sequelize.query(
             `
-                SELECT Tareas.*, Empleados.nombre as nombreUser, Empleados.mail as mailUser , COALESCE(SUM(Subtareas.horasAprox),0) as horas_tarea, COALESCE(AVG(Subtareas.avance),0) as progreso_tarea,
-                    CASE
-                        WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
-                        THEN MAX(Subtareas.fecha_final)
-                        ELSE NULL
-                    END AS fecha_final,
-                    CASE
-                        WHEN COUNT(Subtareas.id_sub_tarea) = 0 THEN 2
-                        WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.avance = 100 THEN 1 END)
-                        THEN 3
-                        ELSE 2
-                    END AS estado
+                SELECT  Tareas.*, 
+                        Empleados.nombre AS nombreUser, 
+                        Empleados.mail AS mailUser, 
+                        COALESCE(SUM(Subtareas.horas_tarea), 0) AS horas_tarea, 
+                        COALESCE(AVG(Subtareas.progreso_tarea), 0) AS progreso_tarea,
+                        
+                        CASE
+                            WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.progreso_tarea = 100 THEN 1 END)
+                            THEN MAX(Subtareas.fecha_final)
+                            ELSE NULL
+                        END AS fecha_final,
+
+                        CASE
+                            WHEN COUNT(Subtareas.id_sub_tarea) = 0 THEN 2
+                            WHEN COUNT(Subtareas.id_sub_tarea) = COUNT(CASE WHEN Subtareas.progreso_tarea = 100 THEN 1 END)
+                            THEN 3
+                            ELSE 2
+                        END AS estado
                 FROM Tareas 
-                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
+                LEFT JOIN (
+                    SELECT  Subtareas.id_sub_tarea, Subtareas.fk_tareas ,Subtareas.titulo,
+                            Subtareas.asignacion, Subtareas.estado, Subtareas.prioridad, 
+                            Subtareas.notas, Subtareas.fecha_inicio, Subtareas.fecha_final, Subtareas.ver, 
+                            COALESCE(SUM(Muestras.horasAprox), Subtareas.horasAprox) AS horas_tarea,
+                            CASE WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
+                                THEN CASE
+                                    WHEN AVG(Muestras.avance) = 100 THEN 99
+                                    ELSE COALESCE(AVG(Muestras.avance), 0)
+                                    END
+                                ELSE Subtareas.avance
+                            END AS progreso_tarea,
+                            CASE
+                                WHEN COUNT(Muestras.id_muestra) = 0 THEN Subtareas.estado
+                                WHEN COUNT(Muestras.id_muestra) = COUNT(CASE WHEN Muestras.avance = 100 THEN 1 END)
+                                THEN 3
+                                ELSE 2
+                            END AS estado_sub
+                    FROM Subtareas 
+                    LEFT JOIN Muestras ON Subtareas.id_sub_tarea = Muestras.fk_sub_tareas AND Muestras.ver = 1 
+                    LEFT JOIN Empleados ON Subtareas.asignacion = Empleados.id_empleado
+                    WHERE Subtareas.ver = 1
+                    GROUP BY Subtareas.id_sub_tarea, Subtareas.horasAprox, Subtareas.avance, Subtareas.fecha_final, Subtareas.estado
+                ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
-                WHERE Tareas.ver = 1 and Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea
+                WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = :idCiclo
+                GROUP BY Tareas.id_tarea;
             `        
             ,{
                 replacements: { idCiclo: req.body.idCiclo },
@@ -508,18 +537,47 @@ const controlador = {
 
     viewSubTarea: async (req,res) => {
         try{
-            let subtareas = await dataBaseSQL.subtareas.findAll({
-                where: {
-                    ver : 1,
-                    fk_tareas : req.body.idTarea
-                },
-                attributes: ['id_sub_tarea','titulo','horasAprox','avance','fecha_inicio','fecha_final','estado','prioridad','notas'],
-                include: [
-                    {association : "Empleados",attributes: ['nombre','mail']},
-                ]
-            });
+            let subTareas = await dataBaseSQL.sequelize.query(
+            `
+                SELECT  Subtareas.titulo, Subtareas.asignacion, Subtareas.estado, 
+                        Subtareas.prioridad, Subtareas.notas, Subtareas.fecha_inicio, 
+                        Subtareas.fecha_final, Subtareas.ver, Empleados.nombre as nombreUser, 
+                        Empleados.mail as mailUser,
+                        
+                        CASE
+                            WHEN COUNT(Muestras.id_muestra) > 0
+                            THEN COALESCE(SUM(Muestras.horasAprox),0)
+                            ELSE Subtareas.horasAprox
+                        END AS horas_tarea,
 
-            res.json({error: 0, errorDetalle:"",objeto:subtareas});
+                        CASE WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
+                            THEN CASE
+                                WHEN AVG(Muestras.avance) = 100 THEN 99
+                                ELSE COALESCE(AVG(Muestras.avance), 0)
+                            END
+                            ELSE Subtareas.avance
+                        END AS progreso_tarea,      
+
+                        CASE
+                            WHEN COUNT(Muestras.id_muestra) = 0 THEN Subtareas.estado
+                            WHEN COUNT(Muestras.id_muestra) = COUNT(CASE WHEN Muestras.avance = 100 THEN 1 END)
+                            THEN 3
+                            ELSE 2
+                        END AS estado
+
+                FROM Subtareas 
+                LEFT JOIN Muestras ON Subtareas.id_sub_tarea = Muestras.fk_sub_tareas and Muestras.ver = 1 
+                LEFT JOIN Empleados ON Subtareas.asignacion = Empleados.id_empleado
+                WHERE Subtareas.ver = 1 and Subtareas.fk_tareas = :idtarea
+                GROUP BY Subtareas.id_sub_tarea;
+            `,
+            {
+                replacements: { idtarea: req.body.idtarea },
+                type: Sequelize.QueryTypes.SELECT
+            });                
+
+            res.json({error :0, errorDetalle: "", objeto:subTareas});            
+            return 0;
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
@@ -550,17 +608,41 @@ const controlador = {
         try{
             let ahora = new Date();
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
+            let subtarea
+            let cantidadDeMuestrass = await dataBaseSQL.sequelize.query(
+                `
+                    SELECT count(*) as total_Muestrass
+                    FROM Subsubtareas
+                    WHERE Subsubtareas.fk_sub_tareas = :idSubtarea;
+                `        
+                ,{
+                    replacements: { idSubtarea: req.body.subtarea.id_sub_tarea },
+                    type: Sequelize.QueryTypes.SELECT
+                });  
 
-
-            let subtarea = await dataBaseSQL.subtareas.update({
-                estado: 3,
-                avance : 100,
-                fecha_final: fechaFinal  
-            },{
-                where:{
-                    id_sub_tarea : req.body.subtarea.id_sub_tarea
-                }
-            });
+                
+            if (cantidadDeMuestrass[0].total_Muestrass > 0){
+                subtarea = await dataBaseSQL.muestras.update({
+                    estado: 3,
+                    avance : 100,
+                    fecha_final: fechaFinal  
+                },{
+                    where:{
+                        fk_sub_tareas : req.body.subtarea.id_sub_tarea
+                    }
+                });
+            }else{
+                subtarea = await dataBaseSQL.subtareas.update({
+                    estado: 3,
+                    avance : 100,
+                    fecha_final: fechaFinal  
+                },{
+                    where:{
+                        id_sub_tarea : req.body.subtarea.id_sub_tarea
+                    }
+                });
+            }
+            
             res.json({error: 0, errorDetalle:"",objeto:subtarea});
         }
         catch(error){
@@ -570,6 +652,162 @@ const controlador = {
         }
     },
 
+    // CRUD de Sub Sub tareas
+    addMuestras: async (req,res) => {
+        try{
+            let numero_de_orden = req.body.numero_de_orden || null;                 
+            let titulo          = req.body.titulo          || null;     
+            let responsable     = req.body.responsable     || null;             
+            let horasAprox      = req.body.horasAprox      || null;         
+            let avance          = req.body.avance          || null;     
+            let notas           = req.body.notas           || null;
+            
+
+            if(req.body.asignacion != undefined){
+                responsable = await dataBaseSQL.empleados.findOne(
+                    {
+                        where: {
+                            mail : req.body.responsable
+                        },
+                    }
+                );   
+                if(responsable === null){
+                    res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
+                    return 1;
+                }else if(req.body.id_Subtareas == undefined){
+                    res.json({error : 99, errorDetalle: "No se selecciono una sub tarea."});
+                    return 1;
+                }else{
+                    let muestras = await dataBaseSQL.muestras.create({
+                        fk_sub_tareas   : req.body.id_Subtareas,
+                        titulo          : titulo,
+                        numero_de_orden : numero_de_orden,
+                        responsable     : responsable,
+                        horasAprox      : horasAprox,
+                        avance          : avance,
+                        notas           : notas,
+                        ver             : 1
+                    });
+
+                    res.json({error :0, errorDetalle: "", objeto:muestras});
+                    return 0;
+
+                }
+            }else{
+                res.json({error : 10, errorDetalle: "No se envio ningun empleado."});
+                return 1;
+            }
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({errorGeneral: error, error : codeError, errorDetalle: error.message });   
+            return 1;
+        }
+    },
+
+    modMuestras: async (req,res) => {
+        try{
+            let empleadoAsignado;
+            if(req.body.asignacion != req.body.subtarea.Empleados.mail){
+                empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                    {
+                        where: {
+                            mail : req.body.empleado_asignado
+                        },
+                    }
+                );
+                if(empleadoAsignado === null){
+                    res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
+                    return 1;
+                }
+            }else{
+                empleadoAsignado =  req.body.subtarea.Empleados;
+            };
+            let muestras = await dataBaseSQL.muestras.update({
+                fk_sub_tareas   : req.body.id_Subtareas,
+                titulo          : req.body.titulo,
+                numero_de_orden : req.body.numero_de_orden,
+                responsable     : empleadoAsignado.id_empleado,
+                horasAprox      : req.body.horasAprox,
+                avance          : req.body.avance,
+                notas           : req.body.notas,
+            },{
+                where:{
+                    id_muestras : req.body.subtarea.id_muestras
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:muestras});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    viewMuestras: async (req,res) => {
+        try{
+            let subSubTarea = await dataBaseSQL.muestras.findAll({
+                where: {
+                    ver : 1,
+                    fk_sub_tareas : req.body.subTarea
+                },
+                attributes: ["id_muestras","fk_sub_tareas","numero_de_orden","titulo","responsable","horasAprox","avance","notas"],
+                include: [
+                    {association : "Empleados",attributes: ['nombre','mail']},
+                ]
+            });
+
+            res.json({error: 0, errorDetalle:"",objeto:subSubTarea});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+    
+    deleteMuestras: async (req,res) => {
+        try{
+            let muestra = await dataBaseSQL.muestras.update({
+                ver : 0 
+            },{
+                where:{
+                    id_muestra : req.body.id_muestra
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:muestra});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    terminarMuestras: async (req,res) => {
+        try{
+            let ahora = new Date();
+            let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
+
+
+            let subsubtarea = await dataBaseSQL.subsubtarea.update({
+                avance : 100,
+            },{
+                where:{
+                    id_sub_sub_tarea : req.body.id_subsubtarea
+                }
+            });
+            res.json({error: 0, errorDetalle:"",objeto:subsubtarea});
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+    },
+
+    // Metricas
     metricas: async (req,res) => {
         try{
             let ciclos = await dataBaseSQL.sequelize.query(
@@ -607,22 +845,5 @@ const controlador = {
 
 }
 
-
-
 module.exports = controlador;
 
-async function buscarTarea(id){
-    let busqueda = await dataBaseSQL.tareas.findOne({
-        where: {
-            id_tarea : id
-        },
-        attributes: ['id_tarea','nombre','estado','prioridad','fecha_inicio','fecha_final','notas','progreso'],
-        include: [
-            {association : "Empleados",attributes: ['nombre','fk_area','fk_puesto','mail']},
-            {association : "AreasApollo",attributes: ['id_area','nombre_del_Area']},
-            {association : "Procesos",attributes: ['id_procesos','nombre']},
-            {association : "Areas",attributes: ['id_area','nombre_del_Area']},                
-        ]
-    });
-    return busqueda.dataValues;
-}

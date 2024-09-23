@@ -1285,19 +1285,18 @@ const controlador = {
 
     pruebasPreImplementacion: async (req,res) => {
         try{
-            let area = 4;
+            let subTareas = 1;
 
             let ciclos = await dataBaseSQL.sequelize.query(
-                `SELECT Ciclos.*, SUM(Subtareas.horasAprox) as horas_proceso, AVG(Subtareas.avance) as progreso_proceso
-                FROM Ciclos 
-                LEFT JOIN Tareas ON Ciclos.id_ciclo = Tareas.fk_ciclo 
-                LEFT JOIN Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas and Subtareas.ver = 1 
-                WHERE Ciclos.fk_area = :fkArea and Ciclos.ver = 1 
-                GROUP BY Ciclos.id_ciclo;`
+                `SELECT count(*) as total_SubSubTareas
+                    FROM Subsubtareas
+                    WHERE Subsubtareas.fk_sub_tareas = :idSubtarea;`
                 ,{
-                replacements: { fkArea: area },
+                replacements: { idSubtarea: subTareas },
                 type: Sequelize.QueryTypes.SELECT
             });
+
+            console.log(ciclos[0].total_SubSubTareas);
             /*
             let tareas = await dataBaseSQL.sequelize.query(
                 "SELECT tareas.id_tarea, tareas.nombre, tareas.estado, tareas.prioridad, tareas.fecha_inicio, tareas.fecha_final, tareas.notas, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas.ver = 1 and tareas.fk_ciclo = :idCiclo GROUP BY tareas.id_tarea;"
