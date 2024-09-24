@@ -1285,27 +1285,25 @@ const controlador = {
 
     pruebasPreImplementacion: async (req,res) => {
         try{
-            let subTareas = 1;
-
-            let ciclos = await dataBaseSQL.sequelize.query(
-                `SELECT count(*) as total_SubSubTareas
-                    FROM Subsubtareas
-                    WHERE Subsubtareas.fk_sub_tareas = :idSubtarea;`
-                ,{
-                replacements: { idSubtarea: subTareas },
-                type: Sequelize.QueryTypes.SELECT
-            });
-
-            console.log(ciclos[0].total_SubSubTareas);
-            /*
-            let tareas = await dataBaseSQL.sequelize.query(
-                "SELECT tareas.id_tarea, tareas.nombre, tareas.estado, tareas.prioridad, tareas.fecha_inicio, tareas.fecha_final, tareas.notas, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas.ver = 1 and tareas.fk_ciclo = :idCiclo GROUP BY tareas.id_tarea;"
-                ,{
-                replacements: { idCiclo: 1   },
-                type: Sequelize.QueryTypes.SELECT
-            });*/
-
-            res.json(ciclos);
+            let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/addMuestras`,{
+                method:'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    //user            : usuario,
+                    id_Subtareas    : 2,                
+                    titulo          : "Prueba de subida",        
+                    numero_de_orden : 2,                
+                    horasAprox      : 4,            
+                    avance          : 0,        
+                    notas           : "Notas",
+                    responsable     : "francisco.lema@nbch.com.ar",        
+                })
+            })
+            
+            let apis = await apisJSON.json();
+            res.json(apis);
         }
         catch(error){
             console.log(error);

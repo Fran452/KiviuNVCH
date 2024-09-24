@@ -26,12 +26,17 @@ router.post('/plan-accion/addTask',apisPlanDeAccion.addTarea);
 router.put('/plan-accion/modTask',apisPlanDeAccion.modTarea);
 router.put('/plan-accion/deleteTask',apisPlanDeAccion.deleteTarea);
 
-
 router.post('/plan-accion/viewSubTask',apisPlanDeAccion.viewSubTarea);
 router.post('/plan-accion/addSubTask',apisPlanDeAccion.addSubTarea);
 router.put('/plan-accion/modSubTask',apisPlanDeAccion.modSubTarea);
 router.put('/plan-accion/deleteSubTask',apisPlanDeAccion.deleteSubTarea);
 router.put('/plan-accion/subTareaok',apisPlanDeAccion.terminarSubTarea);
+
+router.post('/plan-accion/viewMuestras',apisPlanDeAccion.viewMuestras);
+router.post('/plan-accion/addMuestras',apisPlanDeAccion.addMuestras);
+router.put('/plan-accion/modMuestras',apisPlanDeAccion.modMuestras);
+router.put('/plan-accion/deleteMuestras',apisPlanDeAccion.deleteMuestras);
+router.put('/plan-accion/muestrasok',apisPlanDeAccion.terminarMuestras);
 
 router.get('/plan-accion/metricas',apisPlanDeAccion.metricas);
 

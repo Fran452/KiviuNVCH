@@ -663,7 +663,7 @@ const controlador = {
             let notas           = req.body.notas           || null;
             
 
-            if(req.body.asignacion != undefined){
+            if(req.body.responsable != undefined){
                 responsable = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
@@ -671,6 +671,7 @@ const controlador = {
                         },
                     }
                 );   
+                console.log(responsable);
                 if(responsable === null){
                     res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                     return 1;
@@ -682,9 +683,9 @@ const controlador = {
                         fk_sub_tareas   : req.body.id_Subtareas,
                         titulo          : titulo,
                         numero_de_orden : numero_de_orden,
-                        responsable     : responsable,
+                        responsable     : responsable.id_empleado,
                         horasAprox      : horasAprox,
-                        avance          : avance,
+                        avance          : 0,
                         notas           : notas,
                         ver             : 1
                     });
