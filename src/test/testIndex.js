@@ -1,5 +1,5 @@
 require('dotenv').config();
-const dataBaseSQL = require("../databaseSQL/models");
+const dataBaseSQL = require("../database/models");
 const funcionesDeTest = require('./funcionesTestGenericas')
 const funcionesGenericas = require("../funcionesGenerales");
 

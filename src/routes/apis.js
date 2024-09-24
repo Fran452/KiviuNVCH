@@ -34,7 +34,7 @@ router.put('/plan-accion/deleteSubTask',apisPlanDeAccion.deleteSubTarea);
 router.put('/plan-accion/subTareaok',apisPlanDeAccion.terminarSubTarea);
 
 router.get('/plan-accion/metricas',apisPlanDeAccion.metricas);
-
+router.post('/plan-accion/cargaExcel',apisPlanDeAccion.cargaDeExcel);
 
 router.post('/login',apisUser.loginFuction);
 
