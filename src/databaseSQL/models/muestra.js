@@ -81,7 +81,7 @@ module.exports = (sequelize,DataTypes) => {
         });
 
         muestras.belongsTo(models.empleados,{
-            foreignKey : 'asignacion',
+            foreignKey : 'responsable',
             as: 'Empleados'
         });
 
