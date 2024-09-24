@@ -28,12 +28,12 @@ function ModalSubtarea(props) {
         titulo: obj.titulo,
         fechaInicio: obj.fecha_inicio,
         // fechaFinal: obj.fecha_final,
-        responsable: obj.Empleados.mail,
+        responsable: obj.mailUser,
         estado: obj.estado.toString(),
         prioridad: obj.prioridad.toString(),
         notas: obj.notas,
-        horas: obj.horasAprox,
-        avance: obj.avance,
+        horas: obj.horas_tarea,
+        avance: obj.progreso_tarea,
       })
     }
   },[subtareaObj])
@@ -215,6 +215,7 @@ function ModalSubtarea(props) {
         avance: parseInt(formData.avance),
         horasAprox: parseInt(formData.horas)
       }
+      console.log(obj)
       try {
         const res = await fetch("http://localhost:3040/apis/plan-accion/modSubTask", {
           method: "PUT",
@@ -440,7 +441,7 @@ function ModalSubtarea(props) {
               <label className='mb-1'>Progreso de la subtarea</label>
               <div className="formPA__progressBar d-flex flex-row align-items-center justify-content-between">
                 <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleDecrease}><i className="bi bi-dash"></i></button>
-                <ProgressBar className='formPA__progressBar__bar' now={formData.avance} label={`${formData.avance}%`} max={100}/>
+                <ProgressBar className='formPA__progressBar__bar' now={Math.round(formData.avance)} label={`${Math.round(formData.avance)}%`} max={100}/>
                 <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleIncrese}><i className="bi bi-plus"></i></button>
               </div>
               {errors.avance && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.avance}</span>}

@@ -542,7 +542,7 @@ const controlador = {
                 SELECT  Subtareas.titulo, Subtareas.asignacion, Subtareas.estado, 
                         Subtareas.prioridad, Subtareas.notas, Subtareas.fecha_inicio, 
                         Subtareas.fecha_final, Subtareas.ver, Empleados.nombre as nombreUser, 
-                        Empleados.mail as mailUser,
+                        Empleados.mail as mailUser, Subtareas.id_sub_tarea,
                         
                         CASE
                             WHEN COUNT(Muestras.id_muestra) > 0
@@ -750,9 +750,9 @@ const controlador = {
             let subSubTarea = await dataBaseSQL.muestras.findAll({
                 where: {
                     ver : 1,
-                    fk_sub_tareas : req.body.subTarea
+                    fk_sub_tareas : req.body.idSubTarea
                 },
-                attributes: ["id_muestras","fk_sub_tareas","numero_de_orden","titulo","responsable","horasAprox","avance","notas"],
+                attributes: ["id_muestra","fk_sub_tareas","numero_de_orden","titulo","responsable","horasAprox","avance","notas"],
                 include: [
                     {association : "Empleados",attributes: ['nombre','mail']},
                 ]

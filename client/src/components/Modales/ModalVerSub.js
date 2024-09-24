@@ -27,10 +27,10 @@ function ModalVerSub(props) {
                 titulo: obj.titulo,
                 prioridad: obj.prioridad,
                 estado: obj.estado,
-                progreso: obj.avance,
-                horas: obj.horasAprox,
+                progreso: obj.progreso_tarea,
+                horas: obj.horas_tarea,
                 notas: obj.notas,
-                responsable: obj.Empleados.nombre,
+                responsable: obj.nombreUser,
                 fechaInicio: obj.fecha_inicio,
                 fechaFinal: obj.fecha_final
             })

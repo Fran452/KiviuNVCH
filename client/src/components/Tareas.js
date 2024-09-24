@@ -69,8 +69,6 @@ function Tareas() {
   const [modalDeleteTarea, setModalDeleteTarea] = useState(false)
   const [errorDel, setErrorDel] = useState(null)
 
-  // const [expandedRow, setExpandedRow] = useState(null);
-
   const [loadingSub, setLoadingSub] = useState(true)
   const [errorSub, setErrorSub] = useState(null)
 
@@ -80,6 +78,9 @@ function Tareas() {
 
   // const [subtareas, setSubtareas] = useState([])
   // const [errorSubtarea, setErrorSubtarea] = useState(null)
+
+  const [expandedRowMuestra, setExpandedRowMuestra] = useState(null);
+  const [muestras, setMuestras] = useState([])
 
   useEffect(() => {
     // const fetchAllSubTareas = () => {
@@ -222,7 +223,7 @@ function Tareas() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          idTarea: id
+          idtarea: id
         })
       })
       const data = await res.json()
@@ -234,6 +235,7 @@ function Tareas() {
 
   const handleSubtareasById = async (id) => {
     setExpandedRow(expandedRow === id ? null : id);
+    // setLoadingSub(true)
     fetchSubtareasById(id)
     .then(res => {
       if(res.error !== 0){
@@ -245,6 +247,8 @@ function Tareas() {
       }
     })
     setIdTask(id)
+    setExpandedRowMuestra(null)
+    setMuestras([])
   }
 
   const handleShowInfo = (id) => {
@@ -303,7 +307,7 @@ function Tareas() {
 
   return (
     <>
-      <tareasContext.Provider value={{setLoadingTar, setErrorTar, setTareasByCiclo, cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, fetchTareasById, idCiclo, setSubtareas, idTask, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica }}>
+      <tareasContext.Provider value={{setLoadingTar, setErrorTar, setTareasByCiclo, cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, fetchTareasById, idCiclo, setSubtareas, idTask, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica, expandedRowMuestra, setExpandedRowMuestra, muestras, setMuestras }}>
         <ModalEditCiclo show={modalEditCiclo} onHide={()=>setModalEditCiclo(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
         <ModalVer show={modalVer} onHide={()=>setModalVer(false)} />
@@ -334,7 +338,7 @@ function Tareas() {
       </Modal>
       <div className={`${ciclosClose ? "tareas__container--close" : "tareas__container"} d-flex flex-column`}>
         <button className='d-none ciclos__btn btn border-0 p-0 d-md-flex flex-row align-items-center' onClick={handleCloseCiclos}>
-          {ciclosClose ? <i class="bi bi-arrow-bar-right me-2"></i>: <i class="bi bi-arrow-bar-left me-2"></i>}
+          {ciclosClose ? <i className="bi bi-arrow-bar-right me-2"></i>: <i className="bi bi-arrow-bar-left me-2"></i>}
           <span>{ciclosClose ? "Mostrar ciclos" : "Ocultar ciclos"}</span>
         </button>
         {loadingTar ? (
@@ -436,9 +440,10 @@ function Tareas() {
                         <div className='tareas__main__tabla'>
                           {/* Table custom */}
                           <div className='table__custom'>
+                            {/* Cabecera de la tabla */}
                             <div className='table__custom__header'>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__dropdown'></div>
-                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__buttons'></div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__buttons--task'></div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__nombre'>Tareas</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__prioridad'>Prioridad</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__estado'>Estado</div>
@@ -452,16 +457,17 @@ function Tareas() {
                             <div className='table__custom__body'>
                               {tareasByCiclo.map((e,i) => {
                                 return <React.Fragment key={e.id_tarea}>
-                                  <div className='table__custom__row light'>
-                                    <div className='table__custom__cell cell__dropdown'>
-                                      <button className='btn' onClick={()=>handleSubtareasById(e.id_tarea)}>
+                                  {/* Row de cada tarea */}
+                                  <div className='table__custom__row bgblue'>
+                                    <div className='table__custom__cell'>
+                                      <button className='btn__ico btn p-0' onClick={()=>handleSubtareasById(e.id_tarea)}>
                                         {expandedRow === e.id_tarea ? <i className="bi bi-chevron-up"></i> : <i className="bi bi-chevron-down"></i>}
                                       </button>
                                     </div>
-                                    <div className='table__custom__cell cell__buttons'>
-                                      <button onClick={()=> handleShowInfo(e.id_tarea)} className='btn me-2'><i className="bi bi-eye"></i></button>
-                                      <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn btn__edit--icon me-2'><i className="bi bi-pencil"></i></button>
-                                      <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn btn__delete--icon'><i className="bi bi-trash3"></i></button>
+                                    <div className='table__custom__cell cell__buttons--task'>
+                                      <button onClick={()=> handleShowInfo(e.id_tarea)} className='btn__ico--g btn border-0 p-0'><i className="bi bi-eye"></i></button>
+                                      <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__edit--icon'><i className="bi bi-pencil"></i></button>
+                                      <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__delete--icon'><i className="bi bi-trash3"></i></button>
                                     </div>
                                     <div className='table__custom__cell cell__nombre'>{e.nombre}</div>
                                     <div className='table__custom__cell cell__prioridad'>
