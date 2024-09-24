@@ -1,11 +1,36 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Modal, ProgressBar } from 'react-bootstrap';
+import { subtareasContext } from '../Subtareas';
 import { muestrasContext } from '../Muestras'
 import { newContext } from '../../pages/PlanesAccion/Ciclo'
 
 function ModalMuestra(props) {
     const { USER } = useContext(newContext)
-    const { idSubtask, muestraObj, setMuestraObj } = useContext(muestrasContext)
+    const { 
+        fetchMetrica, 
+        idTask,
+        idCiclo, 
+        setTareasRealporCiclo, 
+        setTareasNorealporCiclo,
+        setLoadingTar,
+        fetchTareasById,
+        setErrorTar, 
+        setTareasByCiclo,
+        setLoadingSub,
+        fetchSubtareasById,
+        setErrorSub,
+        setSubtareas
+    } = useContext(subtareasContext)
+    
+    const { 
+        idSubtask, 
+        muestraObj, 
+        setMuestraObj,
+        setLoadingMuestra,
+        fetchMuestrasById,
+        setErrorMuestra,
+        setMuestras
+    } = useContext(muestrasContext)
 
     const [formMuestra, setFormMuestra] = useState({
         orden: 0,
@@ -108,6 +133,64 @@ function ModalMuestra(props) {
                     setModalErr(null)
                     setMuestraObj(null)
                     props.onHide()
+                    // Actualizar métricas
+                    fetchMetrica()
+                    .then(res => {
+                        if(res.error !== 0){
+                            console.log(res.errorDetalle)
+                        } else {
+                            let tareasNorealizadas = 0;
+                            const arr = res.objeto
+                            const selec = arr.find(e => e.id_ciclo === idCiclo)
+                            if(selec === undefined) {
+                                setTareasRealporCiclo(0)
+                                setTareasNorealporCiclo(0)
+                            } else {
+                                tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                                setTareasNorealporCiclo(tareasNorealizadas)
+                                setTareasRealporCiclo(selec.tareas_realizadas)
+                            } 
+                        }
+                    })
+                    // actualiza tareas
+                    setLoadingTar(true)
+                    fetchTareasById(idCiclo)
+                    .then(res => {
+                        if(res.error !== 0){
+                            setLoadingTar(false)
+                            setErrorTar(res.errorDetalle)
+                        } else {
+                            setLoadingTar(false)
+                            setTareasByCiclo(res.objeto)
+                        }
+                    })
+                    // fin de actualiza tareas
+                    // actualiza subtareas
+                    setLoadingSub(true)
+                    fetchSubtareasById(idTask)
+                    .then(res => {
+                        if(res.error !== 0){
+                            setLoadingSub(false)
+                            setErrorSub(res.errorDetalle)
+                        } else {
+                            setLoadingSub(false)
+                            setSubtareas(res.objeto)
+                        }
+                    })
+                    // fin de actualiza subtareas
+                    // actualiza muestras
+                    setLoadingMuestra(true)
+                    fetchMuestrasById(idSubtask)
+                    .then(res => {
+                        if(res.error !== 0){
+                            setLoadingMuestra(false)
+                            setErrorMuestra(res.errorDetalle)
+                        } else {
+                            setLoadingMuestra(false)
+                            setMuestras(res.objeto)
+                        }
+                    })
+                    // fin de actualiza muestras
                 }
             } catch (error) {
                 setModalErr(error)

@@ -215,7 +215,7 @@ function Tareas() {
     } 
   }
 
-  const fetchSubtareasById = async(id) => {
+  const fetchSubtareasById = async (id) => {
     try {
       const res = await fetch("http://localhost:3040/apis/plan-accion/viewSubTask", {
         method: "POST",

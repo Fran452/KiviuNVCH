@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { ProgressBar, Modal } from 'react-bootstrap';
 import ModalMuestra from './Modales/ModalMuestra';
-import Subtareas, { subtareasContext } from './Subtareas';
+import { subtareasContext } from './Subtareas';
+import { Oval } from 'react-loader-spinner'
 import "./Tareas.scss"
 import IcoListMuestra from '../assets/img/ico-list2.svg';
 
@@ -15,7 +16,8 @@ function Muestras(){
         setLoadingMuestra,
         errorMuestra,
         setErrorMuestra,
-        idSubtask
+        idSubtask,
+        fetchMuestrasById
     } = useContext(subtareasContext)
 
     const [idMuestra, setIdMuestra] = useState(null)
@@ -45,14 +47,25 @@ function Muestras(){
 
     return (
         <>
-            <muestrasContext.Provider value={{ idSubtask, muestraObj, setMuestraObj }}>
+            <muestrasContext.Provider value={{ idSubtask, muestraObj, setMuestraObj, setLoadingMuestra, fetchMuestrasById, setErrorMuestra, setMuestras }}>
                 <ModalMuestra show={modalMuestra} onHide={()=>setModalMuestra(false)} />
                 {/* Modal Ver muestra */}
                 {/* Modal Eliminar muestra */}
                 {/* Modal Finalizar muestra */}
                 {loadingMuestra ? (
-                    <div>
-                        <p>Loading...</p>
+                    <div className='loading__subtareas d-flex flex-row align-items-center'>
+                        <div className='me-2'>
+                            <Oval
+                                visible={true}
+                                height="20"
+                                width="20"
+                                color="#0d6efd"
+                                ariaLabel="oval-loading"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                            />
+                        </div>
+                        <p className='fw-medium m-0'>Loading...</p>
                     </div>
                 ) : (
                     <>

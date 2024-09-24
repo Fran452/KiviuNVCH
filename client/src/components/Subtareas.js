@@ -47,7 +47,7 @@ function Subtareas() {
 
     const [modalVerSub, setModalVerSub] = useState(false)
 
-    const [loadingMuestra, setLoadingMuestra] = useState(true)
+    const [loadingMuestra, setLoadingMuestra] = useState(false)
     const [errorMuestra, setErrorMuestra] = useState(null)
 
     useEffect(()=> {
@@ -257,7 +257,7 @@ function Subtareas() {
 
     return (
         <>  
-            <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask, fetchMetrica, idCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, setLoadingTar, fetchTareasById, setErrorTar, setTareasByCiclo, muestras, setMuestras, loadingMuestra, setLoadingMuestra, errorMuestra, setErrorMuestra, idSubtask }}>
+            <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask, fetchMetrica, idCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, setLoadingTar, fetchTareasById, setErrorTar, setTareasByCiclo, muestras, setMuestras, loadingMuestra, setLoadingMuestra, errorMuestra, setErrorMuestra, idSubtask, fetchMuestrasById }}>
                 <ModalSubtarea show={modalSubtarea} onHide={()=>setModalSubtarea(false)} />
                 <ModalVerSub show={modalVerSub} onHide={()=>setModalVerSub(false)} />
                 {/* Modal Eliminar subtarea */}
