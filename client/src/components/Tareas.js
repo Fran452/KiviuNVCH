@@ -247,8 +247,8 @@ function Tareas() {
       }
     })
     setIdTask(id)
-    setExpandedRowMuestra(null)
-    setMuestras([])
+    // setExpandedRowMuestra(null)
+    // setMuestras([])
   }
 
   const handleShowInfo = (id) => {

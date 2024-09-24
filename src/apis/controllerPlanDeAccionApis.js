@@ -659,11 +659,11 @@ const controlador = {
             let titulo          = req.body.titulo          || null;     
             let responsable     = req.body.responsable     || null;             
             let horasAprox      = req.body.horasAprox      || null;         
-            let avance          = req.body.avance          || null;     
+            let avance          = req.body.avance;     
             let notas           = req.body.notas           || null;
             
 
-            if(req.body.asignacion != undefined){
+            if(req.body.responsable != undefined){
                 responsable = await dataBaseSQL.empleados.findOne(
                     {
                         where: {

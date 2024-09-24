@@ -249,14 +249,15 @@ function Subtareas() {
                 setErrorMuestra(res.errorDetalle)
             } else {
                 setLoadingMuestra(false)
-                console.log(res.objeto)
+                setMuestras(res.objeto)
             }
         })
+        setIdSubtask(id)
     }
 
     return (
         <>  
-            <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask, fetchMetrica, idCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, setLoadingTar, fetchTareasById, setErrorTar, setTareasByCiclo, muestras, setMuestras, loadingMuestra, setLoadingMuestra, errorMuestra, setErrorMuestra }}>
+            <subtareasContext.Provider value={{ subtareaObj, setSubtareaObj, setLoadingSub, setErrorSub, fetchSubtareasById, setSubtareas, idTask, fetchMetrica, idCiclo, setTareasRealporCiclo, setTareasNorealporCiclo, setLoadingTar, fetchTareasById, setErrorTar, setTareasByCiclo, muestras, setMuestras, loadingMuestra, setLoadingMuestra, errorMuestra, setErrorMuestra, idSubtask }}>
                 <ModalSubtarea show={modalSubtarea} onHide={()=>setModalSubtarea(false)} />
                 <ModalVerSub show={modalVerSub} onHide={()=>setModalVerSub(false)} />
                 {/* Modal Eliminar subtarea */}
@@ -309,9 +310,12 @@ function Subtareas() {
                         ) : (
                             <>
                                 {subtareas.length === 0 ? (
-                                    <div className='table__custom__row'>
-                                        <div className='table__custom__cell cell__dropdown'>
-                                            <button onClick={handleNewSubtarea} className='btn btn-outline-primary btn-sm rounded-pill px-4'><i className="bi bi-plus me-1"></i>Crea una subtarea</button>
+                                    <div className='d-flex flex-row'>
+                                        <div className='icon__lista__task d-flex justify-content-end'>
+                                            <img src={IcoList} alt=''/>
+                                        </div>
+                                        <div className='table__custom__row--btnadd d-flex flex-row align-items-center'>
+                                            <button onClick={handleNewSubtarea} className='btn btn-outline-primary btn-sm rounded-pill px-3 fw-medium'><i className="bi bi-plus me-1"></i>Crear una subtarea</button>
                                         </div>
                                     </div>
                                 ) : (
@@ -387,10 +391,13 @@ function Subtareas() {
                                                 </CSSTransition>
                                             </React.Fragment>
                                         })}
-                                        <div className='table__custom__row--btnadd'>
-                                          
-                                                <button onClick={handleNewSubtarea} className='btn btn-outline-primary btn-sm rounded-pill px-4'><i className="bi bi-plus me-1"></i>Crea una subtarea</button>
-                                           
+                                        <div className='d-flex flex-row'>
+                                            <div className='icon__lista__task d-flex justify-content-end'>
+                                                <img src={IcoList} alt=''/>
+                                            </div>
+                                            <div className='table__custom__row--btnadd d-flex flex-row align-items-center'>
+                                                <button onClick={handleNewSubtarea} className='btn btn-outline-primary btn-sm rounded-pill px-3 fw-medium'><i className="bi bi-plus me-1"></i>Crear una subtarea</button>
+                                            </div>
                                         </div>
                                     </>
                                 )}
