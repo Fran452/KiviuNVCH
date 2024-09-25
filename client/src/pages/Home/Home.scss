@@ -1,0 +1,98 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.loading__home {
+    width: 100%;
+    padding-top: 40px;
+
+    div {
+        margin-bottom: 10px;
+        svg g g circle[stroke] {
+            stroke: $blue-500;
+        }
+    }
+
+    p {
+        color: $blue-500
+    }
+}
+
+.home {
+    &__bienvenida {
+        padding: 20px 20px 0 20px;
+        background: linear-gradient(135deg, $blue-500 0%, $blue-300 100%);
+    
+        &__texto {
+            h2 {
+                span {
+                    font-size: 16px;
+                }
+            }
+        }
+    
+        &__img {
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+    &__areas {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    
+        &__area {
+            background-color: #fff;
+            padding: 10px !important;
+            width: calc(50% - 5px);
+            height: 80px;
+    
+            h4 {
+                color: $blue-500;
+            }
+        }
+    
+        &__area:hover {
+            background-color: $blue-500 !important;
+    
+            h4 {
+                color: #fff;
+            }
+        }
+    }
+}
+
+
+
+@media screen and (min-width: 768px) {
+    .home {
+        &__bienvenida {
+            position: relative;
+            padding: 30px;
+    
+            &__img {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                padding-right: 30px;
+    
+                img {
+                    width: 260px;
+                }
+            }
+        }
+
+        &__areas {
+            &__area {
+                padding: 20px !important;
+                width: calc(20% - 10px);
+                height: 100px;
+        
+                h4 {
+                    color: $blue-500;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.controles {
+    &__back.active {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+}

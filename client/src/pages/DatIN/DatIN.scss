@@ -1,0 +1,133 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.loading__datin {
+    width: 100%;
+    height: calc(100% - 48px);
+
+    div {
+        margin-bottom: 10px;
+        svg g g circle[stroke] {
+            stroke: $blue-500;
+        }
+    }
+
+    p {
+        color: $blue-500
+    }
+}
+
+.btn__addIndicador {
+    width: 180px;
+    height: 40px;
+}
+
+.datin__error {
+    height: calc(100% - 48px);
+
+    img {
+        width: 200px;
+        max-width: 100%;
+    }
+
+    h2 {
+        color: $blue-500
+    }
+}
+
+.formIn__container {
+    height: calc(100% - 48px);
+}
+
+.datin {
+    height: 100%;
+    
+    &--empty__main {
+        height: calc(100% - 48px);
+        border: 2px dashed $blue-500;
+        height: 100%;
+
+        h2 {
+            color: $blue-500
+        }
+    }
+
+    &__main {
+        height: calc(100% - 48px);
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: max-content;
+        column-gap: 20px;
+        row-gap: 20px;
+
+        &__container {
+            cursor: pointer;
+            height: 150px;
+            position: relative;
+
+            &__buttons {
+                display: none;
+                position: absolute;
+                flex-direction: column;
+                top: 0;
+                right: 0;
+
+                button {
+                    width: 36px;
+                    height: 36px;
+                    padding: 0;
+                }
+            }
+        }
+
+        &__container:hover .active {
+            display: flex;
+        }
+
+        &__indicador {
+            height: 100%;
+
+            p {
+                font-size: 14px;
+            }
+        }
+
+        .btn__addIndicador {
+            grid-row-start: 1;
+            justify-self: center;
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .formIn__container {
+        &__main {
+            height: 100%;
+        }
+    }
+
+    .datin {
+        &__main {
+            position: relative;
+            grid-template-columns: 1fr 1fr;
+
+            .btn__addIndicador {
+                grid-row-start: auto;
+                justify-self: auto;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+            }
+        }
+    }
+
+}
+
+@media screen and (min-width: 992px) {
+    .datin {
+        &__main {
+            grid-template-columns: 1fr 1fr 1fr 1fr
+        }
+    }
+    
+}

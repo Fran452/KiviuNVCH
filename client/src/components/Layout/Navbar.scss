@@ -1,0 +1,37 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.navbar {
+    width: 100%;
+    padding: 20px !important;
+
+    &__content {
+        button {
+            img {
+                width: 36px;
+                height: 36px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .navbar {
+        padding: 20px 40px !important;
+    
+        &__content {
+            a {
+                img {
+                    height: 40px;
+                }
+            }
+
+            .btn {
+                p {
+                    color: $blue-500;
+                }
+            }
+        }
+    }
+}
+

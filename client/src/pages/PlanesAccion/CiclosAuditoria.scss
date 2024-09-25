@@ -1,0 +1,117 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+.loading__auditoria {
+    width: 100%;
+    height: calc(100% - 48px);
+
+    div {
+        margin-bottom: 10px;
+        svg g g circle[stroke] {
+            stroke: $blue-500;
+        }
+    }
+
+    p {
+        color: $blue-500
+    }
+}
+
+.ciclos__auditoria {
+    height: 100%;
+
+    &__main {
+        display: grid;
+        grid-template-rows: 1fr auto;
+        row-gap: 20px;
+
+        &__years {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+
+            .card__year {
+                width: calc(50% - 5px);
+                height: 80px;
+                padding: 10px;
+                background-color: #fff;
+
+                h4 {
+                    color: $blue-500;
+                }
+            }
+        }
+
+        &__info {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, $blue-500 0%, $blue-300 100%);
+            background-repeat: no-repeat;
+
+            img {
+                align-self: flex-end;
+                width: fit-content;
+                height: 160px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .ciclos__auditoria {
+        &__main {
+            grid-template-columns: 60% auto;
+            grid-template-rows: max-content;
+            height: calc(100% - 48px);
+            row-gap: 0;
+            column-gap: 20px;
+
+            &__years {
+                order: 1;
+                gap: 0;
+                // grid
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                column-gap: 20px;
+                row-gap: 20px;
+                align-content: flex-start;
+
+                .card__year {
+                    width: 100%;
+                    padding: 20px;
+                    height: 120px;
+                }
+            }
+
+            &__info {
+                order: 2;
+                padding: 30px;
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 992px) {}
+
+@media screen and (min-width: 1200px) {
+    .ciclos__auditoria {
+        &__main {
+            &__info {
+                flex-direction: row;
+                justify-content: space-between;
+                height: 320px;
+
+                &__textos {
+                    width: 50%;
+                }
+
+                img {
+                    width: 40%;
+                    height: fit-content;
+                }
+            }
+        }
+    }
+}

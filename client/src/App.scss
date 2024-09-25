@@ -1,0 +1,58 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap/scss/_variables.scss';
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+// body {
+//     background: linear-gradient(135deg, $blue-500 0%, $blue-300 100%);
+//     background-repeat: no-repeat;
+// }
+
+h1 {font-size: 28px}
+h2 {font-size: 24px}
+h3 {font-size: 20px}
+h4 {font-size: 16px}
+h5 {font-size: 12px}
+h6 {font-size: 10px}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Inter", sans-serif;
+}
+
+.section {
+    &__header {
+        .btn__back {
+            color: #0d6efd;
+            cursor: pointer;
+        }
+
+        i {
+            color: #0d6efd;
+        }
+    }
+}
+
+.scroll--y::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scroll--y::-webkit-scrollbar-track {
+    background-color: rgba($color: $gray-300, $alpha: 0);
+}
+
+.scroll--y::-webkit-scrollbar-thumb {
+    background-color: $gray-500;
+    border-radius: 5px;
+}
+
+.input--arrows::-webkit-outer-spin-button, .input--arrows::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input--arrows[type=number] {
+    -moz-appearance: textfield;
+  }
