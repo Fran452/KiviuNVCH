@@ -67,7 +67,7 @@ router.post('/dateIn/ultimas3Metricas',apisDateIn.ultimasTresMetricas);
 /*
 
 router.get('/plan-accion-config',homeController.planesAcción);
-router.post('/plan-accion-config',homeController.planesAcciónFuction);
+router.post('/plan-accion-config',homeController.planesAcciónFuction); -
 
 router.get('/apis/datIN',homeController.datInView);
 router.post('/apis/datIN',homeController.datINFuction);
