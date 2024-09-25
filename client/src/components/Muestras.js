@@ -41,6 +41,8 @@ function Muestras(){
     const [modalDeleteMuestra, setModalDeleteMuestra] = useState(false)
     const [errorDel, setErrorDel] = useState(null)
 
+    const [selectedFile, setSelectedFile] = useState();
+
     const handleShowInfo = (id) => {
         console.log(id)
     }
@@ -143,6 +145,31 @@ function Muestras(){
         }
     }
 
+    // SUBIDA DE EXCEL
+
+    const changeHandler = (e) => {
+        setSelectedFile(e.target.files[0]);
+    }
+
+    const handleSubmission = async () => {
+        const formData = new FormData();
+		formData.append('File', selectedFile);
+        try {
+            const res = await fetch("http://localhost:3040/apis/plan-accion", {
+                method: "POST",
+                body: formData
+            })
+            const data = await res.json()
+            if(data.error !== 0){
+                console.log(data.errorDetalle)
+            } else {
+                console.log(data)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <>
             <muestrasContext.Provider value={{ idSubtask, setIdSubtask, muestraObj, setMuestraObj, setLoadingMuestra, fetchMuestrasById, setErrorMuestra, setMuestras }}>
@@ -191,7 +218,19 @@ function Muestras(){
                                         </div>
                                         <div className='table__custom__row--btnadd d-flex flex-row align-items-center'>
                                             <button onClick={handleNewMuestra} className='btn btn-outline-success btn-sm rounded-pill px-3 me-2 fw-medium'><i className="bi bi-plus me-1"></i>Crear una muestra</button>
-                                            <button className='btn btn-success btn-sm rounded-pill px-3 fw-medium'><i className="bi bi-plus me-1"></i>Subir excel</button>
+                                            {/* <button className='btn btn-success btn-sm rounded-pill px-3 fw-medium'><i className="bi bi-plus me-1"></i>Subir excel</button> */}
+                                            <div className='d-flex flex-row align-items-center'>
+                                                <input type='file' onChange={changeHandler} className='btn__file form-control me-2'/>
+                                                <button onClick={handleSubmission} className='btn btn-success btn-sm rounded-pill px-3 fw-medium me-2'>
+                                                    <i className="bi bi-upload me-1"></i>
+                                                    Subir excel
+                                                </button>
+                                                {selectedFile ? (
+                                                    <p className='m-0 p-0'>Tamaño en bytes: {selectedFile.size} | Última modificación: {selectedFile.lastModifiedDate.toLocaleDateString()}</p>
+                                                ) : (
+                                                    <p className='m-0 p-0'>Selecciona un archivo para más detalles.</p>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 ) : (

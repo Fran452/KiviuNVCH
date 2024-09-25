@@ -485,7 +485,8 @@ const controlador = {
     modSubTarea: async (req,res) => {
         try{
             let empleadoAsignado;
-            if(req.body.asignacion != req.body.subtarea.Empleados.mail){
+            // Correccion if(req.body.asignacion != req.body.subtarea.Empleados.mail)
+            if(req.body.empleado_asignado != req.body.subtarea.Empleados.mail){
                 empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
                         where: {

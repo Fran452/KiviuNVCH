@@ -218,7 +218,6 @@ function ModalMuestra(props) {
         const newErrors = validateForm(formMuestra);
         setErrors(newErrors)
         const muestraSelec = JSON.parse(muestraObj)
-        console.log(muestraSelec)
         if (Object.keys(newErrors).length === 0){
             const obj = {
                 muestra: muestraSelec,
@@ -239,7 +238,6 @@ function ModalMuestra(props) {
                     body: JSON.stringify(obj)
                 })
                 const data = await res.json()
-                console.log(data)
                 if(data.error !== 0) {
                     setModalErr(data.errorDetalle)
                 } else {
