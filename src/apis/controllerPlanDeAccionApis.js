@@ -13,7 +13,6 @@ var apirest = {
 
 
 const funcionesGenericas = require("../funcionesGenerales");
-const { hrtime } = require("process");
 
 const controlador = {
 
@@ -843,6 +842,23 @@ const controlador = {
     },
 
     // Excel
+    // Subir excel
+    subirExcel: async (req,res) => {
+        try{
+            console.log("subi el excel");
+            if(req.file){
+                res.json("objeto subido");
+            }
+            res.json("objeto no subido");
+            return 0;
+        }
+        catch(error){
+            console.log(error);
+            res.json(error);
+        }
+    },
+
+    // Cargar excel
     cargaDeExcel: async (req,res) => {
         try{
             console.log("entre");
@@ -905,7 +921,7 @@ const controlador = {
             console.log(error);
             res.json(error);
         }
-    }
+    },
 }
 
 module.exports = controlador;

@@ -1,4 +1,7 @@
 const express = require("express");
+const multer = require ("multer");
+
+
 const apisHome = require('../apis/controllerHomeApis');
 const apisUser = require('../apis/controllerUserApis');
 const apisPlanDeAccion = require('../apis/controllerPlanDeAccionApis');
@@ -6,6 +9,18 @@ const apisDateIn = require('../apis/controllerDateInApis');
 const homeController = require("../controllers/controller");
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.resolve (__dirname,"../excel"))
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+      cb(null,'muestras.xlsx');
+    }
+  })
+
+const upload = multer({storage});
 
 router.get('/index',apisHome.index);
 
@@ -39,6 +54,7 @@ router.put('/plan-accion/deleteMuestras',apisPlanDeAccion.deleteMuestras);
 router.put('/plan-accion/muestrasok',apisPlanDeAccion.terminarMuestras);
 
 router.get('/plan-accion/metricas',apisPlanDeAccion.metricas);
+router.post('/plan-accion/subitExcel',upload.single('excel'),apisPlanDeAccion.subirExcel);
 router.post('/plan-accion/cargaExcel',apisPlanDeAccion.cargaDeExcel);
 
 router.post('/login',apisUser.loginFuction);
@@ -56,7 +72,7 @@ router.post('/dateIn/ultimas3Metricas',apisDateIn.ultimasTresMetricas);
 /*
 
 router.get('/plan-accion-config',homeController.planesAcción);
-router.post('/plan-accion-config',homeController.planesAcciónFuction);
+router.post('/plan-accion-config',homeController.planesAcciónFuction); -
 
 router.get('/apis/datIN',homeController.datInView);
 router.post('/apis/datIN',homeController.datINFuction);
