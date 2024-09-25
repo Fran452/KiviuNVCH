@@ -1,5 +1,5 @@
 require("dotenv").config();
-const dataBaseSQL = require("../databaseSQL/models");
+const dataBaseSQL = require("../database/models");
 const funcionesDeTest = require('./funcionesTestGenericas')
 const {Sequelize, DATE} = require('sequelize');
 
@@ -1285,25 +1285,18 @@ const controlador = {
 
     pruebasPreImplementacion: async (req,res) => {
         try{
-            let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/addMuestras`,{
+            let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/cargaExcel`,{
                 method:'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    //user            : usuario,
-                    id_Subtareas    : 2,                
-                    titulo          : "Prueba de subida",        
-                    numero_de_orden : 2,                
-                    horasAprox      : 4,            
-                    avance          : 0,        
-                    notas           : "Notas",
-                    responsable     : "francisco.lema@nbch.com.ar",        
                 })
             })
             
-            let apis = await apisJSON.json();
-            res.json(apis);
+            let resultado = await apisJSON.json();
+
+            res.json(resultado);
         }
         catch(error){
             console.log(error);

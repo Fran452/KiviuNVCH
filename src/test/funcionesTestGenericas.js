@@ -1,4 +1,4 @@
-const dataBaseSQL = require("../databaseSQL/models");
+const dataBaseSQL = require("../database/models");
 let controlador = {
     // General
     crearTest: function(objetoTest,nombreTest,esperado,recibido,condicion){

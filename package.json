@@ -14,7 +14,8 @@
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.9.14",
     "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "xlsx-populate": "^1.21.0"
   },
   "name": "proyecto-estructura",
   "version": "1.0.0",

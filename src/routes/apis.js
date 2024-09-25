@@ -39,7 +39,7 @@ router.put('/plan-accion/deleteMuestras',apisPlanDeAccion.deleteMuestras);
 router.put('/plan-accion/muestrasok',apisPlanDeAccion.terminarMuestras);
 
 router.get('/plan-accion/metricas',apisPlanDeAccion.metricas);
-
+router.post('/plan-accion/cargaExcel',apisPlanDeAccion.cargaDeExcel);
 
 router.post('/login',apisUser.loginFuction);
 

@@ -1,15 +1,8 @@
-const dataBaseSQL = require("../databaseSQL/models");
+const dataBase          = require("../database/models");
 const {Sequelize, DATE} = require('sequelize');
+const xlsx              = require('xlsx-populate');
+const path              = require("path");
 
-const path = require("path");
-
-const baseDeDatos = {
-    empleados : path.join(__dirname, "../database/db_user.json"),
-    area      : path.join(__dirname, "../database/db_areas.json"),
-    tareas    : path.join(__dirname, "../database/db_tareas.json"),
-    view      : path.join(__dirname, "../database/db_view.json"),
-    okr       : path.join(__dirname, "../database/db_okrs.json")
-}
 
 var apirest = {
     status: 0,
@@ -17,16 +10,17 @@ var apirest = {
     objeto: {}
 }
 
-const bcrypt = require("bcrypt");
+
 
 const funcionesGenericas = require("../funcionesGenerales");
+const { hrtime } = require("process");
 
 const controlador = {
 
     /* CRUD De Ciclos */
     viewCiclos: async (req,res) => {
         try{
-            let ciclos = await dataBaseSQL.sequelize.query(
+            let ciclos = await dataBase.sequelize.query(
                 `SELECT Ciclos.*, MIN(tar.fecha_inicio) as fecha_inicio_tareas,
                     CASE
                         WHEN COUNT(tar.id_tarea) = COUNT(CASE WHEN tar.progreso_tarea = 100 THEN 1 END)
@@ -53,7 +47,7 @@ const controlador = {
                 type: Sequelize.QueryTypes.SELECT
             });
 
-            /*let ciclos = await dataBaseSQL.ciclos.findAll({
+            /*let ciclos = await dataBase.ciclos.findAll({
                 where: {
                     fk_area :   req.body.user.area,
                     ver:        1
@@ -73,7 +67,7 @@ const controlador = {
     
     addCiclos: async (req,res) => {
         try{
-            let ciclo = await dataBaseSQL.ciclos.create({
+            let ciclo = await dataBase.ciclos.create({
                 fk_area         : req.body.user.area,
                 nombre          : req.body.nombre,
                 detalles        : req.body.detalles,
@@ -93,7 +87,7 @@ const controlador = {
 
     modCiclos: async (req,res) => {
         try{
-            let ciclo = await dataBaseSQL.ciclos.update({
+            let ciclo = await dataBase.ciclos.update({
                 nombre    : req.body.nombre,
                 detalles    : req.body.detalles,
                 fecha_inicio    : req.body.fechaInicio,     
@@ -115,7 +109,7 @@ const controlador = {
 
     deleteCiclos: async (req,res) => {
         try{
-            let ciclo = await dataBaseSQL.ciclos.update({
+            let ciclo = await dataBase.ciclos.update({
                 ver         : 0,
             },{
                 where:{
@@ -127,7 +121,7 @@ const controlador = {
             return 0;
         }
         catch(error){
-            let ciclo = await dataBaseSQL.ciclos.update({
+            let ciclo = await dataBase.ciclos.update({
                 ver:    0
             },{
                 where:{
@@ -141,14 +135,14 @@ const controlador = {
     /* CRUD De Proceos */
     viewProceso: async (req,res) => {
         try{
-            let procesos = await dataBaseSQL.sequelize.query(
+            let procesos = await dataBase.sequelize.query(
                 "SELECT procesos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM procesos LEFT JOIN tareas ON procesos.id_procesos = tareas.fk_procesos LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE procesos.fk_ciclo = :fkCiclo GROUP BY procesos.id_procesos;"
                 ,{
                 replacements: { fkCiclo: req.body.ciclo },
                 type: Sequelize.QueryTypes.SELECT
             });
             
-            /*let procesos = await dataBaseSQL.procesos.findAll({
+            /*let procesos = await dataBase.procesos.findAll({
                 where: {
                     fk_area :   req.body.user.area,
                     fk_ciclo:   req.body.ciclo,
@@ -173,7 +167,7 @@ const controlador = {
             if(req.body.detalles == "" || req.body.detalles == undefined) {
                 req.body.detalles = null;
             }
-            let procesos = await dataBaseSQL.procesos.create({
+            let procesos = await dataBase.procesos.create({
                 fk_area :   req.body.user.area,
                 nombre  :   req.body.nombre,
                 detalles:   req.body.detalles,
@@ -192,7 +186,7 @@ const controlador = {
 
     modProceso: async (req,res) => {
         try{
-            let procesos = await dataBaseSQL.procesos.update({
+            let procesos = await dataBase.procesos.update({
                 nombre      : req.body.nombre,
                 detalles    : req.body.detalles,
             },{
@@ -211,7 +205,7 @@ const controlador = {
 
     deleteProceso: async (req,res) => {
         try{
-            let procesos = await dataBaseSQL.procesos.update({
+            let procesos = await dataBase.procesos.update({
                 ver:    0
             },{
                 where:{
@@ -233,7 +227,7 @@ const controlador = {
         try{
             /*SELECT tareas.*, SUM(subtareas.horasAprox) as horas_tarea, AVG(subtareas.avance) as progreso_tarea FROM tareas LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE tareas.ver = 1 and subtareas = 1 GROUP BY tareas.id_tarea;*/
             let tareas;
-            tareas = await dataBaseSQL.sequelize.query(
+            tareas = await dataBase.sequelize.query(
             `
                 SELECT  Tareas.*, 
                         Empleados.nombre AS nombreUser, 
@@ -310,7 +304,7 @@ const controlador = {
     // Agregar tareas
     addTarea:  async (req,res) => { 
         try{
-            let empleadoAsignado = await dataBaseSQL.empleados.findOne(
+            let empleadoAsignado = await dataBase.empleados.findOne(
                 {
                     where: {
                         mail : req.body.empleado_asignado
@@ -324,7 +318,7 @@ const controlador = {
                 res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area"});
                 return 1;
             }else{
-                let tarea = await dataBaseSQL.tareas.create({
+                let tarea = await dataBase.tareas.create({
                     fk_empleado_asignado    : empleadoAsignado.id_empleado,
                     fk_area                 : req.body.user.area,
                     fk_ciclo                : req.body.idCiclo,
@@ -354,7 +348,7 @@ const controlador = {
         try{
             let empleadoAsignado;
             if(req.body.empleado_asignado != req.body.tarea.mailUser){
-                empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                empleadoAsignado = await dataBase.empleados.findOne(
                     {
                         where: {
                             mail : req.body.empleado_asignado
@@ -371,7 +365,7 @@ const controlador = {
                 empleadoAsignado =      req.body.tarea.fk_empleado_asignado;
             }
 
-            let tareaModificada = await dataBaseSQL.tareas.update({
+            let tareaModificada = await dataBase.tareas.update({
                 fk_empleado_asignado    : empleadoAsignado,
                 fk_area                 : req.body.user.area,
                 nombre                  : req.body.nombre,
@@ -400,7 +394,7 @@ const controlador = {
     // Eliminar tareas 
     deleteTarea: async (req,res) => { 
         try{
-            let tareaModificada = await dataBaseSQL.tareas.update({
+            let tareaModificada = await dataBase.tareas.update({
                 ver : 0,
             },{
                 where:{
@@ -435,7 +429,7 @@ const controlador = {
             
 
             if(req.body.asignacion != undefined){
-                let empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                let empleadoAsignado = await dataBase.empleados.findOne(
                     {
                         where: {
                             mail : req.body.asignacion
@@ -452,7 +446,7 @@ const controlador = {
                     res.json({error : 99, errorDetalle: "No se selecciono una tarea."});
                     return 1;
                 }else{
-                    let subTarea = await dataBaseSQL.subtareas.create({
+                    let subTarea = await dataBase.subtareas.create({
                         fk_tareas       : req.body.id_tareas,
                         titulo          : titulo,
                         asignacion      : empleadoAsignado.id_empleado,
@@ -487,7 +481,7 @@ const controlador = {
             let empleadoAsignado;
             // Correccion if(req.body.asignacion != req.body.subtarea.Empleados.mail)
             if(req.body.empleado_asignado != req.body.subtarea.Empleados.mail){
-                empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                empleadoAsignado = await dataBase.empleados.findOne(
                     {
                         where: {
                             mail : req.body.empleado_asignado
@@ -512,7 +506,7 @@ const controlador = {
                 fechaFinal = null
             }
 
-            let subtarea = await dataBaseSQL.subtareas.update({
+            let subtarea = await dataBase.subtareas.update({
                 titulo          : req.body.titulo,    
                 asignacion      : empleadoAsignado.id_empleado,        
                 horasAprox      : req.body.horasAprox,        
@@ -538,7 +532,7 @@ const controlador = {
 
     viewSubTarea: async (req,res) => {
         try{
-            let subTareas = await dataBaseSQL.sequelize.query(
+            let subTareas = await dataBase.sequelize.query(
             `
                 SELECT  Subtareas.titulo, Subtareas.asignacion, Subtareas.estado, 
                         Subtareas.prioridad, Subtareas.notas, Subtareas.fecha_inicio, 
@@ -589,7 +583,7 @@ const controlador = {
 
     deleteSubTarea: async (req,res) => {
         try{
-            let subtarea = await dataBaseSQL.subtareas.update({
+            let subtarea = await dataBase.subtareas.update({
                 ver : 0 
             },{
                 where:{
@@ -610,7 +604,7 @@ const controlador = {
             let ahora = new Date();
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
             let subtarea
-            let cantidadDeMuestrass = await dataBaseSQL.sequelize.query(
+            let cantidadDeMuestrass = await dataBase.sequelize.query(
                 `
                     SELECT count(*) as total_Muestrass
                     FROM Subsubtareas
@@ -623,7 +617,7 @@ const controlador = {
 
                 
             if (cantidadDeMuestrass[0].total_Muestrass > 0){
-                subtarea = await dataBaseSQL.muestras.update({
+                subtarea = await dataBase.muestras.update({
                     estado: 3,
                     avance : 100,
                     fecha_final: fechaFinal  
@@ -633,7 +627,7 @@ const controlador = {
                     }
                 });
             }else{
-                subtarea = await dataBaseSQL.subtareas.update({
+                subtarea = await dataBase.subtareas.update({
                     estado: 3,
                     avance : 100,
                     fecha_final: fechaFinal  
@@ -663,9 +657,9 @@ const controlador = {
             let avance          = req.body.avance;     
             let notas           = req.body.notas           || null;
             
-
+            // Corrección if(req.body.asignacion != undefined)
             if(req.body.responsable != undefined){
-                responsable = await dataBaseSQL.empleados.findOne(
+                responsable = await dataBase.empleados.findOne(
                     {
                         where: {
                             mail : req.body.responsable
@@ -680,7 +674,7 @@ const controlador = {
                     res.json({error : 99, errorDetalle: "No se selecciono una sub tarea."});
                     return 1;
                 }else{
-                    let muestras = await dataBaseSQL.muestras.create({
+                    let muestras = await dataBase.muestras.create({
                         fk_sub_tareas   : req.body.id_Subtareas,
                         titulo          : titulo,
                         numero_de_orden : numero_de_orden,
@@ -712,7 +706,7 @@ const controlador = {
             let empleadoAsignado;
             //Correcciones if(req.body.asignacion != req.body.subtarea.Empleados.mail)
             if(req.body.empleado_asignado != req.body.muestra.Empleados.mail){
-                empleadoAsignado = await dataBaseSQL.empleados.findOne(
+                empleadoAsignado = await dataBase.empleados.findOne(
                     {
                         where: {
                             mail : req.body.empleado_asignado
@@ -727,7 +721,7 @@ const controlador = {
                 // Correcciones empleadoAsignado =  req.body.subtarea.Empleados;
                 empleadoAsignado =  req.body.muestra.Empleados;
             };
-            let muestras = await dataBaseSQL.muestras.update({
+            let muestras = await dataBase.muestras.update({
                 fk_sub_tareas   : req.body.id_Subtareas,
                 titulo          : req.body.titulo,
                 numero_de_orden : req.body.numero_de_orden,
@@ -752,7 +746,7 @@ const controlador = {
 
     viewMuestras: async (req,res) => {
         try{
-            let subSubTarea = await dataBaseSQL.muestras.findAll({
+            let subSubTarea = await dataBase.muestras.findAll({
                 where: {
                     ver : 1,
                     fk_sub_tareas : req.body.idSubTarea
@@ -774,7 +768,7 @@ const controlador = {
     
     deleteMuestras: async (req,res) => {
         try{
-            let muestra = await dataBaseSQL.muestras.update({
+            let muestra = await dataBase.muestras.update({
                 ver : 0 
             },{
                 where:{
@@ -796,7 +790,7 @@ const controlador = {
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
 
 
-            let subsubtarea = await dataBaseSQL.subsubtarea.update({
+            let subsubtarea = await dataBase.subsubtarea.update({
                 avance : 100,
             },{
                 where:{
@@ -815,7 +809,7 @@ const controlador = {
     // Metricas
     metricas: async (req,res) => {
         try{
-            let ciclos = await dataBaseSQL.sequelize.query(
+            let ciclos = await dataBase.sequelize.query(
                 `
                 SELECT 
                     Ciclos.*,
@@ -848,6 +842,70 @@ const controlador = {
         }
     },
 
+    // Excel
+    cargaDeExcel: async (req,res) => {
+        try{
+            console.log("entre");
+            let excel = path.join(__dirname,"../excel/muestras.xlsx");
+            let estructuraExcel = await xlsx.fromFileAsync(excel);
+            let acc = 0, i = 3;
+            let numero_de_orden,titulo,responsableExcel,responsable,horasAprox,notas
+            let muestrasSubidas = [];
+            do{
+                numero_de_orden     = estructuraExcel.sheet('Hoja1').cell(`A${i}`).value();
+                if(numero_de_orden == undefined && acc > 0){
+                    continue;
+                }else{   
+                    titulo              = estructuraExcel.sheet('Hoja1').cell(`B${i}`).value();
+                    responsableExcel    = estructuraExcel.sheet('Hoja1').cell(`C${i}`).value();
+                    if(responsableExcel != undefined){
+                        responsable = await dataBase.empleados.findOne(
+                            {
+                                where: {
+                                    mail : responsableExcel
+                                },
+                                attributes:['id_empleado']
+                            }
+                        );  
+                        console.log(responsable);
+                        if(responsable === null){
+                            responsable = undefined;
+                        }else{
+                            responsable = responsable.dataValues.id_empleado;
+                        }
+                    }else{
+                        responsable = undefined;
+                    }
+                    horasAprox          = estructuraExcel.sheet('Hoja1').cell(`D${i}`).value();   
+                    if(horasAprox == undefined){
+                        horasAprox = 4;
+                    } 
+                    notas               = estructuraExcel.sheet('Hoja1').cell(`E${i}`).value();    
+                    let muestras = await dataBase.muestras.create({
+                        fk_sub_tareas   : 2,
+                        titulo          : titulo,
+                        numero_de_orden : numero_de_orden,
+                        responsable     : responsable,
+                        horasAprox      : horasAprox,
+                        avance          : 0,
+                        notas           : notas,
+                        ver             : 1
+                    }); 
+                    muestrasSubidas.push(muestras)
+                    acc++;
+                    i++;
+                }
+                
+            }while(numero_de_orden != undefined);
+
+            res.json({objetos_subidos: acc, muestras_subidas:muestrasSubidas});
+            return 0;
+        }
+        catch(error){
+            console.log(error);
+            res.json(error);
+        }
+    }
 }
 
 module.exports = controlador;

@@ -1,4 +1,4 @@
-const dataBaseSQL = require("../databaseSQL/models");
+const dataBaseSQL = require("../database/models");
 const {Sequelize, DATE} = require('sequelize');
 
 const path = require("path");

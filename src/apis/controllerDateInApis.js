@@ -1,4 +1,4 @@
-const dataBaseSQL = require("../databaseSQL/models");
+const dataBaseSQL = require("../database/models");
 const {Sequelize, DATE} = require('sequelize');
 
 const path = require("path");
@@ -12,7 +12,6 @@ var apirest = {
 const bcrypt = require("bcrypt");
 
 const funcionesGenericas = require("../funcionesGenerales");
-const indicadores = require("../databaseSQL/models/indicadores");
 
 const controlador = {
 

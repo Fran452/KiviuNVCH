@@ -41,7 +41,6 @@ module.exports = (sequelize,DataTypes) => {
         
         "responsable": {
             type:DataTypes.INTEGER(),
-            allowNull: false
         },
 
         "horasAprox": {
@@ -55,8 +54,7 @@ module.exports = (sequelize,DataTypes) => {
         },
 
         "notas": {
-            type: DataTypes.STRING(255),
-            allowNull: false
+            type: DataTypes.STRING(255)
         },
         
         "ver":{
