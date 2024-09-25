@@ -153,9 +153,10 @@ function Muestras(){
 
     const handleSubmission = async () => {
         const formData = new FormData();
-		formData.append('File', selectedFile);
+		formData.append('file', selectedFile);
+        console.log(formData)
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/subitExcel", {
                 method: "POST",
                 body: formData
             })
