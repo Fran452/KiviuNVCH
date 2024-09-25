@@ -17,12 +17,28 @@ function Muestras(){
         errorMuestra,
         setErrorMuestra,
         idSubtask,
-        fetchMuestrasById
+        fetchMuestrasById,
+        idTask,
+        idCiclo, 
+        setTareasRealporCiclo, 
+        setTareasNorealporCiclo,
+        setLoadingTar,
+        fetchTareasById,
+        setErrorTar, 
+        setTareasByCiclo,
+        setLoadingSub,
+        fetchSubtareasById,
+        setErrorSub,
+        setSubtareas,
+        fetchMetrica
     } = useContext(subtareasContext)
 
     const [idMuestra, setIdMuestra] = useState(null)
     const [modalMuestra, setModalMuestra] = useState(false)
     const [muestraObj, setMuestraObj] = useState(null)
+
+    const [modalDeleteMuestra, setModalDeleteMuestra] = useState(false)
+    const [errorDel, setErrorDel] = useState(null)
 
     const handleShowInfo = (id) => {
         console.log(id)
@@ -37,12 +53,93 @@ function Muestras(){
 
     }
 
-    const handleEditSubtarea = () => {
-
+    const handleEditMuestra = (id) => {
+        const obj = muestras.find((e) => e.id_muestra === id)
+        setMuestraObj(JSON.stringify(obj))
+        setModalMuestra(true)
     }
 
-    const handleModalDelete = () => {
+    const handleModalDelete = (id) => {
+        setIdMuestra(id)
+        setModalDeleteMuestra(true)
+    }
 
+    const handleDeleteMuestra = async () => {
+        const obj = {
+            id_muestra: parseInt(idMuestra)
+        }
+        try {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/deleteMuestras", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj)
+            })
+            const data = await res.json()
+            if(data.error !== 0){
+                setErrorDel(data.errorDetalle)
+            } else {
+                setModalDeleteMuestra(false)
+                // Actualizar métricas
+                fetchMetrica()
+                .then(res => {
+                    if(res.error !== 0){
+                        console.log(res.errorDetalle)
+                    } else {
+                        let tareasNorealizadas = 0;
+                        const arr = res.objeto
+                        const selec = arr.find(e => e.id_ciclo === idCiclo)
+                        if(selec === undefined) {
+                            setTareasRealporCiclo(0)
+                            setTareasNorealporCiclo(0)
+                        } else {
+                            tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                            setTareasNorealporCiclo(tareasNorealizadas)
+                            setTareasRealporCiclo(selec.tareas_realizadas)
+                        } 
+                    }
+                })
+                // actualiza tareas
+                setLoadingTar(true)
+                fetchTareasById(idCiclo)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingTar(false)
+                        setErrorTar(res.errorDetalle)
+                    } else {
+                        setLoadingTar(false)
+                        setTareasByCiclo(res.objeto)
+                    }
+                })
+                // actualiza subtareas
+                setLoadingSub(true)
+                fetchSubtareasById(idTask)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingSub(false)
+                        setErrorSub(res.errorDetalle)
+                    } else {
+                        setLoadingSub(false)
+                        setSubtareas(res.objeto)
+                    }
+                })
+                // actualiza muestras
+                setLoadingMuestra(true)
+                fetchMuestrasById(idSubtask)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingMuestra(false)
+                        setErrorMuestra(res.errorDetalle)
+                    } else {
+                        setLoadingMuestra(false)
+                        setMuestras(res.objeto)
+                    }
+                })
+            }
+        } catch (error) {
+            setErrorDel(error)
+        }
     }
 
     return (
@@ -51,6 +148,19 @@ function Muestras(){
                 <ModalMuestra show={modalMuestra} onHide={()=>setModalMuestra(false)} />
                 {/* Modal Ver muestra */}
                 {/* Modal Eliminar muestra */}
+                <Modal className='modal__delete' show={modalDeleteMuestra} onHide={() => setModalDeleteMuestra(false)} backdrop="static" centered>
+                    <Modal.Header closeButton>
+                    <Modal.Title><h3>Eliminar muestra</h3></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>¿Está seguro de eliminar esta muestra?</Modal.Body>
+                    <Modal.Footer className='d-flex flex-column'>
+                    <div className='d-flex flex-row align-items-center align-self-end'>
+                        <button className='btn btn-secondary rounded-pill me-2' onClick={() => setModalDeleteMuestra(false)}>Cancelar</button>
+                        <button className='btn btn-danger rounded-pill' onClick={handleDeleteMuestra}>Borrar</button>
+                    </div>
+                    {errorDel && <p>{errorDel}</p>}
+                    </Modal.Footer>
+                </Modal>
                 {/* Modal Finalizar muestra */}
                 {loadingMuestra ? (
                     <div className='loading__subtareas d-flex flex-row align-items-center'>
@@ -86,11 +196,11 @@ function Muestras(){
                                 ) : (
                                     <>
                                         {muestras.map((m, i) => {
-                                            return <div className='d-flex flex-row'>
+                                            return <div className='d-flex flex-row' key={i}>
                                                 <div className='icon__lista__muestra d-flex justify-content-start'>
                                                     <img src={IcoListMuestra} alt=''/>
                                                 </div>
-                                                <div className='table__custom__row' key={i}>
+                                                <div className='table__custom__row'>
                                                     <div className='table__custom__cell cell__buttons'>
                                                         {m.avance === 100 ? (
                                                             <>
@@ -103,7 +213,7 @@ function Muestras(){
                                                             <>
                                                                 <button onClick={()=> handleShowInfo(m.id_muestra)} className='btn__ico--g btn border-0 p-0'><i className="bi bi-eye"></i></button>
                                                                 <button onClick={()=> handleModalFinalizar(m.id_muestra)} className='btn__ico--g btn border-0 p-0'><i className="bi bi-square"></i></button>
-                                                                <button onClick={()=> handleEditSubtarea(m.id_muestra)} className='btn__ico--g btn btn__edit--icon border-0 p-0'><i className="bi bi-pencil"></i></button>
+                                                                <button onClick={()=> handleEditMuestra(m.id_muestra)} className='btn__ico--g btn btn__edit--icon border-0 p-0'><i className="bi bi-pencil"></i></button>
                                                                 <button onClick={()=> handleModalDelete(m.id_muestra)} className='btn__ico--g btn btn__delete--icon border-0 p-0'><i className="bi bi-trash3"></i></button>
                                                             </>
                                                         )}

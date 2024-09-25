@@ -709,7 +709,8 @@ const controlador = {
     modMuestras: async (req,res) => {
         try{
             let empleadoAsignado;
-            if(req.body.asignacion != req.body.subtarea.Empleados.mail){
+            //Correcciones if(req.body.asignacion != req.body.subtarea.Empleados.mail)
+            if(req.body.empleado_asignado != req.body.muestra.Empleados.mail){
                 empleadoAsignado = await dataBaseSQL.empleados.findOne(
                     {
                         where: {
@@ -722,7 +723,8 @@ const controlador = {
                     return 1;
                 }
             }else{
-                empleadoAsignado =  req.body.subtarea.Empleados;
+                // Correcciones empleadoAsignado =  req.body.subtarea.Empleados;
+                empleadoAsignado =  req.body.muestra.Empleados;
             };
             let muestras = await dataBaseSQL.muestras.update({
                 fk_sub_tareas   : req.body.id_Subtareas,
@@ -734,7 +736,8 @@ const controlador = {
                 notas           : req.body.notas,
             },{
                 where:{
-                    id_muestras : req.body.subtarea.id_muestras
+                    // Correcciones id_muestras : req.body.subtarea.id_muestras
+                    id_muestra : req.body.muestra.id_muestra
                 }
             });
             res.json({error: 0, errorDetalle:"",objeto:muestras});

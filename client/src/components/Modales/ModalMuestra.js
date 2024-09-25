@@ -44,8 +44,18 @@ function ModalMuestra(props) {
     const [modalErr, setModalErr] = useState(null)
 
     useEffect(() => {
-
-    },[])
+        if(muestraObj){
+            const obj = JSON.parse(muestraObj)
+            setFormMuestra({
+                orden: obj.numero_de_orden,
+                titulo: obj.titulo,
+                responsable: obj.Empleados.mail,
+                horas: obj.horasAprox,
+                avance: obj.avance,
+                notas: obj.notas
+            })
+        }
+    },[muestraObj])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -83,7 +93,6 @@ function ModalMuestra(props) {
 
     const handleClose = () => {
         setErrors({})
-        setModalErr(null)
         setFormMuestra({
             orden: 0,
             titulo: "",
@@ -93,6 +102,8 @@ function ModalMuestra(props) {
             notas: ""
         })
         props.onHide()
+        setMuestraObj(null)
+        setModalErr(null) 
     }
 
     const handleSubmit = async (e) => {
@@ -200,6 +211,111 @@ function ModalMuestra(props) {
         }
     }
 
+    const handleChangeMuestra = async (e) => {
+        e.preventDefault()
+        const newErrors = validateForm(formMuestra);
+        setErrors(newErrors)
+        const muestraSelec = JSON.parse(muestraObj)
+        console.log(muestraSelec)
+        if (Object.keys(newErrors).length === 0){
+            const obj = {
+                muestra: muestraSelec,
+                empleado_asignado: formMuestra.responsable,
+                id_Subtareas: idSubtask,
+                titulo: formMuestra.titulo,
+                numero_de_orden: parseInt(formMuestra.orden),
+                horasAprox: parseInt(formMuestra.horas),
+                avance: parseInt(formMuestra.avance),
+                notas: formMuestra.notas
+            }
+            try {
+                const res = await fetch("http://localhost:3040/apis/plan-accion/modMuestras", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(obj)
+                })
+                const data = await res.json()
+                console.log(data)
+                if(data.error !== 0) {
+                    setModalErr(data.errorDetalle)
+                } else {
+                    setFormMuestra({
+                        orden: 0,
+                        titulo: "",
+                        responsable: "",
+                        horas: 0,
+                        avance: 0,
+                        notas: ""
+                    })
+                    setModalErr(null)
+                    setMuestraObj(null)
+                    props.onHide()
+                    // Actualizar métricas
+                    fetchMetrica()
+                    .then(res => {
+                        if(res.error !== 0){
+                            console.log(res.errorDetalle)
+                        } else {
+                            let tareasNorealizadas = 0;
+                            const arr = res.objeto
+                            const selec = arr.find(e => e.id_ciclo === idCiclo)
+                            if(selec === undefined) {
+                                setTareasRealporCiclo(0)
+                                setTareasNorealporCiclo(0)
+                            } else {
+                                tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                                setTareasNorealporCiclo(tareasNorealizadas)
+                                setTareasRealporCiclo(selec.tareas_realizadas)
+                            } 
+                        }
+                    })
+                    // actualiza tareas
+                    setLoadingTar(true)
+                    fetchTareasById(idCiclo)
+                    .then(res => {
+                        if(res.error !== 0){
+                            setLoadingTar(false)
+                            setErrorTar(res.errorDetalle)
+                        } else {
+                            setLoadingTar(false)
+                            setTareasByCiclo(res.objeto)
+                        }
+                    })
+                    // actualiza subtareas
+                    setLoadingSub(true)
+                    fetchSubtareasById(idTask)
+                    .then(res => {
+                        if(res.error !== 0){
+                            setLoadingSub(false)
+                            setErrorSub(res.errorDetalle)
+                        } else {
+                            setLoadingSub(false)
+                            setSubtareas(res.objeto)
+                        }
+                    })
+                    // actualiza muestras
+                    setLoadingMuestra(true)
+                    fetchMuestrasById(idSubtask)
+                    .then(res => {
+                        if(res.error !== 0){
+                            setLoadingMuestra(false)
+                            setErrorMuestra(res.errorDetalle)
+                        } else {
+                            setLoadingMuestra(false)
+                            setMuestras(res.objeto)
+                        }
+                    })
+                }
+            } catch (error) {
+                setModalErr(error)
+            }
+        } else {
+            setModalErr("Completar los campos mencionados.")
+        }
+    }
+
     const handleDecrease = (e) => {
         e.preventDefault()
         if(formMuestra.avance === 0){
@@ -245,7 +361,89 @@ function ModalMuestra(props) {
             </Modal.Header>
             <Modal.Body>
                 {muestraObj ? (
-                    <h1>Hay una muestra</h1>
+                    <form className='formPA d-flex flex-column' onSubmit={handleChangeMuestra}>
+                        <div className='mb-2'>
+                            <label className='mb-1'>Nombre</label>
+                            <input
+                                onChange={handleChange}
+                                type="text" 
+                                id="titulo" 
+                                name="titulo" 
+                                autoFocus
+                                className="form-control form-control-sm col-12"
+                                value={formMuestra.titulo}
+                            />
+                            {errors.titulo && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.titulo}</span>}
+                        </div>
+                        <div className='row mb-2'>
+                            <div className='col-6'>
+                                <label className='mb-1'>Correo del responsable</label>
+                                <input
+                                    onChange={handleChange}
+                                    type="email" 
+                                    id="responsable" 
+                                    name="responsable" 
+                                    placeholder="usuario@correo.com.ar" 
+                                    className="form-control form-control-sm col-12"
+                                    value={formMuestra.responsable}
+                                />
+                                {errors.responsable && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.responsable}</span>}
+                            </div>
+                            <div className='col-6'>
+                                <label className='mb-1'>Horas</label>
+                                <input
+                                    onChange={handleChange}
+                                    type="number" 
+                                    id="horas" 
+                                    name="horas" 
+                                    className="input--arrows form-control form-control-sm col-12"
+                                    value={formMuestra.horas}
+                                />
+                                {errors.horas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.horas}</span>}
+                            </div>
+                        </div>
+                        <div className='row mb-2'>
+                            <div className='col-6'>
+                                <label className='mb-1'>Progreso de la muestra</label>
+                                <div className="formPA__progressBar d-flex flex-row align-items-center justify-content-between">
+                                    <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleDecrease}><i className="bi bi-dash"></i></button>
+                                    <ProgressBar className='formPA__progressBar__bar' now={Math.round(formMuestra.avance)} label={`${Math.round(formMuestra.avance)}%`} max={100}/>
+                                    <button className='btn btn-primary rounded-circle p-0 d-flex align-items-center justify-content-center' onClick={handleIncrese}><i className="bi bi-plus"></i></button>
+                                </div>
+                                {errors.avance && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.avance}</span>}
+                            </div>
+                            <div className='col-6'>
+                                <label className='mb-1'>Orden</label>
+                                <input
+                                    onChange={handleChange}
+                                    type="number" 
+                                    id="orden" 
+                                    name="orden" 
+                                    className="input--arrows form-control form-control-sm col-12"
+                                    value={formMuestra.orden}
+                                />
+                                {errors.orden && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.orden}</span>}
+                            </div>
+                        </div>
+                        <div className='mb-2'>
+                            <label className='mb-1'>Notas</label>
+                            <textarea 
+                                onChange={handleChange}
+                                id="notas" 
+                                name="notas"
+                                placeholder="Agrega notas" 
+                                rows="3"
+                                className="form-control form-control-sm col-12"
+                                value={formMuestra.notas}
+                            >
+                            </textarea>
+                            {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
+                        </div>
+                        {modalErr !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErr}</span>}
+                        <button type="submit" className='formPAsub__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
+                            Agregar muestra
+                        </button>
+                    </form>
                 ) : (
                     <form className='formPA d-flex flex-column' onSubmit={handleSubmit}>
                         <div className='mb-2'>
