@@ -17,6 +17,7 @@ function Muestras(){
         errorMuestra,
         setErrorMuestra,
         idSubtask,
+        setIdSubtask,
         fetchMuestrasById,
         idTask,
         idCiclo, 
@@ -144,7 +145,7 @@ function Muestras(){
 
     return (
         <>
-            <muestrasContext.Provider value={{ idSubtask, muestraObj, setMuestraObj, setLoadingMuestra, fetchMuestrasById, setErrorMuestra, setMuestras }}>
+            <muestrasContext.Provider value={{ idSubtask, setIdSubtask, muestraObj, setMuestraObj, setLoadingMuestra, fetchMuestrasById, setErrorMuestra, setMuestras }}>
                 <ModalMuestra show={modalMuestra} onHide={()=>setModalMuestra(false)} />
                 {/* Modal Ver muestra */}
                 {/* Modal Eliminar muestra */}

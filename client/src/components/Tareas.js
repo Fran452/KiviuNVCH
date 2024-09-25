@@ -79,6 +79,7 @@ function Tareas() {
   // const [subtareas, setSubtareas] = useState([])
   // const [errorSubtarea, setErrorSubtarea] = useState(null)
 
+  const [idSubtask, setIdSubtask] = useState(null)
   const [expandedRowMuestra, setExpandedRowMuestra] = useState(null);
   const [muestras, setMuestras] = useState([])
 
@@ -307,7 +308,7 @@ function Tareas() {
 
   return (
     <>
-      <tareasContext.Provider value={{setLoadingTar, setErrorTar, setTareasByCiclo, cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, fetchTareasById, idCiclo, setSubtareas, idTask, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica, expandedRowMuestra, setExpandedRowMuestra, muestras, setMuestras }}>
+      <tareasContext.Provider value={{setLoadingTar, setErrorTar, setTareasByCiclo, cicloSelec, setCicloSelec, tareaObj, setTareaObj, subtareas, loadingSub, setLoadingSub, errorSub, setErrorSub, fetchSubtareasById, fetchTareasById, idCiclo, setSubtareas, idTask, setTareasRealporCiclo, setTareasNorealporCiclo, fetchMetrica, expandedRowMuestra, setExpandedRowMuestra, muestras, setMuestras, idSubtask, setIdSubtask }}>
         <ModalEditCiclo show={modalEditCiclo} onHide={()=>setModalEditCiclo(false)} />
         <ModalPlanes show={modalTarea} onHide={()=>setModalTarea(false)} />
         <ModalVer show={modalVer} onHide={()=>setModalVer(false)} />

@@ -24,6 +24,7 @@ function ModalMuestra(props) {
     
     const { 
         idSubtask, 
+        setIdSubtask,
         muestraObj, 
         setMuestraObj,
         setLoadingMuestra,
@@ -201,6 +202,7 @@ function ModalMuestra(props) {
                             setMuestras(res.objeto)
                         }
                     })
+                    // setIdSubtask(idSubtask)
                     // fin de actualiza muestras
                 }
             } catch (error) {
