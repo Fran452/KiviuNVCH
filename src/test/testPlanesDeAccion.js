@@ -1285,24 +1285,140 @@ const controlador = {
 
     pruebasPreImplementacion: async (req,res) => {
         try{
-            let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/cargaExcel`,{
-                method:'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                })
-            })
-            
-            let resultado = await apisJSON.json();
+            const path = require('path');
+            const xlsx = require('xlsx-populate');
 
-            res.json(resultado);
+            let directoriExcel = path.join(__dirname,"./Prueba.xlsx");
+            let estructuraExcel = await xlsx.fromFileAsync(directoriExcel);
+
+
+            let hoja ="1.Prestamos Consumo y Comercial"
+
+            let fechaInicialExcel1 = estructuraExcel.sheet(hoja).cell(`F1`).value();
+            let fechaInicialExcel = new Date(fechaInicialExcel1);
+            console.log(fechaInicialExcel1,fechaInicialExcel);
+
+
+
+
+
+            let empleado = await funcionesDeTest.buscarUsuarioPorMail('gustavo.rodas@nbch.com.ar');
+            fechaInicial = new Date('2024-03-01');
+            fechaFin = new Date('2024-05-30');
+            //let ciclo     = await funcionesDeTest.crearCiclo(empleado.fk_area,"Ciclo Préstamos","Ciclo Préstamos 1° revisión",fechaInicial,fechaFin,1);
+                        
+            //let hoja = "1.Prestamos Consumo y Comercial"
+            
+            let inicioRegistro = 6;
+            let accOrden = 1,accTarea = 0, accSubtarea = 0,accMuestra = 0,accCiclo = 0;
+
+            let nombre
+            let isCiclo,istarea,isSubTarea,ismuestra
+            let ciclo,tarea,subTarea,muestra
+
+            let ciclos = [], tareas = [], subTareas = [], muestras = []
+            isCiclo = estructuraExcel.sheet(hoja).cell(`B${inicioRegistro}`).value();
+
+            do{ 
+                if(isCiclo != undefined){
+                    nombre = estructuraExcel.sheet(hoja).cell(`F${inicioRegistro}`).value();
+
+                    istarea = estructuraExcel.sheet(hoja).cell(`C${inicioRegistro}`).value();
+                    console.log(istarea);
+                    if(istarea != undefined){
+                        console.log(inicioRegistro);
+                        console.log("tarea");
+                        
+                        isSubTarea = estructuraExcel.sheet(hoja).cell(`D${inicioRegistro}`).value();
+    
+                        console.log(isSubTarea);
+                        if(isSubTarea != undefined){
+                            ismuestra = estructuraExcel.sheet(hoja).cell(`E${inicioRegistro}`).value();
+
+                            if(ismuestra != undefined ){
+                                console.log("muestra");
+                                //muestra = await funcionesDeTest.crearMuestras(subTarea.id_sub_tarea,accOrden,nombre,empleado.id_empleado,1,0,' ',1)
+                                muestra = {
+                                    idmuestra: accMuestra,
+                                    fkSubTarea: subTarea.id_sub_tarea,
+                                    order: accOrden,
+                                    titulo: nombre,
+                                    responsable: empleado.id_empleado,
+                                    horas: 1,
+                                    avance: 0,
+                                    notas: '',
+                                    ver: 1
+                                }
+                                accOrden++;
+                                accMuestra++
+                                muestras.push(muestra);
+                            }else{
+                                //subTareas = await funcionesDeTest.crearSubTarea(tarea.id_tarea,nombre,empleado.id_empleado,4,0,0,0,fechaInicial,null,' ',1)
+                                subTarea = {
+                                    id_sub_tarea : accSubtarea,
+                                    id_tarea: tarea.id_tarea,
+                                    nombre: nombre,
+                                    empleado: empleado.id_empleado,
+                                    horas : 4,
+                                    prioridad: 0,
+                                    estad0: 0,
+                                    avance: 0,
+                                    fechaInicio: fechaInicial,
+                                    fechaFinal: null,
+                                    notas : '',
+                                    ver:1
+                                }
+                                console.log("Subtarea");
+                                subTareas.push(subTarea);
+                                accSubtarea++;
+                                accOrden = 1;
+                            }
+                        }else{
+                            //tarea = await funcionesDeTest.crearTarea(empleado.id_empleado,empleado.fk_area,ciclo.id_ciclo,nombre,0,0,fechaInicial,' ');
+                            tarea = {
+                                id_tarea: accTarea,
+                                empleado: empleado.id_empleado,
+                                area: empleado.fk_area,
+                                ciclo: ciclo.id_ciclo,
+                                nombre: nombre,
+                                estado: 0,
+                                prioridad: 0,
+                                fechaDeInicio: fechaInicial,
+                                notas: ' '
+                            }
+                            ciclos.push(tarea);
+                            accTarea++;
+
+                        }
+                    }else{
+                        //ciclo = await funcionesDeTest.crearCiclo(empleado.fk_area,nombre,' ',fechaInicial,fechaDelFinal,1);
+                        ciclo = {
+                            id_ciclo: accCiclo,
+                            area: empleado.fk_area,
+                            nombre: nombre,
+                            detalle: '',
+                            fechaDeInicio: fechaInicial,
+                            fechaFin: fechaFin,
+                        }
+                        tareas.push(ciclo);
+                        accCiclo++;
+                    }
+
+                    inicioRegistro++
+                    isCiclo = estructuraExcel.sheet(hoja).cell(`B${inicioRegistro}`).value();
+                }
+            }while(istarea != undefined);
+
+            res.json({contadores: {
+                tareas: accTarea,
+                subTarea: accSubtarea,
+                muestra: accMuestra
+            },tareas : tareas, subTarea : subTareas, muestras : muestras});
+            return 0;
         }
         catch(error){
             console.log(error);
-            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   
-            return 1;
+            res.json(error);
         }
     }
 }
