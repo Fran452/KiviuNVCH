@@ -479,7 +479,7 @@ const controlador = {
         try{
             let empleadoAsignado;
             // Correccion if(req.body.asignacion != req.body.subtarea.Empleados.mail)
-            if(req.body.empleado_asignado != req.body.subtarea.Empleados.mail){
+            if(req.body.empleado_asignado != req.body.subtarea.mailUser){
                 empleadoAsignado = await dataBase.empleados.findOne(
                     {
                         where: {
@@ -492,7 +492,7 @@ const controlador = {
                     return 1;
                 }
             }else{
-                empleadoAsignado =  req.body.subtarea.Empleados;
+                empleadoAsignado =  req.body.subtarea.asignacion;
             }
 
             let fechaFinal;
@@ -606,8 +606,8 @@ const controlador = {
             let cantidadDeMuestrass = await dataBase.sequelize.query(
                 `
                     SELECT count(*) as total_Muestrass
-                    FROM Subsubtareas
-                    WHERE Subsubtareas.fk_sub_tareas = :idSubtarea;
+                    FROM muestras
+                    WHERE muestras.fk_sub_tareas = :idSubtarea;
                 `        
                 ,{
                     replacements: { idSubtarea: req.body.subtarea.id_sub_tarea },
@@ -616,13 +616,23 @@ const controlador = {
 
                 
             if (cantidadDeMuestrass[0].total_Muestrass > 0){
-                subtarea = await dataBase.muestras.update({
+                muestra = await dataBase.muestras.update({
                     estado: 3,
                     avance : 100,
                     fecha_final: fechaFinal  
                 },{
                     where:{
                         fk_sub_tareas : req.body.subtarea.id_sub_tarea
+                    }
+                });
+                
+                subtarea = await dataBase.subtareas.update({
+                    estado: 3,
+                    avance : 100,
+                    fecha_final: fechaFinal  
+                },{
+                    where:{
+                        id_sub_tarea : req.body.subtarea.id_sub_tarea
                     }
                 });
             }else{
@@ -789,14 +799,14 @@ const controlador = {
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
 
 
-            let subsubtarea = await dataBase.subsubtarea.update({
+            let muestra = await dataBase.muestras.update({
                 avance : 100,
             },{
                 where:{
-                    id_sub_sub_tarea : req.body.id_subsubtarea
+                    id_muestra : req.body.muestra.id_muestra
                 }
             });
-            res.json({error: 0, errorDetalle:"",objeto:subsubtarea});
+            res.json({error: 0, errorDetalle:"",objeto:muestra});
         }
         catch(error){
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);

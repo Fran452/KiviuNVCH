@@ -5,6 +5,7 @@ import { subtareasContext } from './Subtareas';
 import { Oval } from 'react-loader-spinner'
 import "./Tareas.scss"
 import IcoListMuestra from '../assets/img/ico-list2.svg';
+import excel from '../assets/muestras.xlsx'
 
 export const muestrasContext = React.createContext()
 
@@ -41,6 +42,8 @@ function Muestras(){
     const [modalDeleteMuestra, setModalDeleteMuestra] = useState(false)
     const [errorDel, setErrorDel] = useState(null)
 
+    const [modalFinalizar, setModalFinalizar] = useState(false)
+
     const [selectedFile, setSelectedFile] = useState();
 
     const handleShowInfo = (id) => {
@@ -52,16 +55,13 @@ function Muestras(){
         setModalMuestra(true)
     }
 
-    const handleModalFinalizar = () => {
-
-    }
-
     const handleEditMuestra = (id) => {
         const obj = muestras.find((e) => e.id_muestra === id)
         setMuestraObj(JSON.stringify(obj))
         setModalMuestra(true)
     }
 
+    // DELETE MUESTRA
     const handleModalDelete = (id) => {
         setIdMuestra(id)
         setModalDeleteMuestra(true)
@@ -145,16 +145,98 @@ function Muestras(){
         }
     }
 
-    // SUBIDA DE EXCEL
+    // FINALIZAR
+    const handleModalFinalizar = (id) => {
+        setIdMuestra(id)
+        setModalFinalizar(true)
+    }
 
+    const handleFinalizarMuestra = async () => {
+        const obj = muestras.find((e) => e.id_muestra === idMuestra)
+        try {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/muestrasok", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    muestra: obj
+                })
+            })
+            const data = await res.json()
+            if(data.error !== 0){
+                console.log(data.errorDetalle)
+            } else {
+                setModalFinalizar(false)
+                // Actualizar métricas
+                fetchMetrica()
+                .then(res => {
+                    if(res.error !== 0){
+                        console.log(res.errorDetalle)
+                    } else {
+                        let tareasNorealizadas = 0;
+                        const arr = res.objeto
+                        const selec = arr.find(e => e.id_ciclo === idCiclo)
+                        if(selec === undefined) {
+                            setTareasRealporCiclo(0)
+                            setTareasNorealporCiclo(0)
+                        } else {
+                            tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                            setTareasNorealporCiclo(tareasNorealizadas)
+                            setTareasRealporCiclo(selec.tareas_realizadas)
+                        } 
+                    }
+                })
+                // actualiza tareas
+                setLoadingTar(true)
+                fetchTareasById(idCiclo)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingTar(false)
+                        setErrorTar(res.errorDetalle)
+                    } else {
+                        setLoadingTar(false)
+                        setTareasByCiclo(res.objeto)
+                    }
+                })
+                // actualiza subtareas
+                setLoadingSub(true)
+                fetchSubtareasById(idTask)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingSub(false)
+                        setErrorSub(res.errorDetalle)
+                    } else {
+                        setLoadingSub(false)
+                        setSubtareas(res.objeto)
+                    }
+                })
+                // actualiza muestras
+                setLoadingMuestra(true)
+                fetchMuestrasById(idSubtask)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingMuestra(false)
+                        setErrorMuestra(res.errorDetalle)
+                    } else {
+                        setLoadingMuestra(false)
+                        setMuestras(res.objeto)
+                    }
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // SUBIDA DE EXCEL
     const changeHandler = (e) => {
         setSelectedFile(e.target.files[0]);
     }
 
     const handleSubmission = async () => {
         const formData = new FormData();
-		formData.append('file', selectedFile);
-        console.log(formData)
+		formData.append('excel', selectedFile);
         try {
             const res = await fetch("http://localhost:3040/apis/plan-accion/subitExcel", {
                 method: "POST",
@@ -191,6 +273,19 @@ function Muestras(){
                     </Modal.Footer>
                 </Modal>
                 {/* Modal Finalizar muestra */}
+                <Modal className='modal__delete' show={modalFinalizar} onHide={() => setModalFinalizar(false)} backdrop="static" centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title><h3>Finalizar muestra</h3></Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>¿Está seguro que desea finalizar esta muestra?</Modal.Body>
+                    <Modal.Footer className='d-flex flex-column'>
+                        <div className='d-flex flex-row align-items-center align-self-end'>
+                            <button className='btn btn-secondary rounded-pill me-2' onClick={() => setModalFinalizar(false)}>Cancelar</button>
+                            <button className='btn btn-danger rounded-pill' onClick={handleFinalizarMuestra}>Finalizar</button>
+                        </div>
+                        {errorDel && <p>{errorDel}</p>}
+                    </Modal.Footer>
+                </Modal>
                 {loadingMuestra ? (
                     <div className='loading__subtareas d-flex flex-row align-items-center'>
                         <div className='me-2'>
@@ -217,20 +312,26 @@ function Muestras(){
                                         <div className='icon__lista__muestra d-flex justify-content-end'>
                                             <img src={IcoListMuestra} alt=''/>
                                         </div>
-                                        <div className='table__custom__row--btnadd d-flex flex-row align-items-center'>
-                                            <button onClick={handleNewMuestra} className='btn btn-outline-success btn-sm rounded-pill px-3 me-2 fw-medium'><i className="bi bi-plus me-1"></i>Crear una muestra</button>
+                                        {/* Botones */}
+                                        <div className='table__custom__row--btnadd d-flex flex-column'>
+                                            <button onClick={handleNewMuestra} className='btn__addMuestra btn btn-outline-success btn-sm rounded-pill px-3 mb-2 fw-medium'><i className="bi bi-plus me-1"></i>Crear una muestra</button>
+                                            <p className='mb-2'>ó suba un archivo excel:</p>
+                                            <div className='d-flex flex-row align-items-center mb-2'>
+                                                <p className='mb-0 me-2'><b>Descargue una plantilla aquí:</b></p>
+                                                <a href={excel} download="muestras.xlsx" className='btn btn-warning text-white btn-sm rounded-pill px-3 fw-medium'>Descargar</a>
+                                            </div>
                                             {/* <button className='btn btn-success btn-sm rounded-pill px-3 fw-medium'><i className="bi bi-plus me-1"></i>Subir excel</button> */}
                                             <div className='d-flex flex-row align-items-center'>
-                                                <input type='file' onChange={changeHandler} className='btn__file form-control me-2'/>
+                                                <input type='file' onChange={changeHandler} className='btn__file me-2'/>
                                                 <button onClick={handleSubmission} className='btn btn-success btn-sm rounded-pill px-3 fw-medium me-2'>
-                                                    <i className="bi bi-upload me-1"></i>
+                                                    <i className="bi bi-upload me-2"></i>
                                                     Subir excel
                                                 </button>
-                                                {selectedFile ? (
+                                                {/* {selectedFile ? (
                                                     <p className='m-0 p-0'>Tamaño en bytes: {selectedFile.size} | Última modificación: {selectedFile.lastModifiedDate.toLocaleDateString()}</p>
                                                 ) : (
                                                     <p className='m-0 p-0'>Selecciona un archivo para más detalles.</p>
-                                                )}
+                                                )} */}
                                             </div>
                                         </div>
                                     </div>
@@ -243,7 +344,7 @@ function Muestras(){
                                                 </div>
                                                 <div className='table__custom__row'>
                                                     <div className='table__custom__cell cell__buttons'>
-                                                        {m.avance === 100 ? (
+                                                        {Math.round(m.avance) === 100 ? (
                                                             <>
                                                                 <button onClick={()=> handleShowInfo(m.id_muestra)} className='btn__ico--g btn border-0 p-0'><i className="bi bi-eye"></i></button>
                                                                 <button className='disabled btn__ico--g btn border-0 p-0'><i className="bi bi-check-square"></i></button>
@@ -278,9 +379,21 @@ function Muestras(){
                                             <div className='icon__lista__muestra d-flex justify-content-end'>
                                                 <img src={IcoListMuestra} alt=''/>
                                             </div>
-                                            <div className='table__custom__row--btnadd d-flex flex-row align-items-center'>
-                                                <button onClick={handleNewMuestra} className='btn btn-outline-success btn-sm rounded-pill px-3 me-2 fw-medium'><i className="bi bi-plus me-1"></i>Crear una muestra</button>
-                                                <button className='btn btn-success btn-sm rounded-pill px-3 fw-medium'><i className="bi bi-plus me-1"></i>Subir excel</button>
+                                            {/* Botones */}
+                                            <div className='table__custom__row--btnadd d-flex flex-column'>
+                                                <button onClick={handleNewMuestra} className='btn__addMuestra btn btn-outline-success btn-sm rounded-pill px-3 mb-2 fw-medium'><i className="bi bi-plus me-1"></i>Crear una muestra</button>
+                                                <p className='mb-2'>ó suba un archivo excel:</p>
+                                                <div className='d-flex flex-row align-items-center mb-2'>
+                                                    <p className='mb-0 me-2'><b>Descargue una plantilla aquí:</b></p>
+                                                    <a href={excel} download="muestras.xlsx" className='btn btn-warning text-white btn-sm rounded-pill px-3 fw-medium'>Descargar</a>
+                                                </div>
+                                                <div className='d-flex flex-row align-items-center'>
+                                                    <input type='file' onChange={changeHandler} className='btn__file me-2'/>
+                                                    <button onClick={handleSubmission} className='btn btn-success btn-sm rounded-pill px-3 fw-medium me-2'>
+                                                        <i className="bi bi-upload me-2"></i>
+                                                        Subir excel
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </>

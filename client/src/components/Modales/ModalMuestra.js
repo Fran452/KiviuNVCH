@@ -42,7 +42,7 @@ function ModalMuestra(props) {
         notas: ""
     })
     const [errors, setErrors] = useState({})
-    const [modalErr, setModalErr] = useState(null)
+    const [modalErrMuestra, setModalErrMuestra] = useState(null)
 
     useEffect(() => {
         if(muestraObj){
@@ -104,7 +104,7 @@ function ModalMuestra(props) {
         })
         props.onHide()
         setMuestraObj(null)
-        setModalErr(null) 
+        setModalErrMuestra(null) 
     }
 
     const handleSubmit = async (e) => {
@@ -132,7 +132,7 @@ function ModalMuestra(props) {
                 })
                 const data = await res.json()
                 if(data.error !== 0) {
-                    setModalErr(data.errorDetalle)
+                    setModalErrMuestra(data.errorDetalle)
                 } else {
                     setFormMuestra({
                         orden: 0,
@@ -142,7 +142,7 @@ function ModalMuestra(props) {
                         avance: 0,
                         notas: ""
                     })
-                    setModalErr(null)
+                    setModalErrMuestra(null)
                     setMuestraObj(null)
                     props.onHide()
                     // Actualizar métricas
@@ -206,10 +206,10 @@ function ModalMuestra(props) {
                     // fin de actualiza muestras
                 }
             } catch (error) {
-                setModalErr(error)
+                setModalErrMuestra(error)
             }
         } else {
-            setModalErr("Completar los campos mencionados.")
+            setModalErrMuestra("Completar los campos mencionados.")
         }
     }
 
@@ -239,7 +239,7 @@ function ModalMuestra(props) {
                 })
                 const data = await res.json()
                 if(data.error !== 0) {
-                    setModalErr(data.errorDetalle)
+                    setModalErrMuestra(data.errorDetalle)
                 } else {
                     setFormMuestra({
                         orden: 0,
@@ -249,7 +249,7 @@ function ModalMuestra(props) {
                         avance: 0,
                         notas: ""
                     })
-                    setModalErr(null)
+                    setModalErrMuestra(null)
                     setMuestraObj(null)
                     props.onHide()
                     // Actualizar métricas
@@ -309,10 +309,10 @@ function ModalMuestra(props) {
                     })
                 }
             } catch (error) {
-                setModalErr(error)
+                setModalErrMuestra(error)
             }
         } else {
-            setModalErr("Completar los campos mencionados.")
+            setModalErrMuestra("Completar los campos mencionados.")
         }
     }
 
@@ -439,7 +439,7 @@ function ModalMuestra(props) {
                             </textarea>
                             {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
                         </div>
-                        {modalErr !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErr}</span>}
+                        {modalErrMuestra !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErrMuestra}</span>}
                         <button type="submit" className='formPAsub__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
                             Agregar muestra
                         </button>
@@ -514,7 +514,7 @@ function ModalMuestra(props) {
                             </textarea>
                             {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
                         </div>
-                        {modalErr !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErr}</span>}
+                        {modalErrMuestra !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErrMuestra}</span>}
                         <button type="submit" className='formPAsub__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
                             Agregar muestra
                         </button>

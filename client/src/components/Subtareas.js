@@ -336,7 +336,7 @@ function Subtareas() {
                                                             </button>
                                                         </div>
                                                         <div className='table__custom__cell cell__buttons'>
-                                                            {s.progreso_tarea === 100 ? (
+                                                            {Math.round(s.progreso_tarea) === 100 ? (
                                                                 <>
                                                                     <button onClick={()=> handleShowInfo(s.id_sub_tarea)} className='btn__ico--g btn border-0 p-0'><i className="bi bi-eye"></i></button>
                                                                     <button className='disabled btn__ico--g btn border-0 p-0'><i className="bi bi-check-square"></i></button>

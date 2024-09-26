@@ -19,7 +19,7 @@ function ModalSubtarea(props) {
     avance: 0
   })
   const [errors, setErrors] = useState({})
-  const [modalErr, setModalErr] = useState(null)
+  const [modalErrSub, setModalErrSub] = useState(null)
 
   useEffect(() => {
     if(subtareaObj){
@@ -33,7 +33,7 @@ function ModalSubtarea(props) {
         prioridad: obj.prioridad.toString(),
         notas: obj.notas,
         horas: obj.horas_tarea,
-        avance: obj.progreso_tarea,
+        avance: parseInt(obj.progreso_tarea),
       })
     }
   },[subtareaObj])
@@ -95,6 +95,8 @@ function ModalSubtarea(props) {
       avance: 0
     })
     props.onHide()
+    setSubtareaObj(null)
+    setModalErrSub(null)
   }
 
   const handleSubmit = async (e) => {
@@ -126,7 +128,7 @@ function ModalSubtarea(props) {
         })
         const data = await res.json()
         if(data.error !== 0) {
-          setModalErr(data.errorDetalle)
+          setModalErrSub(data.errorDetalle)
         } else {
           setFormData({
             titulo: "",
@@ -139,7 +141,7 @@ function ModalSubtarea(props) {
             horas: 0,
             avance: 0
           })
-          setModalErr(null)
+          setModalErrSub(null)
           setSubtareaObj(null)
           props.onHide()
           // Actualizar métricas
@@ -189,10 +191,10 @@ function ModalSubtarea(props) {
           // fin de actualiza subtareas
         }
       } catch (error) {
-        setModalErr(error)
+        setModalErrSub(error)
       }
     } else {
-      setModalErr("Completar los campos mencionados.")
+      setModalErrSub("Completar los campos mencionados.")
     }
   }
 
@@ -215,6 +217,7 @@ function ModalSubtarea(props) {
         avance: parseInt(formData.avance),
         horasAprox: parseInt(formData.horas)
       }
+      console.log(obj)
       try {
         const res = await fetch("http://localhost:3040/apis/plan-accion/modSubTask", {
           method: "PUT",
@@ -225,7 +228,7 @@ function ModalSubtarea(props) {
         })
         const data = await res.json()
         if(data.error !== 0) {
-          setModalErr(data.errorDetalle)
+          setModalErrSub(data.errorDetalle)
         } else {
           setFormData({
             titulo: "",
@@ -238,7 +241,7 @@ function ModalSubtarea(props) {
             horas: 0,
             avance: 0
           })
-          setModalErr(null)
+          setModalErrSub(null)
           setSubtareaObj(null)
           props.onHide()
           // Actualizar métricas
@@ -288,10 +291,10 @@ function ModalSubtarea(props) {
           // fin de actualiza tareas
         }
       } catch (error) {
-        setModalErr(error)
+        setModalErrSub(error)
       }
     } else {
-      setModalErr("Completar los campos mencionados.")
+      setModalErrSub("Completar los campos mencionados.")
     }
   }
 
@@ -472,7 +475,7 @@ function ModalSubtarea(props) {
             </textarea>
             {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
           </div>
-          {modalErr !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErr}</span>}
+          {modalErrSub !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErrSub}</span>}
           <button type="submit" className='formPAsub__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
               Modificar subtarea
           </button>
@@ -610,7 +613,7 @@ function ModalSubtarea(props) {
             </textarea>
             {errors.notas && <span className='formPA__error d-flex flex-row align-items-center px-1 my-1'><i className="bi bi-exclamation-circle me-1"></i>{errors.notas}</span>}
           </div>
-          {modalErr !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErr}</span>}
+          {modalErrSub !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErrSub}</span>}
           <button type="submit" className='formPAsub__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
               Agregar subtarea
           </button>
