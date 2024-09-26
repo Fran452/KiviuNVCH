@@ -445,6 +445,7 @@ function Tareas() {
                             <div className='table__custom__header'>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__dropdown'></div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__buttons--task'></div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__orden'>Orden</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__nombre'>Tareas</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__prioridad'>Prioridad</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__estado'>Estado</div>
@@ -470,6 +471,7 @@ function Tareas() {
                                       <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__edit--icon'><i className="bi bi-pencil"></i></button>
                                       <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__delete--icon'><i className="bi bi-trash3"></i></button>
                                     </div>
+                                    <div className='table__custom__cell cell__orden'></div>
                                     <div className='table__custom__cell cell__nombre'>{e.nombre}</div>
                                     <div className='table__custom__cell cell__prioridad'>
                                       {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}

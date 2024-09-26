@@ -423,6 +423,7 @@ function Muestras(){
                                                         )}
                                                         
                                                     </div>
+                                                    <div className='table__custom__cell cell__orden'>{m.numero_de_orden}</div>
                                                     <div className='table__custom__cell cell__nombre'>{m.titulo}</div>
                                                     <div className='table__custom__cell cell__prioridad'></div>
                                                     <div className='table__custom__cell cell__estado'></div>
