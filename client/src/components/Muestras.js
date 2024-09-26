@@ -253,7 +253,61 @@ function Muestras(){
             if(data.error !== 0){
                 console.log(data.errorDetalle)
             } else {
-                console.log(data)
+                // Actualizar métricas
+                fetchMetrica()
+                .then(res => {
+                    if(res.error !== 0){
+                        console.log(res.errorDetalle)
+                    } else {
+                        let tareasNorealizadas = 0;
+                        const arr = res.objeto
+                        const selec = arr.find(e => e.id_ciclo === idCiclo)
+                        if(selec === undefined) {
+                            setTareasRealporCiclo(0)
+                            setTareasNorealporCiclo(0)
+                        } else {
+                            tareasNorealizadas = selec.tareas_totales - selec.tareas_realizadas
+                            setTareasNorealporCiclo(tareasNorealizadas)
+                            setTareasRealporCiclo(selec.tareas_realizadas)
+                        } 
+                    }
+                })
+                // actualiza tareas
+                setLoadingTar(true)
+                fetchTareasById(idCiclo)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingTar(false)
+                        setErrorTar(res.errorDetalle)
+                    } else {
+                        setLoadingTar(false)
+                        setTareasByCiclo(res.objeto)
+                    }
+                })
+                // actualiza subtareas
+                setLoadingSub(true)
+                fetchSubtareasById(idTask)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingSub(false)
+                        setErrorSub(res.errorDetalle)
+                    } else {
+                        setLoadingSub(false)
+                        setSubtareas(res.objeto)
+                    }
+                })
+                // actualiza muestras
+                setLoadingMuestra(true)
+                fetchMuestrasById(idSubtask)
+                .then(res => {
+                    if(res.error !== 0){
+                        setLoadingMuestra(false)
+                        setErrorMuestra(res.errorDetalle)
+                    } else {
+                        setLoadingMuestra(false)
+                        setMuestras(res.objeto)
+                    }
+                })
             }
         } catch (error) {
             console.log(error)
