@@ -217,7 +217,6 @@ function ModalSubtarea(props) {
         avance: parseInt(formData.avance),
         horasAprox: parseInt(formData.horas)
       }
-      console.log(obj)
       try {
         const res = await fetch("http://localhost:3040/apis/plan-accion/modSubTask", {
           method: "PUT",

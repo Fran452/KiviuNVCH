@@ -1,13 +1,11 @@
-const express = require("express");
-const multer = require ("multer");
-const path = require("path")
+const express       = require("express");
+const multer        = require ("multer");
+const path          = require('path');
 
-
-const apisHome = require('../apis/controllerHomeApis');
-const apisUser = require('../apis/controllerUserApis');
-const apisPlanDeAccion = require('../apis/controllerPlanDeAccionApis');
-const apisDateIn = require('../apis/controllerDateInApis');
-const homeController = require("../controllers/controller");
+const apisHome          = require('../apis/controllerHomeApis');
+const apisUser          = require('../apis/controllerUserApis');
+const apisPlanDeAccion  = require('../apis/controllerPlanDeAccionApis');
+const apisDateIn        = require('../apis/controllerDateInApis');
 
 const router = express.Router();
 

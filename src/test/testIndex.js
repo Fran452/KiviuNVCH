@@ -13,6 +13,7 @@ const controlador = {
             ArmarBaseDeDatosSubTareas:`${process.env.WEB}/test/armado-SQL-Sub`,
             planesAcción:{
                 testGenericos:  `${process.env.WEB}/test/plan-accion`,
+                preImplemenatacion:  `${process.env.WEB}/test/plan-accion/otros`,
                 ciclos:{
                     add:    `${process.env.WEB}/test/plan-accion/addCiclos`,
                     view:   `${process.env.WEB}/test/plan-accion/viewCiclos`,
@@ -150,8 +151,6 @@ const controlador = {
     crearBaseDeDatosNew: async (req,res) => {
         try{
             console.log("entrando a la generacion de base de datos");
-
-
             let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('francisco.lema@nbch.com.ar');
 
             /*if(empleadoYaSubido != undefined){

@@ -544,7 +544,8 @@ const controlador = {
                             ELSE Subtareas.horasAprox
                         END AS horas_tarea,
 
-                        CASE WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
+                        CASE 
+                            WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
                             THEN CASE
                                 WHEN AVG(Muestras.avance) = 100 THEN 99
                                 ELSE COALESCE(AVG(Muestras.avance), 0)
@@ -601,8 +602,9 @@ const controlador = {
     terminarSubTarea: async (req,res) => {
         try{
             let ahora = new Date();
+            let muestra;
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
-            let subtarea
+            let subtarea;
             let cantidadDeMuestrass = await dataBase.sequelize.query(
                 `
                     SELECT count(*) as total_Muestrass
@@ -687,9 +689,9 @@ const controlador = {
                         fk_sub_tareas   : req.body.id_Subtareas,
                         titulo          : titulo,
                         numero_de_orden : numero_de_orden,
-                        responsable     : responsable.id_empleado,
+                        responsable     : responsable,
                         horasAprox      : horasAprox,
-                        avance          : 0,
+                        avance          : avance,
                         notas           : notas,
                         ver             : 1
                     });
@@ -857,21 +859,44 @@ const controlador = {
         try{
             console.log("subi el excel");
             if(req.file){
-                res.json("objeto subido");
+                let excel = path.join(__dirname,"../excel/muestras.xlsx");
+                let estructuraExcel = await xlsx.fromFileAsync(excel);
+                let estructuraTitutlo       = estructuraExcel.sheet('Hoja1').cell(`A1`).value();
+                let estructuraNumOrde       = estructuraExcel.sheet('Hoja1').cell(`A2`).value();
+                let estructuraTitulo        = estructuraExcel.sheet('Hoja1').cell(`B2`).value();
+                let estructuraResponsable   = estructuraExcel.sheet('Hoja1').cell(`C2`).value();
+                let estructuraHoras         = estructuraExcel.sheet('Hoja1').cell(`D2`).value();
+                let estructuraNotas         = estructuraExcel.sheet('Hoja1').cell(`E2`).value();
+
+                if( estructuraTitutlo       == 'Carga de Muestras'      && 
+                    estructuraNumOrde       == 'Numero de orden'        &&
+                    estructuraTitulo        == 'Titulo'                 &&
+                    estructuraResponsable   == 'responsable (via mail)' &&
+                    estructuraHoras         == 'Horas aprox'            &&
+                    estructuraNotas         == 'Notas')
+                {
+                    res.json({error: 0, errorDetalle:'',objeto:'excel subido'});
+                    return 0;
+                }else{
+                    res.json({error: 0, errorDetalle:'',objeto:'La extructura no fue subida correctaente'});
+                    return 1;
+                }
+            }else{
+                res.json({error: 99, errorDetalle:'El excel no fue subido correctamente',objeto:ciclos});
+                return 1;
             }
-            res.json("objeto no subido");
-            return 0;
         }
         catch(error){
-            console.log(error);
-            res.json(error);
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 
     // Cargar excel
     cargaDeExcel: async (req,res) => {
         try{
-            console.log("entre");
+            
             let excel = path.join(__dirname,"../excel/muestras.xlsx");
             let estructuraExcel = await xlsx.fromFileAsync(excel);
             let acc = 0, i = 3;
@@ -928,8 +953,9 @@ const controlador = {
             return 0;
         }
         catch(error){
-            console.log(error);
-            res.json(error);
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
         }
     },
 }
