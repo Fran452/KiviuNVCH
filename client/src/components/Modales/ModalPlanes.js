@@ -81,6 +81,7 @@ function ModalPlanes(props) {
           })
           setModalErr(null)
           setCicloSelec(null)
+          setTareaObj(null)
           props.onHide()
           // actualiza tareas
           setLoadingTar(true)

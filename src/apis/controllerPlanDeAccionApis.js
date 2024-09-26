@@ -689,7 +689,7 @@ const controlador = {
                         fk_sub_tareas   : req.body.id_Subtareas,
                         titulo          : titulo,
                         numero_de_orden : numero_de_orden,
-                        responsable     : responsable,
+                        responsable     : responsable.id_empleado,
                         horasAprox      : horasAprox,
                         avance          : avance,
                         notas           : notas,

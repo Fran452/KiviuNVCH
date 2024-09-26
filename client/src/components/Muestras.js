@@ -6,6 +6,7 @@ import { Oval } from 'react-loader-spinner'
 import "./Tareas.scss"
 import IcoListMuestra from '../assets/img/ico-list2.svg';
 import excel from '../assets/muestras.xlsx'
+import ModalVerMuestra from './Modales/ModalVerMuestra';
 
 export const muestrasContext = React.createContext()
 
@@ -43,18 +44,17 @@ function Muestras(){
     const [errorDel, setErrorDel] = useState(null)
 
     const [modalFinalizar, setModalFinalizar] = useState(false)
+    const [modalVerMuestra, setModalVerMuestra] = useState(false)
 
     const [selectedFile, setSelectedFile] = useState();
 
-    const handleShowInfo = (id) => {
-        console.log(id)
-    }
-
+    // CREAR MUESTRA
     const handleNewMuestra = (e) => {
         e.preventDefault()
         setModalMuestra(true)
     }
 
+    // EDITAR MUESTRA
     const handleEditMuestra = (id) => {
         const obj = muestras.find((e) => e.id_muestra === id)
         setMuestraObj(JSON.stringify(obj))
@@ -229,6 +229,13 @@ function Muestras(){
         }
     }
 
+    // VER MODAL MUESTRA
+    const handleShowInfo = (id) => {
+        const obj = muestras.find((e) => e.id_muestra === id)
+        setMuestraObj(JSON.stringify(obj))
+        setModalVerMuestra(true)
+    }
+
     // SUBIDA DE EXCEL
     const changeHandler = (e) => {
         setSelectedFile(e.target.files[0]);
@@ -258,6 +265,7 @@ function Muestras(){
             <muestrasContext.Provider value={{ idSubtask, setIdSubtask, muestraObj, setMuestraObj, setLoadingMuestra, fetchMuestrasById, setErrorMuestra, setMuestras }}>
                 <ModalMuestra show={modalMuestra} onHide={()=>setModalMuestra(false)} />
                 {/* Modal Ver muestra */}
+                <ModalVerMuestra show={modalVerMuestra} onHide={()=>setModalVerMuestra(false)} />
                 {/* Modal Eliminar muestra */}
                 <Modal className='modal__delete' show={modalDeleteMuestra} onHide={() => setModalDeleteMuestra(false)} backdrop="static" centered>
                     <Modal.Header closeButton>
