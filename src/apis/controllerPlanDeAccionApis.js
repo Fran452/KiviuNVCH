@@ -933,7 +933,7 @@ const controlador = {
                     } 
                     notas               = estructuraExcel.sheet('Hoja1').cell(`E${i}`).value();    
                     let muestras = await dataBase.muestras.create({
-                        fk_sub_tareas   : 2,
+                        fk_sub_tareas   : req.body.id_subtarea,
                         titulo          : titulo,
                         numero_de_orden : numero_de_orden,
                         responsable     : responsable,
