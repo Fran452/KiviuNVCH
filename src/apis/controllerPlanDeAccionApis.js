@@ -543,7 +543,8 @@ const controlador = {
                             ELSE Subtareas.horasAprox
                         END AS horas_tarea,
 
-                        CASE WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
+                        CASE 
+                            WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
                             THEN CASE
                                 WHEN AVG(Muestras.avance) = 100 THEN 99
                                 ELSE COALESCE(AVG(Muestras.avance), 0)
@@ -600,8 +601,9 @@ const controlador = {
     terminarSubTarea: async (req,res) => {
         try{
             let ahora = new Date();
+            let muestra;
             let fechaFinal = new Date(new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', year: 'numeric', month: '2-digit', day: '2-digit' }).format(ahora).replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$3-$2-$1'));
-            let subtarea
+            let subtarea;
             let cantidadDeMuestrass = await dataBase.sequelize.query(
                 `
                     SELECT count(*) as total_Muestrass
@@ -615,13 +617,23 @@ const controlador = {
 
                 
             if (cantidadDeMuestrass[0].total_Muestrass > 0){
-                subtarea = await dataBase.muestras.update({
+                muestra = await dataBase.muestras.update({
                     estado: 3,
                     avance : 100,
                     fecha_final: fechaFinal  
                 },{
                     where:{
                         fk_sub_tareas : req.body.subtarea.id_sub_tarea
+                    }
+                });
+                
+                subtarea = await dataBase.subtareas.update({
+                    estado: 3,
+                    avance : 100,
+                    fecha_final: fechaFinal  
+                },{
+                    where:{
+                        id_sub_tarea : req.body.subtarea.id_sub_tarea
                     }
                 });
             }else{
