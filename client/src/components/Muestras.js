@@ -72,7 +72,7 @@ function Muestras(){
             id_muestra: parseInt(idMuestra)
         }
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/deleteMuestras", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteMuestras", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -154,7 +154,7 @@ function Muestras(){
     const handleFinalizarMuestra = async () => {
         const obj = muestras.find((e) => e.id_muestra === idMuestra)
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/muestrasok", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/muestrasok", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -245,7 +245,7 @@ function Muestras(){
         const formData = new FormData();
 		formData.append('excel', selectedFile);
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/subitExcel", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/subitExcel", {
                 method: "POST",
                 body: formData
             })

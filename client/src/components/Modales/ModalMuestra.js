@@ -123,7 +123,7 @@ function ModalMuestra(props) {
                 notas: formMuestra.notas
             }
             try {
-                const res = await fetch("http://localhost:3040/apis/plan-accion/addMuestras", {
+                const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/addMuestras", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -230,7 +230,7 @@ function ModalMuestra(props) {
                 notas: formMuestra.notas
             }
             try {
-                const res = await fetch("http://localhost:3040/apis/plan-accion/modMuestras", {
+                const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/modMuestras", {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
