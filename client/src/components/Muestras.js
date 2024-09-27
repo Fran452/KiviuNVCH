@@ -257,7 +257,6 @@ function Muestras(){
               if(data.error !== 0){
                 setErrorExcel(data.errorDetalle)
               } else {
-                console.log("Se subió la muestra")
                 // Actualizar métricas
                 fetchMetrica()
                 .then(res => {
