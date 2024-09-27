@@ -465,6 +465,7 @@ function Tareas() {
                             <div className='table__custom__header'>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__dropdown'></div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__buttons--task'></div>
+                              <div className='table__custom__cell table__custom__cell--title fw-bold cell__orden'>Orden</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__nombre'>Tareas</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__prioridad'>Prioridad</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__estado'>Estado</div>

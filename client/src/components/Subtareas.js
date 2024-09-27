@@ -353,6 +353,7 @@ function Subtareas() {
                                                             )}
                                                             
                                                         </div>
+                                                        <div className='table__custom__cell cell__orden'></div>
                                                         <div className='table__custom__cell cell__nombre'>{s.titulo}</div>
                                                         <div className='table__custom__cell cell__prioridad'>
                                                             {s.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
