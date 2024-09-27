@@ -441,7 +441,7 @@ function ModalMuestra(props) {
                         </div>
                         {modalErrMuestra !== null && <span className='align-self-center text-danger my-2'><i className="bi bi-exclamation-circle me-1"></i>{modalErrMuestra}</span>}
                         <button type="submit" className='formPAsub__btn btn btn-primary rounded-pill shadow-sm fw-medium align-self-center'>
-                            Agregar muestra
+                            Modificar muestra
                         </button>
                     </form>
                 ) : (
