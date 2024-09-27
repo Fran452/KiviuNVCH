@@ -321,6 +321,7 @@ function Tareas() {
       const destinationIndex = destination.index;
       const [removedTarea] = reorderedTareas.splice(sourceIndex, 1)
       reorderedTareas.splice(destinationIndex, 0, removedTarea)
+      console.log("index inicial: " + sourceIndex, "index final: " + destinationIndex)
       return setTareasByCiclo(reorderedTareas)
     }
   }
