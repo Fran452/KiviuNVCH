@@ -244,7 +244,7 @@ function Muestras(){
 
     const cargaExcel = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/cargaExcel", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/cargaExcel", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
