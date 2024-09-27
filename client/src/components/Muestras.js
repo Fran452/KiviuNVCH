@@ -5,7 +5,7 @@ import { subtareasContext } from './Subtareas';
 import { Oval } from 'react-loader-spinner'
 import "./Tareas.scss"
 import IcoListMuestra from '../assets/img/ico-list2.svg';
-import excel from '../assets/muestras.xlsx'
+import excel from '../assets/muestras-ejemplo.xlsx'
 import ModalVerMuestra from './Modales/ModalVerMuestra';
 
 export const muestrasContext = React.createContext()
@@ -47,6 +47,7 @@ function Muestras(){
     const [modalVerMuestra, setModalVerMuestra] = useState(false)
 
     const [selectedFile, setSelectedFile] = useState();
+    const [errorExcel, setErrorExcel] = useState(null)
 
     // CREAR MUESTRA
     const handleNewMuestra = (e) => {
@@ -241,18 +242,22 @@ function Muestras(){
         setSelectedFile(e.target.files[0]);
     }
 
-    const handleSubmission = async () => {
-        const formData = new FormData();
-		formData.append('excel', selectedFile);
+    const cargaExcel = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/subitExcel", {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/cargaExcel", {
                 method: "POST",
-                body: formData
-            })
-            const data = await res.json()
-            if(data.error !== 0){
-                console.log(data.errorDetalle)
-            } else {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id_subtarea: idSubtask
+                })
+              })
+              const data = await res.json()
+              if(data.error !== 0){
+                setErrorExcel(data.errorDetalle)
+              } else {
+                console.log("Se subió la muestra")
                 // Actualizar métricas
                 fetchMetrica()
                 .then(res => {
@@ -308,9 +313,28 @@ function Muestras(){
                         setMuestras(res.objeto)
                     }
                 })
+              }
+        } catch (error) {
+            setErrorExcel(error)
+        }
+    }
+
+    const handleSubmission = async () => {
+        const formData = new FormData();
+		formData.append('excel', selectedFile);
+        try {
+            const res = await fetch("http://localhost:3040/apis/plan-accion/subitExcel", {
+                method: "POST",
+                body: formData
+            })
+            const data = await res.json()
+            if(data.error !== 0){
+                setErrorExcel(data.errorDetalle)
+            } else {
+                cargaExcel()
             }
         } catch (error) {
-            console.log(error)
+            setErrorExcel(error)
         }
     }
 
@@ -380,21 +404,16 @@ function Muestras(){
                                             <p className='mb-2'>ó suba un archivo excel:</p>
                                             <div className='d-flex flex-row align-items-center mb-2'>
                                                 <p className='mb-0 me-2'><b>Descargue una plantilla aquí:</b></p>
-                                                <a href={excel} download="muestras.xlsx" className='btn btn-warning text-white btn-sm rounded-pill px-3 fw-medium'>Descargar</a>
+                                                <a href={excel} download="muestras-ejemplo.xlsx" className='btn btn-warning text-white btn-sm rounded-pill px-3 fw-medium'>Descargar</a>
                                             </div>
-                                            {/* <button className='btn btn-success btn-sm rounded-pill px-3 fw-medium'><i className="bi bi-plus me-1"></i>Subir excel</button> */}
                                             <div className='d-flex flex-row align-items-center'>
                                                 <input type='file' onChange={changeHandler} className='btn__file me-2'/>
                                                 <button onClick={handleSubmission} className='btn btn-success btn-sm rounded-pill px-3 fw-medium me-2'>
                                                     <i className="bi bi-upload me-2"></i>
                                                     Subir excel
                                                 </button>
-                                                {/* {selectedFile ? (
-                                                    <p className='m-0 p-0'>Tamaño en bytes: {selectedFile.size} | Última modificación: {selectedFile.lastModifiedDate.toLocaleDateString()}</p>
-                                                ) : (
-                                                    <p className='m-0 p-0'>Selecciona un archivo para más detalles.</p>
-                                                )} */}
                                             </div>
+                                            {errorExcel && <p>{errorExcel}</p>}
                                         </div>
                                     </div>
                                 ) : (
@@ -448,7 +467,7 @@ function Muestras(){
                                                 <p className='mb-2'>ó suba un archivo excel:</p>
                                                 <div className='d-flex flex-row align-items-center mb-2'>
                                                     <p className='mb-0 me-2'><b>Descargue una plantilla aquí:</b></p>
-                                                    <a href={excel} download="muestras.xlsx" className='btn btn-warning text-white btn-sm rounded-pill px-3 fw-medium'>Descargar</a>
+                                                    <a href={excel} download="muestras-ejemplo.xlsx" className='btn btn-warning text-white btn-sm rounded-pill px-3 fw-medium'>Descargar</a>
                                                 </div>
                                                 <div className='d-flex flex-row align-items-center'>
                                                     <input type='file' onChange={changeHandler} className='btn__file me-2'/>
@@ -457,6 +476,7 @@ function Muestras(){
                                                         Subir excel
                                                     </button>
                                                 </div>
+                                                {errorExcel && <p>{errorExcel}</p>}
                                             </div>
                                         </div>
                                     </>
