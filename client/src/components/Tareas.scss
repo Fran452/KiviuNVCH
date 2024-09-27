@@ -54,7 +54,7 @@
 
 // Custom table
 .table__custom {
-    width: 1670px;
+    width: 1740px;
     display: flex;
     flex-direction: column;
     font-size: 14px;
@@ -152,6 +152,10 @@
     .cell__buttons--task {
         width: 180px; 
         margin-left: 40px;
+    }
+
+    .cell__orden {
+        width: 70px;
     }
 
     .cell__nombre {

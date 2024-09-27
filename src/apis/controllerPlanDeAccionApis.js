@@ -878,11 +878,11 @@ const controlador = {
                     res.json({error: 0, errorDetalle:'',objeto:'excel subido'});
                     return 0;
                 }else{
-                    res.json({error: 0, errorDetalle:'',objeto:'La extructura no fue subida correctaente'});
+                    res.json({error: 0, errorDetalle:'La extructura no fue subida correctaente',});
                     return 1;
                 }
             }else{
-                res.json({error: 99, errorDetalle:'El excel no fue subido correctamente',objeto:ciclos});
+                res.json({error: 99, errorDetalle:'El excel no fue subido correctamente',});
                 return 1;
             }
         }
@@ -933,7 +933,7 @@ const controlador = {
                     } 
                     notas               = estructuraExcel.sheet('Hoja1').cell(`E${i}`).value();    
                     let muestras = await dataBase.muestras.create({
-                        fk_sub_tareas   : 2,
+                        fk_sub_tareas   : req.body.id_subtarea,
                         titulo          : titulo,
                         numero_de_orden : numero_de_orden,
                         responsable     : responsable,
@@ -949,7 +949,7 @@ const controlador = {
                 
             }while(numero_de_orden != undefined);
 
-            res.json({objetos_subidos: acc, muestras_subidas:muestrasSubidas});
+            res.json({error: 0, errorDetalle:'',objeto:{objetos_subidos: acc, muestras_subidas:muestrasSubidas}});
             return 0;
         }
         catch(error){
