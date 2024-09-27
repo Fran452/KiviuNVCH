@@ -873,11 +873,11 @@ const controlador = {
                     res.json({error: 0, errorDetalle:'',objeto:'excel subido'});
                     return 0;
                 }else{
-                    res.json({error: 0, errorDetalle:'',objeto:'La extructura no fue subida correctaente'});
+                    res.json({error: 0, errorDetalle:'La extructura no fue subida correctaente',});
                     return 1;
                 }
             }else{
-                res.json({error: 99, errorDetalle:'El excel no fue subido correctamente',objeto:ciclos});
+                res.json({error: 99, errorDetalle:'El excel no fue subido correctamente',});
                 return 1;
             }
         }
@@ -944,7 +944,7 @@ const controlador = {
                 
             }while(numero_de_orden != undefined);
 
-            res.json({objetos_subidos: acc, muestras_subidas:muestrasSubidas});
+            res.json({error: 0, errorDetalle:'',objeto:{objetos_subidos: acc, muestras_subidas:muestrasSubidas}});
             return 0;
         }
         catch(error){
