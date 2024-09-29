@@ -221,7 +221,7 @@ let controlador = {
     },
 
     //* Para Tareas 
-    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclo,nombre,estado,prioridad,fecha_inicio,notas){
+    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclo,nombre,estado,prioridad,fecha_inicio,notas,numero_de_orden){
         let objetoCreado = await dataBaseSQL.tareas.create({
             fk_empleado_asignado,
             fk_area,
@@ -231,6 +231,7 @@ let controlador = {
             prioridad,
             fecha_inicio,
             notas,
+            numero_de_orden,
             ver : 1,
         });
         return objetoCreado.dataValues;

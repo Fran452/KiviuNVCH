@@ -49,38 +49,11 @@ module.exports = (sequelize,DataTypes) => {
             as : 'Ciclos'
         });
 
-        // Union con Procesos   
-        areas.hasMany(models.procesos,{
-            foreignKey : 'fk_area',
-            as : 'Procesos'
-        });
-
         // Union con Tareas   
         areas.hasMany(models.tareas,{
             foreignKey : 'fk_area',
             as : 'Tareas'
         });
-
-        areas.hasMany(models.tareas,{
-            foreignKey : 'fk_area_apoyo',
-            as : 'TareasApoyo'
-        });
-
-        
-        // Union con Indicadores
-        areas.hasMany(models.indicadores,{
-            foreignKey : 'fk_area',
-            as : 'Indicadores'
-        });
-        
-        // Union con Empresas  
-        areas.belongsToMany(models.empresas,{
-            as: 'Empresas',
-            through : 'Area_empresa',
-            foreignKey : 'fk_empresa',
-            otherKey: 'fk_area',
-            timestamps : false
-        })
         
 
     }

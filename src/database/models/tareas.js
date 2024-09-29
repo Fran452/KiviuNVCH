@@ -42,11 +42,6 @@ module.exports = (sequelize,DataTypes) => {
             allowNull: false
         },
 
-/*        "fk_area_apoyo": {
-            type:DataTypes.INTEGER(),
-            allowNull: false
-        },
-*/
         "fk_ciclo": {
             type:DataTypes.INTEGER(),
             allowNull: false
@@ -57,40 +52,27 @@ module.exports = (sequelize,DataTypes) => {
             defaultValue: " "
         },
 
-/*
-        "estado": {
-            type:DataTypes.INTEGER(),
-            allowNull: false,
-            defaultValue: 0
-        },
-*/
 
         "prioridad": {
             type:DataTypes.INTEGER(),
             allowNull: false,
             defaultValue: 0
         },
-/*        
-        "progreso": {
-            type:DataTypes.INTEGER(),
-            allowNull: false,
-            defaultValue: 0
-        },
-*/         
+      
        "fecha_inicio":{
             type: DataTypes.DATE(255),
             allowNull: false
         },
 
-/*
-        "fecha_final":{
-            type: DataTypes.DATE(255),
-        },
-*/
       
         "notas":{
             type: DataTypes.STRING(255),
             defaultValue: ' '
+        },
+
+        "numero_de_orden":{
+            type: DataTypes.STRING(255),
+            defaultValue: 0
         },
 
         "ver": {
