@@ -617,8 +617,8 @@ const controlador = {
             let cantidadDeMuestrass = await dataBase.sequelize.query(
                 `
                     SELECT count(*) as total_Muestrass
-                    FROM muestras
-                    WHERE muestras.fk_sub_tareas = :idSubtarea;
+                    FROM Muestras
+                    WHERE Muestras.fk_sub_tareas = :idSubtarea;
                 `        
                 ,{
                     replacements: { idSubtarea: req.body.subtarea.id_sub_tarea },
