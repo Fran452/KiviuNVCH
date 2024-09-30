@@ -7,14 +7,14 @@
 }
 .details-enter-active {
     opacity: 1;
-    transition: opacity 300ms;
+    transition: opacity 100ms;
 }
 .details-exit {
     opacity: 1;
 }
 .details-exit-active {
     opacity: 0;
-    transition: opacity 300ms;
+    transition: opacity 100ms;
 }
 // .details-enter {
 //     height: 0;

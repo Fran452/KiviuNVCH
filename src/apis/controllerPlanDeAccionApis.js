@@ -1,5 +1,5 @@
 const dataBase          = require("../database/models");
-const {Sequelize, DATE} = require('sequelize');
+const {Sequelize, DATE, Op} = require('sequelize');
 const xlsx              = require('xlsx-populate');
 const path              = require("path");
 
@@ -185,7 +185,7 @@ const controlador = {
                 ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                 WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea;
+                GROUP BY Tareas.numero_de_orden;
             `        
             ,{
                 replacements: { idCiclo: req.body.idCiclo },
@@ -253,7 +253,7 @@ const controlador = {
                     //progreso                : req.body.progreso,
                     //horas_Necesarias        : 0,
                     mostrar                 : 1,
-                    numero_de_orden         : ordenDeLaTarea[0].cantidadDeTareas 
+                    numero_de_orden         : ordenDeLaTarea[0].cantidadDeTareas + 1 
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0;
@@ -373,6 +373,7 @@ const controlador = {
                             [Op.ne]: req.body.idTarea
                         },
                         numero_de_orden: {
+                            [Op.lte]: req.body.inicial,
                             [Op.gte]: req.body.final 
                         }
                     }

@@ -172,7 +172,6 @@ function Subtareas() {
                         let tareasNorealizadas = 0;
                         const arr = res.objeto
                         const selec = arr.find(e => e.id_ciclo === idCiclo)
-                        console.log(selec)
                         if(selec === undefined) {
                             setTareasRealporCiclo(0)
                             setTareasNorealporCiclo(0)
@@ -383,7 +382,7 @@ function Subtareas() {
                                                 </div>
                                                 <CSSTransition
                                                     in={expandedRowMuestra === s.id_sub_tarea}
-                                                    timeout={300}
+                                                    timeout={100}
                                                     classNames="details"
                                                     unmountOnExit
                                                     nodeRef={muestraRef}

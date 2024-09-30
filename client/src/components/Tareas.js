@@ -12,7 +12,7 @@ import { newContext } from '../pages/PlanesAccion/Ciclo'
 // import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { CSSTransition } from 'react-transition-group';
 import ModalVer from './Modales/ModalVer';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
 
 import { 
   Chart as ChartJS,
@@ -307,8 +307,8 @@ function Tareas() {
     setMetricasClose(!metricasClose)
   }
 
-  const handleDragDrop = (results) => {
-    const {source, destination, type} = results;
+  const handleDragDrop = async (results) => {
+    const {source, destination, type, draggableId } = results;
     if(!destination) return;
     if(
       source.droppableId === destination.droppableId && 
@@ -321,7 +321,33 @@ function Tareas() {
       const destinationIndex = destination.index;
       const [removedTarea] = reorderedTareas.splice(sourceIndex, 1)
       reorderedTareas.splice(destinationIndex, 0, removedTarea)
-      console.log("index inicial: " + sourceIndex, "index final: " + destinationIndex)
+      //
+      const inicioMod = parseInt(sourceIndex)+1
+      const finalMod = parseInt(destinationIndex)+1
+      // Fetch PUT MOVE TAREA
+      const obj = {
+        inicial: inicioMod,
+        final: finalMod,
+        idTarea: parseInt(draggableId),
+        idCiclo: idCiclo
+      }
+      try {
+        const res = await fetch("http://localhost:3040/apis/plan-accion/moveTask", {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(obj)
+        })
+        const data = await res.json()
+        if(data.error !== 0){
+          console.log(data.errorDetalle)
+        } else {
+          console.log(data.objeto)
+        }
+      } catch (error) {
+        console.log(error)
+      }
       return setTareasByCiclo(reorderedTareas)
     }
   }
@@ -498,6 +524,8 @@ function Tareas() {
                                                     <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__edit--icon'><i className="bi bi-pencil"></i></button>
                                                     <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__delete--icon'><i className="bi bi-trash3"></i></button>
                                                   </div>
+                                                  <div className='table__custom__cell cell__orden'>{i+1}</div>
+                                                  {/* <div className='table__custom__cell cell__orden'>{e.numero_de_orden}</div> */}
                                                   <div className='table__custom__cell cell__nombre'>{e.nombre}</div>
                                                   <div className='table__custom__cell cell__prioridad'>
                                                     {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
