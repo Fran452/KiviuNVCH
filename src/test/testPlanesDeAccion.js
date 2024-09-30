@@ -1286,62 +1286,34 @@ const controlador = {
     pruebasPreImplementacion: async (req,res) => {
         try{
 
-            let idCiclo = 2
-            let inicial = 2
-            let final = 0
-            let idTarea = 14
-            let tareaModificada
-
-            tareaModificada = await dataBase.tareas.update({
-                    numero_de_orden: final
-            },{
-                where:{
-                    id_tarea : idTarea
-                }
+            let apisSubidasJSON = await fetch(`http://164.92.77.143:3040/apis/plan-accion/viewTask`,{
+                method:'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idCiclo: 1,
+                    user:       {}
+                })
             });
 
-            if(inicial < final){
-                tareaModificada = await dataBase.tareas.update({
-                    numero_de_orden: Sequelize.literal('numero_de_orden - 1')
-                },{
-                    where:{
-                        fk_ciclo : idCiclo,
-                        id_tarea : {
-                            [Op.ne]: idTarea
-                        },
-                        numero_de_orden: {
-                            [Op.lte]: final 
-                        }
-                    }
-                });
-            }else{
-                tareaModificada = await dataBase.tareas.update({
-                    numero_de_orden: Sequelize.literal('numero_de_orden + 1')
-                },{
-                    where:{
-                        fk_ciclo : idCiclo,
-                        id_tarea : {
-                            [Op.ne]: idTarea
-                        },
-                        numero_de_orden: {
-                            [Op.gte]: final 
-                        }
-                    }
-                });
-            }
-            
-
-
-            let tareas = await dataBase.tareas.findAll({
-                where: {
-                    fk_ciclo : idCiclo
-                }
+            let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/viewTask`,{
+                method:'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    idCiclo: 1,
+                    user:      {}
+                })
             });
-
-            console.log(tareaModificada);
-            console.log(tareas);
             
-            res.json({tareaModificada : tareaModificada[0] ,tareas});
+            let apis = await apisJSON.json();
+
+            let apisSubidas = await apisSubidasJSON.json();
+
+
+            res.json({apisSubidas,apis});
         }
         catch(error){
             console.log(error);

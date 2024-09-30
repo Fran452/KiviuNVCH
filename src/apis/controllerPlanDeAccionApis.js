@@ -140,7 +140,14 @@ const controlador = {
             let tareas;
             tareas = await dataBase.sequelize.query(
             `
-                SELECT  Tareas.*, 
+                SELECT  Tareas.id_tarea,
+                        Tareas.fk_empleado_asignado,
+                        Tareas.fk_ciclo,
+                        Tareas.nombre,
+                        Tareas.prioridad,
+                        Tareas.fecha_inicio,
+                        Tareas.notas,
+                        Tareas.numero_de_orden, 
                         Empleados.nombre AS nombreUser,
                         Empleados.mail AS mailUser, 
                         COALESCE(SUM(Subtareas.horas_tarea), 0) AS horas_tarea, 
@@ -184,8 +191,17 @@ const controlador = {
                     GROUP BY Subtareas.id_sub_tarea, Subtareas.horasAprox, Subtareas.avance, Subtareas.fecha_final, Subtareas.estado
                 ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
-                WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea, Empleados.nombre, Empleados.mail
+                WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = 1
+                GROUP BY    Tareas.id_tarea,
+                            Tareas.fk_empleado_asignado,
+                            Tareas.fk_ciclo,
+                            Tareas.nombre,
+                            Tareas.prioridad,
+                            Tareas.fecha_inicio,
+                            Tareas.notas,
+                            Tareas.numero_de_orden, 
+                            Empleados.nombre, 
+                            Empleados.mail
                 ORDER BY Tareas.numero_de_orden;
             `        
             ,{
