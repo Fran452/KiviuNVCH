@@ -375,9 +375,8 @@ function Subtareas() {
                                                         <div className="table__custom__cell cell__mail">{s.nombreUser}</div>
                                                         <div className="table__custom__cell cell__date">{s.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
                                                         <div className="table__custom__cell cell__date">
-                                                            {s.progreso_tarea === 100 ? `${s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}` : ""}
+                                                            {Math.round(s.progreso_tarea) === 100 ? `${s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}` : ""}
                                                         </div>
-                                                        {/* <div className="table__custom__cell cell__date">{s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
                                                     </div>
                                                 </div>
                                                 <CSSTransition

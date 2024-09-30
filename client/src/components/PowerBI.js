@@ -13,7 +13,6 @@ function PowerBI() {
     useEffect(() => {
         const auth = localStorage.getItem("token")
         const jwtParse = jwtDecode(auth)
-        console.log(jwtParse.apirest.objeto)
 
         const req = {
             user: jwtParse.apirest.objeto,
@@ -30,7 +29,6 @@ function PowerBI() {
                     body: JSON.stringify(req)
                 })
                 const data = await res.json()
-                console.log(data)
                 setData(data)
                 setLoading(false)
             } catch (error) {
