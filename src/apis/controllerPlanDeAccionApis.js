@@ -185,7 +185,7 @@ const controlador = {
                 ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                 WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea
+                GROUP BY Tareas.id_tarea, Empleados.nombre, Empleados.mail
                 ORDER BY Tareas.numero_de_orden;
             `        
             ,{
