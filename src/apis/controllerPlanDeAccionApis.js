@@ -167,9 +167,16 @@ const controlador = {
                         END AS estado
                 FROM Tareas 
                 LEFT JOIN (
-                    SELECT  Subtareas.id_sub_tarea, Subtareas.fk_tareas ,Subtareas.titulo,
-                            Subtareas.asignacion, Subtareas.estado, Subtareas.prioridad, 
-                            Subtareas.notas, Subtareas.fecha_inicio, Subtareas.fecha_final, Subtareas.ver, 
+                    SELECT  Subtareas.id_sub_tarea, 
+                            Subtareas.fk_tareas,
+                            Subtareas.titulo,
+                            Subtareas.asignacion, 
+                            Subtareas.estado, 
+                            Subtareas.prioridad, 
+                            Subtareas.notas, 
+                            Subtareas.fecha_inicio, 
+                            Subtareas.fecha_final, 
+                            Subtareas.ver, 
                             COALESCE(SUM(Muestras.horasAprox), Subtareas.horasAprox) AS horas_tarea,
                             CASE WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
                                 THEN CASE
@@ -192,20 +199,18 @@ const controlador = {
                 ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                 WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = :idCiclo
-                GROUP BY    Tareas.fk_empleado_asignado,
-                            Tareas.fk_ciclo,
-                            Tareas.nombre,
-                            Tareas.prioridad,
-                            Tareas.fecha_inicio,
-                            Tareas.notas,
-                            Tareas.numero_de_orden, 
-                            Empleados.nombre, 
-                            Empleados.mail
-                GROUP BY Tareas.id_tarea, Tareas.fk_empleado_asignado, Tareas.fk_ciclo,
-                Tareas.nombre, Tareas.prioridad, Tareas.fecha_inicio,
-                Tareas.notas, Tareas.numero_de_orden,
-                Empleados.nombre, Empleados.mail
+                GROUP BY Tareas.id_tarea, 
+                        Tareas.fk_empleado_asignado, 
+                        Tareas.fk_ciclo,
+                        Tareas.nombre, 
+                        Tareas.prioridad, 
+                        Tareas.fecha_inicio,
+                        Tareas.notas, 
+                        Tareas.numero_de_orden,
+                        Empleados.nombre, 
+                        Empleados.mail
                 ORDER BY Tareas.numero_de_orden;
+
             `        
             ,{
                 replacements: { idCiclo: req.body.idCiclo },
