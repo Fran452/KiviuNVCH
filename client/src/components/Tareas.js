@@ -12,7 +12,7 @@ import { newContext } from '../pages/PlanesAccion/Ciclo'
 // import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { CSSTransition } from 'react-transition-group';
 import ModalVer from './Modales/ModalVer';
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 import { 
   Chart as ChartJS,
