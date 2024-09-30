@@ -240,6 +240,8 @@ const controlador = {
                 res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area"});
                 return 1;
             }else{
+                ordenDeLaTarea = ordenDeLaTarea[0].cantidadDeTareas + 1;
+
                 let tarea = await dataBase.tareas.create({
                     fk_empleado_asignado    : empleadoAsignado.id_empleado,
                     fk_area                 : req.body.user.area,
@@ -253,7 +255,7 @@ const controlador = {
                     //progreso                : req.body.progreso,
                     //horas_Necesarias        : 0,
                     mostrar                 : 1,
-                    numero_de_orden         : ordenDeLaTarea[0].cantidadDeTareas + 1 
+                    numero_de_orden         : ordenDeLaTarea 
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0;
