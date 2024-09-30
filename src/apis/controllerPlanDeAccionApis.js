@@ -191,7 +191,7 @@ const controlador = {
                     GROUP BY Subtareas.id_sub_tarea, Subtareas.horasAprox, Subtareas.avance, Subtareas.fecha_final, Subtareas.estado
                 ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
-                WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = 1
+                WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = :idCiclo
                 GROUP BY    Tareas.fk_empleado_asignado,
                             Tareas.fk_ciclo,
                             Tareas.nombre,
