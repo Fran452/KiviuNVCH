@@ -60,7 +60,7 @@ function ModalPlanes(props) {
         idCiclo: pro.id_ciclo
       }
       try {
-        const res = await fetch("http://localhost:3040/apis/plan-accion/addTask", {
+        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/addTask", {
           method: "POST",
           headers: {
               "Content-Type": "application/json"
@@ -184,7 +184,7 @@ function ModalPlanes(props) {
         idCiclo: pro.id_ciclo
       }
       try {
-        const res = await fetch("http://localhost:3040/apis/plan-accion/modTask", {
+        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/modTask", {
           method: "PUT",
           headers: {
               "Content-Type": "application/json"
