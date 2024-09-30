@@ -338,9 +338,9 @@ let controlador = {
         return busqueda.dataValues;
     },
 
-    eliminarMuestrass: async function(id){
+    eliminarMuestras: async function(id){
         await dataBaseSQL.muestras.destroy({
-            where : {id_sub_tarea: id},
+            where : {id_muestra: id},
             
         });
     },

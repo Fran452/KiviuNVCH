@@ -1285,35 +1285,7 @@ const controlador = {
 
     pruebasPreImplementacion: async (req,res) => {
         try{
-
-            let apisSubidasJSON = await fetch(`http://164.92.77.143:3040/apis/plan-accion/viewTask`,{
-                method:'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    idCiclo: 1,
-                    user:       {}
-                })
-            });
-
-            let apisJSON = await fetch(`${process.env.WEB}/apis/plan-accion/viewTask`,{
-                method:'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    idCiclo: 1,
-                    user:      {}
-                })
-            });
-            
-            let apis = await apisJSON.json();
-
-            let apisSubidas = await apisSubidasJSON.json();
-
-
-            res.json({apisSubidas,apis});
+          
         }
         catch(error){
             console.log(error);
