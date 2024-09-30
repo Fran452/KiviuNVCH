@@ -192,8 +192,7 @@ const controlador = {
                 ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                 WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = 1
-                GROUP BY    Tareas.id_tarea,
-                            Tareas.fk_empleado_asignado,
+                GROUP BY    Tareas.fk_empleado_asignado,
                             Tareas.fk_ciclo,
                             Tareas.nombre,
                             Tareas.prioridad,
