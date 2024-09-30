@@ -40,7 +40,6 @@ function DatIN() {
           setError(res.errorDetalle)
         } else {
           setLoading(false)
-          console.log(res.objeto)
           setIndicadores(res.objeto)
         }
       })

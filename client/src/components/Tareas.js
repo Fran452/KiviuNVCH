@@ -547,13 +547,9 @@ function Tareas() {
                                                   <div className="table__custom__cell cell__notas">{e.notas}</div>
                                                   <div className="table__custom__cell cell__mail">{e.nombreUser}</div>
                                                   <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                                  {e.fecha_final === null ? (
-                                                    <div className="table__custom__cell cell__date"></div>
-                                                  ): (
-                                                    <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                                  )}
-                                                  {/* <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                                  <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
+                                                  <div className="table__custom__cell cell__date">
+                                                    {Math.round(e.progreso_tarea) === 100 ? `${e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}` : ""}
+                                                  </div>
                                                 </div>
                                                 <CSSTransition
                                                     in={expandedRow === e.id_tarea}

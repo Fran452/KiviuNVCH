@@ -6,12 +6,16 @@ import "./Login.scss"
 import { useNavigate } from "react-router-dom"
 import { jwtDecode } from "jwt-decode"
 import { Oval } from 'react-loader-spinner'
+import { Modal } from 'react-bootstrap';
 
 function Login() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
+    
+    const [errorFetch, setErrorFetch] = useState(null)
+    const [modalError, setModalError] = useState(false)
 
     const navigate = useNavigate()
 
@@ -47,12 +51,22 @@ function Login() {
             }
         })
         .catch (err => {
-            console.log(err)
+            setLoading(false)
+            setErrorFetch(err)
+            setModalError(true)
         })
     }
 
+    const handleClose = () => setModalError(false)
+
     return (
         <>
+            {errorFetch && <Modal show={modalError} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Mensaje de error:</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>¡Ha ocurrido un error! :( Actualice la página.</Modal.Body>
+            </Modal>}
             {loading ? (<div className='loading vh-100 vw-100 z-3 position-absolute d-flex flex-column align-items-center justify-content-center'>
                 <Oval
                     visible={true}

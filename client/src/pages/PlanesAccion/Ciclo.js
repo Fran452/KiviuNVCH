@@ -36,9 +36,6 @@ function Ciclo() {
 
     const [ciclosClose, setCiclosClose] = useState(false)
 
-    // Anterior areas > subciclos
-    // const [areas, setAreas] = useState([]);
-    // Anterior proyectos
     const [ciclos, setCiclos] = useState([])
 
     //subtareas
@@ -49,18 +46,6 @@ function Ciclo() {
     const USER = jwtParse.apirest.objeto
 
     useEffect(() => {
-        // const fetchAreas = async () => {
-        //     try {
-        //     const res = await fetch("http://localhost:3030/apis/index",{
-        //         method: "GET"
-        //     })
-        //     const data = await res.json()
-        //     setAreas(data.objeto.areas)
-        //     } catch (error) {
-        //     console.log(error)
-        //     }
-        // }
-
         const firstFetch = () => {
             fetchCiclos()
             .then(res => {
