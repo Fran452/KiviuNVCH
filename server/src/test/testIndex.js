@@ -39,12 +39,13 @@ const controlador = {
     crearBaseDeDatos: async (req,res) => {
         try{
             console.log("entrando a la generacion de base de datos");
+            /*
             let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('francisco.lema@nbch.com.ar');
 
             if(empleadoYaSubido != undefined){
                 res.json("base de datos ya subida anteriormente");
                 return 0;
-            };
+            };*/
 
             let ahora = new Date();
 
@@ -531,7 +532,7 @@ const controlador = {
                         
             //let hoja = "1.Prestamos Consumo y Comercial"
             let subido = [];
-            for(let j = 0; j < hojas.length; j++){
+            for(let j = 0; j <= hojas.length; j++){
                 
                 let fechaInicialExcel1 = estructuraExcel.sheet(hoja).cell(`F1`).value();
                 let fechaInicial = new Date(fechaInicialExcel1);
@@ -542,9 +543,7 @@ const controlador = {
                 let empleadoExcel = estructuraExcel.sheet(hoja).cell(`L5`).value();
                 let horasSubTareaExcel = estructuraExcel.sheet(hoja).cell(`J5`).value();
                 let horasMuestraExcel = estructuraExcel.sheet(hoja).cell(`K5`).value();
-                console.log(empleadoExcel,horasSubTareaExcel,horasMuestraExcel);
                 let empleado = await funcionesDeTest.buscarUsuarioPorMail(empleadoExcel);
-                console.log(empleado);
                 let inicioRegistro = 4;
                 let accOrden = 1,accTarea = 0, accSubtarea = 0,accMuestra = 0,accCiclo = 0;
     
@@ -567,7 +566,7 @@ const controlador = {
                                 ismuestra = estructuraExcel.sheet(hoja).cell(`E${inicioRegistro}`).value();
     
                                 if(ismuestra != undefined ){
-                                    muestra = await funcionesDeTest.crearMuestras(subTarea.id_sub_tarea,accOrden,nombre,empleado.id_empleado,1,0,' ',1)
+                                    muestra = await funcionesDeTest.crearMuestras(subTarea.id_sub_tarea,accOrden,nombre,empleado.id_empleado,horasMuestraExcel,0,' ',1)
                                     /*muestra = {
                                         idmuestra: accMuestra,
                                         fkSubTarea: subTarea.id_sub_tarea,
@@ -583,7 +582,7 @@ const controlador = {
                                     accMuestra++
                                     muestras.push(muestra);
                                 }else{
-                                    subTarea = await funcionesDeTest.crearSubTarea(tarea.id_tarea,nombre,empleado.id_empleado,4,0,0,0,fechaInicial,null,' ',1)
+                                    subTarea = await funcionesDeTest.crearSubTarea(tarea.id_tarea,nombre,empleado.id_empleado,horasSubTareaExcel,0,0,0,fechaInicial,null,' ',1)
                                     /*subTarea = {
                                         id_sub_tarea : accSubtarea,
                                         id_tarea: tarea.id_tarea,
@@ -637,7 +636,7 @@ const controlador = {
                     }
                     isCiclo = estructuraExcel.sheet(hoja).cell(`B${inicioRegistro}`).value();
                 }while(isCiclo != undefined);
-    
+                
                 let objeto = {
                     contadores: {
                         ciclos: accCiclo,
@@ -650,7 +649,11 @@ const controlador = {
                     subTarea : subTareas, 
                     muestras : muestras
                 }
-                subido.push(objeto)
+                subido.push(objeto);
+                console.log(`fin de la hoja ${hoja}`);
+                hoja = hojas[j];
+                console.log(hoja);
+                console.log(j);
             }
 
 
