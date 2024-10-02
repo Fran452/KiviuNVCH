@@ -39,13 +39,13 @@ const controlador = {
     crearBaseDeDatos: async (req,res) => {
         try{
             console.log("entrando a la generacion de base de datos");
-            /*
+            
             let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('francisco.lema@nbch.com.ar');
 
             if(empleadoYaSubido != undefined){
                 res.json("base de datos ya subida anteriormente");
                 return 0;
-            };*/
+            };
 
             let ahora = new Date();
 
