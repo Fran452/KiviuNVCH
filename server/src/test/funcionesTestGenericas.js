@@ -242,7 +242,7 @@ let controlador = {
             where: {
                 id_tarea : id
             },
-            attributes: ['id_tarea','nombre','estado','prioridad','notas','ver'],
+            attributes: ['id_tarea','nombre',,'prioridad','notas','ver'],
             include: [
                 {association : "Empleado",attributes: ['nombre','fk_area','fk_puesto','mail']},
                 {association : "Ciclo",attributes: ['id_ciclo','nombre']},
