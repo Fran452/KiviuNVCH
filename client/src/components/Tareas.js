@@ -12,6 +12,7 @@ import { newContext } from '../pages/PlanesAccion/Ciclo'
 // import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { CSSTransition } from 'react-transition-group';
 import ModalVer from './Modales/ModalVer';
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 
 import { 
   Chart as ChartJS,
@@ -118,7 +119,7 @@ function Tareas() {
 
   const handleDeleteCiclo = async () => {
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/deleteCiclos", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteCiclos", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -166,7 +167,7 @@ function Tareas() {
       idTarea: parseInt(idTask)
     }
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/deleteTask", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteTask", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -218,7 +219,7 @@ function Tareas() {
 
   const fetchSubtareasById = async (id) => {
     try {
-      const res = await fetch("http://localhost:3040/apis/plan-accion/viewSubTask", {
+      const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewSubTask", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -304,6 +305,51 @@ function Tareas() {
 
   const handleCloseMetricas = () => {
     setMetricasClose(!metricasClose)
+  }
+
+  const handleDragDrop = async (results) => {
+    const {source, destination, type, draggableId } = results;
+    if(!destination) return;
+    if(
+      source.droppableId === destination.droppableId && 
+      source.index === destination.index
+    ) 
+      return;
+    if(type === 'group'){
+      const reorderedTareas = [...tareasByCiclo];
+      const sourceIndex = source.index;
+      const destinationIndex = destination.index;
+      const [removedTarea] = reorderedTareas.splice(sourceIndex, 1)
+      reorderedTareas.splice(destinationIndex, 0, removedTarea)
+      //
+      const inicioMod = parseInt(sourceIndex)+1
+      const finalMod = parseInt(destinationIndex)+1
+      // Fetch PUT MOVE TAREA
+      const obj = {
+        inicial: inicioMod,
+        final: finalMod,
+        idTarea: parseInt(draggableId),
+        idCiclo: idCiclo
+      }
+      try {
+        const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/moveTask", {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify(obj)
+        })
+        const data = await res.json()
+        if(data.error !== 0){
+          console.log(data.errorDetalle)
+        } else {
+          console.log(data.objeto)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      return setTareasByCiclo(reorderedTareas)
+    }
   }
 
   return (
@@ -456,65 +502,77 @@ function Tareas() {
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha inicial</div>
                               <div className='table__custom__cell table__custom__cell--title fw-bold cell__date'>Fecha final</div>
                             </div>
-                            <div className='table__custom__body'>
-                              {tareasByCiclo.map((e,i) => {
-                                return <React.Fragment key={e.id_tarea}>
-                                  {/* Row de cada tarea */}
-                                  <div className='table__custom__row bgblue'>
-                                    <div className='table__custom__cell'>
-                                      <button className='btn__ico btn p-0' onClick={()=>handleSubtareasById(e.id_tarea)}>
-                                        {expandedRow === e.id_tarea ? <i className="bi bi-chevron-up"></i> : <i className="bi bi-chevron-down"></i>}
-                                      </button>
+                            <DragDropContext onDragEnd={handleDragDrop}>
+                              <div className='table__custom__body'>
+                                <Droppable droppableId='ROOT' type='group'>
+                                  {(provided)=> (
+                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                      {tareasByCiclo.map((e,i) => {
+                                      return <Draggable draggableId={e.id_tarea.toString()} key={e.id_tarea.toString()} index={i}>
+                                          {(provided) => (
+                                            <div {...provided.dragHandleProps} {...provided.draggableProps} ref={provided.innerRef}>
+                                              <React.Fragment>
+                                                {/* Row de cada tarea */}
+                                                <div className='table__custom__row bgblue'>
+                                                  <div className='table__custom__cell'>
+                                                    <button className='btn__ico btn p-0' onClick={()=>handleSubtareasById(e.id_tarea)}>
+                                                      {expandedRow === e.id_tarea ? <i className="bi bi-chevron-up"></i> : <i className="bi bi-chevron-down"></i>}
+                                                    </button>
+                                                  </div>
+                                                  <div className='table__custom__cell cell__buttons--task'>
+                                                    <button onClick={()=> handleShowInfo(e.id_tarea)} className='btn__ico--g btn border-0 p-0'><i className="bi bi-eye"></i></button>
+                                                    <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__edit--icon'><i className="bi bi-pencil"></i></button>
+                                                    <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__delete--icon'><i className="bi bi-trash3"></i></button>
+                                                  </div>
+                                                  <div className='table__custom__cell cell__orden'>{i+1}</div>
+                                                  {/* <div className='table__custom__cell cell__orden'>{e.numero_de_orden}</div> */}
+                                                  <div className='table__custom__cell cell__nombre'>{e.nombre}</div>
+                                                  <div className='table__custom__cell cell__prioridad'>
+                                                    {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
+                                                    {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
+                                                    {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
+                                                  </div>
+                                                  <div className='table__custom__cell cell__estado'>
+                                                    {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
+                                                    {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
+                                                    {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
+                                                    {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
+                                                    {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
+                                                    {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
+                                                  </div>
+                                                  <div className='table__custom__cell cell__progreso'>
+                                                    <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso_tarea)} label={`${Math.round(e.progreso_tarea)}%`} max={100}/>
+                                                  </div>
+                                                  <div className='table__custom__cell cell__horas'>{e.horas_tarea}</div>
+                                                  <div className="table__custom__cell cell__notas">{e.notas}</div>
+                                                  <div className="table__custom__cell cell__mail">{e.nombreUser}</div>
+                                                  <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
+                                                  <div className="table__custom__cell cell__date">
+                                                    {Math.round(e.progreso_tarea) === 100 ? `${e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}` : ""}
+                                                  </div>
+                                                </div>
+                                                <CSSTransition
+                                                    in={expandedRow === e.id_tarea}
+                                                    timeout={300}
+                                                    classNames="details"
+                                                    unmountOnExit
+                                                    nodeRef={nodeRef}
+                                                >
+                                                  <div ref={nodeRef}>
+                                                    <Subtareas />
+                                                  </div>
+                                                </CSSTransition>
+                                              </React.Fragment>
+                                            </div>
+                                          )}
+                                        </Draggable>
+                                      })}
+                                      {provided.placeholder}
                                     </div>
-                                    <div className='table__custom__cell cell__buttons--task'>
-                                      <button onClick={()=> handleShowInfo(e.id_tarea)} className='btn__ico--g btn border-0 p-0'><i className="bi bi-eye"></i></button>
-                                      <button onClick={()=> handleEditTarea(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__edit--icon'><i className="bi bi-pencil"></i></button>
-                                      <button onClick={()=> handleModalDelete(e.id_tarea)} className='btn__ico--g btn border-0 p-0 btn__delete--icon'><i className="bi bi-trash3"></i></button>
-                                    </div>
-                                    <div className='table__custom__cell cell__orden'></div>
-                                    <div className='table__custom__cell cell__nombre'>{e.nombre}</div>
-                                    <div className='table__custom__cell cell__prioridad'>
-                                      {e.prioridad === 1 && <span className='table__tbody__prioridad--baja rounded-pill text-white badge'>baja</span>}
-                                      {e.prioridad === 2 && <span className='table__tbody__prioridad--media rounded-pill text-white badge'>media</span>}
-                                      {e.prioridad === 3 && <span className='table__tbody__prioridad--alta rounded-pill text-white badge'>alta</span>}
-                                    </div>
-                                    <div className='table__custom__cell cell__estado'>
-                                      {e.estado === 1 && <span className='table__tbody__estado--pendiente rounded-pill text-white badge'>Pendiente</span>}
-                                      {e.estado === 2 && <span className='table__tbody__estado--proceso rounded-pill text-white badge'>En proceso</span>}
-                                      {e.estado === 3 && <span className='table__tbody__estado--completada rounded-pill text-white badge'>Completada</span>}
-                                      {e.estado === 4 && <span className='table__tbody__estado--espera rounded-pill text-white badge'>En espera</span>}
-                                      {e.estado === 5 && <span className='table__tbody__estado--cancelada rounded-pill text-white badge'>Cancelada</span>}
-                                      {e.estado === 6 && <span className='table__tbody__estado--bloqueada rounded-pill text-white badge'>Bloqueada</span>}
-                                    </div>
-                                    <div className='table__custom__cell cell__progreso'>
-                                      <ProgressBar className='table__tbody__progreso__bar' now={Math.round(e.progreso_tarea)} label={`${Math.round(e.progreso_tarea)}%`} max={100}/>
-                                    </div>
-                                    <div className='table__custom__cell cell__horas'>{e.horas_tarea}</div>
-                                    <div className="table__custom__cell cell__notas">{e.notas}</div>
-                                    <div className="table__custom__cell cell__mail">{e.nombreUser}</div>
-                                    <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                    {e.fecha_final === null ? (
-                                      <div className="table__custom__cell cell__date"></div>
-                                    ): (
-                                      <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                    )}
-                                    {/* <div className="table__custom__cell cell__date">{e.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
-                                    <div className="table__custom__cell cell__date">{e.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
-                                  </div>
-                                  <CSSTransition
-                                      in={expandedRow === e.id_tarea}
-                                      timeout={300}
-                                      classNames="details"
-                                      unmountOnExit
-                                      nodeRef={nodeRef}
-                                  >
-                                    <div ref={nodeRef}>
-                                      <Subtareas />
-                                    </div>
-                                  </CSSTransition>
-                                </React.Fragment>
-                              })}
-                            </div>
+                                  )}
+                                </Droppable>
+                              </div>
+                            </DragDropContext>
                           </div>
                         </div>
                       </div>

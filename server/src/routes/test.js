@@ -1,7 +1,6 @@
 const express = require("express");
 
 const router = express.Router();
-const testDateIn = require("../test/testDateIn");
 const testPlanesDeAccion = require("../test/testPlanesDeAccion");
 const testIndex = require('../test/testIndex');
 
@@ -18,8 +17,6 @@ router.post('/login',apisUser.loginFuction);
 
 router.get('/',testIndex.testGenerico);
 router.get('/armado-SQL',testIndex.crearBaseDeDatos);
-router.get('/armado-SQL-NEW',testIndex.crearBaseDeDatosNew);
-router.get('/armado-SQL-Sub',testIndex.crearBaseDeDatosSubtareas);
 
 router.get('/plan-accion',testPlanesDeAccion.testGenerico);
 
@@ -40,16 +37,5 @@ router.get('/plan-accion/deleteSubTask',testPlanesDeAccion.deleteSubTarea);
 
 
 router.get('/plan-accion/otros',testPlanesDeAccion.pruebasPreImplementacion);
-
-router.get('/dateIn',testDateIn.testGenerico);
-
-router.get('/dateIn/viewIndicador',testDateIn.viewIndicadores);
-router.get('/dateIn/newIndicador',testDateIn.newindicador);
-router.get('/dateIn/editIndicador',testDateIn.editIndicadores);
-router.get('/dateIn/deleteIndicador',testDateIn.deleteIndicadores);
-
-router.get('/dateIn/newMetrica',testDateIn.newMetrica);
-router.get('/dateIn/editMegrica',testDateIn.editMetrica);
-router.get('/dateIn/ultimasTresMetricas',testDateIn.ultimasTresMetricas);
 
 module.exports = router

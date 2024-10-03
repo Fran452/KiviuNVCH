@@ -40,26 +40,6 @@ const todayLine = {
     }
 }
 
-// Muestra info en las barras del gantt
-// const viewPercentage = {
-//     id: 'viewPercentage',
-//     afterDatasetsDraw(chart) {
-//         const ctx = chart.ctx;
-//         chart.data.datasets.forEach(function(dataset, datasetIndex) {
-//             const meta = chart.getDatasetMeta(datasetIndex);
-//             meta.data.forEach(function(bar, index) {
-//                 const data = dataset.data[index];
-//                 ctx.fillStyle = '#fff'; // Color del texto
-//                 ctx.font = 'bold 12px sans-serif';
-//                 ctx.textBaseline = 'middle';
-//                 const xPos = meta.data[index].base
-//                 const position = bar.tooltipPosition();
-//                 ctx.fillText(data.percentage, xPos + 10, position.y);
-//             });
-//         });
-//     }
-// }
-
 ChartJS.register(
     ArcElement,
     Tooltip,
@@ -69,49 +49,6 @@ ChartJS.register(
     LinearScale,
     TimeScale,
 )
-
-// const list = [
-//     {
-//         nombre: "Francisco Lema",
-//         task: "Análisis de requerimientos del sistema de gestión",
-//         proceso: "Desarrollo de Sistema de Gestión"
-//     },
-//     {
-//         nombre: "Richard Dawson",
-//         task: "Pruebas de integración del sistema de gestión",
-//         proceso: "Desarrollo de Sistema de Gestión"
-//     },
-//     {
-//         nombre: "Margaret Cole",
-//         task: "Desarrollo del módulo de informes",
-//         proceso: "Automatización de Reportes"
-//     },
-//     {
-//         nombre: "Joseph Li",
-//         task: "Desarrollar encuesta de Clima",
-//         proceso: "Plan de mejora de Clima Laboral"
-//     },
-//     {
-//         nombre: "Francisco Lema",
-//         task: "Análisis de requerimientos del sistema de gestión",
-//         proceso: "Desarrollo de Sistema de Gestión"
-//     },
-//     {
-//         nombre: "Richard Dawson",
-//         task: "Pruebas de integración del sistema de gestión",
-//         proceso: "Desarrollo de Sistema de Gestión"
-//     },
-//     {
-//         nombre: "Margaret Cole",
-//         task: "Desarrollo del módulo de informes",
-//         proceso: "Automatización de Reportes"
-//     },
-//     {
-//         nombre: "Joseph Li",
-//         task: "Desarrollar encuesta de Clima",
-//         proceso: "Plan de mejora de Clima Laboral"
-//     }
-// ]
 
 function Year() {
     const { year } = useParams()
@@ -216,7 +153,7 @@ function Year() {
     // Actualizar el listado de proyectos
     const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/viewCiclos", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -235,7 +172,7 @@ function Year() {
     // fetch métrica
     const fetchMetrica = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/metricas", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/metricas", {
                 method: "GET"
             });
             const data = await res.json();
@@ -322,28 +259,22 @@ function Year() {
             borderWidth: 0,
             borderSkipped: false,
             borderRadius: 10,
-            barThickness: 20
+            barThickness: 14
           },
           {
             label: 'Fechas reales',
             data: arrGanttReal,
-            // data: [
-            //     {x: ['2024-08-09', '2024-10-05'], y: 'TARJETA DE CREDITO', idCiclo: 0, percentage: '50%'},
-            //     {x: ['2024-08-07', '2024-09-10'], y: 'COMEX', idCiclo: 1, percentage: '40%'},
-            //     {x: ['2024-09-09', '2024-10-08'], y: 'PUSF', idCiclo: 2, percentage: '40%'},
-            //     {x: ['2024-08-07', '2024-11-11'], y: 'DEPÓSITOS', idCiclo: 3, percentage: '30%'},
-            // ],
             backgroundColor: '#6ea8fe',
             borderWidth: 0,
             borderSkipped: false,
             borderRadius: 10,
-            barThickness: 20
+            barThickness: 14
           }
         ]
     }
 
     const numBars = dataBar.datasets[0].data.length;
-    const containerHeight = 80 * numBars;
+    const containerHeight = 40 * numBars;
 
     const optionsBar = {
         plugins: {

@@ -1,5 +1,5 @@
 const dataBase          = require("../database/models");
-const {Sequelize, DATE} = require('sequelize');
+const {Sequelize, DATE, Op} = require('sequelize');
 const xlsx              = require('xlsx-populate');
 const path              = require("path");
 
@@ -131,94 +131,6 @@ const controlador = {
         }
     },
 
-    /* CRUD De Proceos */
-    viewProceso: async (req,res) => {
-        try{
-            let procesos = await dataBase.sequelize.query(
-                "SELECT procesos.*, SUM(subtareas.horasAprox) as horas_proceso, AVG(subtareas.avance) as progreso_proceso FROM procesos LEFT JOIN tareas ON procesos.id_procesos = tareas.fk_procesos LEFT JOIN subtareas ON tareas.id_tarea = subtareas.fk_tareas WHERE procesos.fk_ciclo = :fkCiclo GROUP BY procesos.id_procesos;"
-                ,{
-                replacements: { fkCiclo: req.body.ciclo },
-                type: Sequelize.QueryTypes.SELECT
-            });
-            
-            /*let procesos = await dataBase.procesos.findAll({
-                where: {
-                    fk_area :   req.body.user.area,
-                    fk_ciclo:   req.body.ciclo,
-                    ver:        1
-                },
-            });*/
-            res.json({error:0, ErrorDetalle:"", objeto:procesos});
-
-        }
-        catch(error){
-            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
-            return 1;
-        }
-    },
-
-    addProceso: async (req,res) => {
-        try{
-            if(req.body.nombre == "" || req.body.nombre == undefined){
-                req.body.nombre = null;
-            }
-            if(req.body.detalles == "" || req.body.detalles == undefined) {
-                req.body.detalles = null;
-            }
-            let procesos = await dataBase.procesos.create({
-                fk_area :   req.body.user.area,
-                nombre  :   req.body.nombre,
-                detalles:   req.body.detalles,
-                fk_ciclo:   req.body.ciclo,
-                ver     :   1
-            });
-            res.json({error :0, errorDetalle: "", objeto:procesos});
-            return 0;
-        }
-        catch(error){
-            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
-            return 1;
-        }
-    },
-
-    modProceso: async (req,res) => {
-        try{
-            let procesos = await dataBase.procesos.update({
-                nombre      : req.body.nombre,
-                detalles    : req.body.detalles,
-            },{
-                where:{
-                    id_procesos: req.body.idProceso
-                }
-            });
-            res.json({error :0, errorDetalle: "", objeto:procesos});
-        }
-        catch(error){
-            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
-            return 1;
-        }
-    },
-
-    deleteProceso: async (req,res) => {
-        try{
-            let procesos = await dataBase.procesos.update({
-                ver:    0
-            },{
-                where:{
-                    id_procesos: req.body.idProceso
-                }
-            });
-            res.json({error :0, errorDetalle: "", objeto:procesos});
-        }
-        catch(error){
-            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
-            res.json({error : codeError, errorDetalle: error.message});   
-            return 1;
-        }
-    },
 
     /* CRUD De Tareas */
     // Ver tareas
@@ -228,8 +140,15 @@ const controlador = {
             let tareas;
             tareas = await dataBase.sequelize.query(
             `
-                SELECT  Tareas.*, 
-                        Empleados.nombre AS nombreUser, 
+                SELECT  Tareas.id_tarea,
+                        Tareas.fk_empleado_asignado,
+                        Tareas.fk_ciclo,
+                        Tareas.nombre,
+                        Tareas.prioridad,
+                        Tareas.fecha_inicio,
+                        Tareas.notas,
+                        Tareas.numero_de_orden, 
+                        Empleados.nombre AS nombreUser,
                         Empleados.mail AS mailUser, 
                         COALESCE(SUM(Subtareas.horas_tarea), 0) AS horas_tarea, 
                         COALESCE(AVG(Subtareas.progreso_tarea), 0) AS progreso_tarea,
@@ -248,9 +167,16 @@ const controlador = {
                         END AS estado
                 FROM Tareas 
                 LEFT JOIN (
-                    SELECT  Subtareas.id_sub_tarea, Subtareas.fk_tareas ,Subtareas.titulo,
-                            Subtareas.asignacion, Subtareas.estado, Subtareas.prioridad, 
-                            Subtareas.notas, Subtareas.fecha_inicio, Subtareas.fecha_final, Subtareas.ver, 
+                    SELECT  Subtareas.id_sub_tarea, 
+                            Subtareas.fk_tareas,
+                            Subtareas.titulo,
+                            Subtareas.asignacion, 
+                            Subtareas.estado, 
+                            Subtareas.prioridad, 
+                            Subtareas.notas, 
+                            Subtareas.fecha_inicio, 
+                            Subtareas.fecha_final, 
+                            Subtareas.ver, 
                             COALESCE(SUM(Muestras.horasAprox), Subtareas.horasAprox) AS horas_tarea,
                             CASE WHEN COUNT(Muestras.id_muestra) > 0 AND Subtareas.avance != 100
                                 THEN CASE
@@ -273,7 +199,18 @@ const controlador = {
                 ) AS Subtareas ON Tareas.id_tarea = Subtareas.fk_tareas
                 LEFT JOIN Empleados ON Tareas.fk_empleado_asignado = Empleados.id_empleado
                 WHERE Tareas.ver = 1 AND Tareas.fk_ciclo = :idCiclo
-                GROUP BY Tareas.id_tarea;
+                GROUP BY Tareas.id_tarea, 
+                        Tareas.fk_empleado_asignado, 
+                        Tareas.fk_ciclo,
+                        Tareas.nombre, 
+                        Tareas.prioridad, 
+                        Tareas.fecha_inicio,
+                        Tareas.notas, 
+                        Tareas.numero_de_orden,
+                        Empleados.nombre, 
+                        Empleados.mail
+                ORDER BY Tareas.numero_de_orden;
+
             `        
             ,{
                 replacements: { idCiclo: req.body.idCiclo },
@@ -309,7 +246,18 @@ const controlador = {
                         mail : req.body.empleado_asignado
                     },
                 }
-            );            
+            );    
+            let ordenDeLaTarea = await dataBase.sequelize.query(
+                `
+                    SELECT  COUNT(*) as cantidadDeTareas
+                    FROM Tareas
+                    WHERE fk_ciclo = :idCiclo
+                `,
+                {
+                    replacements: { idCiclo: req.body.idCiclo},
+                    type: Sequelize.QueryTypes.SELECT
+                });
+                    
             if(empleadoAsignado === null){
                 res.json({error : 10, errorDetalle: "El correo del responsable no existe."});
                 return 1;
@@ -317,6 +265,8 @@ const controlador = {
                 res.json({error : 99, errorDetalle: "Usuario indicado no perteneciente al area"});
                 return 1;
             }else{
+                ordenDeLaTarea = ordenDeLaTarea[0].cantidadDeTareas + 1;
+
                 let tarea = await dataBase.tareas.create({
                     fk_empleado_asignado    : empleadoAsignado.id_empleado,
                     fk_area                 : req.body.user.area,
@@ -329,7 +279,8 @@ const controlador = {
                     notas                   : req.body.notas,
                     //progreso                : req.body.progreso,
                     //horas_Necesarias        : 0,
-                    mostrar                 : 1
+                    mostrar                 : 1,
+                    numero_de_orden         : ordenDeLaTarea 
                 });
                 res.json({error :0, errorDetalle: "", objeto:tarea});
                 return 0;
@@ -407,6 +358,64 @@ const controlador = {
             res.json({error : codeError, errorDetalle: error.message});   
             return 1;
         }
+    },
+
+    // Mover tarea
+    moveTarea: async (req,res) => {
+        try{
+
+            let tareaModificada
+            let contador = 0
+
+            tareaModificada = await dataBase.tareas.update({
+                    numero_de_orden: req.body.final
+            },{
+                where:{
+                    id_tarea : req.body.idTarea
+                }
+            });
+            contador += tareaModificada[0];
+            if(req.body.inicial < req.body.final){
+                tareaModificada = await dataBase.tareas.update({
+                    numero_de_orden: Sequelize.literal('numero_de_orden - 1')
+                },{
+                    where:{
+                        fk_ciclo : req.body.idCiclo,
+                        id_tarea : {
+                            [Op.ne]: req.body.idTarea
+                        },
+                        numero_de_orden: {
+                            [Op.lte]: req.body.final 
+                        }
+                    }
+                });
+                contador += tareaModificada[0];
+            }else{
+                tareaModificada = await dataBase.tareas.update({
+                    numero_de_orden: Sequelize.literal('numero_de_orden + 1')
+                },{
+                    where:{
+                        fk_ciclo : req.body.idCiclo,
+                        id_tarea : {
+                            [Op.ne]: req.body.idTarea
+                        },
+                        numero_de_orden: {
+                            [Op.lte]: req.body.inicial,
+                            [Op.gte]: req.body.final 
+                        }
+                    }
+                });
+                contador += tareaModificada[0];
+            }
+
+            res.json({error : 0 , errorDetalle: '',objeto:contador});  
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({error : codeError, errorDetalle: error.message});   
+            return 1;
+        }
+
     },
 
     // CRUD de Sub tareas
@@ -608,8 +617,8 @@ const controlador = {
             let cantidadDeMuestrass = await dataBase.sequelize.query(
                 `
                     SELECT count(*) as total_Muestrass
-                    FROM muestras
-                    WHERE muestras.fk_sub_tareas = :idSubtarea;
+                    FROM Muestras
+                    WHERE Muestras.fk_sub_tareas = :idSubtarea;
                 `        
                 ,{
                     replacements: { idSubtarea: req.body.subtarea.id_sub_tarea },
@@ -658,7 +667,7 @@ const controlador = {
         }
     },
 
-    // CRUD de Sub Sub tareas
+    // CRUD de Muestras
     addMuestras: async (req,res) => {
         try{
             let numero_de_orden = req.body.numero_de_orden || null;                 

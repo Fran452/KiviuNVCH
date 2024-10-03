@@ -78,7 +78,7 @@ function Subtareas() {
             id_subtarea: parseInt(idSubtask)
         }
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/deleteSubTask", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteSubTask", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -149,7 +149,7 @@ function Subtareas() {
     const handleFinalizarSubtarea = async () => {
         const obj = subtareas.find((e) => e.id_sub_tarea === idSubtask)
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/subTareaok", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/subTareaok", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -172,7 +172,6 @@ function Subtareas() {
                         let tareasNorealizadas = 0;
                         const arr = res.objeto
                         const selec = arr.find(e => e.id_ciclo === idCiclo)
-                        console.log(selec)
                         if(selec === undefined) {
                             setTareasRealporCiclo(0)
                             setTareasNorealporCiclo(0)
@@ -226,7 +225,7 @@ function Subtareas() {
 
     const fetchMuestrasById = async (id) => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/viewMuestras", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewMuestras", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -376,14 +375,13 @@ function Subtareas() {
                                                         <div className="table__custom__cell cell__mail">{s.nombreUser}</div>
                                                         <div className="table__custom__cell cell__date">{s.fecha_inicio.replace(/-/g, '/').split("/").reverse().join("/")}</div>
                                                         <div className="table__custom__cell cell__date">
-                                                            {s.progreso_tarea === 100 ? `${s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}` : ""}
+                                                            {Math.round(s.progreso_tarea) === 100 ? `${s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}` : ""}
                                                         </div>
-                                                        {/* <div className="table__custom__cell cell__date">{s.fecha_final.replace(/-/g, '/').split("/").reverse().join("/")}</div> */}
                                                     </div>
                                                 </div>
                                                 <CSSTransition
                                                     in={expandedRowMuestra === s.id_sub_tarea}
-                                                    timeout={300}
+                                                    timeout={100}
                                                     classNames="details"
                                                     unmountOnExit
                                                     nodeRef={muestraRef}

@@ -48,9 +48,10 @@ CREATE TABLE Tareas (
     prioridad					            INT NOT NULL,  -- default 2
     fecha_inicio                            DATE NOT NULL,
     notas                                   VARCHAR(255),
+    numero_de_orden                         INT NOT NULL,
     ver                                     INT NOT NULL, 
     FOREIGN KEY (fk_empleado_asignado)      REFERENCES Empleados(id_empleado),
-    FOREIGN KEY (fk_ciclo)                 REFERENCES Ciclos(id_ciclo),
+    FOREIGN KEY (fk_ciclo)                  REFERENCES Ciclos(id_ciclo),
     FOREIGN KEY (fk_area)                   REFERENCES Areas(id_area)
 );
 

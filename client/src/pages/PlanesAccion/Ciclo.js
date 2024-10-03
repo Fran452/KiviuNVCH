@@ -36,9 +36,6 @@ function Ciclo() {
 
     const [ciclosClose, setCiclosClose] = useState(false)
 
-    // Anterior areas > subciclos
-    // const [areas, setAreas] = useState([]);
-    // Anterior proyectos
     const [ciclos, setCiclos] = useState([])
 
     //subtareas
@@ -49,18 +46,6 @@ function Ciclo() {
     const USER = jwtParse.apirest.objeto
 
     useEffect(() => {
-        // const fetchAreas = async () => {
-        //     try {
-        //     const res = await fetch("http://localhost:3030/apis/index",{
-        //         method: "GET"
-        //     })
-        //     const data = await res.json()
-        //     setAreas(data.objeto.areas)
-        //     } catch (error) {
-        //     console.log(error)
-        //     }
-        // }
-
         const firstFetch = () => {
             fetchCiclos()
             .then(res => {
@@ -81,7 +66,7 @@ function Ciclo() {
 
     const fetchMetrica = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/metricas", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/metricas", {
                 method: "GET"
             });
             const data = await res.json();
@@ -93,7 +78,7 @@ function Ciclo() {
 
     const fetchCiclos = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/viewCiclos", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewCiclos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -111,7 +96,7 @@ function Ciclo() {
 
     const fetchTareasById = async(id) => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/viewTask", {
+            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewTask", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json"

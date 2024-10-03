@@ -13,7 +13,6 @@ function PowerBI() {
     useEffect(() => {
         const auth = localStorage.getItem("token")
         const jwtParse = jwtDecode(auth)
-        console.log(jwtParse.apirest.objeto)
 
         const req = {
             user: jwtParse.apirest.objeto,
@@ -22,7 +21,7 @@ function PowerBI() {
 
         const fetchData = async () => {
             try {
-                const res = await fetch("http://localhost:3040/apis/bi",{
+                const res = await fetch("http://164.92.77.143:3040/apis/bi",{
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -30,7 +29,6 @@ function PowerBI() {
                     body: JSON.stringify(req)
                 })
                 const data = await res.json()
-                console.log(data)
                 setData(data)
                 setLoading(false)
             } catch (error) {

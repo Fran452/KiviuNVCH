@@ -221,7 +221,7 @@ let controlador = {
     },
 
     //* Para Tareas 
-    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclo,nombre,estado,prioridad,fecha_inicio,notas){
+    crearTarea: async function(fk_empleado_asignado,fk_area,fk_ciclo,nombre,estado,prioridad,fecha_inicio,notas,numero_de_orden){
         let objetoCreado = await dataBaseSQL.tareas.create({
             fk_empleado_asignado,
             fk_area,
@@ -231,6 +231,7 @@ let controlador = {
             prioridad,
             fecha_inicio,
             notas,
+            numero_de_orden,
             ver : 1,
         });
         return objetoCreado.dataValues;
@@ -241,7 +242,7 @@ let controlador = {
             where: {
                 id_tarea : id
             },
-            attributes: ['id_tarea','nombre','estado','prioridad','notas','ver'],
+            attributes: ['id_tarea','nombre',,'prioridad','notas','ver'],
             include: [
                 {association : "Empleado",attributes: ['nombre','fk_area','fk_puesto','mail']},
                 {association : "Ciclo",attributes: ['id_ciclo','nombre']},
@@ -337,9 +338,9 @@ let controlador = {
         return busqueda.dataValues;
     },
 
-    eliminarMuestrass: async function(id){
+    eliminarMuestras: async function(id){
         await dataBaseSQL.muestras.destroy({
-            where : {id_sub_tarea: id},
+            where : {id_muestra: id},
             
         });
     },

@@ -30,15 +30,11 @@ router.post('/plan-accion/addCiclos',apisPlanDeAccion.addCiclos);
 router.put('/plan-accion/modCiclos',apisPlanDeAccion.modCiclos);
 router.put('/plan-accion/deleteCiclos',apisPlanDeAccion.deleteCiclos);
 
-router.post('/plan-accion/viewProceso',apisPlanDeAccion.viewProceso);
-router.post('/plan-accion/addProceso',apisPlanDeAccion.addProceso);
-router.put('/plan-accion/modProceso',apisPlanDeAccion.modProceso);
-router.put('/plan-accion/deleteProceso',apisPlanDeAccion.deleteProceso);
-
 router.post('/plan-accion/viewTask',apisPlanDeAccion.viewTareas);
 router.post('/plan-accion/addTask',apisPlanDeAccion.addTarea);
 router.put('/plan-accion/modTask',apisPlanDeAccion.modTarea);
 router.put('/plan-accion/deleteTask',apisPlanDeAccion.deleteTarea);
+router.put('/plan-accion/moveTask',apisPlanDeAccion.moveTarea);
 
 router.post('/plan-accion/viewSubTask',apisPlanDeAccion.viewSubTarea);
 router.post('/plan-accion/addSubTask',apisPlanDeAccion.addSubTarea);
