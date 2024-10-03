@@ -32,7 +32,7 @@ function Login() {
             pass: password
         }
         setLoading(true)
-        await fetch("http://localhost:3040/apis/login", {
+        await fetch(`${process.env.REACT_APP_API_URL}/apis/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

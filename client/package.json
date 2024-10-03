@@ -12,6 +12,7 @@
     "chart.js": "^4.4.3",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^3.6.0",
+    "env-cmd": "^10.1.0",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-beautiful-dnd": "^13.1.1",
@@ -27,10 +28,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
+    "local": "env-cmd -e LOCAL npm run start",
+    "pro": "env-cmd -e PRODUCCION npm run start",
+    "build": "react-scripts build",
+    "build:production": "env-cmd -e PRODUCCION react-scripts build"
   },
   "eslintConfig": {
     "extends": [

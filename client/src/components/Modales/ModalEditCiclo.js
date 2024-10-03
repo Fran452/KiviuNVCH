@@ -75,7 +75,7 @@ function ModalEditCiclo(props) {
         const pro = JSON.parse(cicloSelec)
         if (Object.keys(newErrors).length === 0){
             try {
-                const res = await fetch("http://localhost:3040/apis/plan-accion/modCiclos", {
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/modCiclos`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"

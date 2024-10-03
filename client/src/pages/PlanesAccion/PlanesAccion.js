@@ -31,7 +31,7 @@ function PlanesAccion() {
 
         const fetchAreas = async () => {
             try {
-            const res = await fetch("http://localhost:3040/apis/index",{
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/index`,{
                 method: "GET"
             })
             const data = await res.json()
@@ -62,7 +62,7 @@ function PlanesAccion() {
     // Actualizar el listado de proyectos
     const fetchProyectos = async () => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/viewProyect", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/viewProyect`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -80,7 +80,7 @@ function PlanesAccion() {
 
     const fetchTareasById = async(id) => {
         try {
-            const res = await fetch("http://localhost:3040/apis/plan-accion/viewTask", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/viewTask`, {
               method: "POST",
               headers: {
                   "Content-Type": "application/json"
