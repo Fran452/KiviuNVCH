@@ -78,7 +78,7 @@ function Subtareas() {
             id_subtarea: parseInt(idSubtask)
         }
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteSubTask", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/deleteSubTask`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -149,7 +149,7 @@ function Subtareas() {
     const handleFinalizarSubtarea = async () => {
         const obj = subtareas.find((e) => e.id_sub_tarea === idSubtask)
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/subTareaok", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/subTareaok`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -225,7 +225,7 @@ function Subtareas() {
 
     const fetchMuestrasById = async (id) => {
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/viewMuestras", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/viewMuestras`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
