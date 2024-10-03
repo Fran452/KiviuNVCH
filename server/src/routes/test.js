@@ -17,8 +17,6 @@ router.post('/login',apisUser.loginFuction);
 
 router.get('/',testIndex.testGenerico);
 router.get('/armado-SQL',testIndex.crearBaseDeDatos);
-router.get('/armado-SQL-NEW',testIndex.crearBaseDeDatosNew);
-router.get('/armado-SQL-Sub',testIndex.crearBaseDeDatosSubtareas);
 
 router.get('/plan-accion',testPlanesDeAccion.testGenerico);
 
