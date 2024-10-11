@@ -17,15 +17,20 @@ CREATE TABLE Puestos (
 
 CREATE TABLE Empleados (           
     id_empleado                            INT PRIMARY KEY AUTO_INCREMENT,
+    id_authero                             INT,
     fk_area                                INT NOT NULL,
     fk_puesto                              INT NOT NULL,
     nombre                                 VARCHAR(255),
-    password                               VARCHAR(255) NOT NULL,
     abreviatura                            VARCHAR(255),
     mail                                   VARCHAR(255) NOT NULL,
+    estado                                 INT NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
-    FOREIGN KEY (fk_Puesto)                REFERENCES Puestos(id_puesto)
+    FOREIGN KEY (fk_puesto)                REFERENCES Puestos(id_puesto)
 );
+
+-- Estados del usuario: 
+-- 1: usuario activo
+-- 0: usuario inactivo
 
 CREATE TABLE Ciclos ( 
     id_ciclo                                INT PRIMARY KEY AUTO_INCREMENT,

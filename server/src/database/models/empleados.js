@@ -1,14 +1,15 @@
 /*
 CREATE TABLE Empleados (           
     id_empleado                            INT PRIMARY KEY AUTO_INCREMENT,
+    id_authero                             INT,
     fk_area                                INT NOT NULL,
     fk_puesto                              INT NOT NULL,
     nombre                                 VARCHAR(255),
-    password                               VARCHAR(255) NOT NULL,
-    abreviatura                            VARCHAR(255) NOT NULL,
+    abreviatura                            VARCHAR(255),
     mail                                   VARCHAR(255) NOT NULL,
+    estado                                 INT NOT NULL,
     FOREIGN KEY (fk_area)                  REFERENCES Areas(id_area),
-    FOREIGN KEY (fk_Puesto)                REFERENCES Puestos(id_puesto)
+    FOREIGN KEY (fk_puesto)                REFERENCES Puestos(id_puesto)
 );
 */
 
@@ -23,12 +24,16 @@ module.exports = (sequelize,DataTypes) => {
             autoIncrement: true,
         },
 
+        "id_authero": {
+            type:DataTypes.INTEGER(),
+        },
+
         "fk_area": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
         
-        "fk_Puesto": {
+        "fk_puesto": {
             type:DataTypes.INTEGER(),
             allowNull: false
         },
@@ -37,10 +42,6 @@ module.exports = (sequelize,DataTypes) => {
             type: DataTypes.STRING(255),
         },
         
-        "password":{
-            type: DataTypes.STRING(255),
-            allowNull: false
-        },
         
         "abreviatura":{
             type: DataTypes.STRING(255),
@@ -48,6 +49,11 @@ module.exports = (sequelize,DataTypes) => {
 
         "mail":{
             type: DataTypes.STRING(255),
+            allowNull: false
+        },
+
+        "estado":{
+            type:DataTypes.INTEGER(),
             allowNull: false
         },
 

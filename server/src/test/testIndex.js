@@ -109,11 +109,8 @@ const controlador = {
 
                 tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area1,ciclo.id_ciclo,"Préstamos Consumo y Comercial 1° revisión",1,1,fechaInicial,"notas");
                 tarea.subTarea = [];
-                
                     subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Relevamiento",usuario.id,20,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
                     subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Matriz de Riesgos y Controles",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);
-
-
 
                 tarea     = await funcionesDeTest.crearTarea(usuario.id,usuario.area1,ciclo.id_ciclo,"Normativa",1,1,fechaInicial,"notas");
                     subtarea  = await funcionesDeTest.crearSubTarea(tarea.id_tarea,"Normativa Consumo ",usuario.id,2,0,1,1,fechaInicial,fechaFin,"esto son notas",1);

@@ -53,6 +53,8 @@ router.post('/plan-accion/subitExcel',upload.single('excel'),apisPlanDeAccion.su
 router.post('/plan-accion/cargaExcel',apisPlanDeAccion.cargaDeExcel);
 
 router.post('/login',apisUser.loginFuction);
+router.post('/registerUser',apisUser.registerFuction);
+router.post('/deleteUser',apisUser.deleteEmpleado);
 
 
 router.post('/dateIn',apisDateIn.viewIndicadores);
