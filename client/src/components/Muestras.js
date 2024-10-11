@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { ProgressBar, Modal } from 'react-bootstrap';
 import ModalMuestra from './Modales/ModalMuestra';
 import { subtareasContext } from './Subtareas';
@@ -73,7 +73,7 @@ function Muestras(){
             id_muestra: parseInt(idMuestra)
         }
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/deleteMuestras", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/deleteMuestras`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -155,7 +155,7 @@ function Muestras(){
     const handleFinalizarMuestra = async () => {
         const obj = muestras.find((e) => e.id_muestra === idMuestra)
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/muestrasok", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/muestrasok`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -244,7 +244,7 @@ function Muestras(){
 
     const cargaExcel = async () => {
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/cargaExcel", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/cargaExcel`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -322,7 +322,7 @@ function Muestras(){
         const formData = new FormData();
 		formData.append('excel', selectedFile);
         try {
-            const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/subitExcel", {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/subitExcel`, {
                 method: "POST",
                 body: formData
             })

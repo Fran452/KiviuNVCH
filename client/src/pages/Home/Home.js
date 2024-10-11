@@ -18,7 +18,7 @@ function Home() {
 
   const fetchAreas = async () => {
     try {
-      const res = await fetch("http://164.92.77.143:3040/apis/index",{
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/index`,{
         method: "GET"
       })
       const data = await res.json()

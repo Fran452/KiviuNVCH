@@ -32,7 +32,7 @@ function Login() {
             pass: password
         }
         setLoading(true)
-        await fetch("http://164.92.77.143:3040/apis/login", {
+        await fetch(`${process.env.REACT_APP_API_URL}/apis/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

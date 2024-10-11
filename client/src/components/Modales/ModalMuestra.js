@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Modal, ProgressBar } from 'react-bootstrap';
 import { subtareasContext } from '../Subtareas';
 import { muestrasContext } from '../Muestras'
-import { newContext } from '../../pages/PlanesAccion/Ciclo'
+// import { newContext } from '../../pages/PlanesAccion/Ciclo'
 
 function ModalMuestra(props) {
-    const { USER } = useContext(newContext)
+    // const { USER } = useContext(newContext)
     const { 
         fetchMetrica, 
         idTask,
@@ -24,7 +24,6 @@ function ModalMuestra(props) {
     
     const { 
         idSubtask, 
-        setIdSubtask,
         muestraObj, 
         setMuestraObj,
         setLoadingMuestra,
@@ -123,7 +122,7 @@ function ModalMuestra(props) {
                 notas: formMuestra.notas
             }
             try {
-                const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/addMuestras", {
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/addMuestras`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -230,7 +229,7 @@ function ModalMuestra(props) {
                 notas: formMuestra.notas
             }
             try {
-                const res = await fetch("http://164.92.77.143:3040/apis/plan-accion/modMuestras", {
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/apis/plan-accion/modMuestras`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
