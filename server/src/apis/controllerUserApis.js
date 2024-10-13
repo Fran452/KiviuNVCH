@@ -23,9 +23,41 @@ const bcrypt = require("bcrypt");
 const funcionesGenericas = require("../funcionesGenerales");
 
 const controlador = {
+    totalUser : async (req,res) => { 
+        try{            
+            let empleado = await dataBaseSQL.empleados.findOne(
+                {
+                    where: {
+                        mail : req.body.user.mail
+                    },
+                }
+            );
+
+            if(empleado.fk_puesto == 1){
+                let totalEmpleados = await dataBaseSQL.empleados.findAll(
+                    {
+                        where: {
+                            fk_area : req.body.user.area
+                        },
+                    }
+                );
+                res.status(200).json({error :0, errorDetalle: "", objeto:totalEmpleados});
+                return 0;
+            }else{
+                res.status(450).json({error :99, errorDetalle: "Sin permisos para registrar.", objeto:{}});
+                return 1;
+            }
+            
+        }
+        catch(error){
+            let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
+            res.json({errorGeneral: error, error : codeError, errorDetalle: error.message });   
+            return 1;
+        }
+    },
+
     loginFuction :  async (req,res) => { 
         try{
-            let fechaActual = new Date();
             let empleados = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
@@ -55,7 +87,7 @@ const controlador = {
                     id : empleados.id_empleado,
                     nombre : empleados.nombre,
                     area : empleados.fk_area,
-                    puesto: empleados.fk_Puesto,
+                    puesto: empleados.fk_puesto,
                     mail : empleados.mail
                 }
 
@@ -94,6 +126,7 @@ const controlador = {
                     },
                 }
             );
+
             if(empleados.fk_puesto == 1){
                 let usuario = await dataBase.empleados.create({
                     fk_area             : 1,
@@ -107,7 +140,8 @@ const controlador = {
                 res.status(200).json({error :0, errorDetalle: "", objeto:usuario});
                 return 0;
             }else{
-                res.status(450).json({error :99, errorDetalle: "Sin permisos para modificar.", objeto:usuario});
+                res.status(450).json({error :99, errorDetalle: "Sin permisos para registrar.", objeto:{}});
+                return 1;
             }
            
         }
@@ -140,7 +174,7 @@ const controlador = {
                 res.status(200).json({error :0, errorDetalle: "", objeto:usuario});
                 return 0;
             }else{
-                res.status(450).json({error :99, errorDetalle: "Sin permisos para modificar.", objeto:usuario});
+                res.status(450).json({error :99, errorDetalle: "Sin permisos para eliminar.", objeto:{}});
             }
            
         }

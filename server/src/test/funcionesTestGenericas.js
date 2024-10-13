@@ -161,7 +161,7 @@ let controlador = {
             let areaCrada = await this.crearArea(`nombre del area ${i}`,'sin Power Bi');
             let empleados = []
             for(let j = 0;j < 3 ; j++){
-                let empleado = await this.crearUsuario(areaCrada.id_area,puesto,`Nombre del empelado ${j}`,'1234','',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`);
+                let empleado = await this.crearUsuario(areaCrada.id_area,puesto,`Nombre del empelado ${j}`,'',`empleadoN${j}A${areaCrada.id_area}@kiviu.com`,1);
                 puesto++;
                 empleados.push(empleado); 
             }
@@ -435,14 +435,14 @@ let controlador = {
         return busqueda;
     },
     
-    crearUsuario: async function (area,puesto,nombre,contraseña,abreviatura,mail) {
+    crearUsuario: async function (area,puesto,nombre,abreviatura,mail,estado) {
         let creacion = await dataBaseSQL.empleados.create({
             fk_area:    area,
-            fk_Puesto:  puesto,
+            fk_puesto:  puesto,
             nombre:     nombre,
-            password:   contraseña,
             mail:       mail,
-            abreviatura: abreviatura
+            abreviatura: abreviatura,
+            estado: estado
         });
         return creacion.dataValues;
     },

@@ -40,8 +40,7 @@ module.exports = (sequelize,DataTypes) => {
 
         "nombre":{
             type: DataTypes.STRING(255),
-        },
-        
+        }, 
         
         "abreviatura":{
             type: DataTypes.STRING(255),
