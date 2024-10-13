@@ -9,6 +9,7 @@ const controlador = {
     testGenerico: async (req,res) => {
         let links = {
             ArmarBaseDeDatos:   `${process.env.KIVIU_WEB}/test/armado-SQL`,
+            ArmarBaseDeDatosUsuarios:   `${process.env.KIVIU_WEB}/test/armado-Empleados`,
             planesAcción:{
                 testGenericos:  `${process.env.KIVIU_WEB}/test/plan-accion`,
                 preImplemenatacion:  `${process.env.KIVIU_WEB}/test/plan-accion/otros`,
@@ -40,13 +41,13 @@ const controlador = {
         try{
             console.log("entrando a la generacion de base de datos");
             
-            let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('francisco.lema@nbch.com.ar');
+            let empleadoYaSubido = await funcionesDeTest.buscarUsuarioPorMail('favio.benzaquen@nbch.com.ar');
 
             if(empleadoYaSubido != undefined){
                 res.json("base de datos ya subida anteriormente");
                 return 0;
             };
-
+            
             let ahora = new Date();
 
             let fechaInicial = ahora;
@@ -63,31 +64,39 @@ const controlador = {
             
             let areas = [area1,area2,area3,area4];
             
-            let usuarios = []
-            let usuario  = await funcionesDeTest.crearUsuario(area1.id_area,1,'Alejandro Camnasio','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','AC','alejandro.camnasio@nbch.com.ar');
-            usuarios.push(usuario);
-            usuario  = await funcionesDeTest.crearUsuario(area1.id_area,1,'Favio Benzaquen','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','FB','favio.benzaquen@nbch.com.ar');
-            usuarios.push(usuario);
-            usuario  = await funcionesDeTest.crearUsuario(area1.id_area,1,'Gustavo Rodriguez','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','GR','gustavo.rodriguez@nbch.com.ar');
-            usuarios.push(usuario);
-            usuario  = await funcionesDeTest.crearUsuario(area1.id_area,1,'Yanina Monoff','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','YM','yanina.monoff@nbch.com.ar');
-            usuarios.push(usuario);
-            usuario  = await funcionesDeTest.crearUsuario(area1.id_area,1,'Gustavo Rodas','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','GR','gustavo.rodas@nbch.com.ar');
-            usuarios.push(usuario);
-            usuario  = await funcionesDeTest.crearUsuario(area1.id_area,1,'Francisco Lema','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','FR','francisco.lema@nbch.com.ar');
-            usuarios.push(usuario);
-            usuario  = await funcionesDeTest.crearUsuario(area1.id_area,1,'Hernan Martel','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','HM','hernandariomartel@gmail.com');
-            usuarios.push(usuario);
-            usuario  = await funcionesDeTest.crearUsuario(area1.id_area,1,'Alice Ramírez','$2b$16$3LvhCzCPQm.eenIQkZGk/uT8fwtDE4QPsg1RzLhrKzM9HTrGhlpTq','AR','alicemarcelaramirez@gmail.com');
-            usuarios.push(usuario);
-            let TD = await funcionesDeTest.crearUsuario(area1.id_area,1,"Maria Teresa Dorrego","1234","TD","maria.dorrego@nbch.com.ar");
-            usuarios.push(TD);
-            let DM = await funcionesDeTest.crearUsuario(area1.id_area,1,"Daniela Silvana Molina","1234","DM","daniela.molina@nbch.com.ar");
-            usuarios.push(DM);
-            let SV = await funcionesDeTest.crearUsuario(area1.id_area,1,"Silvana Vecchi","1234","SV","silvana.vecchi@nbch.com.ar");
-            usuarios.push(SV);
+            const path = require('path');
+            const xlsx = require('xlsx-populate');
 
-            usuario = {
+            let directoriExcelEmpleados = path.join(__dirname,"../excel/Usuarios.xlsx");
+            let estructuraExcelEmpleados = await xlsx.fromFileAsync(directoriExcelEmpleados);
+            let subidoEmpleados = []
+            let nombre
+            let inicioRegistro = 2
+           
+            do{
+                nombre = estructuraExcelEmpleados.sheet('empleados').cell(`A${inicioRegistro}`).value();
+                if(nombre != undefined || inicioRegistro == 2){
+                    let puesto = estructuraExcelEmpleados.sheet('empleados').cell(`D${inicioRegistro}`).value();
+                    let abreviatura = estructuraExcelEmpleados.sheet('empleados').cell(`C${inicioRegistro}`).value();
+                    let mail = estructuraExcelEmpleados.sheet('empleados').cell(`B${inicioRegistro}`).value();
+
+                    let usuario = await funcionesDeTest.crearUsuario(area1.id_area,puesto,nombre,abreviatura,mail,1); 
+
+                    subidoEmpleados.push(usuario);
+                }
+                inicioRegistro++;
+
+            }while(nombre != undefined);
+
+            const SV = subidoEmpleados.find(usuario => usuario.abreviatura  == 'SV');
+            console.log(SV);
+            const TD = subidoEmpleados.find(usuario => usuario.abreviatura  == 'AC');
+            console.log(TD);
+            const DM = subidoEmpleados.find(usuario => usuario.abreviatura  == 'DM');
+            console.log(DM);
+
+
+            let usuario = {
                 id: SV.id_empleado,
                 nombre:SV.nombre,
                 area1:SV.fk_area,
@@ -97,7 +106,7 @@ const controlador = {
 
             let baseDeDatos = {
                 areas:areas,
-                usuario : usuarios,
+                usuario : subidoEmpleados,
             }
 
             let ciclo
@@ -515,9 +524,6 @@ const controlador = {
             ciclos.push(ciclo);
 
             baseDeDatos.ciclos = ciclos;
-            
-            const path = require('path');
-            const xlsx = require('xlsx-populate');
     
             let directoriExcel = path.join(__dirname,"../excel/Carga de Ciclos Automatica.xlsx");
             let estructuraExcel = await xlsx.fromFileAsync(directoriExcel);
@@ -666,16 +672,46 @@ const controlador = {
         }
     },
 
-    crearBaseDeDatosSubtareas: async (req,res) => {
+    crearBaseDeDatosEmpleados: async (req,res) => {
         try{
             
+            const path = require('path');
+            const xlsx = require('xlsx-populate');
+
+            let directoriExcel = path.join(__dirname,"../excel/Usuarios.xlsx");
+            let estructuraExcel = await xlsx.fromFileAsync(directoriExcel);
+            let subido = []
+            let hoja = 'empleados';
+            let nombre
+            let inicioRegistro = 2
+            let area1 = await funcionesDeTest.crearArea("Operaciones de Caja","https://powerbi.nbch.com.ar/reports/browse/Auditoria%20Interna");
+            do{
+                nombre = estructuraExcel.sheet(hoja).cell(`A${inicioRegistro}`).value();
+                if(nombre != undefined || inicioRegistro == 2){
+                    console.log(nombre);
+                    let puesto = estructuraExcel.sheet(hoja).cell(`D${inicioRegistro}`).value();
+                    console.log(puesto);
+                    let abreviatura = estructuraExcel.sheet(hoja).cell(`C${inicioRegistro}`).value();
+                    console.log(abreviatura);
+                    let mail = estructuraExcel.sheet(hoja).cell(`B${inicioRegistro}`).value();
+                    console.log(mail);
+                    let usuario = await funcionesDeTest.crearUsuario(area1.id_area,puesto,nombre,abreviatura,mail,1); 
+                    subido.push(usuario);
+                }
+                inicioRegistro++;
+
+            }while(nombre != undefined);
+
+            let empleadoElejido = subido.find(usuario => usuario.abreviatura  == 'SV');
+            console.log(empleadoElejido);
+            res.json(subido);
+            return 0;
         }
         catch(error){
             console.log(error);
             let codeError = funcionesGenericas.armadoCodigoDeError(error.name);
             res.json({errorDetalleCompleto : error, error : codeError, errorDetalle: error.message});   
             return 1;
-            
         }
     }
 }

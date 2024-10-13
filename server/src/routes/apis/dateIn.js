@@ -1,11 +1,9 @@
 const express       = require("express");
 
-const apisDateIn        = require('../../apis/controllerDateInApis');
+const apisDateIn    = require('../../apis/controllerDateInApis');
 
 
 const router = express.Router();
-
-
 
 router.post('/dateIn',apisDateIn.viewIndicadores);
 
@@ -16,8 +14,6 @@ router.put('/deleteIndicador',apisDateIn.deleteIndicadores);
 router.post('/newMetrica',apisDateIn.newMetrica);
 router.put('/editMetrica',apisDateIn.editMetrica);
 router.post('/ultimas3Metricas',apisDateIn.ultimasTresMetricas);
-
-
 
 module.exports = router
 

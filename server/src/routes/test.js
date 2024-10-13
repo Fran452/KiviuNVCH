@@ -17,6 +17,7 @@ router.post('/login',apisUser.loginFuction);
 
 router.get('/',testIndex.testGenerico);
 router.get('/armado-SQL',testIndex.crearBaseDeDatos);
+router.get('/armado-Empleados',testIndex.crearBaseDeDatosEmpleados);
 
 router.get('/plan-accion',testPlanesDeAccion.testGenerico);
 
