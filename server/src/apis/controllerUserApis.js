@@ -84,12 +84,12 @@ const controlador = {
                     objeto: {}
                 };
             }else{
-                let empleado = empleados.find(empleado.id_Auth0 == req.body.id);
+                let empleado = empleados.find(empleado.id_authero == req.body.id);
                 if(empleado == undefined){
-                    empleado = empleados.find(empleado.id_Auth0 == undefined);
+                    empleado = empleados.find(empleado.id_authero == undefined);
 
                     await dataBase.empleados.update({
-                        id_Auth0 : req.body.id
+                        id_authero : req.body.id
                     },{
                         where:{
                             id_empleado : empleado.id_empleado
