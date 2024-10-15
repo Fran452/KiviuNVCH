@@ -61,11 +61,11 @@ const controlador = {
             let empleados = await dataBaseSQL.empleados.findAll(
                 {
                     where: {
-                        mail : req.body.user
+                        mail : req.body.user,
+                        estado: 1
                     },
                 }
             );
-
         
             if(empleados == null){
                 apirest = {
