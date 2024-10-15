@@ -84,7 +84,7 @@ const controlador = {
                     objeto: {}
                 };
             }else{
-                let empleado = empleados.find(empleado.id_authero == req.body.id);
+                let empleado = empleados.find(empleado => empleado.id_authero == req.body.id);
                 if(empleado == undefined){
                     empleado = empleados.find(empleado.id_authero == undefined);
 
