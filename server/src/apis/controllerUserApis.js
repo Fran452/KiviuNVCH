@@ -58,13 +58,14 @@ const controlador = {
 
     loginFuction :  async (req,res) => { 
         try{
-            let empleados = await dataBaseSQL.empleados.findOne(
+            let empleados = await dataBaseSQL.empleados.findAll(
                 {
                     where: {
                         mail : req.body.user
                     },
                 }
             );
+
         
             if(empleados == null){
                 apirest = {
@@ -83,12 +84,24 @@ const controlador = {
                     objeto: {}
                 };
             }else{
+                let empleado = empleados.find(empleado.id_Auth0 == req.body.id);
+                if(empleado == undefined){
+                    empleado = empleados.find(empleado.id_Auth0 == undefined);
+
+                    await dataBase.empleados.update({
+                        id_Auth0 : req.body.id
+                    },{
+                        where:{
+                            id_empleado : empleado.id_empleado
+                        }
+                    });
+                }
                 req.session.user = {
-                    id : empleados.id_empleado,
-                    nombre : empleados.nombre,
-                    area : empleados.fk_area,
-                    puesto: empleados.fk_puesto,
-                    mail : empleados.mail
+                    id : empleado.id_empleado,
+                    nombre : empleado.nombre,
+                    area : empleado.fk_area,
+                    puesto: empleado.fk_puesto,
+                    mail : empleado.mail
                 }
 
                 console.log(req.session.user);
