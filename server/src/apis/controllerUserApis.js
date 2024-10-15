@@ -28,7 +28,8 @@ const controlador = {
             let empleado = await dataBaseSQL.empleados.findOne(
                 {
                     where: {
-                        mail : req.body.user.mail
+                        mail : req.body.user.mail,
+                        estado : 1
                     },
                 }
             );
@@ -61,11 +62,11 @@ const controlador = {
             let empleados = await dataBaseSQL.empleados.findAll(
                 {
                     where: {
-                        mail : req.body.user,
-                        estado: 1
+                        mail : req.body.user
                     },
                 }
             );
+
         
             if(empleados == null){
                 apirest = {
@@ -86,7 +87,7 @@ const controlador = {
             }else{
                 let empleado = empleados.find(empleado => empleado.id_authero == req.body.id);
                 if(empleado == undefined){
-                    empleado = empleados.find(empleado.id_authero == undefined);
+                    empleado = empleados.find(empleado => empleado.id_authero == undefined);
 
                     await dataBase.empleados.update({
                         id_authero : req.body.id
